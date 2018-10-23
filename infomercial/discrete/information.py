@@ -10,26 +10,40 @@ def create_distribution():
     return {}
 
 
-def value(distribution, state, p):
+def update_distribution(distribution, state, p):
+    # Base case
+    if state in distribution:
+        if np.isclose(distribution[state], p):
+            return distribution
+
+    # Update
+    distribution[state] = p
+
+    # Renorm
+    # sum_p = np.sum(list(distribution.values()))
+    # for k, v in distribution.items():
+    # distribution[k] /= sum_p
+
+    return distribution
+
+
+def information_value(distribution, state, p, n):
     """Value new information (state, p) for a discrete state distribution."""
 
-    # TODO is this reasonable? log(1) is null....
-    if len(distribution) == 0:
-        return 1.0
+    # Max surprise
+    I_max = (n * np.log2(n))
 
-    # Information that is known is not valuable
-    if state in distribution:
-        return 0.0
+    # Current suprise
+    I_intial = -np.sum([np.log2(p_i) for s_i, p_i in distribution.items()])
+    I_intial /= I_max
 
-    # Calc info value
-    n = len(distribution)
-    m = n + 1
-    I_intial = -np.sum([np.log(p_i) for s_i, p_i in distribution.items()])
-    I_intial /= n * np.log(n)
-    I_new = -np.log(p) / (m * np.log(m))
-    I = I_intial - I_new
+    # Update dist?
+    distribution = update_distribution(distribution, state, p)
 
-    # Update the dist.
-    distribution[state] = p
+    # New surprise
+    I_new = -np.sum([np.log2(p_i) for s_i, p_i in distribution.items()])
+    I_new /= I_max
+
+    I = I_new - I_intial
 
     return I, distribution

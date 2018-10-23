@@ -9,5 +9,5 @@ setup(
     author_email='erik.exists@gmail.com',
     license='MIT',
     packages=['infomercial'],
-    scripts=['infomercial/exp/run_exp.py'],
+    scripts=['infomercial/exp/discrete_information_testing.py'],
     zip_safe=False)

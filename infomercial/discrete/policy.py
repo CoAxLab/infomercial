@@ -6,9 +6,11 @@ def random(game, player, prng=None):
         prng = np.random.RandomState()
 
     n = game[player, :].shape[0]
-
-    return prng.randint(0, n)
+    i = prng.randint(0, n)
+    return (player, i, i)
 
 
 def greedy(game, player):
-    return np.argmax(game.detach().numpy(), axis=player)
+    i = np.argmax(game[player, ...], axis=player)
+
+    return (player, i, i)
