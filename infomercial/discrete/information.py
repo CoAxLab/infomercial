@@ -10,7 +10,7 @@ def create_distribution():
     return {}
 
 
-def update_distribution(distribution, state, p):
+def update_distribution(distribution, state, p, renorm=True):
     # Base case
     if state in distribution:
         if np.isclose(distribution[state], p):
@@ -20,9 +20,10 @@ def update_distribution(distribution, state, p):
     distribution[state] = p
 
     # Renorm
-    # sum_p = np.sum(list(distribution.values()))
-    # for k, v in distribution.items():
-    # distribution[k] /= sum_p
+    if renorm:
+        sum_p = np.sum(list(distribution.values()))
+        for k, v in distribution.items():
+            distribution[k] /= sum_p
 
     return distribution
 
