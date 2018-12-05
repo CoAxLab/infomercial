@@ -1,16 +1,18 @@
 import numpy as np
 
 
-def random(game, player, prng=None):
+def random(x, prng=None):
     if prng is None:
         prng = np.random.RandomState()
-
-    n = game[player, :].shape[0]
-    i = prng.randint(0, n)
-    return (player, i, i)
+    i = prng.randint(0, len(x))
+    return i, x[i]
 
 
-def greedy(game, player):
-    i = np.argmax(game[player, ...], axis=player)
+def greedy(x):
+    i = np.argmax(x)
+    return i, x[i]
 
-    return (player, i, i)
+
+def anti_greedy(x):
+    i = np.argmin(x)
+    return i, x[i]
