@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import entropy
 
 
 def create_distribution():
@@ -28,23 +29,48 @@ def update_distribution(distribution, state, p, renorm=True):
     return distribution
 
 
-def information_value(distribution, state, p, n):
+def get_probs(distribution):
+    return np.asarray(list(distribution.values()))
+
+
+def get_diff(probs1, probs2):
+    """Get the total difference in probability"""
+    probs1 = np.asarray(probs1)
+    probs2 = np.asarray(probs2)
+    l1 = probs1.size
+    l2 = probs2.size
+
+    if l1 == l2:
+        d = probs2 - probs1
+    else:
+        minl = min(l1, l2)
+        d = probs2[0:minl] - probs1[0:minl]
+
+        if l2 > l1:
+            d = np.concatenate(d, probs2[l1:])
+        else:
+            d = np.concatenate(d, probs1[l2:])
+
+    return np.sum(d)
+
+
+def information_value(distribution, state, p):
     """Value new information (state, p) for a discrete state distribution."""
 
-    # Max surprise
-    I_max = (n * np.log2(n))
+    # Initial H
+    probs = get_probs(distribution)
+    H = entropy(probs)
 
-    # Current suprise
-    I_intial = -np.sum([np.log2(p_i) for s_i, p_i in distribution.items()])
-    I_intial /= I_max
-
-    # Update dist?
+    # New H'
     distribution = update_distribution(distribution, state, p)
+    probs_prime = get_probs(distribution)
+    H_prime = entropy(probs_prime)
 
-    # New surprise
-    I_new = -np.sum([np.log2(p_i) for s_i, p_i in distribution.items()])
-    I_new /= I_max
+    # Derivatives
+    dH = H_prime - H
+    dX = get_diff(probs, probs_prime)
 
-    I = I_new - I_intial
+    # Info value
+    M = np.abs(dH / dX)
 
-    return I, distribution
+    return M, distribution
