@@ -24,7 +24,7 @@ def Q_learn(state, reward, Q, lr):
     return Q
 
 
-def run(env_name, num_episodes, lr=1, progress=True, debug=False):
+def run(env_name, num_episodes=10, lr=1, progress=True, debug=False):
     """Play some slots!"""
 
     # ------------------------------------------------------------------------
