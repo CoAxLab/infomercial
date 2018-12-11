@@ -56,10 +56,10 @@ class BanditEnv(gym.Env):
                 reward = np.random.normal(self.r_dist[action][0],
                                           self.r_dist[action][1])
 
-        return state, reward, done, {}
+        return [0], reward, done, {}
 
     def reset(self):
-        return 0
+        return [0]
 
     def render(self, mode='human', close=False):
         pass
@@ -127,10 +127,10 @@ class UnstableBanditEnv(gym.Env):
         if self.np_random.poisson(self.unstable_rate) > 0:
             self._random_bandit()
 
-        return state, reward, done, {}
+        return [0], reward, done, {}
 
     def reset(self):
-        return 0
+        return [0]
 
     def render(self, mode='human', close=False):
         pass

@@ -1,5 +1,7 @@
 import numpy as np
 
+# TODO make API gym like
+
 
 def uniform(n_players, n_states):
     """Create an equal information game"""

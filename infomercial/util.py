@@ -6,7 +6,7 @@ class Distribution(object):
     """Estimate a discrete distribution."""
 
     def __init__(self):
-        self.N = 0.0
+        self.N = 0
         self.counts = OrderedDict()
 
     def update(self, state):
@@ -14,12 +14,16 @@ class Distribution(object):
             self.counts[state] += 1
         else:
             self.counts[state] = 1
+        self.N += 1
 
     def keys(self):
         return list(self.counts.keys())
 
     def values(self):
-        return [v / self.N for v in self.counts.values()]
+        if self.N > 0:
+            return [v / self.N for v in self.counts.values()]
+        else:
+            return [0] * len(self.counts)
 
     def items(self):
         k = self.keys()

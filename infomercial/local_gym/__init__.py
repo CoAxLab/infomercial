@@ -1,13 +1,13 @@
 from gym.envs.registration import register
 
-from .bandit import BanditTenArmedRandomFixed
-from .bandit import BanditTenArmedRandomRandom
-from .bandit import BanditTenArmedGaussian
-from .bandit import BanditTenArmedUniformDistributedReward
-from .bandit import BanditTwoArmedDeterministicFixed
-from .bandit import BanditTwoArmedHighHighFixed
-from .bandit import BanditTwoArmedHighLowFixed
-from .bandit import BanditTwoArmedLowLowFixed
+from infomercial.local_gym.bandit import BanditTenArmedRandomFixed
+from infomercial.local_gym.bandit import BanditTenArmedRandomRandom
+from infomercial.local_gym.bandit import BanditTenArmedGaussian
+from infomercial.local_gym.bandit import BanditTenArmedUniformDistributedReward
+from infomercial.local_gym.bandit import BanditTwoArmedDeterministicFixed
+from infomercial.local_gym.bandit import BanditTwoArmedHighHighFixed
+from infomercial.local_gym.bandit import BanditTwoArmedHighLowFixed
+from infomercial.local_gym.bandit import BanditTwoArmedLowLowFixed
 
 environments = [
     ['BanditTenArmedRandomFixed', 'v0', 1],
@@ -23,7 +23,7 @@ environments = [
 for environment in environments:
     register(
         id='{}-{}'.format(environment[0], environment[1]),
-        entry_point='azad.local_gym:{}'.format(environment[0]),
+        entry_point='infomercial.local_gym:{}'.format(environment[0]),
         timestep_limit=environment[2],
         nondeterministic=True,
     )
