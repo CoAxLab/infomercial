@@ -59,6 +59,8 @@ def update(policy, memory, optimizer, batch_size, z_score=True, gamma=1.0):
     loss = torch.cat(loss).sum()
     loss.backward()
     optimizer.step()
+
+    # Reset memory
     memory.reset()
 
     return policy, memory, loss
