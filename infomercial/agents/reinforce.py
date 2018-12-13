@@ -82,6 +82,18 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
           action_mode='Categorical',
           model_name='LinearCategorical',
           **model_hyperparameters):
+    """Learn with REINFORCE!"""
+
+    # ------------------------------------------------------------------------
+    # Sanity
+    if num_episodes < batch_size:
+        raise ValueError("num_episodes must be >= batch_size")
+    if lr < 0:
+        raise ValueError("lr must be > 0.0")
+    if gamma < 0:
+        raise ValueError("gamma must be > 0.0")
+    if log_interval < 0:
+        raise ValueError("log_interval must be > 0.0")
 
     # ------------------------------------------------------------------------
     # Setup the world
@@ -172,6 +184,9 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
                     "loss": loss
                 },
                 filename=save + "_ep_{}.pytorch.tar".format(episode))
+
+        # --------------------------------------------------------------------
+        # ASCIIPLOT of final action distributions in memory
 
     return policy, total_reward
 
