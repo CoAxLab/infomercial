@@ -11,6 +11,7 @@ from torch.distributions import Categorical
 from torch.distributions import Normal
 
 from infomercial import models
+from infomercial.models import Memory
 from infomercial.util import save_checkpoint
 
 EPS = np.finfo(np.float32).eps.item()
@@ -27,28 +28,30 @@ def select_action(policy, state, mode='Categorical'):
     m = Dist(*pi_s)
     action = m.sample()
 
-    # The policy agent keeps track of it's own training data.
-    policy.log_probs.append(m.log_prob(action).unsqueeze(0))
-
-    return policy, action.item()
+    log_prob = m.log_prob(action).unsqueeze(0)
+    return policy, action.item(), log_prob
 
 
-def update(policy, optimizer, gamma=1.0):
+def update(policy, memory, optimizer, batch_size, z_score=True, gamma=1.0):
+    transitions = memory.sample(batch_size)
+    _, _, log_probs, _, rewards = zip(*transitions)
+    log_probs = list(log_probs)
+    rewards = list(rewards)
+
     loss = []
-
     # Re-weight rewards with gamma. (Mem. eff. if ugly.)
     R = 0
-    rewards = []
-    for r in policy.rewards[::-1]:
+    for r in rewards[::-1]:
         R = r + gamma * R
         rewards.insert(0, R)
     rewards = torch.tensor(rewards)
 
     # Norm rewards
-    rewards = (rewards - rewards.mean()) / (rewards.std() + EPS)
+    if z_score:
+        rewards = (rewards - rewards.mean()) / (rewards.std() + EPS)
 
     # Log prob loss!
-    for log_prob, reward in zip(policy.log_probs, rewards):
+    for log_prob, reward in zip(log_probs, rewards):
         loss.append(-log_prob * reward)
 
     # Backprop teach us everything.
@@ -56,12 +59,9 @@ def update(policy, optimizer, gamma=1.0):
     loss = torch.cat(loss).sum()
     loss.backward()
     optimizer.step()
+    memory.reset()
 
-    # Wipe the agent's memory
-    del policy.rewards[:]
-    del policy.log_probs[:]
-
-    return policy, optimizer, loss
+    return policy, memory, loss
 
 
 def train(env_name='BanditTwoArmedDeterministicFixed',
@@ -76,6 +76,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
           render=False,
           seed=349,
           gamma=1.0,
+          z_score=True,
           action_mode='Categorical',
           model_name='LinearCategorical',
           **model_hyperparameters):
@@ -102,6 +103,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
     Model = getattr(models, model_name)
     policy = Model(**model_hyperparameters)
     optimizer = optim.Adam(policy.parameters(), lr=lr)
+    memory = Memory(batch_size)
 
     # ------------------------------------------------------------------------
     # Run some games!
@@ -117,32 +119,46 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
             print(f">>> Initial state {state}")
 
         done = False
+        rewards = []
         while not done:  # Don't infinite loop while learning
-            policy, action = select_action(policy, state, mode=action_mode)
-            state, reward, done, _ = env.step(action)
-            policy.rewards.append(reward)
-            state = torch.tensor(state)
+
+            # Act!
+            policy, action, log_prob = select_action(
+                policy, state, mode=action_mode)
+            next_state, reward, done, _ = env.step(action)
+            next_state = torch.tensor(next_state)
+
+            # Remeber this transition set
+            memory.push(state, action, log_prob, next_state, reward)
+
+            # Shift state
+            state = next_state
 
             if debug and (episode % log_interval) == 0:
                 print(f">>> Action {action}")
-                print(f">>> p(action) {np.exp(policy.log_probs[-1].detach())}")
+                print(f">>> p(action) {np.exp(log_prob.detach())}")
                 print(f">>> Next state {state}")
                 print(f">>> Reward {reward}")
-
             if render:
                 env.render()
 
-        avg_r = np.mean(policy.rewards)
+        avg_r = np.mean(rewards)
         total_reward += avg_r
 
         loss = None
-        if learn and (len(policy.rewards) >= batch_size):
-            policy, optimizer, loss = update(policy, optimizer, gamma=gamma)
+        if learn and (len(memory) >= batch_size):
+            policy, memory, loss = update(
+                policy,
+                memory,
+                optimizer,
+                batch_size=batch_size,
+                z_score=z_score,
+                gamma=gamma)
+            rewards = []
 
-        if ((episode % log_interval) == 0 and (progress or debug)):
-            print(f">>> Loss {loss}")
-            print(f">>> Last reward {avg_r}")
-            print(f">>> Total reward {total_reward}")
+            if ((episode % log_interval) == 0 and (progress or debug)):
+                print(">>> UPDATING the policy!")
+                print(f">>> Loss {loss}")
 
         # --------------------------------------------------------------------
         if (save is not None) and (episode % log_interval) == 0:
