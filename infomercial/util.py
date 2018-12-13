@@ -1,5 +1,10 @@
+import torch
 import numpy as np
 from collections import OrderedDict
+
+
+def save_checkpoint(state, filename='checkpoint.pth.tar'):
+    torch.save(state, filename)
 
 
 class Distribution(object):
