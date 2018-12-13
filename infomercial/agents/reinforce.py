@@ -64,10 +64,10 @@ def update(policy, optimizer, gamma=1.0):
     return policy, optimizer, loss
 
 
-def train(env_name='MountainCarContinuous-v0',
-          num_episodes=1,
+def train(env_name='BanditTwoArmedDeterministicFixed',
+          num_episodes=100,
           batch_size=48,
-          log_interval=100,
+          log_interval=1,
           learn=True,
           save=None,
           progress=True,
