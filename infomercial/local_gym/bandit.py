@@ -143,6 +143,13 @@ class BanditTwoArmedDeterministicFixed(BanditEnv):
         BanditEnv.__init__(self, p_dist=[1, 0], r_dist=[1, 1])
 
 
+class BanditTwoArmedEvenFixed(BanditEnv):
+    """Simplest case where one bandit always pays, and the other always doesn't"""
+
+    def __init__(self):
+        BanditEnv.__init__(self, p_dist=[0.5, 0.5], r_dist=[1, 1])
+
+
 class BanditTwoArmedHighLowFixed(BanditEnv):
     """Stochastic version with a large difference between which bandit pays out of two choices"""
 
