@@ -60,15 +60,13 @@ def update(policy, memory, optimizer, batch_size, z_score=True, gamma=1.0):
     loss.backward()
     optimizer.step()
 
-    # Reset memory
-    memory.reset()
-
-    return policy, memory, loss
+    return policy, loss
 
 
 def train(env_name='BanditTwoArmedDeterministicFixed',
           num_episodes=100,
           batch_size=48,
+          memory_size=1000,
           lr=0.001,
           learn=True,
           save=None,
@@ -88,6 +86,8 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
     # Sanity
     if num_episodes < batch_size:
         raise ValueError("num_episodes must be >= batch_size")
+    if memory_size < batch_size:
+        raise ValueError("memory_size must be >= batch_size")
     if lr < 0:
         raise ValueError("lr must be > 0.0")
     if gamma < 0:
@@ -117,7 +117,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
     Model = getattr(models, model_name)
     policy = Model(**model_hyperparameters)
     optimizer = optim.Adam(policy.parameters(), lr=lr)
-    memory = Memory(batch_size)
+    memory = Memory(memory_size)
 
     # ------------------------------------------------------------------------
     # Run some games!
@@ -135,7 +135,6 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
         done = False
         rewards = []
         while not done:  # Don't infinite loop while learning
-
             # Act!
             policy, action, log_prob = select_action(
                 policy, state, mode=action_mode)
@@ -144,6 +143,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
 
             # Remeber this transition set
             memory.push(state, action, log_prob, next_state, reward)
+            rewards.append(reward)
 
             # Shift state
             state = next_state
@@ -161,14 +161,16 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
 
         loss = None
         if learn and (len(memory) >= batch_size):
-            policy, memory, loss = update(
+            policy, loss = update(
                 policy,
                 memory,
                 optimizer,
                 batch_size=batch_size,
                 z_score=z_score,
                 gamma=gamma)
-            rewards = []
+
+            # REINFORCE doesn't share memory, classically
+            memory.reset()
 
             if ((episode % log_interval) == 0 and (progress or debug)):
                 print(">>> UPDATING the policy!")
@@ -187,6 +189,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
 
         # --------------------------------------------------------------------
         # ASCIIPLOT of final action distributions in memory
+        # if plot_action_density:
 
     return policy, total_reward
 
