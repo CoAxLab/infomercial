@@ -7,7 +7,7 @@ from torch.distributions import Normal
 
 
 class LinearCategorical(nn.Module):
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_features=1, out_features=1):
         super(LinearCategorical, self).__init__()
         self.affine1 = nn.Linear(in_features, out_features)
 

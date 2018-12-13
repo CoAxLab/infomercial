@@ -18,7 +18,7 @@ EPS = np.finfo(np.float32).eps.item()
 
 def select_action(policy, state, mode='Categorical'):
     # Get the current policy pi_s
-    state = torch.from_numpy(state).float().unsqueeze(0)
+    state = state.float().unsqueeze(0)
     pi_s = policy(state)
 
     # Use pi_s to make an action, using any dist in torch.
@@ -48,18 +48,18 @@ def update(policy, optimizer, gamma=1.0):
     rewards = (rewards - rewards.mean()) / (rewards.std() + EPS)
 
     # Log prob loss!
-    for log_prob, reward in zip(policy.saved_log_probs, rewards):
+    for log_prob, reward in zip(policy.log_probs, rewards):
         loss.append(-log_prob * reward)
 
     # Backprop teach us everything.
     optimizer.zero_grad()
-    loss = torch.cat(loss).sum()
+    loss = torch.tensor(loss).sum()
     loss.backward()
     optimizer.step()
 
     # Wipe the agent's memory
     del policy.rewards[:]
-    del policy.saved_log_probs[:]
+    del policy.log_probs[:]
 
     return policy, optimizer, loss
 
@@ -67,13 +67,14 @@ def update(policy, optimizer, gamma=1.0):
 def train(env_name='BanditTwoArmedDeterministicFixed',
           num_episodes=100,
           batch_size=48,
-          log_interval=1,
+          lr=0.001,
           learn=True,
           save=None,
           progress=True,
           debug=False,
+          log_interval=1,
           render=False,
-          seed=None,
+          seed=349,
           gamma=1.0,
           action_mode='Categorical',
           model_name='LinearCategorical',
@@ -87,23 +88,44 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
     torch.manual_seed(seed)
 
     # Note its size
-    num_inputs = env.observation_space.shape[0]
-    num_actions = env.action_space.shape[0]
+    try:
+        num_inputs = env.observation_space.shape[0]
+    except IndexError:
+        num_inputs = 1
+    try:
+        num_actions = env.action_space.shape[0]
+    except IndexError:
+        num_actions = 1
 
     # ------------------------------------------------------------------------
     # Model init
     Model = getattr(models, model_name)
     policy = Model(**model_hyperparameters)
+    optimizer = optim.Adam(policy.parameters(), lr=lr)
 
+    # ------------------------------------------------------------------------
+    # Run some games!
     total_reward = 0.0
     for episode in range(num_episodes):
         state = env.reset()
+        state = torch.tensor(state)
+
+        if debug:
+            print(f"--- Episode {episode} ---")
+            print(f">>> Initial state {state}")
 
         done = False
         while not done:  # Don't infinite loop while learning
             policy, action = select_action(policy, state, mode=action_mode)
             state, reward, done, _ = env.step(action)
             policy.rewards.append(reward)
+            state = torch.tensor(state)
+
+            if debug:
+                print(f">>> Action {action}")
+                print(f">>> p(action) {np.exp(policy.log_probs[-1].detach())}")
+                print(f">>> Next state {state}")
+                print(f">>> Reward {reward}")
 
             if render:
                 env.render()
@@ -115,8 +137,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
         if learn and (len(policy.rewards) >= batch_size):
             policy, optimizer, loss = update(policy, optimizer, gamma=gamma)
 
-        if (episode % log_interval) == 0 and (debug or progress):
-            print(f">>> Iteration {episode}")
+        if ((episode % log_interval) == 0 and progress) or debug:
             print(f">>> Loss {loss}")
             print(f">>> Last reward {avg_r}")
             print(f">>> Total reward {total_reward}")
@@ -132,7 +153,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
                 },
                 filename=save + "_ep_{}.pytorch.tar".format(episode))
 
-        return policy, total_reward
+    return policy, total_reward
 
 
 if __name__ == '__main__':

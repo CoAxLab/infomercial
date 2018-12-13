@@ -1,1 +1,0 @@
-from infomercial.exp import discrete_information_testing
