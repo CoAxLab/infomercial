@@ -28,7 +28,7 @@ def select_action(policy, state, mode='Categorical'):
     action = m.sample()
 
     # The policy agent keeps track of it's own training data.
-    policy.log_probs.append(m.log_prob(action))
+    policy.log_probs.append(m.log_prob(action).unsqueeze(0))
 
     return policy, action.item()
 
@@ -53,7 +53,7 @@ def update(policy, optimizer, gamma=1.0):
 
     # Backprop teach us everything.
     optimizer.zero_grad()
-    loss = torch.tensor(loss).sum()
+    loss = torch.cat(loss).sum()
     loss.backward()
     optimizer.step()
 
@@ -110,7 +110,9 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
         state = env.reset()
         state = torch.tensor(state)
 
-        if debug:
+        if progress and (episode % log_interval) == 0:
+            print(f"--- Episode {episode} ---")
+        if debug and (episode % log_interval) == 0:
             print(f"--- Episode {episode} ---")
             print(f">>> Initial state {state}")
 
@@ -121,7 +123,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
             policy.rewards.append(reward)
             state = torch.tensor(state)
 
-            if debug:
+            if debug and (episode % log_interval) == 0:
                 print(f">>> Action {action}")
                 print(f">>> p(action) {np.exp(policy.log_probs[-1].detach())}")
                 print(f">>> Next state {state}")
@@ -137,7 +139,7 @@ def train(env_name='BanditTwoArmedDeterministicFixed',
         if learn and (len(policy.rewards) >= batch_size):
             policy, optimizer, loss = update(policy, optimizer, gamma=gamma)
 
-        if ((episode % log_interval) == 0 and progress) or debug:
+        if ((episode % log_interval) == 0 and (progress or debug)):
             print(f">>> Loss {loss}")
             print(f">>> Last reward {avg_r}")
             print(f">>> Total reward {total_reward}")
