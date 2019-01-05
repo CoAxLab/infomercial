@@ -136,6 +136,13 @@ class UnstableBanditEnv(gym.Env):
         pass
 
 
+class BanditFourArmedDeterministicFixed(BanditEnv):
+    """Simplest case where one bandit always pays, and the other always doesn't"""
+
+    def __init__(self):
+        BanditEnv.__init__(self, p_dist=[0, 1, 0, 0], r_dist=[1, 1, 1, 1])
+
+
 class BanditTwoArmedDeterministicFixed(BanditEnv):
     """Simplest case where one bandit always pays, and the other always doesn't"""
 

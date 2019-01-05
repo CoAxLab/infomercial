@@ -9,6 +9,7 @@ from infomercial.local_gym.bandit import BanditTwoArmedHighHighFixed
 from infomercial.local_gym.bandit import BanditTwoArmedHighLowFixed
 from infomercial.local_gym.bandit import BanditTwoArmedLowLowFixed
 from infomercial.local_gym.bandit import BanditTwoArmedEvenFixed
+from infomercial.local_gym.bandit import BanditFourArmedDeterministicFixed
 
 environments = [
     ['BanditTenArmedRandomFixed', 'v0', 1],
@@ -20,6 +21,7 @@ environments = [
     ['BanditTwoArmedHighLowFixed', 'v0', 1],
     ['BanditTwoArmedLowLowFixed', 'v0', 1],
     ['BanditTwoArmedEvenFixed', 'v0', 1],
+    ['BanditFourArmedDeterministicFixed', 'v0', 1],
 ]
 
 for environment in environments:
