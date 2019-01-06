@@ -68,6 +68,20 @@ def cond_entropy(X, Y):
     return -np.sum(probs * np.log(probs))
 
 
+def surprisal(X, Y):
+    """Estimate the difference in surprise between X and Y"""
+    X = np.asarray(X)
+    Y = np.asarray(Y)
+
+    prob1 = estimate_prob(X)[0]
+    prob2 = estimate_prob(Y)[0]
+
+    s1 = np.sum(np.log(1 / prob1))
+    s2 = np.sum(np.log(1 / prob2))
+
+    return np.abs(s2 - s1)
+
+
 def mutual_information(X, Y):
     """Discrete mutual information (no bias correction)
     Note: Only supports 1d inputs, and integer values.
@@ -112,6 +126,76 @@ def kl_divergence(a, b):
     p_b /= b.size
 
     return scientropy(p_a, p_b)
+
+
+def janson_shannon(a, b):
+    """The Janson-Shannon divergence"""
+
+    a = np.asarray(a)
+    b = np.asarray(b)
+
+    # Find the total set of symbols
+    a_set = set(a)
+    b_set = set(b)
+    ab_set = a_set.union(b_set)
+
+    # Create a lookup table for each symbol in p_a/p_b
+    lookup = {}
+    for i, x in enumerate(ab_set):
+        lookup[x] = i
+
+    # Calculate event probabilities for and then b
+    # To prevent nan/division errors every event
+    # gets at least a 1 count.
+    p_a = np.ones(len(ab_set))
+    for x in a:
+        p_a[lookup[x]] += 1
+
+    p_b = np.ones(len(ab_set))
+    for x in b:
+        p_b[lookup[x]] += 1
+
+    # Norm counts into probabilities
+    p_a /= a.size
+    p_b /= b.size
+    m = 0.5 * (p_a + p_b)
+
+    return scientropy(p_a, m) / 2 + scientropy(p_b, m) / 2.
+
+
+def peterson(a, b):
+    """The Peterson divergence :)"""
+
+    a = np.asarray(a)
+    b = np.asarray(b)
+
+    # Find the total set of symbols
+    a_set = set(a)
+    b_set = set(b)
+    ab_set = a_set.union(b_set)
+
+    # Create a lookup table for each symbol in p_a/p_b
+    lookup = {}
+    for i, x in enumerate(ab_set):
+        lookup[x] = i
+
+    # Calculate event probabilities for and then b
+    # To prevent nan/division errors every event
+    # gets at least a 1 count.
+    p_a = np.ones(len(ab_set))
+    for x in a:
+        p_a[lookup[x]] += 1
+
+    p_b = np.ones(len(ab_set))
+    for x in b:
+        p_b[lookup[x]] += 1
+
+    # Norm counts into probabilities
+    p_a /= a.size
+    p_b /= b.size
+    m = np.ones_like(p_a) * 1 / p_a.size
+
+    return np.abs(scientropy(p_b, m) - scientropy(p_a, m))
 
 
 def delta_p(X, Y):
