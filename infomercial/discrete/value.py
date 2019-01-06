@@ -134,7 +134,6 @@ def information_value(X, Y):
     # Est. info value
     dH = H2 - H1
     dX = delta_p(X, Y)
-
     if np.isclose(dX, 0):
         E = 0.0
     else:
