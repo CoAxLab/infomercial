@@ -8,32 +8,35 @@ def save_checkpoint(state, filename='checkpoint.pth.tar'):
 
 
 class Distribution(object):
-    """Estimate a discrete distribution."""
+    """A discrete distribution."""
 
     def __init__(self):
         self.N = 0
-        self.counts = OrderedDict()
+        self.counts_data = OrderedDict()
 
     def update(self, state):
-        if state in self.counts:
-            self.counts[state] += 1
+        if state in self.counts_data:
+            self.counts_data[state] += 1
         else:
-            self.counts[state] = 1
+            self.counts_data[state] = 1
         self.N += 1
 
     def keys(self):
-        return list(self.counts.keys())
+        return list(self.counts_data.keys())
 
-    def values(self):
+    def probs(self):
         if self.N > 0:
-            return [v / self.N for v in self.counts.values()]
+            return [v / self.N for v in self.counts_data.values()]
         else:
-            return [0] * len(self.counts)
+            return [0] * len(self.counts_data)
+
+    def counts(self):
+        return self.counts_data.values()
 
     def items(self):
         k = self.keys()
-        v = self.values()
+        v = self.probs()
         return zip(k, v)
 
     def __call__(self, state):
-        return self.counts[state] / self.N
+        return self.counts_data[state] / self.N
