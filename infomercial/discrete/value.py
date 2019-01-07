@@ -206,7 +206,7 @@ def delta_p(X, Y):
     return np.sum(np.abs(prob2 - prob1)) / 2
 
 
-def information_value(X, Y):
+def dHdP(X, Y):
     """Value information between two prob vectors."""
     X = np.asarray(X)
     Y = np.asarray(Y)

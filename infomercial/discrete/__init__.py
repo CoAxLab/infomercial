@@ -1,1 +1,1 @@
-from infomercial.discrete.value import information_value
+from infomercial.discrete.value import dHdP
