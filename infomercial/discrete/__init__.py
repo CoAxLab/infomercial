@@ -1,1 +1,1 @@
-from infomercial.discrete.value import dHdP
+from infomercial.discrete.value import delta_H

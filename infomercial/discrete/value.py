@@ -163,41 +163,6 @@ def janson_shannon(a, b):
     return scientropy(p_a, m) / 2 + scientropy(p_b, m) / 2.
 
 
-def peterson(a, b):
-    """The Peterson divergence :)"""
-
-    a = np.asarray(a)
-    b = np.asarray(b)
-
-    # Find the total set of symbols
-    a_set = set(a)
-    b_set = set(b)
-    ab_set = a_set.union(b_set)
-
-    # Create a lookup table for each symbol in p_a/p_b
-    lookup = {}
-    for i, x in enumerate(ab_set):
-        lookup[x] = i
-
-    # Calculate event probabilities for and then b
-    # To prevent nan/division errors every event
-    # gets at least a 1 count.
-    p_a = np.ones(len(ab_set))
-    for x in a:
-        p_a[lookup[x]] += 1
-
-    p_b = np.ones(len(ab_set))
-    for x in b:
-        p_b[lookup[x]] += 1
-
-    # Norm counts into probabilities
-    p_a /= a.size
-    p_b /= b.size
-    m = np.ones_like(p_a) * 1 / p_a.size
-
-    return np.abs(scientropy(p_b, m) - scientropy(p_a, m))
-
-
 def delta_p(X, Y):
     """Get the total difference in probability"""
     prob1 = estimate_prob(X)[0]
@@ -206,7 +171,7 @@ def delta_p(X, Y):
     return np.sum(np.abs(prob2 - prob1)) / 2
 
 
-def dHdP(X, Y):
+def delta_H(X, Y):
     """Value information between two prob vectors."""
     X = np.asarray(X)
     Y = np.asarray(Y)
