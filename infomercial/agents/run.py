@@ -31,6 +31,38 @@ from infomercial.agents.ppo.core import create_envs as create_envs_ppo
 from infomercial.agents.ppo.core import update_current_observation
 
 
+def run_meta(env_name='MountainCarContinuous-v0',
+             update_every=100,
+             save=None,
+             progress=True,
+             cuda=False,
+             debug=False,
+             render=False,
+             **algorithm_hyperparameters):
+
+    # ------------------------------------------------------------------------
+    device = torch.device('cuda') if cuda else torch.device('cpu')
+
+    # and its hyperparams
+    hp = Hyperparameters_Meta()  # TODO
+    for k, v in algorithm_hyperparameters.items():
+        setattr(hp, k, v)
+
+    pass
+
+
+def run_info(env_name='MountainCarContinuous-v0',
+             update_every=100,
+             save=None,
+             progress=True,
+             cuda=False,
+             debug=False,
+             render=False,
+             **algorithm_hyperparameters):
+
+    pass
+
+
 def run_ppo(env_name='MountainCarContinuous-v0',
             update_every=100,
             save=None,
