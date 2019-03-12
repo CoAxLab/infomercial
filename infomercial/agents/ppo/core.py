@@ -89,6 +89,17 @@ def create_envs(env_name, num_processes, hp):
     return envs
 
 
+def update_current_observation(hp, envs, state, current_observation):
+    shape_dim0 = envs.observation_space.shape[0]
+    state = torch.from_numpy(state).float()
+    if hp.num_stack > 1:
+        current_observation[:, :-shape_dim0] = current_observation[:,
+                                                                   shape_dim0:]
+    current_observation[:, -shape_dim0:] = state
+
+    return current_observation
+
+
 def train_model(actor,
                 critic,
                 memory,

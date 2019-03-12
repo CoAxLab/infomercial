@@ -3,6 +3,12 @@ import numpy as np
 from collections import OrderedDict
 
 
+def normal_action(mu, std):
+    action = torch.normal(mu, std)
+    action = action.data.numpy()
+    return action
+
+
 def best_action(policy, state):
     """Greedy action selection."""
     action = None

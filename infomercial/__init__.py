@@ -4,3 +4,4 @@ from infomercial import metrics
 from infomercial import models
 from infomercial import rollouts
 from infomercial import utils
+from infomercial import agents

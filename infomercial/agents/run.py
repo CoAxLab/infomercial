@@ -12,29 +12,23 @@ import numpy as np
 import torch
 import torch.optim as optim
 
-from informercial.utils import select_action
-from informercial.utils import save_checkpoint
-from informercial.utils import ZFilter
-from informercial.utils import Oracle
-from informercial.rollouts import ModulusMemory
+from infomercial.utils import sample_action
+from infomercial.utils import best_action
+from infomercial.utils import normal_action
+from infomercial.utils import save_checkpoint
+from infomercial.utils import ZFilter
+from infomercial.utils import Oracle
+from infomercial.rollouts import ModulusMemory
 
 from infomercial.models import Actor3Sigma
 from infomercial.models import Critic3
-from informercial.agents.ppo.core import train_model
-from informercial.agents.ppo.core import test_model
-from informercial.agents.ppo.core import Hyperparameters
-from informercial.agents.ppo.core import create_envs
 
-
-def update_current_observation(hp, envs, state, current_observation):
-    shape_dim0 = envs.observation_space.shape[0]
-    state = torch.from_numpy(state).float()
-    if hp.num_stack > 1:
-        current_observation[:, :-shape_dim0] = current_observation[:,
-                                                                   shape_dim0:]
-    current_observation[:, -shape_dim0:] = state
-
-    return current_observation
+# PPO
+from infomercial.agents.ppo.core import train_model as train_model_ppo
+from infomercial.agents.ppo.core import test_model as test_model_ppo
+from infomercial.agents.ppo.core import Hyperparameters as Hyperparameters_PPO
+from infomercial.agents.ppo.core import create_envs as create_envs_ppo
+from infomercial.agents.ppo.core import update_current_observation
 
 
 def run_ppo(env_name='MountainCarContinuous-v0',
@@ -50,13 +44,13 @@ def run_ppo(env_name='MountainCarContinuous-v0',
     device = torch.device('cuda') if cuda else torch.device('cpu')
 
     # and its hyperparams
-    hp = Hyperparameters()
+    hp = Hyperparameters_PPO()
     for k, v in algorithm_hyperparameters.items():
         setattr(hp, k, v)
 
     # ------------------------------------------------------------------------
     # Setup the world
-    envs = create_envs(env_name, hp.num_processes, hp)
+    envs = create_envs_ppo(env_name, hp.num_processes, hp)
 
     # Wrap the envs in a oracle to count the total number of gym.step()
     # calls across all envs/processes
@@ -114,7 +108,7 @@ def run_ppo(env_name='MountainCarContinuous-v0',
 
             # Choose an action
             mu, std, _ = actor(torch.tensor(state).float())
-            action = get_action(mu, std)
+            action = normal_action(mu, std)
             action_std = std.clone().detach().numpy().flatten()
             if hp.clip_actions:
                 action = np.clip(action, envs.action_space.low,
@@ -153,7 +147,7 @@ def run_ppo(env_name='MountainCarContinuous-v0',
         # Learn!
         actor.train()
         critic.train()
-        train_model(
+        train_model_ppo(
             actor,
             critic,
             memory,
@@ -165,7 +159,7 @@ def run_ppo(env_name='MountainCarContinuous-v0',
 
         # Test the learned. Do this in a fresh env to get consistent
         # scores, which can be weird w/ gymvec's async.
-        _, test_scores = test_model(actor, test_env, hp, render=render)
+        _, test_scores = test_model_ppo(actor, test_env, hp, render=render)
         score_avg = np.mean(test_scores)
         episodes_scores.append(score_avg)
 
