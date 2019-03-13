@@ -64,8 +64,8 @@ def surrogate_loss(actor, advantages, states, old_policy, actions, index):
     return surrogate, ratio
 
 
-def vectorize(memory, device):
-    states, actions, rewards, masks, action_stds = zip(*memory.memory)
+def vectorize(rollout, device):
+    states, actions, rewards, masks, action_stds = zip(*rollout.memory)
     states = torch.from_numpy(np.vstack(states)).float().to(device)
     actions = torch.from_numpy(np.vstack(actions)).float().to(device)
     rewards = torch.from_numpy(np.vstack(rewards)).float().to(device)
@@ -102,7 +102,7 @@ def update_current_observation(hp, envs, state, current_observation):
 
 def train_model(actor,
                 critic,
-                memory,
+                rollout,
                 actor_optim,
                 critic_optim,
                 device,
@@ -110,7 +110,7 @@ def train_model(actor,
                 num_training_epochs=10):
     """Train an a2c PPO model."""
     # ------------------------------------------------------------------------
-    states, actions, rewards, masks, action_stds = vectorize(memory, device)
+    states, actions, rewards, masks, _ = vectorize(rollout, device)
 
     # ------------------------------------------------------------------------
     # step 1: get returns and GAEs and log probability of old policy
