@@ -22,6 +22,7 @@ from infomercial.rollouts import ModulusMemory
 
 from infomercial.models import Actor3Sigma
 from infomercial.models import Critic3
+from infomercial.utils import build_hyperparameters
 
 # PPO
 from infomercial.agents.ppo.core import train_model as train_model_ppo
@@ -55,22 +56,57 @@ def run_info(env_name='MountainCarContinuous-v0',
     pass
 
 
-def run_ppo(env_name='MountainCarContinuous-v0',
-            update_every=100,
-            save=None,
-            progress=True,
-            cuda=False,
-            debug=False,
-            render=False,
-            **algorithm_hyperparameters):
+def run_ppo(
+        env_name='MountainCarContinuous-v0',
+        update_every=100,
+        save=None,
+        progress=True,
+        cuda=False,
+        debug=False,
+        render=False,
+        gamma=0.99,
+        lam=0.98,
+        actor_hidden1=64,
+        actor_hidden2=64,
+        actor_hidden3=64,
+        critic_hidden1=64,
+        critic_lr=0.0003,
+        actor_lr=0.0003,
+        batch_size=64,
+        l2_rate=0.001,
+        clip_param=0.2,
+        num_episodes=100,
+        num_memories=200,
+        num_processes=1,
+        num_stack=1,
+        num_training_epochs=10,
+        clip_actions=True,
+        clip_std=1.0,  #0.25
+        seed_value=3959):
 
     # ------------------------------------------------------------------------
-    device = torch.device('cuda') if cuda else torch.device('cpu')
+    hp = build_hyperparameters(
+        gamma=gamma,
+        lam=lam,
+        actor_hidden1=actor_hidden1,
+        actor_hidden2=actor_hidden2,
+        actor_hidden3=actor_hidden3,
+        critic_hidden1=critic_hidden1,
+        critic_lr=critic_lr,
+        actor_lr=actor_lr,
+        batch_size=batch_size,
+        l2_rate=l2_rate,
+        clip_param=clip_param,
+        num_training_epochs=num_training_epochs,
+        num_episodes=num_episodes,
+        num_memories=num_memories,
+        num_processes=num_processes,
+        num_stack=num_stack,
+        clip_actions=clip_actions,
+        clip_std=clip_std,
+        seed_value=seed_value)
 
-    # and its hyperparams
-    hp = Hyperparameters_PPO()
-    for k, v in algorithm_hyperparameters.items():
-        setattr(hp, k, v)
+    device = torch.device('cuda') if cuda else torch.device('cpu')
 
     # ------------------------------------------------------------------------
     # Setup the world
@@ -171,15 +207,8 @@ def run_ppo(env_name='MountainCarContinuous-v0',
         # Learn!
         actor.train()
         critic.train()
-        train_model_ppo(
-            actor,
-            critic,
-            memory,
-            actor_optim,
-            critic_optim,
-            device,
-            hp,
-            num_training_epochs=hp.num_training_epochs)
+        train_model_ppo(actor, critic, memory, actor_optim, critic_optim,
+                        device, hp)
 
         # Test the learned. Do this in a fresh env to get consistent
         # scores, which can be weird w/ gymvec's async.

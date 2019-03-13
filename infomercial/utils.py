@@ -3,6 +3,20 @@ import numpy as np
 from collections import OrderedDict
 
 
+def build_hyperparameters(**kwargs):
+    """Build a Hyperparameters instance"""
+
+    class Hyperparameters(object):
+        pass
+
+    hp = Hyperparameters()
+
+    for k, v in kwargs.items():
+        setattr(hp, k, v)
+
+    return hp
+
+
 def normal_action(mu, std):
     action = torch.normal(mu, std)
     action = action.data.numpy()

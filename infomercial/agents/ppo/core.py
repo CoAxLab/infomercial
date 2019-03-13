@@ -8,29 +8,6 @@ from slapdash.envs import make_env_vec
 from slapdash.utils import get_action
 
 
-class Hyperparameters:
-    gamma = 0.99
-    lam = 0.98
-    actor_hidden1 = 64
-    actor_hidden2 = 64
-    actor_hidden3 = 64
-    critic_hidden1 = 64
-    critic_lr = 0.0003
-    actor_lr = 0.0003
-    batch_size = 64
-    l2_rate = 0.001
-    clip_param = 0.2
-    num_training_epochs = 10
-    num_episodes = 100
-    num_memories = 200
-    num_processes = 1
-    num_stack = 1
-    num_training_epochs = 10
-    clip_actions = True
-    clip_std = 1.0  #0.25
-    seed_value = 3959
-
-
 def get_returns(rewards, masks, values, hp):
     returns = torch.zeros_like(rewards)
     advantages = torch.zeros_like(rewards)
@@ -100,14 +77,7 @@ def update_current_observation(hp, envs, state, current_observation):
     return current_observation
 
 
-def train_model(actor,
-                critic,
-                rollout,
-                actor_optim,
-                critic_optim,
-                device,
-                hp,
-                num_training_epochs=10):
+def train_model(actor, critic, rollout, actor_optim, critic_optim, device, hp):
     """Train an a2c PPO model."""
     # ------------------------------------------------------------------------
     states, actions, rewards, masks, _ = vectorize(rollout, device)
@@ -127,7 +97,7 @@ def train_model(actor,
 
     # ------------------------------------------------------------------------
     # step 2: get value loss and actor loss and update actor & critic
-    for epoch in range(num_training_epochs):
+    for epoch in range(hp.num_training_epochs):
         np.random.shuffle(arr)
 
         for i in range(n // hp.batch_size):
