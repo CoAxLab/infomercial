@@ -40,14 +40,6 @@ def run_meta(env_name='MountainCarContinuous-v0',
              render=False,
              **algorithm_hyperparameters):
 
-    # ------------------------------------------------------------------------
-    device = torch.device('cuda') if cuda else torch.device('cpu')
-
-    # and its hyperparams
-    hp = Hyperparameters_Meta()  # TODO
-    for k, v in algorithm_hyperparameters.items():
-        setattr(hp, k, v)
-
     pass
 
 
