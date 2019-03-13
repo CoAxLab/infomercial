@@ -27,28 +27,71 @@ class Count(Memory):
 
     def __init__(self):
         self.N = 0
-        self.counts = OrderedDict()
+        self.count = OrderedDict()
 
     def update(self, x):
-        if x in self.counts:
-            self.counts[x] += 1
+        if x in self.count:
+            self.count[x] += 1
         else:
-            self.counts[x] = 1
+            self.count[x] = 1
         self.N += 1
 
     def forward(self, x):
-        if x not in self.counts:
+        if x not in self.count:
             return 0
         elif self.N == 0:
             return 0
         else:
-            return self.counts[x] / self.N
+            return self.count[x] / self.N
 
     def keys(self):
-        return self.counts.keys()
+        return self.count.keys()
 
     def values(self):
-        return self.counts.values()
+        return self.count.values()
+
+
+class ConditionalCount(Count):
+    """A conditional discrete distribution."""
+
+    def __init__(self):
+        self.Ns = []
+        self.conds = []
+        self.counts = []
+
+    def update(self, x, cond):
+        # Add cond?
+        if cond not in self.conds:
+            self.conds.append(cond)
+            self.counts.append(OrderedDict())
+            self.Ns.append(0)
+
+        # Locate cond.
+        i = self.conds.index(cond)
+
+        # Update counts for cond
+        if x in self.counts[i]:
+            self.counts[i][x] += 1
+        else:
+            self.counts[i][x] = 1
+
+        # Update cond normalizer
+        self.Ns[i] += 1
+
+    def forward(self, x, cond):
+        # Locate cond.
+        if cond not in self.conds:
+            return 0
+        else:
+            i = self.conds.index(cond)
+
+        # Get p(x|cond)
+        if x not in self.counts[i]:
+            return 0
+        elif self.Ns[i] == 0:
+            return 0
+        else:
+            return self.counts[i][x] / self.Ns[i]
 
 
 # ----------------------------------------------------------------------------
