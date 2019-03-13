@@ -75,7 +75,7 @@ class ConditionalCount(Count):
         else:
             self.counts[i][x] = 1
 
-        # Update cond normalizer
+        # Update cond count normalizer
         self.Ns[i] += 1
 
     def forward(self, x, cond):
