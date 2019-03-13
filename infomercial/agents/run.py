@@ -27,7 +27,6 @@ from infomercial.utils import build_hyperparameters
 # PPO
 from infomercial.agents.ppo.core import train_model as train_model_ppo
 from infomercial.agents.ppo.core import test_model as test_model_ppo
-from infomercial.agents.ppo.core import Hyperparameters as Hyperparameters_PPO
 from infomercial.agents.ppo.core import create_envs as create_envs_ppo
 from infomercial.agents.ppo.core import update_current_observation
 
