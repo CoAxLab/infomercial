@@ -3,18 +3,38 @@ import numpy as np
 from collections import OrderedDict
 
 
+class Hyperparameters(object):
+    """A hyperparameters holder."""
+
+    def __init__(self):
+        pass
+
+    def param_dict(self):
+        return self.__dict__
+
+
 def build_hyperparameters(**kwargs):
     """Build a Hyperparameters instance"""
 
-    class Hyperparameters(object):
-        pass
-
     hp = Hyperparameters()
-
     for k, v in kwargs.items():
         setattr(hp, k, v)
 
     return hp
+
+
+def create_envs(env_name, num_processes, hp):
+    # Setup vec env....
+    env_list = [
+        make_env_vec(env_name, hp.seed_value, i) for i in range(num_processes)
+    ]
+    envs = gym_vecenv.DummyVecEnv(env_list)
+    if num_processes > 1:
+        envs = gym_vecenv.SubprocVecEnv(env_list)
+    if len(envs.observation_space.shape) == 1:
+        envs = gym_vecenv.VecNormalize(envs)
+
+    return envs
 
 
 def normal_action(mu, std):
