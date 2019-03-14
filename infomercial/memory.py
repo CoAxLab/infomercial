@@ -117,7 +117,8 @@ class Kernel(Memory):
         self.X.append(x)
         self.Xvec = np.vstack(self.X)
 
-        # X : (n_samples, n_features) per sklearn standard shape
+        # X -> Xvec : (n_samples, n_features)
+        # per sklearn standard shape
         if self.Xvec.ndim == 1:
             self.Xvec = np.expand_dims(self.Xvec, 1)
         elif self.Xvec.ndim > 2:
@@ -125,7 +126,7 @@ class Kernel(Memory):
         else:
             pass
 
-        # Refit the kernel over all the data seen so far; this must
+        # Refit the dist over all the data seen so far; this must
         # be done w/ each new sample. Not eff. But this is a limit
         # of the sklearn API (it seems).
         self.dist.fit(self.Xvec)
@@ -148,6 +149,8 @@ class Kernel(Memory):
 
 # ----------------------------------------------------------------------------
 """
+TODO:
+
 Implements Masked AutoEncoder for Density Estimation, by Germain et al. 2015
 Re-implementation by Andrej Karpathy based on https://arxiv.org/abs/1502.03509
 """
