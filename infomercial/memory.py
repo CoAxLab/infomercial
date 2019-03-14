@@ -95,6 +95,9 @@ class ConditionalCount(Count):
         else:
             return self.counts[i][x] / self.Ns[i]
 
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
 
 class Kernel(Memory):
     """A continous distribution, estimated using a kernel
@@ -112,12 +115,35 @@ class Kernel(Memory):
 
     def update(self, x):
         self.X.append(x)
+        self.Xvec = np.vstack(self.X)
 
         # X : (n_samples, n_features) per sklearn standard shape
-        self.dist.fit(np.vstack(self.X))
+        if self.Xvec.ndim == 1:
+            self.Xvec = np.expand_dims(self.Xvec, 1)
+        elif self.Xvec.ndim > 2:
+            raise ValueError("x must be a scalar or 1d list/array.")
+        else:
+            pass
+
+        # Refit the kernel over all the data seen so far; this must
+        # be done w/ each new sample. Not eff. But this is a limit
+        # of the sklearn API (it seems).
+        self.dist.fit(self.Xvec)
 
     def forward(self, x):
-        return self.dist.score_samples(x)
+        # Data can be a scalar or a list.
+        # Reshape it to match the expected (1, n_feature) where '1' stands
+        # in for 1 sample.
+        x = np.asarray(x)
+        if x.ndim == 0:
+            x = x.reshape(1, 1)
+        elif x.ndim == 1:
+            x = np.expand_dims(x, 0)
+        else:
+            pass
+
+        # Scores of log(p), but we want p.
+        return float(np.exp(self.dist.score_samples(x)))
 
 
 # ----------------------------------------------------------------------------
