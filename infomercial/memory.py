@@ -6,6 +6,8 @@ import torch.nn.functional as F
 
 from collections import OrderedDict
 
+from sklearn.neighbors import KernelDensity
+
 
 class Memory(object):
     """Base Memory"""
@@ -92,6 +94,30 @@ class ConditionalCount(Count):
             return 0
         else:
             return self.counts[i][x] / self.Ns[i]
+
+
+class Kernel(Memory):
+    """A continous distribution, estimated using a kernel
+    
+    NOTE: This is a thin wrapper around KernelDensity from the sklearn 
+    library.
+    
+    For information on its hyperparamers see,
+    https://scikit-learn.org/stable/modules/density.html#kernel-density
+    """
+
+    def __init__(self, **kernel_kwargs):
+        self.dist = KernelDensity(**kernel_kwargs)
+        self.X = []
+
+    def update(self, x):
+        self.X.append(x)
+
+        # X : (n_samples, n_features) per sklearn standard shape
+        self.dist.fit(np.vstack(self.X))
+
+    def forward(self, x):
+        return self.dist.score_samples(x)
 
 
 # ----------------------------------------------------------------------------
