@@ -1,8 +1,50 @@
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 # ----------------------------------------------------------------------------
+# E
+
+
+class Lookup(object):
+    """A value lookup table"""
+
+    def __init__(self, num_actions, default_value=0):
+
+        self.table = {}
+        self.num_actions = num_actions
+        self.default_values = np.ones(self.num_actions) * default_value
+
+    def __call__(self, x):
+        return self.forward(x)
+
+    def forward(self, state):
+        if state in self.table:
+            return self.table[state]
+        else:
+            return self.default_values
+
+    def update(self, state, action, value):
+        if state not in self.table:
+            self.table[state] = self.default_values
+
+        self.table[state][action] = value
+
+    def state_dict(self):
+        return self.table
+
+
+class GreedyActor(object):
+    def __init__(self):
+        pass
+
+    def forward(self, num_inputs, num_outputs):
+        pass
+
+
+# ----------------------------------------------------------------------------
+# PPO
 # Code from
 # https://github.com/reinforcement-learning-kr/pg_travel/blob/master/unity/model.py
 

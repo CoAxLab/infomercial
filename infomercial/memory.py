@@ -20,6 +20,11 @@ class Memory(object):
         """p(x)"""
         pass
 
+    def consolidate(self):
+        """Dummy dy default"""
+
+        return None
+
     def __call__(self, x):
         return self.forward(x)
 
@@ -149,7 +154,7 @@ class Kernel(Memory):
 
 # ----------------------------------------------------------------------------
 """
-TODO:
+TODO: move to Memory API; how to train/update this VAE?
 
 Implements Masked AutoEncoder for Density Estimation, by Germain et al. 2015
 Re-implementation by Andrej Karpathy based on https://arxiv.org/abs/1502.03509
