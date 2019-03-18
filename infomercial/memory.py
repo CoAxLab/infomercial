@@ -51,11 +51,11 @@ class Count(Memory):
         else:
             return self.count[x] / self.N
 
-    def keys(self):
-        return self.count.keys()
-
-    def values(self):
-        return self.count.values()
+    def probs(self):
+        p = []
+        for k in self.count.keys():
+            p.append(self.forward(k))
+        return p
 
 
 class ConditionalCount(Count):
@@ -99,6 +99,13 @@ class ConditionalCount(Count):
             return 0
         else:
             return self.counts[i][x] / self.Ns[i]
+
+    def probs(self):
+        p = []
+        for cond in self.conds:
+            for k in self.counts[cond].keys():
+                p.append(self.forward(k, cond))
+        return p
 
     def __call__(self, x, cond):
         return self.forward(x, cond)
