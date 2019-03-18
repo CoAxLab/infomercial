@@ -141,21 +141,21 @@ def run_info(
                     mask[i] = 1.0
 
             # Save the rollout
-            rollout.push(state, action, reward, mask)
+            rollout.push(state, action, Q_n, reward, mask)
 
             # Save the score / step
-            score += np.mean(reward.numpy())
+            score += np.max(Q_n)
             scores.append(score)
 
             # Shift state
             state = next_state
 
-            # Sequential learning mode?
+            # Sequential learning?
             if not batch_mode:
                 train_model_info()
 
         # --------------------------------------------------------------------
-        # Batch learning mode?
+        # Batch learning?
         if batch_mode:
             train_model_info()
 
@@ -177,7 +177,7 @@ def run_info(
         if (save is not None) and (n % update_every) == 0:
             f_name = save + "_ep_{}.pytorch.tar".format(n)
             save_checkpoint({
-                'hyperparameters': hp.state_dict(),
+                'hyperparameters': hp.param_dict(),
                 'critic': critic.state_dict(),
                 'score': score_avg
             },

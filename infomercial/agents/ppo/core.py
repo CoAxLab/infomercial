@@ -52,20 +52,6 @@ def vectorize(rollout, device):
     return states, actions, rewards, masks, action_stds
 
 
-def create_envs(env_name, num_processes, hp):
-    # Setup vec env....
-    env_list = [
-        make_env_vec(env_name, hp.seed_value, i) for i in range(num_processes)
-    ]
-    envs = gym_vecenv.DummyVecEnv(env_list)
-    if num_processes > 1:
-        envs = gym_vecenv.SubprocVecEnv(env_list)
-    if len(envs.observation_space.shape) == 1:
-        envs = gym_vecenv.VecNormalize(envs)
-
-    return envs
-
-
 def update_current_observation(hp, envs, state, current_observation):
     shape_dim0 = envs.observation_space.shape[0]
     state = torch.from_numpy(state).float()

@@ -49,23 +49,23 @@ def update(policy, memory, optimizer, batch_size, z_score=True, gamma=1.0):
     return policy, loss
 
 
-def train(env_name='BanditTwoArmedDeterministicFixed',
-          num_episodes=100,
-          batch_size=48,
-          memory_size=1000,
-          lr=0.001,
-          learn=True,
-          save=None,
-          progress=True,
-          debug=False,
-          log_interval=1,
-          render=False,
-          seed=349,
-          gamma=1.0,
-          z_score=True,
-          action_mode='Categorical',
-          model_name='LinearCategorical',
-          **model_hyperparameters):
+def train_model(env_name='BanditTwoArmedDeterministicFixed',
+                num_episodes=100,
+                batch_size=48,
+                memory_size=1000,
+                lr=0.001,
+                learn=True,
+                save=None,
+                progress=True,
+                debug=False,
+                log_interval=1,
+                render=False,
+                seed=349,
+                gamma=1.0,
+                z_score=True,
+                action_mode='Categorical',
+                model_name='LinearCategorical',
+                **model_hyperparameters):
     """Learn with REINFORCE!"""
 
     # ------------------------------------------------------------------------

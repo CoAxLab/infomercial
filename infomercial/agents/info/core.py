@@ -3,10 +3,18 @@ def kl_divergence(new, old):
     pass
 
 
+def Q_update(agent, state, reward, Q, lr):
+    """Really simple Q learning"""
+    if state in Q:
+        Q[state] += (lr * (reward - Q[state]))
+    else:
+        Q[state] += (lr * reward)
+    return Q
+
+
 def train_model(actor,
                 critic,
                 memory,
-                rollout,
                 actor_optim,
                 critic_optim,
                 memory_optim,
