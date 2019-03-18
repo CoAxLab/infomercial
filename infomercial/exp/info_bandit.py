@@ -1,6 +1,7 @@
 import fire
 import gym
 import cloudpickle
+import numpy as np
 
 from scipy.stats import entropy
 from infomercial.memory import ConditionalCount
@@ -9,14 +10,47 @@ from infomercial.policy import greedy
 from collections import OrderedDict
 
 
+class Critic(object):
+    def __init__(self, num_inputs, default_value):
+        self.num_inputs = num_inputs
+        self.default_value = default_value
+
+        self.model = OrderedDict()
+        for n in range(self.num_inputs):
+            self.model[n] = self.default_value
+
+    def __call__(self, state):
+        return self.forward(state)
+
+    def forward(self, state):
+        self.model[state] = self.default_value
+        return self.model[state]
+
+    def update_(self, state, update):
+        self.model[state] += update
+
+    def state_dict(self):
+        return self.model
+
+
+class Actor(object):
+    def __init__(self, num_actions, tie_break='first'):
+        self.num_actions = num_actions
+        self.tie_break = tie_break
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        if self.tie_break == 'first':
+            return np.argmax(values)
+        else:
+            raise ValueError("tie_break must be 'first'")
+
+
 def information_value(p_new, p_old, base=None):
     """Calculate information value."""
     return entropy(p_old, qk=p_new, base=base)
-
-
-def create_critic():
-    """Create a Q table"""
-    return OrderedDict()
 
 
 def save_checkpoint(state, filename='checkpoint.pth.tar'):
@@ -25,18 +59,19 @@ def save_checkpoint(state, filename='checkpoint.pth.tar'):
         fi.write(data)
 
 
-def Q_update(state, reward, Q, lr):
+def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
-    if state in Q:
-        Q[state] += (lr * (reward - Q[state]))
-    else:
-        Q[state] += (lr * reward)
-    return Q
+    update = lr * (reward - critic(state))
+    critic.update_(state, update)
+
+    return critic
 
 
-def run(env_name,
-        num_episodes,
+def run(env_name='BanditTwoArmedDeterministicFixed-v0',
+        num_episodes=1,
         policy_mode='meta',
+        tie_break='first',
+        default_value=0.0,
         lr=1,
         save=None,
         progress=True,
@@ -47,8 +82,10 @@ def run(env_name,
     # Init
     env = gym.make(env_name)
 
-    critic_R = create_critic()
-    critic_E = create_critic()
+    critic_R = Critic(env.observation_space.n, default_value=default_value)
+    critic_E = Critic(env.observation_space.n, default_value=default_value)
+    actor = Actor(env.action_space.n, tie_break=tie_break)
+
     memory = ConditionalCount()
 
     if policy_mode == 'meta':
@@ -77,8 +114,8 @@ def run(env_name,
         else:
             critic = critic_R
 
-        # Choose an action
-        action, _ = greedy(list(critic.values()))
+        # Choose an action; Choose a bandit
+        action = actor(list(critic.model.values()))
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -117,8 +154,8 @@ def run(env_name,
     if save is not None:
         save_checkpoint(
             dict(
-                critic_E=critic_E.items(),
-                critic_R=critic_R.items(),
+                critic_E=critic_E.state_dict(),
+                critic_R=critic_R.state_dict(),
                 total_E=total_E,
                 total_R=total_R,
                 scores_E=scores_E,
