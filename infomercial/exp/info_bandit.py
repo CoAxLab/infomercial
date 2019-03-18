@@ -84,12 +84,17 @@ def run(env_name,
         state, reward, _, _ = env.step(action)
         R_t = reward  # Notation consistency
 
-        # Est. information value
+        # Update the memory and est. information value of the state
         probs_old = memory.probs()
         memory.update(reward, state)
         probs_new = memory.probs()
         info = information_value(probs_new, probs_old)
         E_t = info
+
+        if debug:
+            print(
+                f">>> Episode {n}: State {state}, Action {action}, Rt {R_t}, Et {E_t}"
+            )
 
         # Critic learns
         critic_R = Q_update(state, R_t, critic_R, lr)
@@ -102,9 +107,10 @@ def run(env_name,
         scores_R.append(R_t)
 
         if debug:
-            print(f">>> Q_reward: {critic_R}")
-            print(f">>> Q_reward: {critic_E}")
-        if progress:
+            print(f">>> critic_R: {critic_R}")
+            print(f">>> critic_E: {critic_E}")
+
+        if progress or debug:
             print(f">>> Episode {n}, Reward {total_R}, Relevance {total_E}")
 
     # Save models to disk
