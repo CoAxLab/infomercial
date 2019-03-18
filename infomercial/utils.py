@@ -64,7 +64,7 @@ def sample_action(policy, state, mode='Categorical'):
     return policy, action.item(), log_prob
 
 
-def save_checkpoint(state, filename='checkpoint.pth.tar'):
+def save_checkpoint_torch(state, filename='checkpoint.pth.tar'):
     torch.save(state, filename)
 
 
