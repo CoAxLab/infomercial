@@ -158,7 +158,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         # Every play is also an ep for bandit tasks.
         state = int(env.reset()[0])
 
-        # Pick an actor, critic pair
+        # Use the the meta-greedy policy to
+        # pick an actor, critic pair.
         if E_t > R_t:
             critic = critic_E
             actor = actor_E
