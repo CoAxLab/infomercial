@@ -51,10 +51,10 @@ class Count(Memory):
         else:
             return self.count[x] / self.N
 
-    def probs(self):
+    def probs(self, xs):
         p = []
-        for k in self.count.keys():
-            p.append(self.forward(k))
+        for x in xs:
+            p.append(self.forward(x))
         return p
 
 
@@ -65,6 +65,9 @@ class ConditionalCount(Count):
         self.Ns = []
         self.conds = []
         self.counts = []
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
 
     def update(self, x, cond):
         # Add cond?
@@ -100,15 +103,11 @@ class ConditionalCount(Count):
         else:
             return self.counts[i][x] / self.Ns[i]
 
-    def probs(self):
+    def probs(self, xs, conds):
         p = []
-        for cond in self.conds:
-            for k in self.counts[cond].keys():
-                p.append(self.forward(k, cond))
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
         return p
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
 
 
 class Kernel(Memory):
