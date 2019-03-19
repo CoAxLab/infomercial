@@ -46,7 +46,6 @@ class Actor(object):
 
         # Apply the threshold, rectifying values less than 0
         t_values = [max(0, v - self.tie_threshold) for v in values]
-        print(f"t_values: {t_values}")
 
         # Check for any difference, if there's a difference then
         # there can be no tie.
@@ -78,7 +77,6 @@ class Actor(object):
             if self._is_tied(values):
                 self.action_count += 1
                 action = self.action_count % self.num_actions
-                print(f"!!! TIE: Round robin to {action} !!!")
         else:
             raise ValueError("tie_break must be 'first' or 'next'")
 
