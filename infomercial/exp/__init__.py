@@ -1,0 +1,1 @@
+from infomercial.exp.info_bandit import run as info_bandit
