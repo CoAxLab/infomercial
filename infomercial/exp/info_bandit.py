@@ -109,7 +109,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         policy_mode='meta',
         tie_break='next',
         tie_threshold=0.0,
-        default_value=0.0,
+        default_info_value=0.0,
+        default_reward_value=0.0,
         lr=.1,
         save=None,
         progress=False,
@@ -121,8 +122,10 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     env = gym.make(env_name)
 
     # -
-    critic_R = Critic(env.observation_space.n, default_value=default_value)
-    critic_E = Critic(env.observation_space.n, default_value=default_value)
+    critic_R = Critic(
+        env.observation_space.n, default_value=default_reward_value)
+    critic_E = Critic(
+        env.observation_space.n, default_value=default_info_value)
 
     num_actions = env.action_space.n
     actor_R = Actor(
