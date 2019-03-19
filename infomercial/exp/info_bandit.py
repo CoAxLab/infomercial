@@ -23,7 +23,6 @@ class Critic(object):
         return self.forward(state)
 
     def forward(self, state):
-        self.model[state] = self.default_value
         return self.model[state]
 
     def update_(self, state, update):
@@ -87,6 +86,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     actor = Actor(env.action_space.n, tie_break=tie_break)
 
     memory = ConditionalCount()
+    visited_states = []
 
     if policy_mode == 'meta':
         E_t = 0.0
@@ -106,9 +106,10 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     # Play
     for n in range(num_episodes):
         # Every play is also an ep for bandit tasks.
-        state = env.reset()
+        state = int(env.reset()[0])
 
-        # Pick a critic, which will in turn choose the action policy
+        # Pick a critic, which in this implementation
+        # will in turn choose the action policy
         if E_t > R_t:
             critic = critic_E
         else:
@@ -119,21 +120,30 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
+        state = int(state[0])
+
         R_t = reward  # Notation consistency
 
+        # Build memory sampling lists, state: r in (0,1); cond: bandit code
+        cond_sample = visited_states * 2
+        state_sample = [0] * len(visited_states) + [1] * len(visited_states)
+
         # Update the memory and est. information value of the state
-        probs_old = memory.probs()
+        probs_old = memory.probs(state_sample, cond_sample)
         memory.update(reward, state)
-        probs_new = memory.probs()
+        probs_new = memory.probs(state_sample, cond_sample)
         info = information_value(probs_new, probs_old)
         E_t = info
 
         if debug:
+            print(f">>> Cond sample: {cond_sample}")
+            print(f">>> State sample: {state_sample}")
             print(
                 f">>> Episode {n}: State {state}, Action {action}, Rt {R_t}, Et {E_t}"
             )
 
         # Critic learns
+
         critic_R = Q_update(state, R_t, critic_R, lr)
         critic_E = Q_update(state, E_t, critic_E, lr)
 
@@ -144,11 +154,11 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         scores_R.append(R_t)
 
         if debug:
-            print(f">>> critic_R: {critic_R}")
-            print(f">>> critic_E: {critic_E}")
+            print(f">>> critic_R: {critic_R.state_dict()}")
+            print(f">>> critic_E: {critic_E.state_dict()}")
 
         if progress or debug:
-            print(f">>> Episode {n}, Reward {total_R}, Relevance {total_E}")
+            print(f">>> Episode {n}, Reward {R_t}, Relevance {E_t}")
 
     # Save models to disk
     if save is not None:
