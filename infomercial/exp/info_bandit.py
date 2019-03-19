@@ -56,23 +56,22 @@ class Actor(object):
             else:
                 return False
 
-        # Only get here is all were the same.
+        # Only get here if all values were the same.
         return True
 
     def __call__(self, values):
         return self.forward(values)
 
     def forward(self, values):
-        # Pick the best as the base case
+        # Pick the best as the base case, ....
         action = np.argmax(values)
 
-        # Then check for ties
+        # then check for ties.
         #
-        # Using the first element is argmax's tie break strategy
+        # Using the first element is argmax's tie breaking strategy
         if self.tie_break == 'first':
             pass
-        # Keep track of how the last tie was handled, and round robin
-        # through the options for each new tie.
+        # Round robin through the options for each new tie.
         elif self.tie_break == 'next':
             if self._is_tied(values):
                 self.action_count += 1
