@@ -204,15 +204,17 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         # Add to winnings
         total_R += R_t
         total_E += E_t
-        scores_E.append(E_t)
-        scores_R.append(R_t)
+        scores_E.append(critic_E(action))
+        scores_R.append(critic_R(action))
 
         if debug:
             print(f">>> critic_R: {critic_R.state_dict()}")
             print(f">>> critic_E: {critic_E.state_dict()}")
 
         if progress:
-            print(f">>> Episode {n}. Rt: {R_t}; Et: {E_t}\n")
+            print(f">>> Episode {n}.")
+        if progress or debug:
+            print(f">>> Total R: {total_R}; Total E: {total_E}\n")
 
     # Save models to disk
     if save is not None:
