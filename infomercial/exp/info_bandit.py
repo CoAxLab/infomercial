@@ -202,7 +202,6 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
             print(f"    p_new: {p_new}")
 
         # Critic learns
-
         critic_R = Q_update(action, R_t, critic_R, lr)
         critic_E = Q_update(action, E_t, critic_E, lr)
 
@@ -212,6 +211,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         scores_E.append(critic_E(action))
         scores_R.append(critic_R(action))
 
+        # -
         if debug:
             print(f">>> critic_R: {critic_R.state_dict()}")
             print(f">>> critic_E: {critic_E.state_dict()}")
@@ -221,7 +221,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         if progress or debug:
             print(f">>> Total R: {total_R}; Total E: {total_E}\n")
 
-    # Save models to disk
+    # Save models to disk when done?
     if save is not None:
         save_checkpoint(
             dict(
