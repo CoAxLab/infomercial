@@ -141,7 +141,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     if policy_mode == 'meta':
         E_t = 0.0
         R_t = 0.0
-    # TODO: add R or E only; use an np.inf assignment?
+    # TODO: add R or E only option by using an np.inf assignment?
     else:
         raise ValueError("policy mode must be 'meta'")
 
@@ -155,7 +155,9 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
+
         # Every play is also an ep for bandit tasks.
+        # Thus this reset() call
         state = int(env.reset()[0])
 
         # Use the the meta-greedy policy to
