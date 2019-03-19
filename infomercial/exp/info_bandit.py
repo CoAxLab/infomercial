@@ -113,7 +113,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         default_value=0.0,
         lr=.1,
         save=None,
-        progress=True,
+        progress=False,
         debug=False):
     """Play some slots!"""
 
@@ -151,6 +151,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     scores_R = []
     actions = []
     for n in range(num_episodes):
+        if debug:
+            print(f"\n>>> Episode {n}")
         # Every play is also an ep for bandit tasks.
         state = int(env.reset()[0])
 
@@ -159,12 +161,12 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
             critic = critic_E
             actor = actor_E
             if debug:
-                print(f">>> actor_E in control")
+                print(f">>> E in control!")
         else:
             critic = critic_R
             actor = actor_R
             if debug:
-                print(f">>> actor_R in control")
+                print(f">>> R in control!")
 
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
@@ -188,12 +190,11 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         E_t = info
 
         if debug:
+            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
             print(f">>> Cond sample: {cond_sample}")
             print(f">>> State sample: {state_sample}")
-            print(f">>> p_old: {p_old}, p_new: {p_new}")
-            print(
-                f">>> Episode {n}: State {state}, Action {action}, Rt {R_t}, Et {E_t}"
-            )
+            print(f">>> p_old: {p_old}")
+            print(f"    p_new: {p_new}")
 
         # Critic learns
 
@@ -210,8 +211,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
             print(f">>> critic_R: {critic_R.state_dict()}")
             print(f">>> critic_E: {critic_E.state_dict()}")
 
-        if progress or debug:
-            print(f">>> Episode: {n}, Rt: {R_t}, Et: {E_t}")
+        if progress:
+            print(f">>> Episode {n}. Rt: {R_t}; Et: {E_t}\n")
 
     # Save models to disk
     if save is not None:
