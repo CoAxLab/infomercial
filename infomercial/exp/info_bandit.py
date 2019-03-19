@@ -33,22 +33,63 @@ class Critic(object):
 
 
 class Actor(object):
-    def __init__(self, num_actions, tie_break='first'):
+    def __init__(self, num_actions, tie_break='next', tie_threshold=0.0):
         self.num_actions = num_actions
         self.tie_break = tie_break
+        self.tie_threshold = tie_threshold
+        self.action_count = 0
+
+    def _is_tied(self, values):
+        # One element can't be a tie
+        if len(values) < 1:
+            return False
+
+        # Apply the threshold, rectifying values less than 0
+        t_values = [max(0, v - self.tie_threshold) for v in values]
+        print(f"t_values: {t_values}")
+
+        # Check for any difference, if there's a difference then
+        # there can be no tie.
+        v0 = t_values[0]
+        for v in t_values[1:]:
+            if np.isclose(v0, v):
+                continue
+            else:
+                return False
+
+        # Only get here is all were the same.
+        return True
 
     def __call__(self, values):
         return self.forward(values)
 
     def forward(self, values):
+        # Pick the best as the base case
+        action = np.argmax(values)
+
+        # Then check for ties
+        #
+        # Using the first element is argmax's tie break strategy
         if self.tie_break == 'first':
-            return np.argmax(values)
+            pass
+        # Keep track of how the last tie was handled, and round robin
+        # through the options for each new tie.
+        elif self.tie_break == 'next':
+            if self._is_tied(values):
+                self.action_count += 1
+                action = self.action_count % self.num_actions
+                print(f"!!! TIE: Round robin to {action} !!!")
         else:
-            raise ValueError("tie_break must be 'first'")
+            raise ValueError("tie_break must be 'first' or 'next'")
+
+        return action
 
 
 def information_value(p_new, p_old, base=None):
     """Calculate information value."""
+    if np.isclose(np.sum(p_old), 0.0):
+        return 0.0  # Hack
+
     return entropy(p_old, qk=p_new, base=base)
 
 
@@ -69,9 +110,10 @@ def Q_update(state, reward, critic, lr):
 def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         num_episodes=1,
         policy_mode='meta',
-        tie_break='first',
+        tie_break='next',
+        tie_threshold=0.0,
         default_value=0.0,
-        lr=1,
+        lr=.1,
         save=None,
         progress=True,
         debug=False):
@@ -81,71 +123,84 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     # Init
     env = gym.make(env_name)
 
+    # -
     critic_R = Critic(env.observation_space.n, default_value=default_value)
     critic_E = Critic(env.observation_space.n, default_value=default_value)
-    actor = Actor(env.action_space.n, tie_break=tie_break)
 
+    num_actions = env.action_space.n
+    actor_R = Actor(
+        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+    actor_E = Actor(
+        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+
+    # -
     memory = ConditionalCount()
-    visited_states = []
+    visited_states = set()
 
+    # -
     if policy_mode == 'meta':
         E_t = 0.0
         R_t = 0.0
-
     # TODO: add R or E only; use an np.inf assignment?
     else:
         raise ValueError("policy mode must be 'meta'")
 
-    total_R = 0.0
-    total_E = 0.0
-
-    scores_E = []
-    scores_R = []
-
     # ------------------------------------------------------------------------
     # Play
+    total_R = 0.0
+    total_E = 0.0
+    scores_E = []
+    scores_R = []
+    actions = []
     for n in range(num_episodes):
         # Every play is also an ep for bandit tasks.
         state = int(env.reset()[0])
 
-        # Pick a critic, which in this implementation
-        # will in turn choose the action policy
+        # Pick an actor, critic pair
         if E_t > R_t:
             critic = critic_E
+            actor = actor_E
+            if debug:
+                print(f">>> actor_E in control")
         else:
             critic = critic_R
+            actor = actor_R
+            if debug:
+                print(f">>> actor_R in control")
 
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
+        actions.append(action)
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
-        state = int(state[0])
-
         R_t = reward  # Notation consistency
+        state = int(state[0])
+        visited_states.add(action)
 
         # Build memory sampling lists, state: r in (0,1); cond: bandit code
-        cond_sample = visited_states * 2
+        cond_sample = list(visited_states) * 2
         state_sample = [0] * len(visited_states) + [1] * len(visited_states)
 
         # Update the memory and est. information value of the state
-        probs_old = memory.probs(state_sample, cond_sample)
-        memory.update(reward, state)
-        probs_new = memory.probs(state_sample, cond_sample)
-        info = information_value(probs_new, probs_old)
+        p_old = memory.probs(state_sample, cond_sample)
+        memory.update(reward, action)
+        p_new = memory.probs(state_sample, cond_sample)
+        info = information_value(p_new, p_old)
         E_t = info
 
         if debug:
             print(f">>> Cond sample: {cond_sample}")
             print(f">>> State sample: {state_sample}")
+            print(f">>> p_old: {p_old}, p_new: {p_new}")
             print(
                 f">>> Episode {n}: State {state}, Action {action}, Rt {R_t}, Et {E_t}"
             )
 
         # Critic learns
 
-        critic_R = Q_update(state, R_t, critic_R, lr)
-        critic_E = Q_update(state, E_t, critic_E, lr)
+        critic_R = Q_update(action, R_t, critic_R, lr)
+        critic_E = Q_update(action, E_t, critic_E, lr)
 
         # Add to winnings
         total_R += R_t
@@ -158,7 +213,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
             print(f">>> critic_E: {critic_E.state_dict()}")
 
         if progress or debug:
-            print(f">>> Episode {n}, Reward {R_t}, Relevance {E_t}")
+            print(f">>> Episode: {n}, Rt: {R_t}, Et: {E_t}")
 
     # Save models to disk
     if save is not None:
@@ -172,7 +227,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
                 scores_R=scores_R),
             filename=save)
 
-    return list(range(num_episodes)), scores_E, scores_R
+    return list(range(num_episodes)), actions, scores_E, scores_R
 
 
 if __name__ == "__main__":
