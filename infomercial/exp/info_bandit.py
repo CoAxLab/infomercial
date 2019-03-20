@@ -162,7 +162,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
 
         # Use the the meta-greedy policy to
         # pick an actor, critic pair.
-        if E_t > R_t:
+        if (E_t - tie_threshold) > R_t:
             critic = critic_E
             actor = actor_E
             if debug:
