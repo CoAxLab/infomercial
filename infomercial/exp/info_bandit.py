@@ -112,6 +112,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         default_info_value=0.0,
         default_reward_value=0.0,
         lr=.1,
+        seed_value=42,
         save=None,
         progress=False,
         debug=False):
@@ -120,6 +121,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     # ------------------------------------------------------------------------
     # Init
     env = gym.make(env_name)
+    env.seed(seed_value)
 
     # -
     critic_R = Critic(
@@ -151,6 +153,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     total_E = 0.0
     scores_E = []
     scores_R = []
+    values_E = []
+    values_R = []
     actions = []
     for n in range(num_episodes):
         if debug:
@@ -165,13 +169,11 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         if (E_t - tie_threshold) > R_t:
             critic = critic_E
             actor = actor_E
-            if debug:
-                print(f">>> E in control!")
+            if debug: print(f">>> E in control!")
         else:
             critic = critic_R
             actor = actor_R
-            if debug:
-                print(f">>> R in control!")
+            if debug: print(f">>> R in control!")
 
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
@@ -208,8 +210,10 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         # Add to winnings
         total_R += R_t
         total_E += E_t
-        scores_E.append(critic_E(action))
-        scores_R.append(critic_R(action))
+        scores_E.append(E_t)
+        scores_R.append(R_t)
+        values_E.append(critic_E(action))
+        values_R.append(critic_R(action))
 
         # -
         if debug:
@@ -221,19 +225,25 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         if progress or debug:
             print(f">>> Total R: {total_R}; Total E: {total_E}\n")
 
+    # -
+    episodes = list(range(num_episodes))
+
     # Save models to disk when done?
     if save is not None:
         save_checkpoint(
             dict(
+                episodes=episodes,
                 critic_E=critic_E.state_dict(),
                 critic_R=critic_R.state_dict(),
                 total_E=total_E,
                 total_R=total_R,
                 scores_E=scores_E,
-                scores_R=scores_R),
+                scores_R=scores_R,
+                values_E=values_E,
+                values_R=values_R),
             filename=save)
 
-    return list(range(num_episodes)), actions, scores_E, scores_R
+    return episodes, actions, scores_E, scores_R, values_E, values_R
 
 
 if __name__ == "__main__":
