@@ -49,14 +49,15 @@ class Actor(object):
 
         # Check for any difference, if there's a difference then
         # there can be no tie.
-        self.tied = True  # Assume tie
-
+        tied = True  # Assume tie
         v0 = t_values[0]
         for v in t_values[1:]:
             if np.isclose(v0, v):
                 continue
             else:
-                self.tied = False
+                tied = False
+
+        return tied
 
     def __call__(self, values):
         return self.forward(values)
@@ -72,7 +73,7 @@ class Actor(object):
             pass
         # Round robin through the options for each new tie.
         elif self.tie_break == 'next':
-            self._is_tied(values)
+            self.tied = self._is_tied(values)
             if self.tied:
                 self.action_count += 1
                 action = self.action_count % self.num_actions
