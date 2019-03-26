@@ -1,6 +1,7 @@
 from gym.envs.registration import register
 
 from infomercial.local_gym.bandit import BanditTenArmedRandomFixed
+from infomercial.local_gym.bandit import BanditTenArmedOneHighFixed
 from infomercial.local_gym.bandit import BanditTenArmedRandomRandom
 from infomercial.local_gym.bandit import BanditTenArmedGaussian
 from infomercial.local_gym.bandit import BanditTenArmedUniformDistributedReward
@@ -12,6 +13,7 @@ from infomercial.local_gym.bandit import BanditTwoArmedEvenFixed
 from infomercial.local_gym.bandit import BanditFourArmedDeterministicFixed
 
 environments = [
+    ['BanditTenArmedOneHighFixed', 'v0', 1],
     ['BanditTenArmedRandomFixed', 'v0', 1],
     ['BanditTenArmedRandomRandom', 'v0', 1],
     ['BanditTenArmedGaussian', 'v0', 1],

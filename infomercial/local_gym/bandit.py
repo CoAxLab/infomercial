@@ -176,6 +176,16 @@ class BanditTwoArmedLowLowFixed(BanditEnv):
         BanditEnv.__init__(self, p_dist=[0.1, 0.2], r_dist=[1, 1])
 
 
+class BanditTenArmedOneHighFixed(BanditEnv):
+    """10 armed bandit with random probabilities assigned to payouts"""
+
+    def __init__(self, bandits=10):
+        p_dist = [0.2] * 10
+        p_dist[9] = 0.8
+        r_dist = np.full(bandits, 1)
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
 class BanditTenArmedRandomFixed(BanditEnv):
     """10 armed bandit with random probabilities assigned to payouts"""
 
