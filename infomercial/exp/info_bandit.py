@@ -49,15 +49,14 @@ class Actor(object):
 
         # Check for any difference, if there's a difference then
         # there can be no tie.
+        self.tied = True  # Assume tie
+
         v0 = t_values[0]
         for v in t_values[1:]:
             if np.isclose(v0, v):
                 continue
             else:
-                return False
-
-        # Only get here if all values were the same.
-        return True
+                self.tied = False
 
     def __call__(self, values):
         return self.forward(values)
@@ -73,7 +72,8 @@ class Actor(object):
             pass
         # Round robin through the options for each new tie.
         elif self.tie_break == 'next':
-            if self._is_tied(values):
+            self._is_tied(values)
+            if self.tied:
                 self.action_count += 1
                 action = self.action_count % self.num_actions
         else:
@@ -156,6 +156,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     values_E = []
     values_R = []
     actions = []
+    ties = []
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -178,6 +179,10 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
         actions.append(action)
+        if actor.tied:
+            ties.append(1)
+        else:
+            ties.append(0)
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -243,7 +248,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
                 values_R=values_R),
             filename=save)
 
-    return episodes, actions, scores_E, scores_R, values_E, values_R
+    return episodes, actions, scores_E, scores_R, values_E, values_R, ties
 
 
 if __name__ == "__main__":
