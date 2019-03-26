@@ -35,10 +35,9 @@ class BanditEnv(gym.Env):
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
         self.observation_space = spaces.Discrete(self.n_bandits)
+        self.seed()
 
-        self._seed()
-
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
@@ -49,12 +48,12 @@ class BanditEnv(gym.Env):
         reward = 0
         done = True
 
-        if np.random.uniform() < self.p_dist[action]:
+        if self.np_random.uniform() < self.p_dist[action]:
             if not isinstance(self.r_dist[action], list):
                 reward = self.r_dist[action]
             else:
-                reward = np.random.normal(self.r_dist[action][0],
-                                          self.r_dist[action][1])
+                reward = self.np_random.normal(self.r_dist[action][0],
+                                               self.r_dist[action][1])
 
         return [0], reward, done, {}
 
@@ -97,10 +96,9 @@ class UnstableBanditEnv(gym.Env):
         self.n_bandits = len(self.p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
         self.observation_space = spaces.Discrete(self.n_bandits)
+        self.seed()
 
-        self._seed()
-
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
@@ -116,12 +114,12 @@ class UnstableBanditEnv(gym.Env):
         reward = 0
         done = True
 
-        if np.random.uniform() < self.p_dist[action]:
+        if self.np_random.uniform() < self.p_dist[action]:
             if not isinstance(self.r_dist[action], list):
                 reward = self.r_dist[action]
             else:
-                reward = np.random.normal(self.r_dist[action][0],
-                                          self.r_dist[action][1])
+                reward = self.np_random.normal(self.r_dist[action][0],
+                                               self.r_dist[action][1])
 
         # Change bandit?
         if self.np_random.poisson(self.unstable_rate) > 0:
