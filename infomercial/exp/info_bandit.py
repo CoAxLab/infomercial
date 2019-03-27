@@ -248,6 +248,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         save_checkpoint(
             dict(
                 episodes=episodes,
+                policies=policies,
+                ties=ties,
                 critic_E=critic_E.state_dict(),
                 critic_R=critic_R.state_dict(),
                 total_E=total_E,
