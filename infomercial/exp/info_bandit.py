@@ -110,8 +110,6 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         policy_mode='meta',
         tie_break='next',
         tie_threshold=0.0,
-        default_info_value=0.0,
-        default_reward_value=0.0,
         lr=.1,
         seed_value=42,
         save=None,
@@ -123,14 +121,18 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     # Init
     env = gym.make(env_name)
     env.seed(seed_value)
+    num_actions = env.action_space.n
 
     # -
+    default_reward_value = 0  # Null R
+    default_info_value = entropy(
+        np.ones(num_actions) / num_actions)  # Uniform p(a)
+
     critic_R = Critic(
         env.observation_space.n, default_value=default_reward_value)
     critic_E = Critic(
         env.observation_space.n, default_value=default_info_value)
 
-    num_actions = env.action_space.n
     actor_R = Actor(
         num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
     actor_E = Actor(
@@ -158,6 +160,7 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
     values_R = []
     actions = []
     ties = []
+    policies = []
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -171,27 +174,26 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         if (E_t - tie_threshold) > R_t:
             critic = critic_E
             actor = actor_E
+            policies.append(0)
             if debug: print(f">>> E in control!")
         else:
             critic = critic_R
             actor = actor_R
+            policies.append(1)
             if debug: print(f">>> R in control!")
 
         # Choose an action; Choose a bandit
-        action = actor(list(critic.model.values()))
-        actions.append(action)
-        if actor.tied:
-            ties.append(1)
-        else:
-            ties.append(0)
+        values = list(critic.model.values())
+        action = actor(values)
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
-        R_t = reward  # Notation consistency
         state = int(state[0])
-        visited_states.add(action)
+        R_t = reward  # Notation consistency
+        visited_states.add(action)  # Action is state here
 
-        # Build memory sampling lists, state: r in (0,1); cond: bandit code
+        # Build memory sampling lists, state:
+        # r in (0,1); cond: bandit code
         cond_sample = list(visited_states) * 2
         state_sample = [0] * len(visited_states) + [1] * len(visited_states)
 
@@ -199,21 +201,29 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         p_old = memory.probs(state_sample, cond_sample)
         memory.update(reward, action)
         p_new = memory.probs(state_sample, cond_sample)
+
         info = information_value(p_new, p_old)
         E_t = info
 
+        # -
         if debug:
             print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
             print(f">>> Cond sample: {cond_sample}")
             print(f">>> State sample: {state_sample}")
             print(f">>> p_old: {p_old}")
-            print(f"    p_new: {p_new}")
+            print(f">>> p_new: {p_new}")
+            print(f">>> E_t: {E_t}\n")
 
         # Critic learns
         critic_R = Q_update(action, R_t, critic_R, lr)
         critic_E = Q_update(action, E_t, critic_E, lr)
 
-        # Add to winnings
+        # Log data
+        actions.append(action)
+        if actor.tied:
+            ties.append(1)
+        else:
+            ties.append(0)
         total_R += R_t
         total_E += E_t
         scores_E.append(E_t)
@@ -225,7 +235,6 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
         if debug:
             print(f">>> critic_R: {critic_R.state_dict()}")
             print(f">>> critic_E: {critic_E.state_dict()}")
-
         if progress:
             print(f">>> Episode {n}.")
         if progress or debug:
@@ -249,7 +258,8 @@ def run(env_name='BanditTwoArmedDeterministicFixed-v0',
                 values_R=values_R),
             filename=save)
 
-    return episodes, actions, scores_E, scores_R, values_E, values_R, ties
+    return (episodes, actions, scores_E, scores_R, values_E, values_R, ties,
+            policies)
 
 
 if __name__ == "__main__":
