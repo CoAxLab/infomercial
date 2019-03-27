@@ -134,91 +134,186 @@ class UnstableBanditEnv(gym.Env):
         pass
 
 
-class BanditFourArmedDeterministicFixed(BanditEnv):
-    """Simplest case where one bandit always pays, and the other always doesn't"""
+# TODO:
+# 2 armed classic
+# 121 for Wu, C. M., Schulz, E., Speekenbrink, M., Nelson, J. D., & Meder, B. (2018). Generalization guides human exploration in vast decision spaces. Nature Human Behaviour, 1.
+# 1000 because why not.
+
+# levels [1, 0...]  # Fixed
+#        [0.8, 0.2...] # std examples
+#        [.1, .08...] # sparse and hard
+# also do a 50 50... as a control.
+
+
+class BanditOneHot2(BanditEnv):
+    """A one winner bandit."""
 
     def __init__(self):
-        BanditEnv.__init__(self, p_dist=[0, 1, 0, 0], r_dist=[1, 1, 1, 1])
+        self.best = 0
+        self.num_arms = 2
+
+        p_dist = [0] * self.num_arms
+        p_dist[self.best] = 1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTwoArmedDeterministicFixed(BanditEnv):
-    """Simplest case where one bandit always pays, and the other always doesn't"""
+class BanditOneHot10(BanditEnv):
+    """A one winner bandit."""
 
     def __init__(self):
-        BanditEnv.__init__(self, p_dist=[1, 0], r_dist=[1, 1])
+        self.best = 7
+        self.num_arms = 10
+
+        p_dist = [0] * self.num_arms
+        p_dist[self.best] = 1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTwoArmedEvenFixed(BanditEnv):
-    """Simplest case where one bandit always pays, and the other always doesn't"""
+class BanditOneHot121(BanditEnv):
+    """A one winner bandit."""
+
+    def __init__(self):
+        self.best = 54
+        self.num_arms = 121
+
+        p_dist = [0] * self.num_arms
+        p_dist[self.best] = 1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditOneHot1000(BanditEnv):
+    """A one winner bandit."""
+
+    def __init__(self):
+        self.best = 526
+        self.num_arms = 1000
+
+        p_dist = [0] * self.num_arms
+        p_dist[self.best] = 1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditEvenOdds2(BanditEnv):
+    """A 50/50 bandit."""
 
     def __init__(self):
         BanditEnv.__init__(self, p_dist=[0.5, 0.5], r_dist=[1, 1])
 
 
-class BanditTwoArmedHighLowFixed(BanditEnv):
-    """Stochastic version with a large difference between which bandit pays out of two choices"""
+class BanditOneHigh2(BanditEnv):
+    """A (0.8, 0.2) bandit."""
 
     def __init__(self):
-        BanditEnv.__init__(self, p_dist=[0.8, 0.2], r_dist=[1, 1])
+        self.best = 0
+        self.num_arms = 2
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTwoArmedHighHighFixed(BanditEnv):
-    """Stochastic version with a small difference between which bandit pays where both are good"""
+class BanditOneHigh10(BanditEnv):
+    """A (0.8, 0.2, 0.2, ...) bandit."""
 
     def __init__(self):
-        BanditEnv.__init__(self, p_dist=[0.8, 0.9], r_dist=[1, 1])
+        self.best = 7
+        self.num_arms = 10
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTwoArmedLowLowFixed(BanditEnv):
-    """Stochastic version with a small difference between which bandit pays where both are bad"""
+class BanditOneHigh121(BanditEnv):
+    """A (0.8, 0.2, 0.2, ...) bandit."""
 
     def __init__(self):
-        BanditEnv.__init__(self, p_dist=[0.1, 0.2], r_dist=[1, 1])
+        self.best = 54
+        self.num_arms = 121
 
-
-class BanditTenArmedOneHighFixed(BanditEnv):
-    """10 armed bandit with random probabilities assigned to payouts"""
-
-    def __init__(self, bandits=10):
-        p_dist = [0.2] * 10
-        p_dist[2] = 0.8
-        r_dist = np.full(bandits, 1)
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTenArmedRandomFixed(BanditEnv):
-    """10 armed bandit with random probabilities assigned to payouts"""
+class BanditOneHigh1000(BanditEnv):
+    """A (0.8, 0.2, 0.2, ...) bandit."""
 
-    def __init__(self, bandits=10):
-        p_dist = np.random.uniform(size=bandits)
-        r_dist = np.full(bandits, 1)
+    def __init__(self):
+        self.best = 526
+        self.num_arms = 1000
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTenArmedUniformDistributedReward(BanditEnv):
-    """10 armed bandit with that always pays out with a reward selected from a uniform distribution"""
+class BanditHardAndSparse2(BanditEnv):
+    """A (0.10,0.08,0.08,....) bandit"""
 
-    def __init__(self, bandits=10):
-        p_dist = np.full(bandits, 1)
-        r_dist = np.random.uniform(size=bandits)
+    def __init__(self):
+        self.best = 0
+        self.num_arms = 2
+
+        p_dist = [0.08] * self.num_arms
+        p_dist[self.best] = 0.1
+        r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTenArmedRandomRandom(BanditEnv):
-    """10 armed bandit with random probabilities assigned to both payouts and rewards"""
+class BanditHardAndSparse10(BanditEnv):
+    """A (0.10,0.08,0.08,....) bandit"""
 
-    def __init__(self, bandits=10):
-        p_dist = np.random.uniform(size=bandits)
-        r_dist = np.random.uniform(size=bandits)
+    def __init__(self):
+        self.best = 7
+        self.num_arms = 10
+
+        p_dist = [0.08] * self.num_arms
+        p_dist[self.best] = 0.1
+        r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
-class BanditTenArmedGaussian(BanditEnv):
+class BanditHardAndSparse121(BanditEnv):
+    """A (0.10,0.08,0.08,....) bandit"""
+
+    def __init__(self):
+        self.best = 54
+        self.num_arms = 121
+
+        p_dist = [0.08] * self.num_arms
+        p_dist[self.best] = 0.1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditHardAndSparse1000(BanditEnv):
+    """A (0.10,0.08,0.08,....) bandit"""
+
+    def __init__(self):
+        self.best = 526
+        self.num_arms = 1000
+
+        p_dist = [0.08] * self.num_arms
+        p_dist[self.best] = 0.1
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditGaussian10(BanditEnv):
     """
     10 armed bandit mentioned on page 30 of Sutton and Barto's
     [Reinforcement Learning: An Introduction](https://www.dropbox.com/s/b3psxv2r0ccmf80/book2015oct.pdf?dl=0)
 
-    Actions always pay out
+    Actions always pay out.
     Mean of payout is pulled from a normal distribution (0, 1) (called q*(a))
     Actual reward is drawn from a normal distribution (q*(a), 1)
     """

@@ -1,29 +1,35 @@
 from gym.envs.registration import register
 
-from infomercial.local_gym.bandit import BanditTenArmedRandomFixed
-from infomercial.local_gym.bandit import BanditTenArmedOneHighFixed
-from infomercial.local_gym.bandit import BanditTenArmedRandomRandom
-from infomercial.local_gym.bandit import BanditTenArmedGaussian
-from infomercial.local_gym.bandit import BanditTenArmedUniformDistributedReward
-from infomercial.local_gym.bandit import BanditTwoArmedDeterministicFixed
-from infomercial.local_gym.bandit import BanditTwoArmedHighHighFixed
-from infomercial.local_gym.bandit import BanditTwoArmedHighLowFixed
-from infomercial.local_gym.bandit import BanditTwoArmedLowLowFixed
-from infomercial.local_gym.bandit import BanditTwoArmedEvenFixed
-from infomercial.local_gym.bandit import BanditFourArmedDeterministicFixed
+from infomercial.local_gym.bandit import BanditOneHot2
+from infomercial.local_gym.bandit import BanditOneHot10
+from infomercial.local_gym.bandit import BanditOneHot121
+from infomercial.local_gym.bandit import BanditOneHot1000
+from infomercial.local_gym.bandit import BanditEvenOdds2
+from infomercial.local_gym.bandit import BanditOneHigh2
+from infomercial.local_gym.bandit import BanditOneHigh10
+from infomercial.local_gym.bandit import BanditOneHigh121
+from infomercial.local_gym.bandit import BanditOneHigh1000
+from infomercial.local_gym.bandit import BanditHardAndSparse2
+from infomercial.local_gym.bandit import BanditHardAndSparse10
+from infomercial.local_gym.bandit import BanditHardAndSparse121
+from infomercial.local_gym.bandit import BanditHardAndSparse1000
+from infomercial.local_gym.bandit import BanditGaussian10
 
 environments = [
-    ['BanditTenArmedOneHighFixed', 'v0', 1],
-    ['BanditTenArmedRandomFixed', 'v0', 1],
-    ['BanditTenArmedRandomRandom', 'v0', 1],
-    ['BanditTenArmedGaussian', 'v0', 1],
-    ['BanditTenArmedUniformDistributedReward', 'v0', 1],
-    ['BanditTwoArmedDeterministicFixed', 'v0', 1],
-    ['BanditTwoArmedHighHighFixed', 'v0', 1],
-    ['BanditTwoArmedHighLowFixed', 'v0', 1],
-    ['BanditTwoArmedLowLowFixed', 'v0', 1],
-    ['BanditTwoArmedEvenFixed', 'v0', 1],
-    ['BanditFourArmedDeterministicFixed', 'v0', 1],
+    ['BanditOneHot2', 'v0', 1],
+    ['BanditOneHot10', 'v0', 1],
+    ['BanditOneHot121', 'v0', 1],
+    ['BanditOneHot1000', 'v0', 1],
+    ['BanditEvenOdds2', 'v0', 1],
+    ['BanditOneHigh2', 'v0', 1],
+    ['BanditOneHigh10', 'v0', 1],
+    ['BanditOneHigh121', 'v0', 1],
+    ['BanditOneHigh1000', 'v0', 1],
+    ['BanditHardAndSparse2', 'v0', 1],
+    ['BanditHardAndSparse10', 'v0', 1],
+    ['BanditHardAndSparse121', 'v0', 1],
+    ['BanditHardAndSparse1000', 'v0', 1],
+    ['BanditGaussian10', 'v0', 1],
 ]
 
 for environment in environments:
