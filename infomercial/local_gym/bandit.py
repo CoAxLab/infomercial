@@ -181,7 +181,7 @@ class BanditTenArmedOneHighFixed(BanditEnv):
 
     def __init__(self, bandits=10):
         p_dist = [0.2] * 10
-        p_dist[9] = 0.8
+        p_dist[2] = 0.8
         r_dist = np.full(bandits, 1)
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
