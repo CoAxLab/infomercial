@@ -119,7 +119,8 @@ def run(env_name='BanditOneHot2-v0',
         seed_value=42,
         save=None,
         progress=False,
-        debug=False):
+        debug=False,
+        interactive=True):
     """Play some slots!"""
 
     # ------------------------------------------------------------------------
@@ -265,8 +266,9 @@ def run(env_name='BanditOneHot2-v0',
                 values_R=values_R),
             filename=save)
 
-    return (episodes, actions, scores_E, scores_R, values_E, values_R, ties,
-            policies)
+    if interactive:
+        return (episodes, actions, scores_E, scores_R, values_E, values_R,
+                ties, policies)
 
 
 if __name__ == "__main__":
