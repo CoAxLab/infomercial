@@ -14,6 +14,7 @@ from infomercial.local_gym.bandit import BanditHardAndSparse10
 from infomercial.local_gym.bandit import BanditHardAndSparse121
 from infomercial.local_gym.bandit import BanditHardAndSparse1000
 from infomercial.local_gym.bandit import BanditGaussian10
+from infomercial.local_gym.bandit import BanditTwoExtreme1000
 
 environments = [
     ['BanditOneHot2', 'v0', 1],
@@ -25,6 +26,7 @@ environments = [
     ['BanditOneHigh10', 'v0', 1],
     ['BanditOneHigh121', 'v0', 1],
     ['BanditOneHigh1000', 'v0', 1],
+    ['BanditTwoExtreme1000', 'v0', 1],
     ['BanditHardAndSparse2', 'v0', 1],
     ['BanditHardAndSparse10', 'v0', 1],
     ['BanditHardAndSparse121', 'v0', 1],

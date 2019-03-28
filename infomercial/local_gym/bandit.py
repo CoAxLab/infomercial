@@ -256,6 +256,20 @@ class BanditOneHigh1000(BanditEnv):
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
+class BanditTwoExtreme1000(BanditEnv):
+    """A (..., 0.99, ..., 0.99. 0.01, 0.01, ...) bandit."""
+
+    def __init__(self):
+        self.best = [526, 731]
+        self.num_arms = 1000
+
+        p_dist = [0.01] * self.num_arms
+        p_dist[self.best[0]] = 0.99
+        p_dist[self.best[1]] = 0.99
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
 class BanditHardAndSparse2(BanditEnv):
     """A (0.10,0.08,0.08,....) bandit"""
 
@@ -263,8 +277,8 @@ class BanditHardAndSparse2(BanditEnv):
         self.best = 0
         self.num_arms = 2
 
-        p_dist = [0.08] * self.num_arms
-        p_dist[self.best] = 0.1
+        p_dist = [0.01] * self.num_arms
+        p_dist[self.best] = 0.02
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
@@ -276,8 +290,8 @@ class BanditHardAndSparse10(BanditEnv):
         self.best = 7
         self.num_arms = 10
 
-        p_dist = [0.08] * self.num_arms
-        p_dist[self.best] = 0.1
+        p_dist = [0.01] * self.num_arms
+        p_dist[self.best] = 0.02
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
@@ -289,8 +303,8 @@ class BanditHardAndSparse121(BanditEnv):
         self.best = 54
         self.num_arms = 121
 
-        p_dist = [0.08] * self.num_arms
-        p_dist[self.best] = 0.1
+        p_dist = [0.01] * self.num_arms
+        p_dist[self.best] = 0.02
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
@@ -302,8 +316,8 @@ class BanditHardAndSparse1000(BanditEnv):
         self.best = 526
         self.num_arms = 1000
 
-        p_dist = [0.08] * self.num_arms
-        p_dist[self.best] = 0.1
+        p_dist = [0.01] * self.num_arms
+        p_dist[self.best] = 0.02
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
