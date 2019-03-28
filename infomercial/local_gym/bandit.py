@@ -65,9 +65,7 @@ class BanditEnv(gym.Env):
 
 
 class UnstableBanditEnv(gym.Env):
-    """n-armed bandit environment, but the winning probabilites are unstable.
-
-    """
+    """n-armed bandit, but the winning probabilites are unstable."""
 
     def __init__(self, p_dists, r_dists, unstable_rate):
         for p_dist, r_dist in zip(p_dists, r_dists):
@@ -132,17 +130,6 @@ class UnstableBanditEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         pass
-
-
-# TODO:
-# 2 armed classic
-# 121 for Wu, C. M., Schulz, E., Speekenbrink, M., Nelson, J. D., & Meder, B. (2018). Generalization guides human exploration in vast decision spaces. Nature Human Behaviour, 1.
-# 1000 because why not.
-
-# levels [1, 0...]  # Fixed
-#        [0.8, 0.2...] # std examples
-#        [.1, .08...] # sparse and hard
-# also do a 50 50... as a control.
 
 
 class BanditOneHot2(BanditEnv):
