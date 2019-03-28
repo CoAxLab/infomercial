@@ -91,10 +91,15 @@ def information_value(p_new, p_old, base=None):
     return entropy(p_old, qk=p_new, base=base)
 
 
-def save_checkpoint(state, filename='checkpoint.pth.tar'):
+def save_checkpoint(state, filename='checkpoint.pkl'):
     data = cloudpickle.dumps(state)
     with open(filename, 'w') as fi:
         fi.write(data)
+
+
+def load_checkpoint(filename='checkpoint.pkl'):
+    with open(filename, 'r') as fi:
+        return cloudpickle.load(fi)
 
 
 def Q_update(state, reward, critic, lr):
