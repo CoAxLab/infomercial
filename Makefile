@@ -12,7 +12,7 @@ exp1:
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --seed_value={1}' ::: 1 2
 
-# Run several bandits with the same parameters drawn from some hand tuning
+# As a first earl exp, run several bandits with the same parameters drawn from some hand tuning. See where were at, overall.
 # done in `exp_info_bandit.ipynb`
 #
 # lr = .1; epsilon = 1e-8
