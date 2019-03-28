@@ -93,7 +93,6 @@ def information_value(p_new, p_old, base=None):
 
 def save_checkpoint(state, filename='checkpoint.pkl'):
     data = cloudpickle.dumps(state)
-    print(data)
     with open(filename, 'wb') as fi:
         fi.write(data)
 
