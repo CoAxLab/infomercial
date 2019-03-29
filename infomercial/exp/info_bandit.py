@@ -253,8 +253,10 @@ def run(env_name='BanditOneHot2-v0',
     if save is not None:
         save_checkpoint(
             dict(
+                best=env.env.best,
                 episodes=episodes,
                 policies=policies,
+                actions=actions,
                 ties=ties,
                 critic_E=critic_E.state_dict(),
                 critic_R=critic_R.state_dict(),
