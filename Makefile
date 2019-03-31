@@ -36,6 +36,11 @@ exp2:
 # Try some parameter variations starting based on exp2, which was about 2/3 of
 # the way there in terms of solving all the bandits.
 
+# Lesser lr improves sparse, but destroys performance on one high. Gain on sparse are not really great.
+# Lesser threshold also hamrd one high. Does improve sparse.
+
+# hot take: high lr good. play with theshold more....
+
 # lr = 0.01
 exp3:
 	parallel -j 40 -v \
@@ -77,3 +82,57 @@ exp8:
 			--joblog '$(DATA_PATH)/exp8.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-9 --lr=0.000001 --save=$(DATA_PATH)/exp8_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# ----------------------------------------------------------------------------
+# 3-31-2019
+# Quest for on true parameter set continues....
+# After exp3-8, trying high lr with more-ahem-exploration of the tie_threshold.
+
+# lr = .1; tie_threshold = 1e-9
+exp9:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp9.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-9 --lr=0.1 --save=$(DATA_PATH)/exp9_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .1; tie_threshold = 1e-10
+exp10:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp10.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-10 --lr=0.1 --save=$(DATA_PATH)/exp10_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .2; tie_threshold = 1e-8
+exp11:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp11.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-8 --lr=0.2 --save=$(DATA_PATH)/exp11_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .2; tie_threshold = 1e-9
+exp12:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp12.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-9 --lr=0.2 --save=$(DATA_PATH)/exp12_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .2; tie_threshold = 1e-10
+exp13:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp13.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-10 --lr=0.2 --save=$(DATA_PATH)/exp13_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .1; tie_threshold = 1e-6
+exp14:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp14.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-6 --lr=0.1 --save=$(DATA_PATH)/exp14_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .1; tie_threshold = 1e-4
+exp15:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp15.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-4 --lr=0.1 --save=$(DATA_PATH)/exp15_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
