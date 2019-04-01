@@ -96,13 +96,18 @@ exp9:
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-9 --lr=0.1 --save=$(DATA_PATH)/exp9_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-10
+#
+# Sum: exp9-10 decreasing threshold not helpful w/ lr = 1. I expected the opposite.
 exp10:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp10.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-10 --lr=0.1 --save=$(DATA_PATH)/exp10_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
+
 # lr = .2; tie_threshold = 1e-8
+# 
+# Sum:  OneHigh121 shows an approach to 1, that a large LOSS in p_best with learning. First time I've seen a loss. Don't really understand how that can be!
 exp11:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp11.log' \
@@ -110,6 +115,8 @@ exp11:
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-8 --lr=0.2 --save=$(DATA_PATH)/exp11_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .2; tie_threshold = 1e-9
+#
+# 121 again shows a loss (see exp11) however it is MUCH more severe here.
 exp12:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp12.log' \
@@ -117,6 +124,9 @@ exp12:
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-9 --lr=0.2 --save=$(DATA_PATH)/exp12_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .2; tie_threshold = 1e-10
+# 
+# Sum: loss on 121 again. No improvement otherwise.
+# lr = 0.2 is just too high?
 exp13:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp13.log' \
@@ -124,6 +134,11 @@ exp13:
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-10 --lr=0.2 --save=$(DATA_PATH)/exp13_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-6
+#
+# Sum: oneHigh all solved. thresh was too low! No sparse solved. 
+#
+# - Maybe should I start thinking about the lr/thresh ratio. 
+# Exploring that way?
 exp14:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp14.log' \
@@ -131,8 +146,23 @@ exp14:
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-6 --lr=0.1 --save=$(DATA_PATH)/exp14_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-4
+#
+# Sum: OneHigh NEARLY solved VERY fast. Back to near linear answers for this task! Some instability. Do a run w/ tie_threshold = 1e-3.
+# 
+# Sparse still looking quite poor; In single trials I was nailing these...
+# not sure what I was doing different. 
+#
+# - The dist around p_best is consistent enough that single trials are a
+# reasonable path to faster tuning.
 exp15:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp15.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-4 --lr=0.1 --save=$(DATA_PATH)/exp15_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# lr = .1; tie_threshold = 1e-3
+exp16:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp16.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-3 --lr=0.1 --save=$(DATA_PATH)/exp16_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
