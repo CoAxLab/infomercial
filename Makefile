@@ -185,10 +185,12 @@ exp17:
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-5 --lr=0.1 --save=$(DATA_PATH)/exp17_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
-
 # lr = .000001; tie_threshold = 1e-5
 # 
-# Sum: 
+# Sum: oneHigh2,10,121 quickly find p_best. oneHigh1000 never converged
+# Sparse2 converged. Sparse10  p_best=0.8 or so. 121 and 1000 are at chance.
+# Confused. Re-visit tuning runs. What is happening? Why are sparse solns poss.
+# in these exps. What did I do diff?
 exp18:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp18.log' \
