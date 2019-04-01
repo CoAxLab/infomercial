@@ -191,6 +191,11 @@ exp17:
 # Sparse2 converged. Sparse10  p_best=0.8 or so. 121 and 1000 are at chance.
 # Confused. Re-visit tuning runs. What is happening? Why are sparse solns poss.
 # in these exps. What did I do diff?
+# 
+# Overall, tie_threshold seems to be more critical that lr is....
+# Will need to do a full sensitivity test. 
+# 
+# Should also plot p_best for all bandits/exp so far....
 exp18:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp18.log' \
