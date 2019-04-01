@@ -153,7 +153,7 @@ exp14:
 # not sure what I was doing different. 
 #
 # - The dist around p_best is consistent enough that single trials are a
-# reasonable path to faster tuning.
+# reasonable path to faster tuning. Esp for Sparse.
 exp15:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp15.log' \
@@ -163,8 +163,19 @@ exp15:
 # ----------------------------------------------------------------------------
 # 4-1-2019
 # lr = .1; tie_threshold = 1e-3
+# 
+# Sum: instability over last few thousand trials increased compared to exp15. 
+# I was hoping for the opposite. Try 1e-5 next. 
 exp16:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp16.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-3 --lr=0.1 --save=$(DATA_PATH)/exp16_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+
+# lr = .1; tie_threshold = 1e-5
+exp17:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp17.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'info_bandit.py --env_name {2} --num_episodes=10000 --policy_mode='meta' --tie_break='next' --tie_threshold=1e-5 --lr=0.1 --save=$(DATA_PATH)/exp17_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
