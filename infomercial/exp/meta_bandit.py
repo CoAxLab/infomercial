@@ -146,14 +146,8 @@ def run(env_name='BanditOneHot2-v0',
     # -
     memory = ConditionalCount()
     visited_states = set()
-
-    # -
-    if policy_mode == 'meta':
-        E_t = 0.0
-        R_t = 0.0
-    # TODO: add R or E only option by using an np.inf assignment?
-    else:
-        raise ValueError("policy mode must be 'meta'")
+    E_t = 0.0
+    R_t = 0.0
 
     # ------------------------------------------------------------------------
     # Play
