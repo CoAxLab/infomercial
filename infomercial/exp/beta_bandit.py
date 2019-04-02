@@ -152,11 +152,9 @@ def run(env_name='BanditOneHot2-v0',
     total_E = 0.0
     scores_E = []
     scores_R = []
-    values_E = []
-    values_R = []
+    values = []
     actions = []
     ties = []
-    policies = []
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -166,8 +164,7 @@ def run(env_name='BanditOneHot2-v0',
         state = int(env.reset()[0])
 
         # Choose an action; Choose a bandit
-        values = list(critic.model.values())
-        action = actor(values)
+        action = actor(list(critic.model.values()))
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -228,7 +225,6 @@ def run(env_name='BanditOneHot2-v0',
             dict(
                 best=env.env.best,
                 episodes=episodes,
-                policies=policies,
                 actions=actions,
                 ties=ties,
                 critic=critic.state_dict(),
@@ -242,8 +238,7 @@ def run(env_name='BanditOneHot2-v0',
     # -
     # Don't return anything if run from the CL
     if interactive:
-        return (episodes, actions, scores_E, scores_R, values_E, values_R,
-                ties, policies)
+        return (episodes, actions, scores_E, scores_R, values, ties)
 
 
 if __name__ == "__main__":
