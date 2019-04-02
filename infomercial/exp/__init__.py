@@ -1,1 +1,1 @@
-from infomercial.exp.info_bandit import run as info_bandit
+from infomercial.exp.meta_bandit import run as meta_bandit

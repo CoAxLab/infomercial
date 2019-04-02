@@ -9,5 +9,5 @@ setup(
     author_email='erik.exists@gmail.com',
     license='MIT',
     packages=['infomercial'],
-    scripts=['infomercial/exp/info_bandit.py'],
+    scripts=['infomercial/exp/meta_bandit.py'],
     zip_safe=False)
