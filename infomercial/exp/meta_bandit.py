@@ -112,7 +112,6 @@ def Q_update(state, reward, critic, lr):
 
 def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
-        policy_mode='meta',
         tie_break='next',
         tie_threshold=0.0,
         lr=.1,
