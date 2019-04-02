@@ -210,3 +210,10 @@ exp19:
 			--joblog '$(DATA_PATH)/exp19.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --epsilon=0.1 --epsilon_decay_tau=0.001 --lr=.1 --save=$(DATA_PATH)/exp19_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
+
+# Testing the CL for beta_bandit.py
+exp20:
+	parallel -j 1 -v \
+			--joblog '$(DATA_PATH)/exp20.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --beta=1.0 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp20_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
