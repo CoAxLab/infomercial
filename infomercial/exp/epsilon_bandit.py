@@ -131,7 +131,7 @@ def run(env_name='BanditOneHot2-v0',
         # Critic learns
         critic = Q_update(action, R_t, critic, lr)
 
-        # Decay noise?
+        # Decay ep. noise?
         if epsilon_decay_tau > 0:
             actor.decay_epsilon()
 
@@ -145,7 +145,9 @@ def run(env_name='BanditOneHot2-v0',
 
         # -
         if debug:
-            print(f">>> State {state}, Action {action}, Rt {R_t}")
+            print(
+                f">>> State {state}, Action {action}, Rt {R_t}, Epsilon {actor.epsilon}"
+            )
             print(f">>> critic_R: {critic.state_dict()}")
         if progress:
             print(f">>> Episode {n}.")
