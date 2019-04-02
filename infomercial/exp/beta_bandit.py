@@ -207,10 +207,10 @@ def run(env_name='BanditOneHot2-v0',
         else:
             ties.append(0)
         total_R += R_t
-        total_E += E_t
-        scores_E.append(E_t)
+        total_E += beta * E_t
+        scores_E.append(beta * E_t)
         scores_R.append(R_t)
-        values_E.append(critic(action))
+        values.append(critic(action))
 
         # -
         if debug:
@@ -221,9 +221,8 @@ def run(env_name='BanditOneHot2-v0',
             print(f">>> Total R: {total_R}; Total E: {total_E}\n")
 
     # -
-    episodes = list(range(num_episodes))
-
     # Save models to disk when done?
+    episodes = list(range(num_episodes))
     if save is not None:
         save_checkpoint(
             dict(
@@ -237,10 +236,11 @@ def run(env_name='BanditOneHot2-v0',
                 total_R=total_R,
                 scores_E=scores_E,
                 scores_R=scores_R,
-                values_E=values_E,
-                values_R=values_R),
+                values=values),
             filename=save)
 
+    # -
+    # Don't return anything if run from the CL
     if interactive:
         return (episodes, actions, scores_E, scores_R, values_E, values_R,
                 ties, policies)
