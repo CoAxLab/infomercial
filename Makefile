@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -10,7 +10,7 @@ exp1:
 	parallel -j 1 -v \
 			--joblog '$(DATA_PATH)/exp1.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --seed_value={1}' ::: 1 2
+			'meta_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
 
 # As a first real exp, run several bandits with the same parameters 
 # drawn from some hand tuning. See where were at, overall.
@@ -201,3 +201,12 @@ exp18:
 			--joblog '$(DATA_PATH)/exp18.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-5 --lr=0.000001 --save=$(DATA_PATH)/exp18_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+
+# ---------------------------------------------------------------------------
+# 4-2-2019
+# Testing the CL for epsilon_bandit.py
+exp19:
+	parallel -j 1 -v \
+			--joblog '$(DATA_PATH)/exp19.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --epsilon=0.1 --epsilon_decay_tau=0 --lr=.1 --save=$(DATA_PATH)/exp19_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
