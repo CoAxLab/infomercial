@@ -241,29 +241,29 @@ def run(env_name='BanditOneHot2-v0',
 
     # -
     episodes = list(range(num_episodes))
+    result = dict(
+        best=env.env.best,
+        episodes=episodes,
+        policies=policies,
+        actions=actions,
+        ties=ties,
+        critic_E=critic_E.state_dict(),
+        critic_R=critic_R.state_dict(),
+        total_E=total_E,
+        total_R=total_R,
+        scores_E=scores_E,
+        scores_R=scores_R,
+        values_E=values_E,
+        values_R=values_R)
 
     # Save models to disk when done?
     if save is not None:
-        save_checkpoint(
-            dict(
-                best=env.env.best,
-                episodes=episodes,
-                policies=policies,
-                actions=actions,
-                ties=ties,
-                critic_E=critic_E.state_dict(),
-                critic_R=critic_R.state_dict(),
-                total_E=total_E,
-                total_R=total_R,
-                scores_E=scores_E,
-                scores_R=scores_R,
-                values_E=values_E,
-                values_R=values_R),
-            filename=save)
+        save_checkpoint(result, filename=save)
 
     if interactive:
-        return (episodes, actions, scores_E, scores_R, values_E, values_R,
-                ties, policies)
+        return result
+    else:
+        return None
 
 
 if __name__ == "__main__":
