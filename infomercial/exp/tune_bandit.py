@@ -128,6 +128,14 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
     save_checkpoint(
         best_config, filename=os.path.join(path, name + "_best.pkl"))
 
+    # Sum all trials
+    sorted_configs = {}
+    for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
+        sorted_configs[i] = trial.config
+        sorted_configs[i].update({"total_R": trial.last_result["total_R"]})
+    save_checkpoint(
+        sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
+
     # -
     return best, trials
 
