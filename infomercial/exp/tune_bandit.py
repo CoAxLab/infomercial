@@ -71,8 +71,11 @@ class TuneEpsilon(TuneBase):
         return self.result
 
 
-def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
+def run(name, exp_name='beta_bandit', num_samples=10, training_iteration=20, **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
+
+    # ------------------------------------------------------------------------
+    # Init
 
     # Separate name from path
     path, name = os.path.split(name)
@@ -108,8 +111,9 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
         reward_attr='total_R',
         perturbation_interval=600.0,
         hyperparam_mutations=config)
+    stop = {"training_iteration": training_iteration}
 
-    stop = {"training_iteration": 20}
+    # ------------------------------------------------------------------------
     trials = ray_run(
         Tuner,
         name=name,
@@ -122,13 +126,16 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
         verbose=False)
     best = get_best_trial(trials, 'total_R')
 
-    # Save best params in an easy to find place
+    # ------------------------------------------------------------------------
+    # Re-save the interesting parts
+
+    # Best trial
     best_config = best.config
     best_config.update(get_best_result(trials, 'total_R'))
     save_checkpoint(
         best_config, filename=os.path.join(path, name + "_best.pkl"))
 
-    # Sum all trials
+    # Sort and save a sum of all trials
     sorted_configs = {}
     for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
         sorted_configs[i] = trial.config
@@ -136,7 +143,6 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
     save_checkpoint(
         sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
 
-    # -
     return best, trials
 
 
