@@ -1,5 +1,6 @@
 import fire
 import ray
+import os
 from ray.tune import sample_from
 from ray.tune import run as ray_run
 from ray.tune import Trainable
@@ -73,6 +74,9 @@ class TuneEpsilon(TuneBase):
 def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
 
+    # Separate name from path
+    path, name = os.path.split(name)
+
     # Build the config dict
     config = {}  # Home for processed kwargs
     keys = sorted(list(config_kwargs.keys()))
@@ -108,9 +112,9 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
     stop = {"training_iteration": 20}
     trials = ray_run(
         Tuner,
-        local_dir=name,
-        num_samples=num_samples,
         name=name,
+        local_dir=path,
+        num_samples=num_samples,
         reuse_actors=True,
         stop=stop,
         config=config,
@@ -118,6 +122,13 @@ def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
         verbose=False)
     best = get_best_trial(trials, 'total_R')
 
+    # Save best params in an easy to find place
+    best_config = best.config
+    best_config.update(get_best_result(trials, 'total_R'))
+    save_checkpoint(
+        best_config, filename=os.path.join(path, name + "_best.pkl"))
+
+    # -
     return best, trials
 
 
