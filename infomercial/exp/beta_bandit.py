@@ -110,7 +110,7 @@ def Q_update(state, reward, critic, lr):
     return critic
 
 
-def run(env_name='BanditOneHot2-v0',
+def run(env_name='BanditOneHigh2-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
