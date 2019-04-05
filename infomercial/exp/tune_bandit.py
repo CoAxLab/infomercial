@@ -70,11 +70,7 @@ class TuneEpsilon(TuneBase):
         return self.result
 
 
-def run(name,
-        env_name='BanditOneHigh10-v0',
-        exp_name='beta_bandit',
-        num_samples=10,
-        **config_kwargs):
+def run(name, exp_name='beta_bandit', num_samples=10, **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
 
     # Build the config dict
@@ -88,6 +84,8 @@ def run(name,
             v = sample_from(v)
         # Or a scalar
         except TypeError:
+            v = config_kwargs[k]
+        except ValueError:
             v = config_kwargs[k]
 
         config[k] = v
