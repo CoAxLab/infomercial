@@ -15,6 +15,23 @@ from infomercial.exp.meta_bandit import load_checkpoint
 from functools import partial
 
 
+def get_best_trial(trial_list, metric):
+    """Retrieve the best trial."""
+    return max(trial_list, key=lambda trial: trial.last_result.get(metric, 0))
+
+
+def get_sorted_trials(trial_list, metric):
+    return sorted(
+        trial_list,
+        key=lambda trial: trial.last_result.get(metric, 0),
+        reverse=True)
+
+
+def get_best_result(trial_list, metric):
+    """Retrieve the last result from the best trial."""
+    return {metric: get_best_trial(trial_list, metric).last_result[metric]}
+
+
 class TuneBase(Trainable):
     def _setup(self, config):
         self.config = config
@@ -90,17 +107,20 @@ def run(name,
         perturbation_interval=600.0,
         hyperparam_mutations=config)
 
-    # stop = {"num_samples": num_samples}
-    ray_run(
+    stop = {"training_iteration": 20}
+    trials = ray_run(
         Tuner,
         local_dir=name,
         num_samples=num_samples,
         name=name,
         reuse_actors=True,
-        # stop=stop,
+        stop=stop,
         config=config,
         scheduler=pbt,
         verbose=False)
+    best = get_best_trial(trials, 'total_R')
+
+    return best, trials
 
 
 if __name__ == "__main__":
