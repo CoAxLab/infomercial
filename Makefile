@@ -217,3 +217,19 @@ exp20:
 			--joblog '$(DATA_PATH)/exp20.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'beta_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --beta=1.0 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp20_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
+
+# ---------------------------------------------------------------------------
+# 4-5-2019
+# Tune some models
+exp21:
+	-rm -rf $(DATA_PATH)/exp21/*
+	tune_bandit.py $(DATA_PATH)/exp21 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_episodes=10000 \
+		--num_samples=10 \
+		--training_iteration=1000 \
+		--perturbation_interval=10 \
+		--epsilon='(.01, .99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr='(1e-6, 1e-1)'
