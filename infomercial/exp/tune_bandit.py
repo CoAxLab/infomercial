@@ -131,7 +131,8 @@ def run(name,
 
 
 if __name__ == "__main__":
-    import ray
+    # Get ray goin before the CL runs
     ray.init()
 
+    # Generate CL interface.
     fire.Fire(run)
