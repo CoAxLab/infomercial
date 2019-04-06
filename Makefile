@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-DATA_PATH=/Users/qualia/Code/infomercial/data
-# DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -220,7 +220,7 @@ exp20:
 
 # ---------------------------------------------------------------------------
 # 4-5-2019
-# Tune epsilon_bandit v1
+# Tune epsilon_bandit: a quick test run
 exp21:
 	-rm -rf $(DATA_PATH)/exp21/*
 	tune_bandit.py $(DATA_PATH)/exp21 \
@@ -230,6 +230,20 @@ exp21:
 		--num_samples=10 \
 		--training_iteration=20 \
 		--perturbation_interval=2 \
+		--epsilon='(.01, .99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr='(1e-6, 1e-1)'
+
+# Tune epsilon_bandit: first real try
+exp22:
+	-rm -rf $(DATA_PATH)/exp22/*
+	tune_bandit.py $(DATA_PATH)/exp22 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=120 \
+		--training_iteration=100 \
+		--perturbation_interval=1 \
 		--epsilon='(.01, .99)' \
 		--epsilon_decay_tau='(0.0001, 0.1)' \
 		--lr='(1e-6, 1e-1)'
