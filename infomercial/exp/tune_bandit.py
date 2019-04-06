@@ -7,9 +7,9 @@ from ray.tune import Trainable
 from ray.tune.schedulers import PopulationBasedTraining
 
 import numpy as np
-from infomercial.exp import meta_bandit
-from infomercial.exp import beta_bandit
-from infomercial.exp import epsilon_bandit
+from infomercial import exp
+# from infomercial.exp import beta_bandit
+# from infomercial.exp import epsilon_bandit
 from infomercial.exp.meta_bandit import save_checkpoint
 from infomercial.exp.meta_bandit import load_checkpoint
 
@@ -50,28 +50,14 @@ class TuneBase(Trainable):
         return True
 
 
-class TuneBeta(TuneBase):
-    def _train(self):
-        self.result = beta_bandit(**self.config)
-        self.iteration += 1
-        return self.result
-
-
-class TuneMeta(TuneBase):
-    def _train(self):
-        self.result = meta_bandit(**self.config)
-        self.iteration += 1
-        return self.result
-
-
-class TuneEpsilon(TuneBase):
-    def _train(self):
-        self.result = epsilon_bandit(**self.config)
-        self.iteration += 1
-        return self.result
-
-
-def run(name, exp_name='beta_bandit', num_samples=10, training_iteration=20, **config_kwargs):
+def run(name,
+        exp_name='beta_bandit',
+        env_name='BanditOneHigh10v-10',
+        num_episodes=1000,
+        num_samples=10,
+        perturbation_interval=10,
+        training_iteration=1000,
+        **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
 
     # ------------------------------------------------------------------------
@@ -97,30 +83,28 @@ def run(name, exp_name='beta_bandit', num_samples=10, training_iteration=20, **c
 
         config[k] = v
 
-    if exp_name == 'beta_bandit':
-        Tuner = TuneBeta
-    elif exp_name == 'epsilon_bandit':
-        Tuner = TuneEpsilon
-    elif exp_name == 'meta_bandit':
-        Tuner = TuneMeta
-    else:
-        raise ValueError("exp_name not known")
+    # Define the final Trainable.
+    class Tuner(TuneBase):
+        def _train(self):
+            exp_func = getattr(exp, exp_name)
+            self.result = exp_func(
+                env_name=env_name, num_episodes=num_episodes, **self.config)
+            self.iteration += 1
+            return self.result
 
+    # ------------------------------------------------------------------------
     pbt = PopulationBasedTraining(
         time_attr='training_iteration',
         reward_attr='total_R',
-        perturbation_interval=600.0,
+        perturbation_interval=perturbation_interval,
         hyperparam_mutations=config)
-    stop = {"training_iteration": training_iteration}
 
-    # ------------------------------------------------------------------------
     trials = ray_run(
         Tuner,
         name=name,
         local_dir=path,
         num_samples=num_samples,
-        reuse_actors=True,
-        stop=stop,
+        stop={"training_iteration": training_iteration},
         config=config,
         scheduler=pbt,
         verbose=False)
@@ -147,4 +131,7 @@ def run(name, exp_name='beta_bandit', num_samples=10, training_iteration=20, **c
 
 
 if __name__ == "__main__":
+    import ray
+    ray.init()
+
     fire.Fire(run)
