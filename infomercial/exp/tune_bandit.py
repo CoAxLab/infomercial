@@ -2,6 +2,7 @@ import fire
 import ray
 import os
 from ray.tune import sample_from
+from ray.tune import function
 from ray.tune import run as ray_run
 from ray.tune import Trainable
 from ray.tune.schedulers import PopulationBasedTraining
@@ -33,7 +34,7 @@ def get_best_result(trial_list, metric):
     return {metric: get_best_trial(trial_list, metric).last_result[metric]}
 
 
-class TuneBase(Trainable):
+class TuneBanditBase(Trainable):
     def _setup(self, config):
         self.config = config
         self.iteration = 0
@@ -66,25 +67,17 @@ def run(name,
     # Separate name from path
     path, name = os.path.split(name)
 
-    # Build the config dict
-    config = {}  # Home for processed kwargs
+    # Build the config and hyper dicts
+    hyper = {}  # Home for processed kwargs
+    config = {}
     keys = sorted(list(config_kwargs.keys()))
     for k in keys:
-        # Either it is a param list, so make it a sampling fn
-        try:
-            begin, end = config_kwargs[k]
-            v = lambda spec: np.random.uniform(begin, end)
-            v = sample_from(v)
-        # Or a scalar
-        except TypeError:
-            v = config_kwargs[k]
-        except ValueError:
-            v = config_kwargs[k]
-
-        config[k] = v
+        begin, end = config_kwargs[k]
+        hyper[k] = lambda: np.random.uniform(begin, end)
+        config[k] = sample_from(lambda spec: np.random.uniform(begin, end))
 
     # Define the final Trainable.
-    class Tuner(TuneBase):
+    class Tuner(TuneBanditBase):
         def _train(self):
             exp_func = getattr(exp, exp_name)
             self.result = exp_func(
@@ -97,7 +90,7 @@ def run(name,
         time_attr='training_iteration',
         reward_attr='total_R',
         perturbation_interval=perturbation_interval,
-        hyperparam_mutations=config)
+        hyperparam_mutations=hyper)
 
     trials = ray_run(
         Tuner,
