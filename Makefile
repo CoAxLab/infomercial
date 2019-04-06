@@ -220,16 +220,17 @@ exp20:
 
 # ---------------------------------------------------------------------------
 # 4-5-2019
-# Tune some models
+# Tune epsilon_bandit v1
 exp21:
 	-rm -rf $(DATA_PATH)/exp21/*
 	tune_bandit.py $(DATA_PATH)/exp21 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh10-v0 \
-		--num_episodes=10000 \
-		--num_samples=10 \
-		--training_iteration=1000 \
-		--perturbation_interval=10 \
+		--num_episodes=1000 \
+		--num_samples=100 \
+		--training_iteration=100 \
+		--perturbation_interval=5 \
 		--epsilon='(.01, .99)' \
 		--epsilon_decay_tau='(0.0001, 0.1)' \
 		--lr='(1e-6, 1e-1)'
+
