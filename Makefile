@@ -235,6 +235,19 @@ exp21:
 		--lr='(1e-6, 1e-1)'
 
 # Tune epsilon_bandit: first real try
+# Sum: converged on having essentially no exploration.
+#  'epsilon': 0.013352806530529619,
+#  'epsilon_decay_tau': 0.08101846019197038,
+#  'lr': 0.004639344318990854,
+#  'total_R': 583.0
+# It never find the best arm as a result.
+# 
+# I'm not sure if that's a problem with the method or
+# the code. To try and diagnos going to run a 
+# the other exps to see anything sensible happens.
+
+# Note: to save space I deleted the detailed run data in exp22/*
+# kept only exp22_best.pkl and exp22_sorted.pkl
 exp22:
 	-rm -rf $(DATA_PATH)/exp22/*
 	tune_bandit.py $(DATA_PATH)/exp22 \
@@ -248,3 +261,30 @@ exp22:
 		--epsilon_decay_tau='(0.0001, 0.1)' \
 		--lr='(1e-6, 1e-1)'
 
+# ---------------------------------------------------------------------------
+# 4-8-2019
+# First real opt for meta
+exp23:
+	-rm -rf $(DATA_PATH)/exp23/*
+	tune_bandit.py $(DATA_PATH)/exp23 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=120 \
+		--training_iteration=100 \
+		--perturbation_interval=1 \
+		--epsilon='(1e-1, .1e-10)' \
+		--lr='(1e-1, 1e-6)'
+
+# First real opt for beta
+exp24:
+	-rm -rf $(DATA_PATH)/exp24/*
+	tune_bandit.py $(DATA_PATH)/exp24 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=120 \
+		--training_iteration=100 \
+		--perturbation_interval=1 \
+		--beta='(1e-3, 1e1)' \
+		--lr='(1e-1, 1e-6)'
