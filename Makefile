@@ -273,7 +273,7 @@ exp23:
 		--num_samples=120 \
 		--training_iteration=100 \
 		--perturbation_interval=1 \
-		--epsilon='(1e-1, .1e-10)' \
+		--tie_threshold='(1e-1, .1e-10)' \
 		--lr='(1e-1, 1e-6)'
 
 # First real opt for beta
