@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -263,7 +263,14 @@ exp22:
 
 # ---------------------------------------------------------------------------
 # 4-8-2019
+# c37259fc6ba12e2ca8f49da1457218664a8b36ff
 # First real opt for meta
+
+# Sum: after running for 2 days this never converged. No sure why? PBT config?
+# Model problems? 
+# 
+# Next: maoving to a simple random search, just go make some quick progress in 
+# studing the alt models. Will revist PBT later...
 exp23:
 	-rm -rf $(DATA_PATH)/exp23/*
 	tune_bandit.py $(DATA_PATH)/exp23 \
@@ -287,4 +294,46 @@ exp24:
 		--training_iteration=100 \
 		--perturbation_interval=1 \
 		--beta='(1e-3, 1e1)' \
+		--lr='(1e-1, 1e-6)'
+
+
+# ---------------------------------------------------------------------------
+# 4-10-2019
+# 2890330c3ac7b6e4aa2c58c31bf2860f04876c99
+
+# Branched from master -> random_search. 
+# Try: Random search for 100 draws, with 3 resamples
+# 
+# Opt beta
+exp25:
+	-rm -rf $(DATA_PATH)/exp25/*
+	tune_bandit.py $(DATA_PATH)/exp25 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=500 \
+		--beta='(1e-3, 1e1)' \
+		--lr='(1e-1, 1e-6)'
+
+# opt meta
+exp26:
+	-rm -rf $(DATA_PATH)/exp26/*
+	tune_bandit.py $(DATA_PATH)/exp26 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=500 \
+		--tie_threshold='(1e-1, .1e-10)' \
+		--lr='(1e-1, 1e-6)'
+
+# opt epsilon
+exp27:
+	-rm -rf $(DATA_PATH)/exp27/*
+	tune_bandit.py $(DATA_PATH)/exp27 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=500 \
+		--epsilon='(.01, .99)' \
+		--epsilon_decay_tau='(0.0001, 0.01)' \
 		--lr='(1e-1, 1e-6)'
