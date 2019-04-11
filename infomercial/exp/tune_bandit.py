@@ -2,6 +2,7 @@ import fire
 import ray
 import os
 from ray.tune import sample_from
+from ray.tune import grid_search
 from ray.tune import function
 from ray.tune import run as ray_run
 from ray.tune import Trainable
@@ -53,11 +54,10 @@ class TuneBanditBase(Trainable):
 
 def run(name,
         exp_name='beta_bandit',
-        env_name='BanditOneHigh10v-10',
+        env_name='BanditOneHigh10-v0',
         num_episodes=1000,
         num_samples=10,
-        perturbation_interval=10,
-        training_iteration=1000,
+        verbose=False,
         **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
 
@@ -67,13 +67,11 @@ def run(name,
     # Separate name from path
     path, name = os.path.split(name)
 
-    # Build the config and hyper dicts
-    hyper = {}  # Home for processed kwargs
+    # Build the config
     config = {}
     keys = sorted(list(config_kwargs.keys()))
     for k in keys:
         begin, end = config_kwargs[k]
-        hyper[k] = lambda: np.random.uniform(begin, end)
         config[k] = sample_from(lambda spec: np.random.uniform(begin, end))
 
     # Define the final Trainable.
@@ -81,31 +79,29 @@ def run(name,
         def _train(self):
             exp_func = getattr(exp, exp_name)
             self.result = exp_func(
-                env_name=env_name, num_episodes=num_episodes, **self.config)
+                env_name=env_name,
+                num_episodes=num_episodes,
+                seed_value=None,
+                **self.config)
+            self.result.update({"iteration": self.iteration})
             self.iteration += 1
+
             return self.result
 
     # ------------------------------------------------------------------------
-    pbt = PopulationBasedTraining(
-        time_attr='training_iteration',
-        reward_attr='total_R',
-        perturbation_interval=perturbation_interval,
-        hyperparam_mutations=hyper)
-
+    # Opt!
     trials = ray_run(
         Tuner,
         name=name,
         local_dir=path,
         num_samples=num_samples,
-        stop={"training_iteration": training_iteration},
         config=config,
-        scheduler=pbt,
-        verbose=False)
+        stop={"iteration": 1},
+        verbose=verbose)
     best = get_best_trial(trials, 'total_R')
 
     # ------------------------------------------------------------------------
-    # Re-save the interesting parts
-
+    # Re-save the interesting parts:
     # Best trial
     best_config = best.config
     best_config.update(get_best_result(trials, 'total_R'))
