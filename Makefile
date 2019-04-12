@@ -323,7 +323,7 @@ exp25:
 		--num_episodes=3000 \
 		--num_samples=500 \
 		--beta='(0.001, 2)' \
-		--lr='(0.001, 0.1)'
+		--lr='(0.001, 0.2)'
 
 # opt meta
 exp26:
@@ -335,7 +335,7 @@ exp26:
 		--num_samples=500 \
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
-		--lr='(0.001, 0.1)'
+		--lr='(0.001, 0.2)'
 
 # opt epsilon
 exp27:
@@ -347,4 +347,4 @@ exp27:
 		--num_samples=500 \
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.01)' \
-		--lr='(0.001, 0.1)'
+		--lr='(0.001, 0.2)'
