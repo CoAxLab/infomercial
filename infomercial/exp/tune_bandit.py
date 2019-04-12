@@ -99,7 +99,7 @@ def run(name,
         num_samples=num_samples,
         config=config,
         stop={"iteration": 1},
-        verbose=False)
+        verbose=verbose)
     best = get_best_trial(trials, 'total_R')
 
     # ------------------------------------------------------------------------
