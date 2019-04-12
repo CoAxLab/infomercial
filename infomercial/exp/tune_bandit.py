@@ -72,6 +72,8 @@ def run(name,
     keys = sorted(list(config_kwargs.keys()))
     for k in keys:
         begin, end = config_kwargs[k]
+        if verbose:
+            print(f">>> Sampling {k} from {begin}-{end}")
         config[k] = sample_from(lambda spec: np.random.uniform(begin, end))
 
     # Define the final Trainable.
@@ -97,7 +99,7 @@ def run(name,
         num_samples=num_samples,
         config=config,
         stop={"iteration": 1},
-        verbose=verbose)
+        verbose=False)
     best = get_best_trial(trials, 'total_R')
 
     # ------------------------------------------------------------------------
