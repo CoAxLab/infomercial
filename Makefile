@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -322,8 +322,8 @@ exp25:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
-		--beta='(1e-3, 1e1)' \
-		--lr='(1e-1, 1e-6)'
+		--beta='(0.001, 2)' \
+		--lr='(0.001, 0.1)'
 
 # opt meta
 exp26:
@@ -333,8 +333,9 @@ exp26:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
-		--tie_threshold='(1e-1, .1e-10)' \
-		--lr='(1e-1, 1e-6)'
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.1)'
 
 # opt epsilon
 exp27:
@@ -344,6 +345,6 @@ exp27:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
-		--epsilon='(.01, .99)' \
+		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.01)' \
-		--lr='(1e-1, 1e-6)'
+		--lr='(0.001, 0.1)'
