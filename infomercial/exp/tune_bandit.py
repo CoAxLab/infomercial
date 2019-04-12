@@ -1,7 +1,9 @@
 import fire
 import ray
 import os
+from copy import deepcopy
 from ray.tune import sample_from
+from ray.tune import function
 from ray.tune import grid_search
 from ray.tune import function
 from ray.tune import run as ray_run
@@ -72,9 +74,14 @@ def run(name,
     keys = sorted(list(config_kwargs.keys()))
     for k in keys:
         begin, end = config_kwargs[k]
+        # While it seems excessive, I needed to use partial() to freeze
+        # (begin,end) for each k. Python's pass by ref was bieng counter-
+        # productive.
+        func = partial(np.random.uniform, low=begin, high=end)
+        config[k] = sample_from(lambda _: func())
+
         if verbose:
             print(f">>> Sampling {k} from {begin}-{end}")
-        config[k] = sample_from(lambda spec: np.random.uniform(begin, end))
 
     # Define the final Trainable.
     class Tuner(TuneBanditBase):
