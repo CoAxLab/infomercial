@@ -308,6 +308,13 @@ exp24:
 # Sum: Best params solved all oneHot/oneHigh. No progress on HardAndSparse
 # The top 50 parameters (or 500) all give qbout equal performance on the 
 # OneHigh tasks.
+# Sensitivy was to beta, but it is complex. Very little to lr directly. 
+# But there is probably a beta/lr interaction, given beta's complex trend,
+# but hard to sus it out.
+# Far as I can tell between beta: 0.04-0.08 gives the best total_R.
+# 
+# Meant to set beta between 0.1 - 10. Need to rerun this over a wider range.
+# The sampling for lr is off too. Hmm....
 exp25:
 	-rm -rf $(DATA_PATH)/exp25/*
 	tune_bandit.py $(DATA_PATH)/exp25 \
