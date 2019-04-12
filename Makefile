@@ -305,6 +305,9 @@ exp24:
 # Try: Random search for 100 draws, with 3 resamples
 # 
 # Opt beta
+# Sum: Best params solved all oneHot/oneHigh. No progress on HardAndSparse
+# The top 50 parameters (or 500) all give qbout equal performance on the 
+# OneHigh tasks.
 exp25:
 	-rm -rf $(DATA_PATH)/exp25/*
 	tune_bandit.py $(DATA_PATH)/exp25 \
