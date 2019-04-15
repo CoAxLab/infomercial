@@ -72,8 +72,7 @@ def run(name,
     prng = np.random.RandomState(seed_value)
 
     # ------------------------------------------------------------------------
-    # Init
-
+    # Init:
     # Separate name from path
     path, name = os.path.split(name)
 
@@ -100,6 +99,7 @@ def run(name,
     workers = []
     pool = Pool(processes=num_processes)
     for _ in range(num_samples):
+
         # Reset param sample for safety
         params["config"] = {}
 
@@ -113,17 +113,15 @@ def run(name,
             pool.apply_async(
                 train, kwds=deepcopy(params), callback=append_to_results))
 
-    # Get the worker's result (blocks until all complete)
+    # Get the worker's result (blocks until complete)
     for worker in workers:
         worker.get()
-
     pool.close()
     pool.join()
 
-    best = get_best_trial(trials, 'total_R')
-
     # ------------------------------------------------------------------------
-    # Save interesting configs (full model data is dropped):
+    # Save configs and total_R (full model data is dropped):
+    best = get_best_trial(trials, 'total_R')
 
     # Best trial config
     best_config = best["config"]
@@ -143,8 +141,5 @@ def run(name,
 
 
 if __name__ == "__main__":
-    # Get ray goin before the CL runs
-    # ray.init()
-
     # Generate CL interface.
     fire.Fire(run)
