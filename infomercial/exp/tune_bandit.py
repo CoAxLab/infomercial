@@ -108,8 +108,6 @@ def run(name,
             low, high = p
             params["config"][k] = prng.uniform(low=low, high=high)
 
-        print(params["config"])
-
         # A worker gets the new sample
         workers.append(
             pool.apply_async(
