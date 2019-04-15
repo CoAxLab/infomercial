@@ -66,8 +66,10 @@ def run(name,
         num_samples=10,
         num_processes=1,
         verbose=False,
+        seed_value=None,
         **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
+    prng = np.random.RandomState(seed_value)
 
     # ------------------------------------------------------------------------
     # Init
@@ -77,16 +79,6 @@ def run(name,
 
     # Look up the bandit run function were using in this tuning.
     exp_func = getattr(exp, exp_name)
-
-    # Build the sampling config
-    config = {}
-    keys = sorted(list(config_kwargs.keys()))
-    for k in keys:
-        begin, end = config_kwargs[k]
-        config[k] = partial(np.random.uniform, low=begin, high=end)
-
-        if verbose:
-            print(f">>> Sampling {k} from {begin}-{end}")
 
     # Build the parallel callback
     trials = []
@@ -99,12 +91,11 @@ def run(name,
         exp_func=exp_func,
         env_name=env_name,
         num_episodes=num_episodes,
-        seed_value=None,
+        seed_value=seed_value,
         config={})
 
     # ------------------------------------------------------------------------
     # Run!
-
     # Setup the parallel workers
     workers = []
     pool = Pool(processes=num_processes)
@@ -113,12 +104,16 @@ def run(name,
         params["config"] = {}
 
         # Make a new sample
-        for k, f in config.items():
-            params["config"][k] = f()
+        for k, p in config_kwargs.items():
+            low, high = p
+            params["config"][k] = prng.uniform(low=low, high=high)
+
+        print(params["config"])
 
         # A worker gets the new sample
         workers.append(
-            pool.apply_async(train, kwds=params, callback=append_to_results))
+            pool.apply_async(
+                train, kwds=deepcopy(params), callback=append_to_results))
 
     # Get the worker's result (blocks until all complete)
     for worker in workers:
