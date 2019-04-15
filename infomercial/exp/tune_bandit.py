@@ -104,8 +104,7 @@ def run(name,
         params["config"] = {}
 
         # Make a new sample
-        for k, p in config_kwargs.items():
-            low, high = p
+        for k, (low, high) in config_kwargs.items():
             params["config"][k] = prng.uniform(low=low, high=high)
 
         # A worker gets the new sample
