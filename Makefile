@@ -322,6 +322,7 @@ exp25:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
+		--num_processes=40 \
 		--beta='(0.001, 2)' \
 		--lr='(0.001, 0.2)'
 
@@ -333,6 +334,7 @@ exp26:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
+		--num_processes=40 \
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
@@ -345,6 +347,7 @@ exp27:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
+		--num_processes=40 \
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.01)' \
 		--lr='(0.001, 0.2)'
