@@ -281,4 +281,4 @@ def tune_pbt(name,
 
 if __name__ == "__main__":
     # Generate CL interface.
-    fire.Fire({"tune_random": tune_random, "tune_pbt": tune_pbt})
+    fire.Fire({"random": tune_random, "pbt": tune_pbt})
