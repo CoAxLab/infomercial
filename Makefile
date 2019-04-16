@@ -445,7 +445,7 @@ exp30:
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
-		--num_samples=500 \
+		--num_samples=2500 \
 		--num_processes=40 \
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
