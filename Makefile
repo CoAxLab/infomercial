@@ -366,7 +366,7 @@ exp24:
 # opt beta
 exp25:
 	-rm -rf $(DATA_PATH)/exp25/*
-	tune_bandit.py $(DATA_PATH)/exp25 \
+	tune_bandit.py random $(DATA_PATH)/exp25 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
@@ -378,7 +378,7 @@ exp25:
 # opt meta
 exp26:
 	-rm -rf $(DATA_PATH)/exp26/*
-	tune_bandit.py $(DATA_PATH)/exp26 \
+	tune_bandit.py random $(DATA_PATH)/exp26 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
@@ -391,7 +391,7 @@ exp26:
 # opt epsilon
 exp27:
 	-rm -rf $(DATA_PATH)/exp27/*
-	tune_bandit.py $(DATA_PATH)/exp27 \
+	tune_bandit.py random $(DATA_PATH)/exp27 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
@@ -411,7 +411,7 @@ exp27:
 # beta
 exp28:
 	-rm -rf $(DATA_PATH)/exp28/*
-	tune_bandit.py $(DATA_PATH)/exp28 \
+	tune_bandit.py random $(DATA_PATH)/exp28 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
@@ -423,7 +423,7 @@ exp28:
 # epsilon
 exp29:
 	-rm -rf $(DATA_PATH)/exp29/*
-	tune_bandit.py $(DATA_PATH)/exp29 \
+	tune_bandit.py random $(DATA_PATH)/exp29 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
@@ -441,7 +441,7 @@ exp29:
 # opt meta
 exp30:
 	-rm -rf $(DATA_PATH)/exp30/*
-	tune_bandit.py $(DATA_PATH)/exp30 \
+	tune_bandit.py random $(DATA_PATH)/exp30 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
