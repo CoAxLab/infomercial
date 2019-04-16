@@ -450,3 +450,101 @@ exp30:
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
+
+# ---------------------------------------------------------------------------
+# 4-16-2019
+# Try a few bandits and algs w/ PBT tuning. How does it do overall
+# and compared to random search (above)
+
+# opt meta
+
+# BanditOneHigh1000
+exp31:
+	-rm -rf $(DATA_PATH)/exp31/*
+	tune_bandit.py random $(DATA_PATH)/exp31 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditOneHigh10
+exp32:
+	-rm -rf $(DATA_PATH)/exp32/*
+	tune_bandit.py random $(DATA_PATH)/exp32 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse2
+exp33:
+	-rm -rf $(DATA_PATH)/exp33/*
+	tune_bandit.py random $(DATA_PATH)/exp33 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse2-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse10
+exp34:
+	-rm -rf $(DATA_PATH)/exp34/*
+	tune_bandit.py random $(DATA_PATH)/exp34 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+
+# BanditHardAndSparse121
+exp35:
+	-rm -rf $(DATA_PATH)/exp35/*
+	tune_bandit.py random $(DATA_PATH)/exp35 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse1000
+exp36:
+	-rm -rf $(DATA_PATH)/exp36/*
+	tune_bandit.py random $(DATA_PATH)/exp36 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse1000-v0 \
+		--num_iterations=10 \
+		--top_threshold=0.25 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
