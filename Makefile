@@ -315,6 +315,55 @@ exp24:
 # 
 # Meant to set beta between 0.1 - 10. Need to rerun this over a wider range.
 # The sampling for lr is off too. Hmm....
+# exp25:
+# 	-rm -rf $(DATA_PATH)/exp25/*
+# 	tune_bandit.py $(DATA_PATH)/exp25 \
+# 		--exp_name='beta_bandit' \
+# 		--env_name=BanditOneHigh1000-v0 \
+# 		--num_episodes=3000 \
+# 		--num_samples=500 \
+# 		--beta='(0.001, 2)' \
+# 		--lr='(0.001, 0.2)'
+
+# # opt meta
+# exp26:
+# 	-rm -rf $(DATA_PATH)/exp26/*
+# 	tune_bandit.py $(DATA_PATH)/exp26 \
+# 		--exp_name='meta_bandit' \
+# 		--env_name=BanditOneHigh1000-v0 \
+# 		--num_episodes=3000 \
+# 		--num_samples=500 \
+# 		--verbose=True \
+# 		--tie_threshold='(1e-8, 0.1)' \
+# 		--lr='(0.001, 0.2)'
+
+# # opt epsilon
+# exp27:
+# 	-rm -rf $(DATA_PATH)/exp27/*
+# 	tune_bandit.py $(DATA_PATH)/exp27 \
+# 		--exp_name='epsilon_bandit' \
+# 		--env_name=BanditOneHigh1000-v0 \
+# 		--num_episodes=3000 \
+# 		--num_samples=500 \
+# 		--epsilon='(0.01, 0.99)' \
+# 		--epsilon_decay_tau='(0.0001, 0.01)' \
+# 		--lr='(0.001, 0.2)'
+
+# ---------------------------------------------------------------------------
+# 4-15-2019
+# e929bc945e9bc55ae4b751c9a3b9d81062758a36
+# Re-ran exp25-7 using a random search method that actually searches the asked 
+# for parameter ranges. `ray` has a big bug that limits my ability to actually
+# search params....
+#
+# Sum: only meta converged on the best. the other two were mess. this is at odds
+# with the prior runs at exp25-7 with ray and PBT (even given the bug on search
+# range). Clearly random search either needs many more samples or I need to
+# move to a smarter tuning system. 
+
+# Next: As a quick test, to keep things going, am re-run beta and epsilon w/ 5 times the samples overnight.
+
+# opt beta
 exp25:
 	-rm -rf $(DATA_PATH)/exp25/*
 	tune_bandit.py $(DATA_PATH)/exp25 \
@@ -347,6 +396,33 @@ exp27:
 		--env_name=BanditOneHigh1000-v0 \
 		--num_episodes=3000 \
 		--num_samples=500 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.01)' \
+		--lr='(0.001, 0.2)'
+
+# ---------------------------------------------------------------------------
+# more samples!
+# beta
+exp28:
+	-rm -rf $(DATA_PATH)/exp28/*
+	tune_bandit.py $(DATA_PATH)/exp28 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
+		--num_processes=40 \
+		--beta='(0.001, 2)' \
+		--lr='(0.001, 0.2)'
+
+# epsilon
+exp29:
+	-rm -rf $(DATA_PATH)/exp29/*
+	tune_bandit.py $(DATA_PATH)/exp29 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=2500 \
 		--num_processes=40 \
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.01)' \
