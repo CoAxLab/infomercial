@@ -461,7 +461,7 @@ exp30:
 # BanditOneHigh1000
 exp31:
 	-rm -rf $(DATA_PATH)/exp31/*
-	tune_bandit.py random $(DATA_PATH)/exp31 \
+	tune_bandit.py pbt $(DATA_PATH)/exp31 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_iterations=10 \
@@ -476,7 +476,7 @@ exp31:
 # BanditOneHigh10
 exp32:
 	-rm -rf $(DATA_PATH)/exp32/*
-	tune_bandit.py random $(DATA_PATH)/exp32 \
+	tune_bandit.py pbt $(DATA_PATH)/exp32 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
 		--num_iterations=10 \
@@ -491,7 +491,7 @@ exp32:
 # BanditHardAndSparse2
 exp33:
 	-rm -rf $(DATA_PATH)/exp33/*
-	tune_bandit.py random $(DATA_PATH)/exp33 \
+	tune_bandit.py pbt $(DATA_PATH)/exp33 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse2-v0 \
 		--num_iterations=10 \
@@ -506,7 +506,7 @@ exp33:
 # BanditHardAndSparse10
 exp34:
 	-rm -rf $(DATA_PATH)/exp34/*
-	tune_bandit.py random $(DATA_PATH)/exp34 \
+	tune_bandit.py pbt $(DATA_PATH)/exp34 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -522,7 +522,7 @@ exp34:
 # BanditHardAndSparse121
 exp35:
 	-rm -rf $(DATA_PATH)/exp35/*
-	tune_bandit.py random $(DATA_PATH)/exp35 \
+	tune_bandit.py pbt $(DATA_PATH)/exp35 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse121-v0 \
 		--num_iterations=10 \
@@ -537,7 +537,7 @@ exp35:
 # BanditHardAndSparse1000
 exp36:
 	-rm -rf $(DATA_PATH)/exp36/*
-	tune_bandit.py random $(DATA_PATH)/exp36 \
+	tune_bandit.py pbt $(DATA_PATH)/exp36 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse1000-v0 \
 		--num_iterations=10 \
