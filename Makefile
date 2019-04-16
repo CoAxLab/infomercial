@@ -406,6 +406,8 @@ exp27:
 # 5x more samples compared to 25, 27
 # 18ebf12316a04bd0a3e76b394ab538475d77b737
 
+# Sum: with a broader HP search, both beta and ep found the best arm. 
+
 # beta
 exp28:
 	-rm -rf $(DATA_PATH)/exp28/*
@@ -429,4 +431,22 @@ exp29:
 		--num_processes=40 \
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.01)' \
+		--lr='(0.001, 0.2)'
+
+# ---------------------------------------------------------------------------
+# 4-16-2019
+# 5x more samples compared to 26
+# 18ebf12316a04bd0a3e76b394ab538475d77b737
+
+# opt meta
+exp30:
+	-rm -rf $(DATA_PATH)/exp30/*
+	tune_bandit.py $(DATA_PATH)/exp30 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh1000-v0 \
+		--num_episodes=3000 \
+		--num_samples=500 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
