@@ -548,3 +548,57 @@ exp36:
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
+
+
+# --------------------------------------------------------------------------
+# 4-17-2019
+# Based on Harper's [1] work connecting Bayes inference w/ evo game theory I
+# developed a hyper opt scheme based on replictor dynamics.
+#
+# [1]: Harper, Marc. “The Replicator Equation as an Inference Dynamic.” 
+# ArXiv:0911.1763 [Cs, Math], November 9, 2009. http://arxiv.org/abs/0911.1763.
+#
+# Let's test it on some hard bandits using my meta_policy.
+
+# BanditHardAndSparse10
+exp37:
+	-rm -rf $(DATA_PATH)/exp37/*
+	tune_bandit.py replicator $(DATA_PATH)/exp37 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+		--num_episodes=100 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+
+# BanditHardAndSparse121
+exp38:
+	-rm -rf $(DATA_PATH)/exp38/*
+	tune_bandit.py replicator $(DATA_PATH)/exp38 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=10 \
+		--num_episodes=1210 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse1000
+exp39:
+	-rm -rf $(DATA_PATH)/exp39/*
+	tune_bandit.py replicator $(DATA_PATH)/exp39 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse1000-v0 \
+		--num_iterations=10 \
+		--num_episodes=10000 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
