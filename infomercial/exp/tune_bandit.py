@@ -331,7 +331,6 @@ def tune_replicator(name,
     population = np.ones(num_replicators) / num_replicators
     if verbose: print(f">>> Intial population: {population}")
 
-    #
     # Setup the parallel workers
     workers = []
     pool = Pool(processes=num_processes)
@@ -355,7 +354,6 @@ def tune_replicator(name,
     pool.close()
     pool.join()
     pool.terminate()
-
     if verbose: print(f">>> Example intial config{params['config']}")
 
     # ------------------------------------------------------------------------
