@@ -561,6 +561,7 @@ exp36:
 # Let's test it on some hard bandits using my meta_policy.
 
 # BanditHardAndSparse10
+# sum: best params did learn the best arm
 exp37:
 	-rm -rf $(DATA_PATH)/exp37/*
 	tune_bandit.py replicator $(DATA_PATH)/exp37 \
@@ -576,6 +577,7 @@ exp37:
 
 
 # BanditHardAndSparse121
+# sum: best params did NOT learn the best arm
 exp38:
 	-rm -rf $(DATA_PATH)/exp38/*
 	tune_bandit.py replicator $(DATA_PATH)/exp38 \
