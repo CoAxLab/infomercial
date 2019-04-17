@@ -604,3 +604,18 @@ exp39:
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse121
+# exp38 with a much larger pop
+exp40:
+	-rm -rf $(DATA_PATH)/exp40/*
+	tune_bandit.py replicator $(DATA_PATH)/exp40 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=10 \
+		--num_episodes=1210 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
