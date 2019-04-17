@@ -380,7 +380,7 @@ def tune_replicator(name,
         population /= np.sum(population)
         if verbose: print(f">>> Updated pop: {population}")
 
-        # Cull replicators than chance
+        # Cull replicators less than chance
         cull = population >= (1 / population.size)
         population = population[cull]
         population /= np.sum(population)
