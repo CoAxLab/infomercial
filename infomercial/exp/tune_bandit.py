@@ -301,6 +301,7 @@ def tune_replicator(name,
                     extend_episodes=False,
                     verbose=False,
                     seed_value=None,
+                    debug=False,
                     **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
     prng = np.random.RandomState(seed_value)
@@ -330,6 +331,7 @@ def tune_replicator(name,
     # ------------------------------------------------------------------------
     # Run first population!
     population = np.ones(num_replicators) / num_replicators
+    if debug: print(f">>> Intial population: {population}")
 
     #
     # Setup the parallel workers
@@ -356,11 +358,16 @@ def tune_replicator(name,
     pool.join()
     pool.terminate()
 
+    if debug: print(f">>> Example intial config{params['config']}")
+
     # ------------------------------------------------------------------------
     # Optimize for num_iterations
-    for _ in range(num_iterations):
+    for n in range(num_iterations):
         # --------------------------------------------------------------------
         # Replicate!
+        if debug: print(f">>> Begining to replicate")
+        if debug: print(f">>> Iteration: {n}")
+
         #
         # Extract configs from trials
         configs = get_configs(trials)
@@ -369,21 +376,29 @@ def tune_replicator(name,
         F = get_metrics(trials, "total_R")
         F_bar = np.mean(F)
 
+        if debug: print(f">>> F: {F}")
+        if debug: print(f">>> F_bar: {F_bar}")
+        if debug: print(f">>> Current pop: {population}")
+
         # Replicate based on the fitness gradient
         population = (population * F) / F_bar
         population /= np.sum(population)
+
+        if debug: print(f">>> Updated pop: {population}")
 
         # Cull replicators than chance
         cull = population >= (1 / population.size)
         population = population[cull]
         population /= np.sum(population)
-
         configs = [configs[c] for c in cull]
+        if debug: print(f">>> Number surviving {np.sum(cull)}")
 
         # Replace the culled; Perturb to reproduce.
         num_children = int(num_replicators - population.size)
         children = []
         children_configs = []
+        if debug: print(f">>> Having {num_children} children")
+
         for n in range(num_children):
             # Pick a random replicator ith, sampling based on its pop value
             ith = prng.choice(range(population.size), p=population)
@@ -405,6 +420,7 @@ def tune_replicator(name,
 
         # Renorm after reproduction
         population /= np.sum(population)
+        if debug: print(f">>> Next generation: {population}")
 
         # -------------------------------------------------------------------
         # Run!
