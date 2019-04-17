@@ -298,10 +298,8 @@ def tune_replicator(name,
                     num_replicators=10,
                     num_processes=1,
                     perturbation=0.1,
-                    extend_episodes=False,
                     verbose=False,
                     seed_value=None,
-                    debug=False,
                     **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
     prng = np.random.RandomState(seed_value)
@@ -331,7 +329,7 @@ def tune_replicator(name,
     # ------------------------------------------------------------------------
     # Run first population!
     population = np.ones(num_replicators) / num_replicators
-    if debug: print(f">>> Intial population: {population}")
+    if verbose: print(f">>> Intial population: {population}")
 
     #
     # Setup the parallel workers
@@ -358,15 +356,15 @@ def tune_replicator(name,
     pool.join()
     pool.terminate()
 
-    if debug: print(f">>> Example intial config{params['config']}")
+    if verbose: print(f">>> Example intial config{params['config']}")
 
     # ------------------------------------------------------------------------
     # Optimize for num_iterations
     for n in range(num_iterations):
         # --------------------------------------------------------------------
         # Replicate!
-        if debug: print(f">>> Begining to replicate")
-        if debug: print(f">>> Iteration: {n}")
+        if verbose: print(f">>> Begining to replicate")
+        if verbose: print(f">>> Iteration: {n}")
 
         #
         # Extract configs from trials
@@ -375,29 +373,27 @@ def tune_replicator(name,
         # Get fitness and avg fitness (F_Bar)
         F = get_metrics(trials, "total_R")
         F_bar = np.mean(F)
-
-        if debug: print(f">>> F: {F}")
-        if debug: print(f">>> F_bar: {F_bar}")
-        if debug: print(f">>> Current pop: {population}")
+        if verbose: print(f">>> F: {F}")
+        if verbose: print(f">>> F_bar: {F_bar}")
+        if verbose: print(f">>> Current pop: {population}")
 
         # Replicate based on the fitness gradient
         population = (population * F) / F_bar
         population /= np.sum(population)
-
-        if debug: print(f">>> Updated pop: {population}")
+        if verbose: print(f">>> Updated pop: {population}")
 
         # Cull replicators than chance
         cull = population >= (1 / population.size)
         population = population[cull]
         population /= np.sum(population)
         configs = [configs[c] for c in cull]
-        if debug: print(f">>> Number surviving {np.sum(cull)}")
+        if verbose: print(f">>> Number surviving {np.sum(cull)}")
 
         # Replace the culled; Perturb to reproduce.
         num_children = int(num_replicators - population.size)
         children = []
         child_configs = []
-        if debug: print(f">>> Having {num_children} children")
+        if verbose: print(f">>> Having {num_children} children")
 
         for n in range(num_children):
             # Pick a random replicator ith, sampling based on its pop value
@@ -419,7 +415,7 @@ def tune_replicator(name,
 
         # Renorm after reproduction
         population /= np.sum(population)
-        if debug: print(f">>> Next generation: {population}")
+        if verbose: print(f">>> Next generation: {population}")
 
         # -------------------------------------------------------------------
         # Run!
