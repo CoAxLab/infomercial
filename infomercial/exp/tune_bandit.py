@@ -396,7 +396,7 @@ def tune_replicator(name,
         # Replace the culled; Perturb to reproduce.
         num_children = int(num_replicators - population.size)
         children = []
-        children_configs = []
+        child_configs = []
         if debug: print(f">>> Having {num_children} children")
 
         for n in range(num_children):
@@ -404,19 +404,18 @@ def tune_replicator(name,
             ith = prng.choice(range(population.size), p=population)
 
             # Perturb ith config.
-            children_config = configs[ith]
-            for key, value in children_config.items():
+            child_config = configs[ith]
+            for key, value in child_config.items():
                 delta = value * perturbation
-                children_config[key] = prng.uniform(value - delta,
-                                                    value + delta)
-            children_configs.append(children_config)
+                child_config[key] = prng.uniform(value - delta, value + delta)
+            child_configs.append(child_config)
 
             # Copy ith p.
             children.append(population[ith])
 
         # Update population w/ children
         population = np.concatenate([population, children])
-        configs.append(children_configs)
+        configs.append(child_configs)
 
         # Renorm after reproduction
         population /= np.sum(population)
