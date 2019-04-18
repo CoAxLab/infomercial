@@ -593,6 +593,7 @@ exp38:
 
 
 # BanditHardAndSparse1000
+# sum: best params did NOT learn the best arm
 exp39:
 	-rm -rf $(DATA_PATH)/exp39/*
 	tune_bandit.py replicator $(DATA_PATH)/exp39 \
