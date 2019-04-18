@@ -97,7 +97,7 @@ exp9:
 
 # lr = .1; tie_threshold = 1e-10
 #
-# Sum: exp9-10 decreasing threshold not helpful w/ lr = 1. I expected the opposite.
+# SUM: exp9-10 decreasing threshold not helpful w/ lr = 1. I expected the opposite.
 exp10:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp10.log' \
@@ -107,7 +107,7 @@ exp10:
 
 # lr = .2; tie_threshold = 1e-8
 # 
-# Sum:  OneHigh121 shows an approach to 1, that a large LOSS in p_best with learning. First time I've seen a loss. Don't really understand how that can be!
+# SUM:  OneHigh121 shows an approach to 1, that a large LOSS in p_best with learning. First time I've seen a loss. Don't really understand how that can be!
 exp11:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp11.log' \
@@ -125,7 +125,7 @@ exp12:
 
 # lr = .2; tie_threshold = 1e-10
 # 
-# Sum: loss on 121 again. No improvement otherwise.
+# SUM: loss on 121 again. No improvement otherwise.
 # lr = 0.2 is just too high?
 exp13:
 	parallel -j 40 -v \
@@ -135,7 +135,7 @@ exp13:
 
 # lr = .1; tie_threshold = 1e-6
 #
-# Sum: oneHigh all solved. thresh was too low! No sparse solved. 
+# SUM: oneHigh all solved. thresh was too low! No sparse solved. 
 #
 # - Maybe should I start thinking about the lr/thresh ratio. 
 # Exploring that way?
@@ -147,7 +147,7 @@ exp14:
 
 # lr = .1; tie_threshold = 1e-4
 #
-# Sum: OneHigh NEARLY solved VERY fast. Back to near linear answers for this task! Some instability. Do a run w/ tie_threshold = 1e-3.
+# SUM: OneHigh NEARLY solved VERY fast. Back to near linear answers for this task! Some instability. Do a run w/ tie_threshold = 1e-3.
 # 
 # Sparse still looking quite poor; In single trials I was nailing these...
 # not sure what I was doing different. 
@@ -164,7 +164,7 @@ exp15:
 # 4-1-2019
 # lr = .1; tie_threshold = 1e-3
 # 
-# Sum: On Onehigh instability over last few thousand trials increased 
+# SUM: On Onehigh instability over last few thousand trials increased 
 # compared to exp15. I was hoping for the opposite. Try 1e-5 next. 
 # Sparse still poorly.
 exp16:
@@ -176,7 +176,7 @@ exp16:
 
 # lr = .1; tie_threshold = 1e-5
 # 
-# Sum: For oneHigh, performance improved compared to exp16. 1000 still not quit perfect but its p_best > 0.95. OneHigh2,10,121 all quickly converged.
+# SUM: For oneHigh, performance improved compared to exp16. 1000 still not quit perfect but its p_best > 0.95. OneHigh2,10,121 all quickly converged.
 # Sparse still poorly. ...Keep this thresh? Try a very low lr? (low lr worked 
 # well in hand tuning, IIRC).
 exp17:
@@ -187,7 +187,7 @@ exp17:
 
 # lr = .000001; tie_threshold = 1e-5
 # 
-# Sum: oneHigh2,10,121 quickly find p_best. oneHigh1000 never converged
+# SUM: oneHigh2,10,121 quickly find p_best. oneHigh1000 never converged
 # Sparse2 converged. Sparse10  p_best=0.8 or so. 121 and 1000 are at chance.
 # Confused. Re-visit tuning runs. What is happening? Why are sparse solns poss.
 # in these exps. What did I do diff?
@@ -235,7 +235,7 @@ exp21:
 		--lr='(1e-6, 1e-1)'
 
 # Tune epsilon_bandit: first real try
-# Sum: converged on having essentially no exploration.
+# SUM: converged on having essentially no exploration.
 #  'epsilon': 0.013352806530529619,
 #  'epsilon_decay_tau': 0.08101846019197038,
 #  'lr': 0.004639344318990854,
@@ -266,7 +266,7 @@ exp22:
 # c37259fc6ba12e2ca8f49da1457218664a8b36ff
 # First real opt for meta
 
-# Sum: after running for 2 days this never converged. No sure why? PBT config?
+# SUM: after running for 2 days this never converged. No sure why? PBT config?
 # Model problems? 
 # 
 # Next: maoving to a simple random search, just go make some quick progress in 
@@ -305,7 +305,7 @@ exp24:
 # Try: Random search for 100 draws, with 3 resamples
 # 
 # Opt beta
-# Sum: Best params solved all oneHot/oneHigh. No progress on HardAndSparse
+# SUM: Best params solved all oneHot/oneHigh. No progress on HardAndSparse
 # The top 50 parameters (or 500) all give qbout equal performance on the 
 # OneHigh tasks.
 # Sensitivy was to beta, but it is complex. Very little to lr directly. 
@@ -356,7 +356,7 @@ exp24:
 # for parameter ranges. `ray` has a big bug that limits my ability to actually
 # search params....
 #
-# Sum: only meta converged on the best. the other two were mess. this is at odds
+# SUM: only meta converged on the best. the other two were mess. this is at odds
 # with the prior runs at exp25-7 with ray and PBT (even given the bug on search
 # range). Clearly random search either needs many more samples or I need to
 # move to a smarter tuning system. 
@@ -406,7 +406,7 @@ exp27:
 # 5x more samples compared to 25, 27
 # 18ebf12316a04bd0a3e76b394ab538475d77b737
 
-# Sum: with a broader HP search, both beta and ep found the best arm. 
+# SUM: with a broader HP search, both beta and ep found the best arm. 
 
 # beta
 exp28:
@@ -561,7 +561,7 @@ exp36:
 # Let's test it on some hard bandits using my meta_policy.
 
 # BanditHardAndSparse10
-# sum: best params did learn the best arm
+# SUM: best params did learn the best arm
 exp37:
 	-rm -rf $(DATA_PATH)/exp37/*
 	tune_bandit.py replicator $(DATA_PATH)/exp37 \
@@ -577,7 +577,7 @@ exp37:
 
 
 # BanditHardAndSparse121
-# sum: best params did NOT learn the best arm
+# SUM: best params did NOT learn the best arm
 exp38:
 	-rm -rf $(DATA_PATH)/exp38/*
 	tune_bandit.py replicator $(DATA_PATH)/exp38 \
@@ -593,7 +593,7 @@ exp38:
 
 
 # BanditHardAndSparse1000
-# sum: best params did NOT learn the best arm
+# SUM: best params did NOT learn the best arm
 exp39:
 	-rm -rf $(DATA_PATH)/exp39/*
 	tune_bandit.py replicator $(DATA_PATH)/exp39 \
@@ -611,7 +611,7 @@ exp39:
 # 4-17-2019
 # 
 # Repeat exp38 with a much larger pop, BanditHardAndSparse121
-# sum: best params did NOT learn the best arm
+# SUM: best params did NOT learn the best arm
 exp40:
 	-rm -rf $(DATA_PATH)/exp40/*
 	tune_bandit.py replicator $(DATA_PATH)/exp40 \
@@ -707,6 +707,19 @@ exp45:
 # Play with num_replicators versus num_iterations (the number of replications) 
 # in an easy task.
 
+# SUM (exp46-52): all opts found the best arm, generally within the first 20 
+# episodes. 
+# - The range of lr was (0.07915672290595326, .1421784912409777)
+# - The range of tie_threshold was (0.05170622381361763, 0.1431450391147704)
+# - The range of total_R was (79.0, 88.0)
+# - num_iteration < 4 gave the worst result, both in terms of convergence 
+#   speed and total_R
+# - num_replicators did not seem to matter; this env may be to easy?
+
+# NEXT: 
+# 1. try these w/ metric=total_E just to see if it gives a similiar range of effects.
+# 2. try a harder env
+
 # BanditOneHigh10:
 # --num_iterations=16; --num_replicators=40
 exp46:
@@ -796,5 +809,103 @@ exp52:
 		--num_episodes=100 \
 		--num_replicators=40 \
 		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+
+# ----------------------------------------------------------------------------
+# 4-18-2019
+#
+# Repeat of exp46-52 BUT with --metric=total_E.
+#
+# BanditOneHigh10:
+# --num_iterations=16; --num_replicators=40
+exp53:
+	tune_bandit.py replicator $(DATA_PATH)/exp53 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=16 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=2; --num_replicators=400
+exp54:
+	tune_bandit.py replicator $(DATA_PATH)/exp54 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=2 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=400
+exp55:
+	tune_bandit.py replicator $(DATA_PATH)/exp55 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=4 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=400
+exp56:
+	tune_bandit.py replicator $(DATA_PATH)/exp56 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=8 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=16; --num_replicators=400
+exp57:
+	tune_bandit.py replicator $(DATA_PATH)/exp57 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=16 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=40
+exp58:
+	tune_bandit.py replicator $(DATA_PATH)/exp58 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=8 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--metric=total_E \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=40
+exp59:
+	tune_bandit.py replicator $(DATA_PATH)/exp59 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=4 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--metric=total_E \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
