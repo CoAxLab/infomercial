@@ -298,6 +298,7 @@ def tune_replicator(name,
                     num_replicators=10,
                     num_processes=1,
                     perturbation=0.1,
+                    metric="total_R",
                     verbose=False,
                     seed_value=None,
                     **config_kwargs):
@@ -369,7 +370,7 @@ def tune_replicator(name,
         configs = get_configs(trials)
 
         # Get fitness and avg fitness (F_Bar)
-        F = get_metrics(trials, "total_R")
+        F = get_metrics(trials, metric)
         F_bar = np.mean(F)
         if verbose: print(f">>> F: {F}")
         if verbose: print(f">>> F_bar: {F_bar}")
@@ -379,13 +380,15 @@ def tune_replicator(name,
         population = (population * F) / F_bar
         population /= np.sum(population)
         if verbose: print(f">>> Updated pop: {population}")
+        if verbose: print(f">>> Pop size: {population.size}")
 
         # Cull replicators less than chance
         cull = population >= (1 / population.size)
         population = population[cull]
         population /= np.sum(population)
         configs = [configs[c] for c in cull]
-        if verbose: print(f">>> Number surviving {np.sum(cull)}")
+        if verbose:
+            print(f">>> Number surviving: {np.sum(cull)}")
 
         # Replace the culled; Perturb to reproduce.
         num_children = int(num_replicators - population.size)
@@ -443,20 +446,20 @@ def tune_replicator(name,
         pool.terminate()
 
     # ------------------------------------------------------------------------
-    # Save configs and total_R (full model data is dropped):
-    best = get_best_trial(trials, 'total_R')
+    # Save configs and metric (full model data is dropped):
+    best = get_best_trial(trials, metric)
 
     # Best trial config
     best_config = best["config"]
-    best_config.update(get_best_result(trials, 'total_R'))
+    best_config.update(get_best_result(trials, metric))
     save_checkpoint(
         best_config, filename=os.path.join(path, name + "_best.pkl"))
 
     # Sort and save the configs of all trials
     sorted_configs = {}
-    for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
+    for i, trial in enumerate(get_sorted_trials(trials, metric)):
         sorted_configs[i] = trial["config"]
-        sorted_configs[i].update({"total_R": trial["total_R"]})
+        sorted_configs[i].update({metric: trial[metric]})
     save_checkpoint(
         sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
 
