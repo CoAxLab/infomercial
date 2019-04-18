@@ -918,3 +918,96 @@ exp59:
 		--metric=total_E \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
+
+# ----------------------------------------------------------------------------
+# 4-18-2019
+#
+# Repeat of exp46-52 BUT with 
+#   --env_name=BanditHardAndSparse121
+# and much 100X bandit size for episode number, meaning
+#   --num_episodes=12100
+
+# --num_iterations=16; --num_replicators=40
+exp60:
+	tune_bandit.py replicator $(DATA_PATH)/exp60 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=16 \
+		--num_episodes=12100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=2; --num_replicators=400
+exp61:
+	tune_bandit.py replicator $(DATA_PATH)/exp61 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=2 \
+		--num_episodes=12100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=400
+exp62:
+	tune_bandit.py replicator $(DATA_PATH)/exp62 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=4 \
+		--num_episodes=12100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=400
+exp63:
+	tune_bandit.py replicator $(DATA_PATH)/exp63 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=8 \
+		--num_episodes=12100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=16; --num_replicators=400
+exp64:
+	tune_bandit.py replicator $(DATA_PATH)/exp64 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=16 \
+		--num_episodes=12100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=40
+exp65:
+	tune_bandit.py replicator $(DATA_PATH)/exp65 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=8 \
+		--num_episodes=12100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=40
+exp66:
+	tune_bandit.py replicator $(DATA_PATH)/exp66 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=4 \
+		--num_episodes=12100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
