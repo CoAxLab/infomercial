@@ -591,6 +591,7 @@ exp38:
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
+
 # BanditHardAndSparse1000
 exp39:
 	-rm -rf $(DATA_PATH)/exp39/*
@@ -605,8 +606,10 @@ exp39:
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
-# BanditHardAndSparse121
-# exp38 with a much larger pop
+# --------------------------------------------------------------------------
+# 4-17-2019
+# 
+# exp38 with a much larger pop, BanditHardAndSparse121
 exp40:
 	-rm -rf $(DATA_PATH)/exp40/*
 	tune_bandit.py replicator $(DATA_PATH)/exp40 \
