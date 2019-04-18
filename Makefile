@@ -610,7 +610,8 @@ exp39:
 # --------------------------------------------------------------------------
 # 4-17-2019
 # 
-# exp38 with a much larger pop, BanditHardAndSparse121
+# Repeat exp38 with a much larger pop, BanditHardAndSparse121
+# sum: best params did NOT learn the best arm
 exp40:
 	-rm -rf $(DATA_PATH)/exp40/*
 	tune_bandit.py replicator $(DATA_PATH)/exp40 \
