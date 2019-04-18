@@ -622,3 +622,84 @@ exp40:
 		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
+
+
+# --------------------------------------------------------------------------
+# 4-18-2019
+# 
+# Tune meta to maximize total_E (not total_R as in the previous experiments)
+
+# BanditHardAndSparse2
+exp41:
+	-rm -rf $(DATA_PATH)/exp41/*
+	tune_bandit.py replicator $(DATA_PATH)/exp41 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse2-v0 \
+		--num_iterations=10 \
+		--num_episodes=20 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse10
+exp42:
+	-rm -rf $(DATA_PATH)/exp42/*
+	tune_bandit.py replicator $(DATA_PATH)/exp42 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditOneHigh2
+exp43:
+	-rm -rf $(DATA_PATH)/exp43/*
+	tune_bandit.py replicator $(DATA_PATH)/exp43 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh2-v0 \
+		--num_iterations=10 \
+		--num_episodes=20 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditOneHigh10
+exp44:
+	-rm -rf $(DATA_PATH)/exp44/*
+	tune_bandit.py replicator $(DATA_PATH)/exp44 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=10 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# BanditOneHigh121
+exp45:
+	-rm -rf $(DATA_PATH)/exp45/*
+	tune_bandit.py replicator $(DATA_PATH)/exp45 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_iterations=10 \
+		--num_episodes=1210 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--metric=total_E \
+		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
