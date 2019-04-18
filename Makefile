@@ -922,7 +922,7 @@ exp59:
 # ----------------------------------------------------------------------------
 # 4-18-2019
 #
-# Repeat of exp46-52 BUT with 
+# Repeat of exp46-52 BUT with MUCH HARDER env, using 
 #   --env_name=BanditHardAndSparse121
 # and much 100X bandit size for episode number, meaning
 #   --num_episodes=12100
