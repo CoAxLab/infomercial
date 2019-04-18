@@ -709,9 +709,9 @@ exp45:
 
 # SUM (exp46-52): all opts found the best arm, generally within the first 20 
 # episodes. 
-# - The range of lr was (0.07915672290595326, .1421784912409777)
-# - The range of tie_threshold was (0.05170622381361763, 0.1431450391147704)
-# - The range of total_R was (79.0, 88.0)
+# - The range of lr was (0.0039834751368258295, .1421784912409777)
+# - The range of tie_threshold was (0.005942132325156814, 0.1431450391147704)
+# - The range of total_R was (43.0, 88.0)
 # - num_iteration < 4 gave the worst result, both in terms of convergence 
 #   speed and total_R
 # - num_replicators did not seem to matter; this env may be to easy?
@@ -818,6 +818,15 @@ exp52:
 #
 # Repeat of exp46-52 BUT with --metric=total_E.
 #
+# SUM (exp43-59): all opts found the best arm, _always_ within 
+#   the first 20 episodes. 
+# - The range of lr was (0.0026347871766753592, 0.3318698314514748)
+# - The range of tie_threshold was (0.0019689062371460136, 0.07024629597387025)
+# - The range of total_R was (73.0, 74.0); the highest total_R was less
+#   here then in exp46-53.
+# - num_iteration had no effect.
+# - num_replicators may have had a slight effect. Low N makes it unclear.
+
 # BanditOneHigh10:
 # --num_iterations=16; --num_replicators=40
 exp53:
