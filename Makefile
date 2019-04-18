@@ -39,7 +39,11 @@ exp2:
 # Lesser lr improves sparse, but destroys performance on one high. Gain on sparse are not really great.
 # Lesser threshold also hamrd one high. Does improve sparse.
 
-# hot take: high lr good. play with theshold more....
+# SUM: high lr good. play with theshold more....
+# - See notebooks/exp21-8_analysis.ipynb for full analysis
+# - as well as individual notebooks/exp2_analysis.ipynb
+#                         notebooks/exp3_analysis.ipynb
+#                         and so on
 
 # lr = 0.01
 exp3:
@@ -89,6 +93,7 @@ exp8:
 # After exp3-8, trying high lr with more-ahem-exploration of the tie_threshold.
 
 # lr = .1; tie_threshold = 1e-9
+# - See notebooks/exp9_analysis.ipynb for full analysis
 exp9:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp9.log' \
@@ -98,6 +103,7 @@ exp9:
 # lr = .1; tie_threshold = 1e-10
 #
 # SUM: exp9-10 decreasing threshold not helpful w/ lr = 1. I expected the opposite.
+# - See notebooks/exp10_analysis.ipynb for full analysis
 exp10:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp10.log' \
@@ -108,6 +114,7 @@ exp10:
 # lr = .2; tie_threshold = 1e-8
 # 
 # SUM:  OneHigh121 shows an approach to 1, that a large LOSS in p_best with learning. First time I've seen a loss. Don't really understand how that can be!
+# - See notebooks/exp11_analysis.ipynb for full analysis
 exp11:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp11.log' \
@@ -117,6 +124,7 @@ exp11:
 # lr = .2; tie_threshold = 1e-9
 #
 # 121 again shows a loss (see exp11) however it is MUCH more severe here.
+# - See notebooks/exp12_analysis.ipynb for full analysis
 exp12:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp12.log' \
@@ -127,6 +135,7 @@ exp12:
 # 
 # SUM: loss on 121 again. No improvement otherwise.
 # lr = 0.2 is just too high?
+# - See notebooks/exp13_analysis.ipynb for full analysis
 exp13:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp13.log' \
@@ -139,6 +148,7 @@ exp13:
 #
 # - Maybe should I start thinking about the lr/thresh ratio. 
 # Exploring that way?
+# - See notebooks/exp14_analysis.ipynb for full analysis
 exp14:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp14.log' \
@@ -154,6 +164,8 @@ exp14:
 #
 # - The dist around p_best is consistent enough that single trials are a
 # reasonable path to faster tuning. Esp for Sparse.
+#
+# - See notebooks/exp15_analysis.ipynb for full analysis
 exp15:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp15.log' \
@@ -167,6 +179,7 @@ exp15:
 # SUM: On Onehigh instability over last few thousand trials increased 
 # compared to exp15. I was hoping for the opposite. Try 1e-5 next. 
 # Sparse still poorly.
+# - See notebooks/exp16_analysis.ipynb for full analysis
 exp16:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp16.log' \
@@ -179,6 +192,7 @@ exp16:
 # SUM: For oneHigh, performance improved compared to exp16. 1000 still not quit perfect but its p_best > 0.95. OneHigh2,10,121 all quickly converged.
 # Sparse still poorly. ...Keep this thresh? Try a very low lr? (low lr worked 
 # well in hand tuning, IIRC).
+# - See notebooks/exp17_analysis.ipynb for full analysis
 exp17:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp17.log' \
@@ -196,6 +210,8 @@ exp17:
 # Will need to do a full sensitivity test. 
 # 
 # Should also plot p_best for all bandits/exp so far....
+#
+# - See notebooks/exp18_analysis.ipynb for full analysis
 exp18:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp18.log' \
@@ -242,12 +258,16 @@ exp21:
 #  'total_R': 583.0
 # It never find the best arm as a result.
 # 
+# - See notebooks/exp21_analysis.ipynb for full analysis
+
 # I'm not sure if that's a problem with the method or
 # the code. To try and diagnos going to run a 
 # the other exps to see anything sensible happens.
 
 # Note: to save space I deleted the detailed run data in exp22/*
 # kept only exp22_best.pkl and exp22_sorted.pkl
+# 
+# - See notebooks/exp22_analysis.ipynb for full analysis
 exp22:
 	-rm -rf $(DATA_PATH)/exp22/*
 	tune_bandit.py $(DATA_PATH)/exp22 \
@@ -269,7 +289,9 @@ exp22:
 # SUM: after running for 2 days this never converged. No sure why? PBT config?
 # Model problems? 
 # 
-# Next: maoving to a simple random search, just go make some quick progress in 
+# - See notebooks/exp23_analysis.ipynb for full analysis
+#
+# NEXT: maoving to a simple random search, just go make some quick progress in 
 # studing the alt models. Will revist PBT later...
 exp23:
 	-rm -rf $(DATA_PATH)/exp23/*
@@ -364,6 +386,7 @@ exp24:
 # Next: As a quick test, to keep things going, am re-run beta and epsilon w/ 5 times the samples overnight.
 
 # opt beta
+# - See notebooks/exp25_analysis.ipynb for full analysis
 exp25:
 	-rm -rf $(DATA_PATH)/exp25/*
 	tune_bandit.py random $(DATA_PATH)/exp25 \
@@ -376,6 +399,7 @@ exp25:
 		--lr='(0.001, 0.2)'
 
 # opt meta
+# - See notebooks/exp26_analysis.ipynb for full analysis
 exp26:
 	-rm -rf $(DATA_PATH)/exp26/*
 	tune_bandit.py random $(DATA_PATH)/exp26 \
@@ -389,6 +413,7 @@ exp26:
 		--lr='(0.001, 0.2)'
 
 # opt epsilon
+# - See notebooks/exp27_analysis.ipynb for full analysis
 exp27:
 	-rm -rf $(DATA_PATH)/exp27/*
 	tune_bandit.py random $(DATA_PATH)/exp27 \
@@ -409,6 +434,7 @@ exp27:
 # SUM: with a broader HP search, both beta and ep found the best arm. 
 
 # beta
+# - See notebooks/exp28_analysis.ipynb for full analysis
 exp28:
 	-rm -rf $(DATA_PATH)/exp28/*
 	tune_bandit.py random $(DATA_PATH)/exp28 \
@@ -421,6 +447,7 @@ exp28:
 		--lr='(0.001, 0.2)'
 
 # epsilon
+# - See notebooks/exp29_analysis.ipynb for full analysis	
 exp29:
 	-rm -rf $(DATA_PATH)/exp29/*
 	tune_bandit.py random $(DATA_PATH)/exp29 \
@@ -439,6 +466,7 @@ exp29:
 # d7ff0eb34e36c2b83cd65d23db2a45ccf39c0e34
 
 # opt meta
+# - See notebooks/exp30_analysis.ipynb for full analysis
 exp30:
 	-rm -rf $(DATA_PATH)/exp30/*
 	tune_bandit.py random $(DATA_PATH)/exp30 \
@@ -562,6 +590,7 @@ exp36:
 
 # BanditHardAndSparse10
 # SUM: best params did learn the best arm
+# - See notebooks/exp37_analysis.ipynb for full analysis
 exp37:
 	-rm -rf $(DATA_PATH)/exp37/*
 	tune_bandit.py replicator $(DATA_PATH)/exp37 \
@@ -578,6 +607,7 @@ exp37:
 
 # BanditHardAndSparse121
 # SUM: best params did NOT learn the best arm
+# - See notebooks/exp38_analysis.ipynb for full analysis
 exp38:
 	-rm -rf $(DATA_PATH)/exp38/*
 	tune_bandit.py replicator $(DATA_PATH)/exp38 \
@@ -594,6 +624,7 @@ exp38:
 
 # BanditHardAndSparse1000
 # SUM: best params did NOT learn the best arm
+# - See notebooks/exp39_analysis.ipynb for full analysis
 exp39:
 	-rm -rf $(DATA_PATH)/exp39/*
 	tune_bandit.py replicator $(DATA_PATH)/exp39 \
@@ -612,6 +643,7 @@ exp39:
 # 
 # Repeat exp38 with a much larger pop, BanditHardAndSparse121
 # SUM: best params did NOT learn the best arm
+# - See notebooks/exp40_analysis.ipynb for full analysis
 exp40:
 	-rm -rf $(DATA_PATH)/exp40/*
 	tune_bandit.py replicator $(DATA_PATH)/exp40 \
@@ -632,6 +664,7 @@ exp40:
 # Tune meta to maximize total_E (not total_R as in the previous experiments)
 
 # BanditHardAndSparse2
+# - See notebooks/exp41_analysis.ipynb for full analysis
 exp41:
 	-rm -rf $(DATA_PATH)/exp41/*
 	tune_bandit.py replicator $(DATA_PATH)/exp41 \
@@ -646,6 +679,7 @@ exp41:
 		--lr='(0.001, 0.2)'
 
 # BanditHardAndSparse10
+# - See notebooks/exp42_analysis.ipynb for full analysis
 exp42:
 	-rm -rf $(DATA_PATH)/exp42/*
 	tune_bandit.py replicator $(DATA_PATH)/exp42 \
@@ -660,6 +694,7 @@ exp42:
 		--lr='(0.001, 0.2)'
 
 # BanditOneHigh2
+# - See notebooks/exp43_analysis.ipynb for full analysis
 exp43:
 	-rm -rf $(DATA_PATH)/exp43/*
 	tune_bandit.py replicator $(DATA_PATH)/exp43 \
@@ -674,6 +709,7 @@ exp43:
 		--lr='(0.001, 0.2)'
 
 # BanditOneHigh10
+# - See notebooks/exp44_analysis.ipynb for full analysis
 exp44:
 	-rm -rf $(DATA_PATH)/exp44/*
 	tune_bandit.py replicator $(DATA_PATH)/exp44 \
@@ -688,6 +724,7 @@ exp44:
 		--lr='(0.001, 0.2)'
 
 # BanditOneHigh121
+# - See notebooks/exp45_analysis.ipynb for full analysis
 exp45:
 	-rm -rf $(DATA_PATH)/exp45/*
 	tune_bandit.py replicator $(DATA_PATH)/exp45 \
@@ -715,6 +752,7 @@ exp45:
 # - num_iteration < 4 gave the worst result, both in terms of convergence 
 #   speed and total_R
 # - num_replicators did not seem to matter; this env may be to easy?
+# - See notebooks/exp46-52_analysis.ipynb for full analysis
 
 # NEXT: 
 # 1. try these w/ metric=total_E just to see if it gives a similiar range of effects.
@@ -826,6 +864,7 @@ exp52:
 #   here then in exp46-53.
 # - num_iteration had no effect.
 # - num_replicators may have had a slight effect. Low N makes it unclear.
+# - See notebooks/exp53-59_analysis.ipynb for full analysis
 
 # BanditOneHigh10:
 # --num_iterations=16; --num_replicators=40
