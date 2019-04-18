@@ -640,7 +640,6 @@ exp41:
 		--num_replicators=400 \
 		--num_processes=40 \
 		--metric=total_E \
-		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
@@ -655,7 +654,6 @@ exp42:
 		--num_replicators=400 \
 		--num_processes=40 \
 		--metric=total_E \
-		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
@@ -670,7 +668,6 @@ exp43:
 		--num_replicators=400 \
 		--num_processes=40 \
 		--metric=total_E \
-		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
@@ -685,7 +682,6 @@ exp44:
 		--num_replicators=400 \
 		--num_processes=40 \
 		--metric=total_E \
-		--verbose=True \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
@@ -700,6 +696,103 @@ exp45:
 		--num_replicators=400 \
 		--num_processes=40 \
 		--metric=total_E \
-		--verbose=True \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+
+# --------------------------------------------------------------------------
+# 4-18-2019
+# Play with num_replicators versus num_iterations (the number of replications) 
+# in an easy task.
+
+# BanditOneHigh10:
+# --num_iterations=16; --num_replicators=40
+exp46:
+	-rm -rf $(DATA_PATH)/exp46/*
+	tune_bandit.py replicator $(DATA_PATH)/exp46 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=16 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=2; --num_replicators=400
+exp47:
+	-rm -rf $(DATA_PATH)/exp47/*
+	tune_bandit.py replicator $(DATA_PATH)/exp47 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=2 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=400
+exp48:
+	-rm -rf $(DATA_PATH)/exp48/*
+	tune_bandit.py replicator $(DATA_PATH)/exp48 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=4 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=400
+exp49:
+	-rm -rf $(DATA_PATH)/exp49/*
+	tune_bandit.py replicator $(DATA_PATH)/exp49 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=8 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=16; --num_replicators=400
+exp50:
+	-rm -rf $(DATA_PATH)/exp50/*
+	tune_bandit.py replicator $(DATA_PATH)/exp50 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=16 \
+		--num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=8; --num_replicators=40
+exp51:
+	-rm -rf $(DATA_PATH)/exp51/*
+	tune_bandit.py replicator $(DATA_PATH)/exp51 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=8 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
+		--tie_threshold='(1e-8, 0.1)' \
+		--lr='(0.001, 0.2)'
+
+# --num_iterations=4; --num_replicators=40
+exp52:
+	-rm -rf $(DATA_PATH)/exp52/*
+	tune_bandit.py replicator $(DATA_PATH)/exp52 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=4 \
+		--num_episodes=100 \
+		--num_replicators=40 \
+		--num_processes=40 \
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
