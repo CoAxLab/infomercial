@@ -329,6 +329,7 @@ def tune_replicator(name,
     # ------------------------------------------------------------------------
     # Run first population!
     population = np.ones(num_replicators) / num_replicators
+
     if verbose: print(f">>> Intial population: {population}")
 
     # Setup the parallel workers
@@ -358,6 +359,7 @@ def tune_replicator(name,
     pool.close()
     pool.join()
     pool.terminate()
+
     if verbose: print(f">>> Example intial config{params['config']}")
 
     # ------------------------------------------------------------------------
@@ -366,6 +368,7 @@ def tune_replicator(name,
     meta_population = np.ones(len(perturbations)) / len(perturbations)
     F_meta = np.ones_like(meta_population) * np.mean(
         get_metrics(trials, metric))
+
     if verbose: print(f"\n>>> Perturbations: {perturbations}")
     if verbose: print(f">>> Initial F_meta: {F_meta}")
 
@@ -384,6 +387,7 @@ def tune_replicator(name,
         # Get fitness and avg fitness (F_Bar)
         F = get_metrics(trials, metric)
         F_bar = np.mean(F)
+
         if verbose: print(f">>> F: {F}")
         if verbose: print(f">>> F_bar: {F_bar}")
         if verbose: print(f">>> Current pop: {population}")
@@ -391,6 +395,7 @@ def tune_replicator(name,
         # Replicate based on the fitness gradient
         population = (population * F) / F_bar
         population /= np.sum(population)
+
         if verbose: print(f">>> Updated pop: {population}")
         if verbose: print(f">>> Pop size: {population.size}")
 
@@ -399,6 +404,7 @@ def tune_replicator(name,
         population = population[cull]
         population /= np.sum(population)
         configs = [configs[c] for c in cull]
+
         if verbose:
             print(f">>> Number surviving: {np.sum(cull)}")
 
@@ -406,11 +412,13 @@ def tune_replicator(name,
         num_children = int(num_replicators - population.size)
         children = []
         child_configs = []
+
         if verbose: print(f">>> Having {num_children} children")
 
         # Sample from the meta_population to find a perturbation
         ith_meta = prng.choice(range(meta_population.size), p=meta_population)
         perturbation = perturbations[ith_meta]
+
         if verbose: print(f">>> perturbation {perturbation} ({ith_meta})")
 
         # Have kids, by perturbation.
@@ -434,6 +442,7 @@ def tune_replicator(name,
 
         # Renorm after reproduction
         population /= np.sum(population)
+
         if verbose: print(f">>> Next generation: {population}")
 
         # -------------------------------------------------------------------
