@@ -1104,3 +1104,54 @@ exp68:
 		--tie_threshold='(1e-10, 1e-3)' \
 		--lr='(0.001, 0.2)'
 	git checkout master
+
+
+# ----------------------------------------------------------------------------
+# 4-19-2019
+# meta_learning merged to master...
+# In the process, a major issue w/ replicator was found. Per the commit
+# fixing it:
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# commit 117a458cb184b9bd2ab92a7f5dd65adbdb5a2fb9
+# Author: Erik Peterson <Erik.Exists@gmail.com>
+# Date:   Fri Apr 19 14:34:53 2019 -0700
+
+#     MAJOR FIX: there were two bugs in tune_replicator
+    
+#     1. configs was not getting masked when having children
+#     2. childrens params were getting wrongly copied due to a copy-by-ref issue.
+    
+#     ALL PREV. RUN w/ REPLICATOR ARE QUESTIONALBLE.
+    
+#     DISREGARD THEM.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# Need to re-run several experiments above.
+
+# First let's try the most recent run again.
+# Without meta tuning of perturbation
+exp69:
+	tune_bandit.py replicator $(DATA_PATH)/exp69 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=50 \
+		--num_episodes=1210 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+# w/ tuning
+exp70:
+	tune_bandit.py replicator $(DATA_PATH)/exp70 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=50 \
+		--num_episodes=1210 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=meta \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
