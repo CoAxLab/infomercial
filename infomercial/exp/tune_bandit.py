@@ -465,8 +465,11 @@ def tune_replicator(name,
 
         # -------------------------------------------------------------------
         # Update the meta-population.
+        #
+        # Get fitness
         F_meta[ith_meta] = np.mean(get_metrics(trials, metric))
         F_bar_meta = np.mean(F_meta)
+
         if verbose: print(f">>> meta F: {F_meta}")
         if verbose: print(f">>> meta F_bar: {F_bar_meta}")
         if verbose: print(f">>> meta current pop: {meta_population}")
@@ -477,6 +480,7 @@ def tune_replicator(name,
         F_ith = F_meta[ith_meta]
         meta_population[ith_meta] = (p_ith * F_ith) / F_bar_meta
         meta_population /= np.sum(meta_population)
+
         if verbose: print(f">>> Updated meta pop: {meta_population}")
 
     # ------------------------------------------------------------------------
