@@ -140,6 +140,8 @@ def run(env_name='BanditOneHigh2-v0',
     actor = Actor(
         num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
 
+    best_action = env.env.best
+
     # -
     memory = ConditionalCount()
     visited_states = set()
@@ -154,6 +156,7 @@ def run(env_name='BanditOneHigh2-v0',
     scores_R = []
     values = []
     actions = []
+    num_best = 0
     ties = []
     for n in range(num_episodes):
         if debug:
@@ -165,6 +168,8 @@ def run(env_name='BanditOneHigh2-v0',
 
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
+        if action == best_action:
+            num_best += 1
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -208,6 +213,7 @@ def run(env_name='BanditOneHigh2-v0',
         scores_E.append(beta * E_t)
         scores_R.append(R_t)
         values.append(critic(action))
+        p_bests.append(num_best / (n + 1))
 
         # -
         if debug:
@@ -224,6 +230,7 @@ def run(env_name='BanditOneHigh2-v0',
         best=env.env.best,
         episodes=episodes,
         actions=actions,
+        p_bests=p_bests,
         ties=ties,
         critic=critic.state_dict(),
         total_E=total_E,
