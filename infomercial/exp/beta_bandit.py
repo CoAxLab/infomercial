@@ -152,11 +152,12 @@ def run(env_name='BanditOneHigh2-v0',
     # Play
     total_R = 0.0
     total_E = 0.0
+    num_best = 0
     scores_E = []
     scores_R = []
     values = []
     actions = []
-    num_best = 0
+    p_bests = []
     ties = []
     for n in range(num_episodes):
         if debug:
