@@ -967,6 +967,8 @@ exp59:
 #   --num_episodes=12100
 
 # SUM (exp60-66): NO opts searches found the best arm. 
+# - See notebooks/exp60-66_analysis.ipynb for full analysis
+#
 # NEXT: 100X didn't seem to help? For eff. returning to 20X
 #       Try more replicators? I've solved this before, intermittently w/ hand 
 #       tuning...; Try forcing tie_treshold to small value? 
