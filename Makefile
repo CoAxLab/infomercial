@@ -1092,7 +1092,7 @@ exp68:
 	tune_bandit.py replicator $(DATA_PATH)/exp68 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse121-v0 \
-		--num_iterations=4 \
+		--num_iterations=50 \
 		--num_episodes=1210 \
 		--num_replicators=120 \
 		--num_processes=40 \
