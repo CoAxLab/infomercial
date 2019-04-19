@@ -297,7 +297,6 @@ def tune_replicator(name,
                     num_episodes=2000,
                     num_replicators=10,
                     num_processes=1,
-                    perturbation=0.1,
                     metric="total_R",
                     verbose=False,
                     seed_value=None,
@@ -347,7 +346,6 @@ def tune_replicator(name,
                 params["config"][k] = prng.uniform(low=low, high=high)
             except TypeError:
                 params["config"][k] = config_kwarg
-            if verbose: print(f"Intial config {k} : {params['config'][k]}")
 
         # A worker gets the new sample
         workers.append(
@@ -363,11 +361,20 @@ def tune_replicator(name,
     if verbose: print(f">>> Example intial config{params['config']}")
 
     # ------------------------------------------------------------------------
+    # Init the meta-population of perturbation strategies
+    perturbations = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5]
+    meta_population = np.ones(len(perturbations)) / len(perturbations)
+    F_meta = np.ones_like(meta_population) * np.mean(
+        get_metrics(trials, metric))
+    if verbose: print(f"\n>>> Perturbations: {perturbations}")
+    if verbose: print(f">>> Initial F_meta: {F_meta}")
+
+    # ------------------------------------------------------------------------
     # Optimize for num_iterations
     for n in range(num_iterations):
         # --------------------------------------------------------------------
         # Replicate!
-        if verbose: print(f">>> Begining to replicate")
+        if verbose: print(f"\n>>> ---Begining new replicatation!---")
         if verbose: print(f">>> Iteration: {n}")
 
         #
@@ -401,6 +408,12 @@ def tune_replicator(name,
         child_configs = []
         if verbose: print(f">>> Having {num_children} children")
 
+        # Sample from the meta_population to find a perturbation
+        ith_meta = prng.choice(range(meta_population.size), p=meta_population)
+        perturbation = perturbations[ith_meta]
+        if verbose: print(f">>> perturbation {perturbation} ({ith_meta})")
+
+        # Have kids, by perturbation.
         for n in range(num_children):
             # Pick a random replicator ith, sampling based on its pop value
             ith = prng.choice(range(population.size), p=population)
@@ -449,6 +462,22 @@ def tune_replicator(name,
         pool.close()
         pool.join()
         pool.terminate()
+
+        # -------------------------------------------------------------------
+        # Update the meta-population.
+        F_meta[ith_meta] = np.mean(get_metrics(trials, metric))
+        F_bar_meta = np.mean(F_meta)
+        if verbose: print(f">>> meta F: {F_meta}")
+        if verbose: print(f">>> meta F_bar: {F_bar_meta}")
+        if verbose: print(f">>> meta current pop: {meta_population}")
+
+        # Meta-replicate, still based on the fitness gradient but
+        # only update the ith perturbation used in last iteration.
+        p_ith = meta_population[ith_meta]
+        F_ith = F_meta[ith_meta]
+        meta_population[ith_meta] = (p_ith * F_ith) / F_bar_meta
+        meta_population /= np.sum(meta_population)
+        if verbose: print(f">>> Updated meta pop: {meta_population}")
 
     # ------------------------------------------------------------------------
     # Save configs and metric (full model data is dropped):
