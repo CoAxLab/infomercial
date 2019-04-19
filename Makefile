@@ -1076,3 +1076,26 @@ exp67:
 		--num_processes=40 \
 		--tie_threshold='(1e-10, 1e-6)' \
 		--lr=0.1
+
+
+# ----------------------------------------------------------------------------
+# 4-19-2019
+# Made a variation of tune_replicator where the size of the
+# pertrubation is tuned by meta-learning. 
+# Let's try that here... on a repeat of exp67
+# Other changes:
+#   --tie_threshold='(1e-10, 1e-3)' 
+#   --num_replicators=120
+
+exp68:
+	git checkout 694c965821aa2facfacebdf8a0d346ea5ca51b85  
+	tune_bandit.py replicator $(DATA_PATH)/exp68 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=4 \
+		--num_episodes=1210 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+	git checkout master
