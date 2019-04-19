@@ -341,8 +341,13 @@ def tune_replicator(name,
         params["config"] = {}
 
         # Make a new sample
-        for k, (low, high) in config_kwargs.items():
-            params["config"][k] = prng.uniform(low=low, high=high)
+        for k, config_kwarg in config_kwargs.items():
+            try:
+                low, high = config_kwarg
+                params["config"][k] = prng.uniform(low=low, high=high)
+            except TypeError:
+                params["config"][k] = config_kwarg
+            if verbose: print(f"Intial config {k} : {params['config'][k]}")
 
         # A worker gets the new sample
         workers.append(
