@@ -1064,14 +1064,15 @@ exp66:
 # Try to solve BanditHardAndSparse121 w/ many more replicators? 
 # - Limit tie_thereshold to small values: (1e-10, 1e-6)
 # - Fix lr = 0.1 as it's been consisntently near this value in many tuning runs.
-
+#
+# SUM: 
 exp67:
 	tune_bandit.py replicator $(DATA_PATH)/exp67 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse121-v0 \
 		--num_iterations=10 \
 		--num_episodes=1210 \
-		--num_replicators=800 \
+		--num_replicators=1200 \
 		--num_processes=40 \
 		--tie_threshold='(1e-10, 1e-6)' \
 		--lr=0.1
