@@ -1108,9 +1108,9 @@ exp68:
 
 # ----------------------------------------------------------------------------
 # 4-19-2019
-# meta_learning merged to master...
-# In the process, a major issue w/ replicator was found. Per the commit
-# fixing it:
+# meta_learning option in tune_replicator merged to master....
+#
+# In the process, a major issue w/ replicator was found.
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # commit 117a458cb184b9bd2ab92a7f5dd65adbdb5a2fb9
@@ -1127,9 +1127,10 @@ exp68:
 #     DISREGARD THEM.
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# Need to re-run several experiments above.
+# NEED TO RERUN several experiments above.
+# First let's try the most recent run again. See how things look now.
 
-# First let's try the most recent run again.
+
 # Without meta tuning of perturbation
 exp69:
 	tune_bandit.py replicator $(DATA_PATH)/exp69 \
