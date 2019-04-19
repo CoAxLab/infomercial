@@ -16,6 +16,10 @@ from infomercial.local_gym.bandit import BanditHardAndSparse1000
 from infomercial.local_gym.bandit import BanditGaussian10
 from infomercial.local_gym.bandit import BanditTwoExtreme1000
 
+# Gym is annoying these days...
+import warnings
+warnings.filterwarnings("ignore")
+
 environments = [
     ['BanditOneHot2', 'v0', 1],
     ['BanditOneHot10', 'v0', 1],

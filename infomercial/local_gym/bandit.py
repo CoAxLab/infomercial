@@ -4,6 +4,10 @@ import gym
 from gym import spaces
 from gym.utils import seeding
 
+# Gym is annoying these days...
+import warnings
+warnings.filterwarnings("ignore")
+
 
 class BanditEnv(gym.Env):
     """

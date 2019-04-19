@@ -95,6 +95,7 @@ def run(env_name='BanditOneHot2-v0',
     env = gym.make(env_name)
     env.seed(seed_value)
     num_actions = env.action_space.n
+    best_action = env.env.best
 
     # -
     default_reward_value = 0  # Null R
@@ -109,6 +110,7 @@ def run(env_name='BanditOneHot2-v0',
     scores_R = []
     values_R = []
     actions = []
+    p_bests = []
     epsilons = []
     visited_states = set()
     for n in range(num_episodes):
@@ -122,6 +124,8 @@ def run(env_name='BanditOneHot2-v0',
         # Choose an action; Choose a bandit
         values = list(critic.model.values())
         action = actor(values)
+        if action == best_action:
+            num_best += 1
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -142,6 +146,7 @@ def run(env_name='BanditOneHot2-v0',
         scores_R.append(R_t)
         values_R.append(critic(action))
         epsilons.append(actor.epsilon)
+        p_bests.append(num_best / (n + 1))
 
         # -
         if debug:
@@ -160,6 +165,7 @@ def run(env_name='BanditOneHot2-v0',
         best=env.env.best,
         episodes=episodes,
         actions=actions,
+        p_bests=p_bests,
         epsilons=epsilons,
         visited_states=visited_states,
         critic_R=critic.state_dict(),
