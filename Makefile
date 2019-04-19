@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -966,6 +966,12 @@ exp59:
 # and much 100X bandit size for episode number, meaning
 #   --num_episodes=12100
 
+# SUM (exp60-66): NO opts searches found the best arm. 
+# NEXT: 100X didn't seem to help? For eff. returning to 20X
+#       Try more replicators? I've solved this before, intermittently w/ hand 
+#       tuning...; Try forcing tie_treshold to small value? 
+#       I think that helped before?
+
 # --num_iterations=16; --num_replicators=40
 exp60:
 	tune_bandit.py replicator $(DATA_PATH)/exp60 \
@@ -1050,3 +1056,21 @@ exp66:
 		--tie_threshold='(1e-8, 0.1)' \
 		--lr='(0.001, 0.2)'
 
+# ----------------------------------------------------------------------------
+# 4-19-2019
+# 
+# Try to solve BanditHardAndSparse121 w/ many more replicators? 
+# - Limit tie_thereshold to small values: (1e-10, 1e-6)
+# - Fix lr = 0.1 as it's been consisntently near this value in many tuning runs.
+
+exp67:
+	tune_bandit.py replicator $(DATA_PATH)/exp67 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=10 \
+		--num_episodes=1210 \
+		--num_replicators=800 \
+		--num_processes=4 \
+		--verbose=True \
+		--tie_threshold='(1e-10, 1e-6)' \
+		--lr=0.1
