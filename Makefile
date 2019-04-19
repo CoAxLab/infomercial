@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-DATA_PATH=/Users/qualia/Code/infomercial/data
-# DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -1070,7 +1070,6 @@ exp67:
 		--num_iterations=10 \
 		--num_episodes=1210 \
 		--num_replicators=800 \
-		--num_processes=4 \
-		--verbose=True \
+		--num_processes=40 \
 		--tie_threshold='(1e-10, 1e-6)' \
 		--lr=0.1
