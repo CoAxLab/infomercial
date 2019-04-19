@@ -297,6 +297,7 @@ def tune_replicator(name,
                     num_episodes=2000,
                     num_replicators=10,
                     num_processes=1,
+                    perturbation=0.1,
                     metric="total_R",
                     verbose=False,
                     seed_value=None,
@@ -364,13 +365,17 @@ def tune_replicator(name,
 
     # ------------------------------------------------------------------------
     # Init the meta-population of perturbation strategies
-    perturbations = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5]
-    meta_population = np.ones(len(perturbations)) / len(perturbations)
-    F_meta = np.ones_like(meta_population) * np.mean(
-        get_metrics(trials, metric))
+    meta = False
+    if perturbation == 'meta':
+        meta = True
+    if meta:
+        perturbations = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5]
+        meta_population = np.ones(len(perturbations)) / len(perturbations)
+        F_meta = np.ones_like(meta_population) * np.mean(
+            get_metrics(trials, metric))
 
-    if verbose: print(f"\n>>> Perturbations: {perturbations}")
-    if verbose: print(f">>> Initial F_meta: {F_meta}")
+        if verbose: print(f"\n>>> Perturbations: {perturbations}")
+        if verbose: print(f">>> Initial F_meta: {F_meta}")
 
     # ------------------------------------------------------------------------
     # Optimize for num_iterations
@@ -403,7 +408,7 @@ def tune_replicator(name,
         cull = population >= (1 / population.size)
         population = population[cull]
         population /= np.sum(population)
-        configs = [configs[c] for c in cull]
+        configs = [c for (c, m) in zip(configs, cull) if m]
 
         if verbose:
             print(f">>> Number surviving: {np.sum(cull)}")
@@ -416,10 +421,12 @@ def tune_replicator(name,
         if verbose: print(f">>> Having {num_children} children")
 
         # Sample from the meta_population to find a perturbation
-        ith_meta = prng.choice(range(meta_population.size), p=meta_population)
-        perturbation = perturbations[ith_meta]
+        if meta:
+            ith_meta = prng.choice(
+                range(meta_population.size), p=meta_population)
+            perturbation = perturbations[ith_meta]
 
-        if verbose: print(f">>> perturbation {perturbation} ({ith_meta})")
+            if verbose: print(f">>> perturbation {perturbation} ({ith_meta})")
 
         # Have kids, by perturbation.
         for n in range(num_children):
@@ -427,22 +434,32 @@ def tune_replicator(name,
             ith = prng.choice(range(population.size), p=population)
 
             # Perturb ith config.
-            child_config = configs[ith]
+            child_config = deepcopy(configs[ith])
             for key, value in child_config.items():
                 delta = value * perturbation
-                child_config[key] = prng.uniform(value - delta, value + delta)
-            child_configs.append(child_config)
+                xi = prng.uniform(value - delta, value + delta)
+                child_config[key] = xi
+
+            if verbose:
+                print(f">>> Set {ith} chosen ({configs[ith]})")
+                print(f">>> New child: {child_config}" "")
 
             # Copy ith p.
+            child_configs.append(child_config)
             children.append(population[ith])
+
+        assert len(child_configs) == num_children, "Reproduction error."
+        if verbose: print(f"child configs: {child_configs}")
 
         # Update population w/ children
         population = np.concatenate([population, children])
-        configs.append(child_configs)
+        configs.extend(child_configs)
 
         # Renorm after reproduction
         population /= np.sum(population)
 
+        assert len(configs) == population.size, "Regrouping error!"
+        if verbose: print(f">>> configs: {configs}")
         if verbose: print(f">>> Next generation: {population}")
 
         # -------------------------------------------------------------------
@@ -474,23 +491,23 @@ def tune_replicator(name,
 
         # -------------------------------------------------------------------
         # Update the meta-population.
-        #
-        # Get fitness
-        F_meta[ith_meta] = np.mean(get_metrics(trials, metric))
-        F_bar_meta = np.mean(F_meta)
+        if meta:
+            # Get fitness
+            F_meta[ith_meta] = np.mean(get_metrics(trials, metric))
+            F_bar_meta = np.mean(F_meta)
 
-        if verbose: print(f">>> meta F: {F_meta}")
-        if verbose: print(f">>> meta F_bar: {F_bar_meta}")
-        if verbose: print(f">>> meta current pop: {meta_population}")
+            if verbose: print(f">>> meta F: {F_meta}")
+            if verbose: print(f">>> meta F_bar: {F_bar_meta}")
+            if verbose: print(f">>> meta current pop: {meta_population}")
 
-        # Meta-replicate, still based on the fitness gradient but
-        # only update the ith perturbation used in last iteration.
-        p_ith = meta_population[ith_meta]
-        F_ith = F_meta[ith_meta]
-        meta_population[ith_meta] = (p_ith * F_ith) / F_bar_meta
-        meta_population /= np.sum(meta_population)
+            # Meta-replicate, still based on the fitness gradient but
+            # only update the ith perturbation used in last iteration.
+            p_ith = meta_population[ith_meta]
+            F_ith = F_meta[ith_meta]
+            meta_population[ith_meta] = (p_ith * F_ith) / F_bar_meta
+            meta_population /= np.sum(meta_population)
 
-        if verbose: print(f">>> Updated meta pop: {meta_population}")
+            if verbose: print(f">>> Updated meta pop: {meta_population}")
 
     # ------------------------------------------------------------------------
     # Save configs and metric (full model data is dropped):
