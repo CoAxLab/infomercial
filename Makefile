@@ -1065,7 +1065,7 @@ exp66:
 # - Limit tie_thereshold to small values: (1e-10, 1e-6)
 # - Fix lr = 0.1 as it's been consisntently near this value in many tuning runs.
 #
-# SUM: 
+# SUM: NO opts searches found the best arm. 
 exp67:
 	tune_bandit.py replicator $(DATA_PATH)/exp67 \
 		--exp_name='meta_bandit' \
@@ -1087,6 +1087,11 @@ exp67:
 #   --tie_threshold='(1e-10, 1e-3)' 
 #   --num_replicators=120
 
+# SUM: NO opts searches found the best arm. Even using the meta-approach,
+# which should offer high var in the replicator population, the range of final
+# best HP is very low. Basically two values.... I've seen this before but 
+# ignored it.... there a bug? If the system is doing poorly variance should stay
+# high. If not, why not?
 exp68:
 	git checkout 694c965821aa2facfacebdf8a0d346ea5ca51b85  
 	tune_bandit.py replicator $(DATA_PATH)/exp68 \
