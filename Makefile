@@ -1159,3 +1159,142 @@ exp70:
 		--perturbation=meta \
 		--tie_threshold='(1e-10, 1e-3)' \
 		--lr='(0.001, 0.2)'
+
+# ----------------------------------------------------------------------------
+# 4-22-2019
+# 
+# Run easy and progressivily harder sims to confirm that the replicator
+# is working as intended. Also, let's compare to matched results w/ random
+# search. 
+# Without meta tuning of perturbation
+
+# ------ #
+# 2 ARMs #
+# ------ #
+
+# BanditOneHigh2
+exp71:
+	tune_bandit.py replicator $(DATA_PATH)/exp71 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh2-v0 \
+		--num_iterations=20 \
+		--num_episodes=20 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+exp72:
+	tune_bandit.py random $(DATA_PATH)/exp72 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh2-v0 \
+        --num_episodes=20 \
+        --num_samples=2400 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse2
+exp73:
+	tune_bandit.py replicator $(DATA_PATH)/exp73 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse2-v0 \
+		--num_iterations=20 \
+		--num_episodes=20 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+exp74:
+	tune_bandit.py random $(DATA_PATH)/exp74 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse2-v0 \
+        --num_episodes=20 \
+        --num_samples=2400 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+# ------- #
+# 10 ARMs #
+# ------- #
+
+# BanditOneHigh10
+exp75:
+	tune_bandit.py replicator $(DATA_PATH)/exp75 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=20 \
+		--num_episodes=100 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+exp76:
+	tune_bandit.py random $(DATA_PATH)/exp76 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=2400 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse10
+exp77:
+	tune_bandit.py replicator $(DATA_PATH)/exp77 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=20 \
+		--num_episodes=100 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+exp78:
+	tune_bandit.py random $(DATA_PATH)/exp78 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=100 \
+        --num_samples=2400 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+
+# -------- #
+# 121 ARMs #
+# -------- #
+
+# BanditOneHigh121
+exp79:
+	tune_bandit.py replicator $(DATA_PATH)/exp79 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_iterations=20 \
+		--num_episodes=1210 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+exp80:
+	tune_bandit.py random $(DATA_PATH)/exp80 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+        --num_episodes=1210 \
+        --num_samples=2400 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 1e-3)' \
+		--lr='(0.001, 0.2)'
+
+# BanditHardAndSparse121
+# Run already. See exp69-70.
