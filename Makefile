@@ -1130,6 +1130,9 @@ exp68:
 # NEED TO RERUN several experiments above.
 # First let's try the most recent run again. See how things look now.
 
+# SUM: For both 69 and 70, NO opts searches found the best arm. 
+# - However the final params had much higher variance, consistent
+#   with a more proper search.
 
 # Without meta tuning of perturbation
 exp69:
