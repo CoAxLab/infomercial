@@ -1308,7 +1308,7 @@ exp80:
 exp81:
 	tune_bandit.py replicator $(DATA_PATH)/exp81 \
 		--exp_name='meta_bandit' \
-		--env_name=BanditOneHig1000-v0 \
+		--env_name=BanditOneHigh1000-v0 \
 		--num_iterations=20 \
 		--num_episodes=10000 \
 		--num_replicators=120 \
