@@ -1310,7 +1310,7 @@ exp81:
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
 		--num_iterations=20 \
-		--num_episodes=10000 \
+		--num_episodes=2500 \
 		--num_replicators=120 \
 		--num_processes=40 \
 		--perturbation=0.1 \
@@ -1321,7 +1321,7 @@ exp82:
 	tune_bandit.py random $(DATA_PATH)/exp82 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh1000-v0 \
-        --num_episodes=10000 \
+        --num_episodes=2500 \
         --num_samples=2400 \
         --num_processes=40 \
 		--tie_threshold='(1e-10, 1e-3)' \
