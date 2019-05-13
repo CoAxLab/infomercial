@@ -235,6 +235,20 @@ class BanditOneHigh121(BanditEnv):
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
+class BanditTwoHigh121(BanditEnv):
+    """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
+
+    def __init__(self):
+        self.best = [26, 71]
+        self.num_arms = 121
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best[0]] = 0.40
+        p_dist[self.best[1]] = 0.80
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
 class BanditOneHigh1000(BanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit."""
 
@@ -244,6 +258,20 @@ class BanditOneHigh1000(BanditEnv):
 
         p_dist = [0.2] * self.num_arms
         p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditTwoHigh1000(BanditEnv):
+    """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
+
+    def __init__(self):
+        self.best = [526, 731]
+        self.num_arms = 1000
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best[0]] = 0.40
+        p_dist[self.best[1]] = 0.80
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
