@@ -25,8 +25,11 @@ class Critic(object):
     def forward(self, state):
         return self.model[state]
 
-    def update_(self, state, update):
-        self.model[state] += update
+    def update_(self, state, update, replace=False):
+        if replace:
+            self.model[state] = update
+        else:
+            self.model[state] += update
 
     def state_dict(self):
         return self.model
@@ -104,8 +107,17 @@ def load_checkpoint(filename='checkpoint.pkl'):
 
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
+
     update = lr * (reward - critic(state))
     critic.update_(state, update)
+
+    return critic
+
+
+def E_update(state, value, critic, lr):
+    """Really simple Q learning"""
+    update = lr * value
+    critic.update_(state, update, replace=True)
 
     return critic
 
@@ -221,7 +233,7 @@ def run(env_name='BanditOneHot2-v0',
 
         # Critic learns
         critic_R = Q_update(action, R_t, critic_R, lr)
-        critic_E = Q_update(action, E_t, critic_E, lr)
+        critic_E = E_update(action, E_t, critic_E, lr)
 
         # Log data
         actions.append(action)
