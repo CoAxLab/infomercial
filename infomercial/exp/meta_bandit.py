@@ -126,7 +126,8 @@ def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
-        lr=.1,
+        lr_E=.1,
+        lr_R=.1,
         seed_value=42,
         save=None,
         progress=False,
@@ -151,7 +152,7 @@ def run(env_name='BanditOneHot2-v0',
         env.observation_space.n, default_value=default_info_value)
 
     actor_R = Actor(
-        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+        num_actions, tie_break='first', tie_threshold=tie_threshold)
     actor_E = Actor(
         num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
 
@@ -232,8 +233,8 @@ def run(env_name='BanditOneHot2-v0',
             print(f">>> E_t: {E_t}\n")
 
         # Critic learns
-        critic_R = Q_update(action, R_t, critic_R, lr)
-        critic_E = E_update(action, E_t, critic_E, lr)
+        critic_R = Q_update(action, R_t, critic_R, lr_R)
+        critic_E = E_update(action, E_t, critic_E, lr_E)
 
         # Log data
         actions.append(action)
