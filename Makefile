@@ -1361,3 +1361,34 @@ exp82:
 # !!! THIS BREAKS THE API OF ALL EXPS PREVIOUS TO THIS ONE !!!
 #
 # For usage examples see `notebooks/exptest_meta_bandit.ipynb`.
+
+# Run some new exps with the Bellman form
+
+# BanditOneHigh1000
+exp83:
+	tune_bandit.py replicator $(DATA_PATH)/exp83 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_iterations=20 \
+		--num_episodes=605 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
+
+
+# HardAndSparse121
+exp84:
+	tune_bandit.py replicator $(DATA_PATH)/exp84 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=20 \
+		--num_episodes=12100 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
