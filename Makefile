@@ -1392,3 +1392,18 @@ exp84:
 		--tie_threshold='(1e-10, 0.01)' \
 		--lr_R='(0.0000001, 0.2)' \
 		--lr_E='(0.0000001, 0.2)'
+
+# HardAndSparse121 
+# 10X more samples compared to 84
+exp85:
+	tune_bandit.py replicator $(DATA_PATH)/exp85 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--num_iterations=20 \
+		--num_episodes=121000 \
+		--num_replicators=120 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
