@@ -107,7 +107,7 @@ def load_checkpoint(filename='checkpoint.pkl'):
 
 
 def Q_update(state, reward, critic, lr):
-    """Really simple Q learning"""
+    """Really simple TD learning"""
 
     update = lr * (reward - critic(state))
     critic.update_(state, update)
@@ -116,7 +116,7 @@ def Q_update(state, reward, critic, lr):
 
 
 def E_update(state, value, critic, lr):
-    """Really simple Q learning"""
+    """Bellman update"""
     update = lr * value
     critic.update_(state, update, replace=True)
 
