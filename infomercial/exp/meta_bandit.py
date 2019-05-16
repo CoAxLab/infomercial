@@ -41,6 +41,7 @@ class Actor(object):
         self.tie_break = tie_break
         self.tie_threshold = tie_threshold
         self.action_count = 0
+        self.tied = False
 
     def _is_tied(self, values):
         # One element can't be a tie

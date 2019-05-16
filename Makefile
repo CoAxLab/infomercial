@@ -1304,6 +1304,19 @@ exp80:
 # 1000 ARMs #
 # --------- #
 
+# TODO: this is where you left off prior to resuming editing the main draft. 
+# - Next direct step it to analyze the exp below. You are trying to tune HP and validate 
+#   replicator. So far replicator looks good. 
+# - Need to tune for beta and epsilon, and set up a comparison.
+# - Need to explore max for total_E in meta as well. (Been using total_R as the metric)
+# - **Overall aim** is to compare performance, and see
+#   if meta is (much, a lot, a little, less) than epsilon or beta.
+# - Use p_best as the performance metric. Note it reaches some criterion. How often it 
+#   (re)crosses this criterion, as measure of stability.
+# - May need to convert beta to be stochastic or ....
+# - Or add an H/noisy sampling method, 'Soft Actor-Critic:  Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic...'; I want to make clear how wastefully noisy sampling is. What's the best test?
+
+
 # BanditOneHigh121
 exp81:
 	tune_bandit.py replicator $(DATA_PATH)/exp81 \

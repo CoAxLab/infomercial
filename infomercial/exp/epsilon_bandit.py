@@ -106,6 +106,7 @@ def run(env_name='BanditOneHot2-v0',
 
     # ------------------------------------------------------------------------
     # Play
+    num_best = 0
     total_R = 0.0
     scores_R = []
     values_R = []
