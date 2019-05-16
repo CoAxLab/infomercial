@@ -1352,10 +1352,12 @@ exp82:
 # This was done so their learning rules were consistent. 
 # But, E doesn't need a delta learning rule at all!
 # The Bellman eq is sufficient (and optimal)
-# So I adapted the code for E learning so is just by Bellman. 
-# In practice this change required the lr for for R and E are seperated. 
-# As a result the API for `meta_bandit` is now changed. 
+# So I adapted the code for E learning so it is just Bellman, with a learning
+# rate (lr_E). 
+# In practice, this change required the lr for for R and E are seperated. 
 #
-# !!! This breaks the API of all exps previous to this one. !!!
+# As a result, the API for `meta_bandit` is now changed. 
+#
+# !!! THIS BREAKS THE API OF ALL EXPS PREVIOUS TO THIS ONE !!!
 #
 # For usage examples see `notebooks/exptest_meta_bandit.ipynb`.
