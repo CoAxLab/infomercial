@@ -1339,3 +1339,23 @@ exp82:
         --num_processes=40 \
 		--tie_threshold='(1e-10, 1e-3)' \
 		--lr='(0.001, 0.2)'
+
+# ---------------------------------------------------------------------------
+# 5-15-2019
+# 27ce394690c3683b262a8d01afaa6523aaed697c
+
+# ---------------------------
+# MAJOR CHANGE TO META_BANDIT
+# ---------------------------
+
+# Prev to this change, both R and E value were learned by TD(0). 
+# This was done so their learning rules were consistent. 
+# But, E doesn't need a delta learning rule at all!
+# The Bellman eq is sufficient (and optimal)
+# So I adapted the code for E learning so is just by Bellman. 
+# In practice this change required the lr for for R and E are seperated. 
+# As a result the API for `meta_bandit` is now changed. 
+#
+# !!! This breaks the API of all exps previous to this one. !!!
+#
+# For usage examples see `notebooks/exptest_meta_bandit.ipynb`.
