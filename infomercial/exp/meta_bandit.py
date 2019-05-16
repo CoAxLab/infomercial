@@ -106,7 +106,7 @@ def load_checkpoint(filename='checkpoint.pkl'):
         return cloudpickle.load(fi)
 
 
-def Q_update(state, reward, critic, lr):
+def R_update(state, reward, critic, lr):
     """Really simple TD learning"""
 
     update = lr * (reward - critic(state))
@@ -234,7 +234,7 @@ def run(env_name='BanditOneHot2-v0',
             print(f">>> E_t: {E_t}\n")
 
         # Critic learns
-        critic_R = Q_update(action, R_t, critic_R, lr_R)
+        critic_R = R_update(action, R_t, critic_R, lr_R)
         critic_E = E_update(action, E_t, critic_E, lr_E)
 
         # Log data
