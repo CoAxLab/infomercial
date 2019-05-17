@@ -277,7 +277,13 @@ def run(env_name='BanditOneHot2-v0',
         scores_E=scores_E,
         scores_R=scores_R,
         values_E=values_E,
-        values_R=values_R)
+        values_R=values_R,
+        env_name=env_name,
+        num_episodes=num_episodes,
+        tie_break=tie_break,
+        tie_threshold=tie_threshold,
+        lr_E=lr_E,
+        lr_R=lr_R)
 
     # Save models to disk when done?
     if save is not None:
