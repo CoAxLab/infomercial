@@ -1441,9 +1441,9 @@ exp87:
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse121-v0 \
 		--metric=total_E_R \
-		--num_iterations=20 \
+		--num_iterations=40 \
 		--num_episodes=121000 \
-		--num_replicators=120 \
+		--num_replicators=1200 \
 		--num_processes=40 \
 		--perturbation=0.1 \
 		--tie_threshold='(1e-10, 0.01)' \
