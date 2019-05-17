@@ -1364,7 +1364,9 @@ exp82:
 
 # Run some new exps with the Bellman form
 
-# BanditOneHigh1000
+# BanditOneHigh121
+# SUM: top half of best params solve i. Exploration was truncated. That's
+# OK here. Might not be O in harder tasks
 exp83:
 	tune_bandit.py replicator $(DATA_PATH)/exp83 \
 		--exp_name='meta_bandit' \
@@ -1380,6 +1382,9 @@ exp83:
 
 
 # HardAndSparse121
+# SUM: for 84 and 85 the best soln discovered was don't explore at all. Stick
+# to arm 0.
+# Should I try running with total value, or max E as the objective?
 exp84:
 	tune_bandit.py replicator $(DATA_PATH)/exp84 \
 		--exp_name='meta_bandit' \
@@ -1395,6 +1400,7 @@ exp84:
 
 # HardAndSparse121 
 # 10X more samples compared to 84
+# SUM: see above
 exp85:
 	tune_bandit.py replicator $(DATA_PATH)/exp85 \
 		--exp_name='meta_bandit' \
