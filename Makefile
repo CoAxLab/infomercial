@@ -1385,6 +1385,8 @@ exp83:
 # SUM: for 84 and 85 the best soln discovered was don't explore at all. Stick
 # to arm 0.
 # Should I try running with total value, or max E as the objective?
+
+# NOTE: I can solve this by hand-tuning. How to make the meta-opt work right?
 exp84:
 	tune_bandit.py replicator $(DATA_PATH)/exp84 \
 		--exp_name='meta_bandit' \
