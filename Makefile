@@ -1419,6 +1419,7 @@ exp85:
 
 # HardAndSparse121 
 # metric: total_E
+# SUM: no improvement from 85. Huh.
 exp86:
 	tune_bandit.py replicator $(DATA_PATH)/exp86 \
 		--exp_name='meta_bandit' \
