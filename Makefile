@@ -1452,3 +1452,84 @@ exp87:
 		--tie_threshold='(1e-10, 0.01)' \
 		--lr_R='(0.0000001, 0.2)' \
 		--lr_E='(0.0000001, 0.2)'
+
+
+# ---------------------------------------------------------------------------
+# 5-20-2019
+# 7b6353092468ef9645f655a470b25ecbc42c4fc5
+
+# Fixed bug in E/R init that was preventing exploration in low R conditions.
+# Re-running last few attempts are HardAndSparse121....
+
+# --metric=total_R 
+exp88:
+	tune_bandit.py replicator $(DATA_PATH)/exp88 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--metric=total_R \
+		--num_iterations=40 \
+		--num_episodes=121000 \
+		--num_replicators=1200 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
+
+# --metric=total_E 
+exp89:
+	tune_bandit.py replicator $(DATA_PATH)/exp89 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--metric=total_E \
+		--num_iterations=40 \
+		--num_episodes=121000 \
+		--num_replicators=1200 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
+
+# --metric=total_E_R 
+exp90:
+	tune_bandit.py replicator $(DATA_PATH)/exp90 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--metric=total_E_R \
+		--num_iterations=40 \
+		--num_episodes=121000 \
+		--num_replicators=1200 \
+		--num_processes=40 \
+		--perturbation=0.1 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
+
+
+# --metric=total_R --perturbation=meta
+exp91:
+	tune_bandit.py replicator $(DATA_PATH)/exp91 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+		--metric=total_R \
+		--num_iterations=40 \
+		--num_episodes=121000 \
+		--num_replicators=1200 \
+		--num_processes=40 \
+		--perturbation=meta \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
+
+# random search
+exp92:
+	tune_bandit.py random $(DATA_PATH)/exp92 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+        --num_episodes=121000 \
+        --num_samples=48000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-10, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+		--lr_E='(0.0000001, 0.2)'
