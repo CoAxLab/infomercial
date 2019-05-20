@@ -1435,7 +1435,10 @@ exp86:
 		--lr_E='(0.0000001, 0.2)'
 
 # HardAndSparse121 
-# metric: total_E_E
+# metric: total_E_R
+# SUM: still no exploration at all. Something is wrong, with replicator. 
+# With meta. I don't understand this result. Focusing on E should lead to 
+# extended exploration! 
 exp87:
 	tune_bandit.py replicator $(DATA_PATH)/exp87 \
 		--exp_name='meta_bandit' \
