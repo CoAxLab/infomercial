@@ -162,8 +162,8 @@ def run(env_name='BanditOneHot2-v0',
     # -
     memory = ConditionalCount()
     visited_states = set()
-    E_t = 0.0
-    R_t = 0.0
+    E_t = default_info_value
+    R_t = default_reward_value
 
     # ------------------------------------------------------------------------
     # Play
