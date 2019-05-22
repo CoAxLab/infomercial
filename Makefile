@@ -1468,7 +1468,7 @@ exp88:
 		--env_name=BanditHardAndSparse121-v0 \
 		--metric=total_R \
 		--num_iterations=40 \
-		--num_episodes=121000 \
+		--num_episodes=60500 \
 		--num_replicators=120 \
 		--num_processes=40 \
 		--perturbation=0.1 \
@@ -1483,7 +1483,7 @@ exp89:
 		--env_name=BanditHardAndSparse121-v0 \
 		--metric=total_E \
 		--num_iterations=40 \
-		--num_episodes=121000 \
+		--num_episodes=60500 \
 		--num_replicators=120 \
 		--num_processes=40 \
 		--perturbation=0.1 \
@@ -1498,7 +1498,7 @@ exp90:
 		--env_name=BanditHardAndSparse121-v0 \
 		--metric=total_E_R \
 		--num_iterations=40 \
-		--num_episodes=121000 \
+		--num_episodes=60500 \
 		--num_replicators=120 \
 		--num_processes=40 \
 		--perturbation=0.1 \
@@ -1514,7 +1514,7 @@ exp91:
 		--env_name=BanditHardAndSparse121-v0 \
 		--metric=total_R \
 		--num_iterations=40 \
-		--num_episodes=121000 \
+		--num_episodes=60500 \
 		--num_replicators=120 \
 		--num_processes=40 \
 		--perturbation=meta \
@@ -1527,7 +1527,7 @@ exp92:
 	tune_bandit.py random $(DATA_PATH)/exp92 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse121-v0 \
-        --num_episodes=121000 \
+        --num_episodes=60500 \
         --num_samples=4800 \
         --num_processes=40 \
 		--tie_threshold='(1e-10, 0.01)' \
