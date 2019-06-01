@@ -144,6 +144,13 @@ class EfficientConditionalCount(Memory):
         count = self.datas[i].count(x)
         return count / self.capacity
 
+    def probs(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+
+        return p
+
 
 class Kernel(Memory):
     """A continous distribution, estimated using a kernel
