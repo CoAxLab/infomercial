@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from collections import OrderedDict
+from collections import deque
 
 from sklearn.neighbors import KernelDensity
 
@@ -108,6 +109,42 @@ class ConditionalCount(Count):
         for x, cond in zip(xs, conds):
             p.append(self.forward(x, cond))
         return p
+
+
+class EfficientConditionalCount(Memory):
+    def __init__(self, capacity=1):
+        self.capacity = capacity
+        self.conds = []
+        self.datas = []
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    def update(self, x, cond):
+        # Add cond?
+        if cond not in self.conds:
+            self.conds.append(cond)
+            self.datas.append(deque(maxlen=self.capacity))
+
+        # Locate cond.
+        i = self.conds.index(cond)
+
+        # Update
+        self.datas[i].append(x)
+
+    def forward(self, x, cond):
+        # Locate cond.
+        if cond not in self.conds:
+            return 0
+        else:
+            i = self.conds.index(cond)
+
+        if x not in self.datas[i]:
+            return 0
+        else:
+            # Count unique items in data
+            count = self.datas[i].count(x)
+            return count / self.capacity
 
 
 class Kernel(Memory):
