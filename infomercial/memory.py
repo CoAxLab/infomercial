@@ -113,6 +113,8 @@ class ConditionalCount(Count):
 
 class EfficientConditionalCount(Memory):
     def __init__(self, capacity=1):
+        if capacity < 1:
+            raise ValueError("capacity must be >= 1")
         self.capacity = capacity
         self.conds = []
         self.datas = []
@@ -139,12 +141,8 @@ class EfficientConditionalCount(Memory):
         else:
             i = self.conds.index(cond)
 
-        if x not in self.datas[i]:
-            return 0
-        else:
-            # Count unique items in data
-            count = self.datas[i].count(x)
-            return count / self.capacity
+        count = self.datas[i].count(x)
+        return count / self.capacity
 
 
 class Kernel(Memory):
