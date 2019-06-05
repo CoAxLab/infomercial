@@ -1547,3 +1547,39 @@ exp92:
 # 
 # THIS CHANGE BREAKS ALL PAST EXPS ABOVE.
 # ----------------------------------------------------------------------------
+# 
+# SUM: in the exptest_meta_bandit notebook I confirmed all oneHigh bandits
+# are still easily solved.
+
+# Now let's re-try some Sparse problems
+
+# w/ random search
+exp93:
+	tune_bandit.py random $(DATA_PATH)/exp93 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse2-v0 \
+        --num_episodes=2000 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+
+exp94:
+	tune_bandit.py random $(DATA_PATH)/exp94 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' \
+
+exp95:
+	tune_bandit.py random $(DATA_PATH)/exp95 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse121-v0 \
+        --num_episodes=605000 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.000000001, 0.2)' \
