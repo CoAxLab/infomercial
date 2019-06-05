@@ -155,8 +155,9 @@ class EfficientConditionalCount(Memory):
 
 
 class ForgetfulConditionalCount(Memory):
+    """Forget conditions when over-capacity"""
+
     def __init__(self, capacity=1):
-        """Forget conditions when over-capacity"""
         if capacity < 1:
             raise ValueError("capacity must be >= 1")
 
