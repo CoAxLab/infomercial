@@ -165,7 +165,7 @@ def run(env_name='BanditOneHot2-v0',
     if capacity is None:
         memory = ConditionalCount()
     else:
-        memory = ForgetfulConditionalCount(capacity)
+        memory = EfficientConditionalCount(capacity)
 
     visited_states = set()
     E_t = default_info_value
