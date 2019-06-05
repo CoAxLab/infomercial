@@ -209,34 +209,6 @@ class ForgetfulConditionalCount(Memory):
         return p
 
 
-class ForgetfulConditionalCount(Memory):
-    def __init__(self, capacity=1):
-        """Forget conditions when over-capacity"""
-        if capacity < 1:
-            raise ValueError("capacity must be >= 1")
-        self.capacity = capacity
-        self.conds = deque(maxlen=self.capacity)
-        self.datas = []
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    # TODO
-    def update(self, x, cond):
-        if cond not in self.conds:
-            self.conds.append(cond)
-
-    def forward(self, x, cond):
-        pass
-
-    def probs(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-
-        return p
-
-
 class Kernel(Memory):
     """A continous distribution, estimated using a kernel
     
