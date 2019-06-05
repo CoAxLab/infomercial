@@ -5,6 +5,8 @@ import numpy as np
 
 from scipy.stats import entropy
 from infomercial.memory import ConditionalCount
+from infomercial.memory import EfficientConditionalCount
+from infomercial.memory import ForgetfulConditionalCount
 from infomercial.policy import greedy
 
 from collections import OrderedDict
@@ -128,6 +130,7 @@ def run(env_name='BanditOneHot2-v0',
         tie_break='next',
         tie_threshold=0.0,
         lr_R=.1,
+        capacity=None,
         seed_value=42,
         save=None,
         progress=False,
@@ -159,7 +162,11 @@ def run(env_name='BanditOneHot2-v0',
     best_action = env.env.best
 
     # -
-    memory = ConditionalCount()
+    if capacity is None:
+        memory = ConditionalCount()
+    else:
+        memory = ForgetfulConditionalCount(capacity)
+
     visited_states = set()
     E_t = default_info_value
     R_t = default_reward_value
