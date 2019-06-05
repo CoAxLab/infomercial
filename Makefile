@@ -1533,3 +1533,17 @@ exp92:
 		--tie_threshold='(1e-10, 0.01)' \
 		--lr_R='(0.0000001, 0.2)' \
 		--lr_E='(0.0000001, 0.2)'
+
+
+# ----------------------------------------------------------------------------
+# As of commit
+# 
+# fb03b7758741c50c8c8249a4a8dc81c3d636e8c6
+#
+# E learning is strictly greedy, which means the lr_E param is redundant for
+# single trial bandit tasks AND HAS BEEN REMOVED. When working with mult step
+# envs, re-introducing a gamma time horizon may be needed. Not for 1 step 
+# bandits.
+# 
+# THIS CHANGE BREAKS ALL PAST EXPS ABOVE.
+# ----------------------------------------------------------------------------
