@@ -211,17 +211,18 @@ def run(env_name='BanditOneHot2-v0',
         R_t = reward  # Notation consistency
         visited_states.add(action)  # Action is state here
 
-        # Build memory sampling lists, state:
-        # r in (0,1); cond: bandit code
-        cond_sample = list(visited_states) * 2
-        state_sample = [0] * len(visited_states) + [1] * len(visited_states)
+        # Est E
+        cond_sample = [action, action]
+        state_sample = [0, 1]
 
-        # Update the memory and est. information value of the state
         p_old = memory.probs(state_sample, cond_sample)
         memory.update(reward, action)
         p_new = memory.probs(state_sample, cond_sample)
 
-        info = information_value(p_new, p_old)
+        if np.isclose(np.sum(p_old), 0.0):
+            info = default_info_value
+        else:
+            info = information_value(p_new, p_old)
         E_t = info
 
         # -
