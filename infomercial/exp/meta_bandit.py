@@ -123,11 +123,12 @@ def E_update(state, value, critic, lr):
     return critic
 
 
-def run(env_name='BanditOneHot2-v0',
+def run(
+        env_name='BanditOneHot2-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
-        lr_E=.1,
+        # lr_E=1,
         lr_R=.1,
         seed_value=42,
         save=None,
@@ -236,7 +237,7 @@ def run(env_name='BanditOneHot2-v0',
 
         # Critic learns
         critic_R = R_update(action, R_t, critic_R, lr_R)
-        critic_E = E_update(action, E_t, critic_E, lr_E)
+        critic_E = E_update(action, E_t, critic_E, lr=1)
 
         # Log data
         actions.append(action)
