@@ -123,12 +123,10 @@ def E_update(state, value, critic, lr):
     return critic
 
 
-def run(
-        env_name='BanditOneHot2-v0',
+def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
-        # lr_E=1,
         lr_R=.1,
         seed_value=42,
         save=None,
