@@ -62,8 +62,7 @@ def run(env_name='BanditOneHot2-v0',
         # Every play is also an ep for bandit tasks.
         # Thus this reset() call
         state = int(env.reset()[0])
-
-        action = np.random.random_integers(0, num_actions)
+        action = int(np.random.random_integers(0, num_actions))
         if action == best_action:
             num_best += 1
 
