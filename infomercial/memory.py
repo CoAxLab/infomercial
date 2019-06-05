@@ -112,6 +112,8 @@ class ConditionalCount(Count):
 
 
 class EfficientConditionalCount(Memory):
+    """Forget x when over-capacity"""
+
     def __init__(self, capacity=1):
         if capacity < 1:
             raise ValueError("capacity must be >= 1")
@@ -143,6 +145,89 @@ class EfficientConditionalCount(Memory):
 
         count = self.datas[i].count(x)
         return count / self.capacity
+
+    def probs(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+
+        return p
+
+
+class ForgetfulConditionalCount(Memory):
+    def __init__(self, capacity=1):
+        """Forget conditions when over-capacity"""
+        if capacity < 1:
+            raise ValueError("capacity must be >= 1")
+
+        self.capacity = capacity
+        self.Ns = deque(maxlen=self.capacity)
+        self.conds = deque(maxlen=self.capacity)
+        self.counts = deque(maxlen=self.capacity)
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    def update(self, x, cond):
+        # Add cond?
+        if cond not in self.conds:
+            self.conds.append(cond)
+            self.counts.append(OrderedDict())
+            self.Ns.append(0)
+
+        # Locate cond.
+        i = self.conds.index(cond)
+
+        # Update counts for cond
+        if x in self.counts[i]:
+            self.counts[i][x] += 1
+        else:
+            self.counts[i][x] = 1
+
+        # Update cond count normalizer
+        self.Ns[i] += 1
+
+    def forward(self, x, cond):
+        # Locate cond.
+        if cond not in self.conds:
+            return 0
+        else:
+            i = self.conds.index(cond)
+
+        # Get p(x|cond)
+        if x not in self.counts[i]:
+            return 0
+        elif self.Ns[i] == 0:
+            return 0
+        else:
+            return self.counts[i][x] / self.Ns[i]
+
+    def probs(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+        return p
+
+
+class ForgetfulConditionalCount(Memory):
+    def __init__(self, capacity=1):
+        """Forget conditions when over-capacity"""
+        if capacity < 1:
+            raise ValueError("capacity must be >= 1")
+        self.capacity = capacity
+        self.conds = deque(maxlen=self.capacity)
+        self.datas = []
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    # TODO
+    def update(self, x, cond):
+        if cond not in self.conds:
+            self.conds.append(cond)
+
+    def forward(self, x, cond):
+        pass
 
     def probs(self, xs, conds):
         p = []
