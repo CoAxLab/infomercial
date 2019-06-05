@@ -284,7 +284,6 @@ def run(
         num_episodes=num_episodes,
         tie_break=tie_break,
         tie_threshold=tie_threshold,
-        lr_E=lr_E,
         lr_R=lr_R)
 
     # Save models to disk when done?
