@@ -1554,6 +1554,10 @@ exp92:
 # Now let's re-try some Sparse problems
 
 # w/ random search
+
+# SUM: 93 and 94 found good solutions. 
+#      95 result made no obvious progress on the problem.
+
 exp93:
 	tune_bandit.py random $(DATA_PATH)/exp93 \
 		--exp_name='meta_bandit' \
