@@ -176,10 +176,6 @@ def run(env_name='BanditOneHigh2-v0',
 
         # Log data
         actions.append(action)
-        if actor.tied:
-            ties.append(1)
-        else:
-            ties.append(0)
         total_R += R_t
         total_E += beta * E_t
         scores_E.append(beta * E_t)
