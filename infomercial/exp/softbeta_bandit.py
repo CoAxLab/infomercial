@@ -32,57 +32,6 @@ class Critic(object):
         return self.model
 
 
-class Actor(object):
-    def __init__(self, num_actions, tie_break='next', tie_threshold=0.0):
-        self.num_actions = num_actions
-        self.tie_break = tie_break
-        self.tie_threshold = tie_threshold
-        self.action_count = 0
-
-    def _is_tied(self, values):
-        # One element can't be a tie
-        if len(values) < 1:
-            return False
-
-        # Apply the threshold, rectifying values less than 0
-        t_values = [max(0, v - self.tie_threshold) for v in values]
-
-        # Check for any difference, if there's a difference then
-        # there can be no tie.
-        tied = True  # Assume tie
-        v0 = t_values[0]
-        for v in t_values[1:]:
-            if np.isclose(v0, v):
-                continue
-            else:
-                tied = False
-
-        return tied
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Pick the best as the base case, ....
-        action = np.argmax(values)
-
-        # then check for ties.
-        #
-        # Using the first element is argmax's tie breaking strategy
-        if self.tie_break == 'first':
-            pass
-        # Round robin through the options for each new tie.
-        elif self.tie_break == 'next':
-            self.tied = self._is_tied(values)
-            if self.tied:
-                self.action_count += 1
-                action = self.action_count % self.num_actions
-        else:
-            raise ValueError("tie_break must be 'first' or 'next'")
-
-        return action
-
-
 class SoftmaxActor(object):
     def __init__(self, num_actions, temp=1, seed_value=42):
         self.temp = temp
@@ -136,11 +85,9 @@ def Q_update(state, reward, critic, lr):
 
 def run(env_name='BanditOneHigh2-v0',
         num_episodes=1,
-        tie_break='next',
-        tie_threshold=0.0,
         beta=1.0,
         lr_R=.1,
-        softmax=False,
+        temp=1,
         seed_value=42,
         save=None,
         progress=False,
@@ -162,12 +109,7 @@ def run(env_name='BanditOneHigh2-v0',
     critic = Critic(
         env.observation_space.n,
         default_value=default_reward_value + (beta * default_info_value))
-
-    if softmax:
-        actor = SoftmaxActor(num_actions)
-    else:
-        actor = Actor(
-            num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+    actor = SoftmaxActor(num_actions, temp=temp)
 
     best_action = env.env.best
 
