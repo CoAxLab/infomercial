@@ -363,7 +363,7 @@ class BanditUniform10(BanditEnv):
         self.best = [7]
         self.num_arms = 10
 
-        p_dist = np.random.uniform(0.2, 0.75, size=self.num_arms).tolist()
+        p_dist = self.np_random.uniform(0.2, 0.75, size=self.num_arms).tolist()
         p_dist[self.best[0]] = 0.8
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
@@ -376,7 +376,7 @@ class BanditUniform121(BanditEnv):
         self.best = [54]
         self.num_arms = 121
 
-        p_dist = np.random.uniform(0.2, 0.75, size=self.num_arms).tolist()
+        p_dist = self.np_random.uniform(0.2, 0.75, size=self.num_arms).tolist()
         p_dist[self.best[0]] = 0.8
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
@@ -397,6 +397,6 @@ class BanditGaussian10(BanditEnv):
         r_dist = []
 
         for i in range(bandits):
-            r_dist.append([np.random.normal(0, 1), 1])
+            r_dist.append([self.np_random.normal(0, 1), 1])
 
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
