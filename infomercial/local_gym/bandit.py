@@ -342,6 +342,32 @@ class BanditHardAndSparse1000(BanditEnv):
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
 
+class BanditUniform10(BanditEnv):
+    """A U(0.2, 0.75) bandit, with one best set 0.8."""
+
+    def __init__(self):
+        self.best = 7
+        self.num_arms = 10
+
+        p_dist = np.random.uniform(0.2, 0.75, size=self.num_arms).tolist()
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
+class BanditUniform121(BanditEnv):
+    """A U(0.2, 0.75) bandit, with one best set 0.8."""
+
+    def __init__(self):
+        self.best = 54
+        self.num_arms = 121
+
+        p_dist = np.random.uniform(0.2, 0.75, size=self.num_arms).tolist()
+        p_dist[self.best] = 0.8
+        r_dist = [1] * self.num_arms
+        BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
+
+
 class BanditGaussian10(BanditEnv):
     """
     10 armed bandit mentioned on page 30 of Sutton and Barto's
