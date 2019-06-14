@@ -83,6 +83,30 @@ class Actor(object):
         return action
 
 
+class SoftmaxActor(object):
+    def __init__(self, num_actions, temp=1, seed_value=42):
+        self.temp = temp
+        self.num_actions = num_actions
+        self.seed_value = seed_value
+        self.prng = np.random.RandomState(self.seed_value)
+        self.actions = list(range(self.num_actions))
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        # Convert to ps
+        values = np.asarray(values)
+        z = values * (1 / self.temp)
+        x = np.exp(z)
+        ps = x / np.sum(x)
+
+        # Sample actions by ps
+        action = self.prng.choice(self.actions, p=ps)
+
+        return action
+
+
 def information_value(p_new, p_old, base=None):
     """Calculate information value."""
     if np.isclose(np.sum(p_old), 0.0):
@@ -116,6 +140,7 @@ def run(env_name='BanditOneHigh2-v0',
         tie_threshold=0.0,
         beta=1.0,
         lr_R=.1,
+        softmax=False,
         seed_value=42,
         save=None,
         progress=False,
@@ -137,8 +162,12 @@ def run(env_name='BanditOneHigh2-v0',
     critic = Critic(
         env.observation_space.n,
         default_value=default_reward_value + (beta * default_info_value))
-    actor = Actor(
-        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+
+    if softmax:
+        actor = SoftmaxActor(num_actions)
+    else:
+        actor = Actor(
+            num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
 
     best_action = env.env.best
 
