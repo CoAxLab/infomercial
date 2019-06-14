@@ -63,7 +63,7 @@ def run(env_name='BanditOneHot2-v0',
         # Thus this reset() call
         state = int(env.reset()[0])
         action = int(np.random.random_integers(0, num_actions))
-        if action == best_action:
+        if action in best_action:
             num_best += 1
 
         # Pull a lever.

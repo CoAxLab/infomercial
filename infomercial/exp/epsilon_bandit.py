@@ -125,7 +125,7 @@ def run(env_name='BanditOneHot2-v0',
         # Choose an action; Choose a bandit
         values = list(critic.model.values())
         action = actor(values)
-        if action == best_action:
+        if action in best_action:
             num_best += 1
 
         # Pull a lever.
