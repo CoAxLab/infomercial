@@ -1618,6 +1618,7 @@ exp95:
 	# - Tune each independently for each bandit. Random search ~1000 samples.
 	# - Do 25 runs/seeds for each tune bandit and env combination. Maybe do more later, depending on initial variability.
 
+# ---------------
 # BanditOneHigh10
 exp96:
 	tune_bandit.py random $(DATA_PATH)/exp96 \
@@ -1658,3 +1659,132 @@ exp99:
 		--num_processes=40 \
 		--beta='(1e-3, 2)' \
 		--lr_R='(0.000000001, 0.2)' 
+
+
+# ---------------
+# BanditTwoHigh10
+exp100:
+	tune_bandit.py random $(DATA_PATH)/exp100 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.000000001, 0.5)' 
+
+exp101:
+	tune_bandit.py random $(DATA_PATH)/exp101 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp102:
+	tune_bandit.py random $(DATA_PATH)/exp102 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp103:
+	tune_bandit.py random $(DATA_PATH)/exp103 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+
+# ---------------
+# BanditUniform121
+exp105:
+	tune_bandit.py random $(DATA_PATH)/exp104 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_episodes=60500 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.000000001, 0.5)' 
+
+exp105:
+	tune_bandit.py random $(DATA_PATH)/exp105 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp106:
+	tune_bandit.py random $(DATA_PATH)/exp106 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp107:
+	tune_bandit.py random $(DATA_PATH)/exp107 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# ---------------------
+# BanditHardAndSparse10
+exp108:
+	tune_bandit.py random $(DATA_PATH)/exp108 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.0000001, 0.2)' 
+
+exp109:
+	tune_bandit.py random $(DATA_PATH)/exp109 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp110:
+	tune_bandit.py random $(DATA_PATH)/exp110 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp111:
+	tune_bandit.py random $(DATA_PATH)/exp111 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)'
+	 
