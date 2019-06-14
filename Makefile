@@ -1706,7 +1706,7 @@ exp103:
 
 # ---------------
 # BanditUniform121
-exp105:
+exp104:
 	tune_bandit.py random $(DATA_PATH)/exp104 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditUniform121-v0 \
