@@ -165,6 +165,8 @@ def run(env_name='BanditOneHot2-v0',
     result = dict(
         best=env.env.best,
         episodes=episodes,
+        num_episodes=num_episodes,
+        lr_R=lr_R,
         actions=actions,
         p_bests=p_bests,
         epsilons=epsilons,
@@ -172,7 +174,6 @@ def run(env_name='BanditOneHot2-v0',
         critic_R=critic.state_dict(),
         total_R=total_R,
         scores_R=scores_R,
-        lr_R=lr_R,
         values_R=values_R)
 
     # Save models to disk when done?
