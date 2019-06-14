@@ -83,6 +83,30 @@ class Actor(object):
         return action
 
 
+class SoftmaxActor(object):
+    def __init__(self, num_actions, temp=1, seed_value=42):
+        self.temp = temp
+        self.num_actions = num_actions
+        self.seed_value = seed_value
+        self.prng = np.random.RandomState(self.seed_value)
+        self.actions = list(range(self.num_actions))
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        # Convert to ps
+        values = np.asarray(values)
+        z = values * (1 / self.temp)
+        x = np.exp(z)
+        ps = x / np.sum(x)
+
+        # Sample actions by ps
+        action = self.prng.choice(self.actions, p=ps)
+
+        return action
+
+
 def information_value(p_new, p_old, base=None):
     """Calculate information value."""
     if np.isclose(np.sum(p_old), 0.0):
