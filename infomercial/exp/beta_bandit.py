@@ -139,7 +139,7 @@ def run(env_name='BanditOneHigh2-v0',
         tie_break='next',
         tie_threshold=0.0,
         beta=1.0,
-        lr=.1,
+        lr_R=.1,
         softmax=False,
         seed_value=42,
         save=None,
@@ -230,7 +230,7 @@ def run(env_name='BanditOneHigh2-v0',
             print(f">>> E_t: {E_t}\n")
 
         # Critic learns
-        critic = Q_update(action, R_t + (beta * E_t), critic, lr)
+        critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
 
         # Log data
         actions.append(action)
