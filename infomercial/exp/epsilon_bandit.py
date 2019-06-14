@@ -82,7 +82,7 @@ def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         epsilon=0.1,
         epsilon_decay_tau=0,
-        lr=.1,
+        lr_R=.1,
         seed_value=42,
         save=None,
         progress=False,
@@ -134,7 +134,7 @@ def run(env_name='BanditOneHot2-v0',
         R_t = reward  # Notation consistency
 
         # Critic learns
-        critic = Q_update(action, R_t, critic, lr)
+        critic = Q_update(action, R_t, critic, lr_R)
 
         # Decay ep. noise?
         if epsilon_decay_tau > 0:
@@ -172,6 +172,7 @@ def run(env_name='BanditOneHot2-v0',
         critic_R=critic.state_dict(),
         total_R=total_R,
         scores_R=scores_R,
+        lr_R=lr_R,
         values_R=values_R)
 
     # Save models to disk when done?
