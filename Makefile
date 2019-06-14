@@ -1587,3 +1587,74 @@ exp95:
         --num_processes=40 \
 		--tie_threshold='(1e-16, 0.01)' \
 		--lr_R='(0.000000001, 0.2)' \
+
+
+# ---------------------------------------------------------------------------
+# 6-14-2019
+# c8b4c07ef3374f1580ef250686a770e051db7012
+
+# First full round of tuning for draft:
+# https://www.biorxiv.org/content/10.1101/671362v1
+
+# PLAN:
+	# # Bandits for Fig 2.
+	# - Traditional - BanditOneHigh10 
+	#   + 10 arm: 20, 80, ....
+	# - 2 mode - BanditTwoHigh10
+	#   + 10 arm: 20, 80, ..., 80, ....
+	# - Rand (1 winner) - BanditUniform121
+	#   + 121 (or 10?) arm: rand: 20-75, .... 80, ....
+	# - Sparse - BanditHardAndSparse10
+	#   + 10 arm: 0.01, 0.02, ....
+
+	# # Agents
+	# - ep (no decay)
+	# - beta (det)
+	# - beta (softmax)
+	# - meta 
+	# - random (baseline)
+
+	# # Exp plan
+	# - Tune each independently for each bandit. Random search ~1000 samples.
+	# - Do 25 runs/seeds for each tune bandit and env combination. Maybe do more later, depending on initial variability.
+
+# BanditOneHigh10
+exp96:
+	tune_bandit.py random $(DATA_PATH)/exp96 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.000000001, 0.5)' 
+
+exp97:
+	tune_bandit.py random $(DATA_PATH)/exp97 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp98:
+	tune_bandit.py random $(DATA_PATH)/exp98 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp99:
+	tune_bandit.py random $(DATA_PATH)/exp99 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
