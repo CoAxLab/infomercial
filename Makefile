@@ -1618,6 +1618,30 @@ exp95:
 	# - Tune each independently for each bandit. Random search ~1000 samples.
 	# - Do 25 runs/seeds for each tune bandit and env combination. Maybe do more later, depending on initial variability.
 
+
+# SUM:
+# - For softbeta, temp was not tuned and the default is far to high. Needs tuning for all bandits. *Not discussing softbeta further below.*
+#
+# BanditOneHigh10:
+# - Found solve params for all models.
+#
+# BanditTwoHigh10
+# - meta: saw both arms, settled on one quickly, held (biased) value for both
+# - ep: saw both, settled on one, then swtiched.
+# - beta: only say on arm
+#
+# BanditUniform121
+# - a harder task than expected. No agent found a stable solution.
+# - meta/ep got close?
+# - beta was terrible 
+#
+# BanditHardAndSparse10
+# - meta no progress (....hand tuning can solve this)
+# - ep: no progress
+# - beta: good progress (!), though soln was not stable 
+#   did not expect beta to do well here! In retro, makes sense?
+
+
 # ---------------
 # BanditOneHigh10
 exp96:
