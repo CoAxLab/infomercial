@@ -129,7 +129,6 @@ def run(env_name='BanditOneHigh2-v0',
     values = []
     actions = []
     p_bests = []
-    ties = []
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -198,10 +197,10 @@ def run(env_name='BanditOneHigh2-v0',
         best=env.env.best,
         lr_R=lr_R,
         beta=beta,
+        temp=temp,
         episodes=episodes,
         actions=actions,
         p_bests=p_bests,
-        ties=ties,
         critic=critic.state_dict(),
         total_E=total_E,
         total_R=total_R,
