@@ -1815,6 +1815,8 @@ exp111:
 
 # --------------------------------
 # 6-20-2019
+# 0a0cafef1d8268a73cf61e43232d468ee6c849e1
+
 # First pass at tuning softbeta's temp param
 # Trying BanditOneHigh10
 
@@ -1832,6 +1834,8 @@ exp112:
 
 # --------------------------------
 # 6-20-2019
+# aca35be1d0b707e56569ed6869a0a5574edf35fe
+
 # Re-run remaining tasks for softbeta, w/ temp tune
 exp113:
 	tune_bandit.py random $(DATA_PATH)/exp113 \
