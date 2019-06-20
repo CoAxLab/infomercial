@@ -1818,6 +1818,7 @@ exp111:
 # First pass at tuning softbeta's temp param
 # Trying BanditOneHigh10
 
+# SUM: learned a stable solution; temp ~ 0.8
 exp112:
 	tune_bandit.py random $(DATA_PATH)/exp112 \
 		--exp_name='softbeta_bandit' \
