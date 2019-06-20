@@ -1623,12 +1623,12 @@ exp95:
 # - For softbeta, temp was not tuned and the default is far to high. Needs tuning for all bandits. *Not discussing softbeta further below.*
 #
 # BanditOneHigh10:
-# - Found solve params for all models.
+# - Found stable correct params for all models.
 #
 # BanditTwoHigh10
 # - meta: saw both arms, settled on one quickly, held (biased) value for both
 # - ep: saw both, settled on one, then swtiched.
-# - beta: only say on arm
+# - beta: only saw on arm
 #
 # BanditUniform121
 # - a harder task than expected. No agent found a stable solution.
@@ -1812,3 +1812,6 @@ exp111:
 		--beta='(1e-3, 2)' \
 		--lr_R='(0.000000001, 0.2)'
 	 
+
+# --------------------------------
+6-20-2019
