@@ -1814,4 +1814,17 @@ exp111:
 	 
 
 # --------------------------------
-6-20-2019
+# 6-20-2019
+# First pass at tuning softbeta's temp param
+# Trying BanditOneHigh10
+
+exp112:
+	tune_bandit.py random $(DATA_PATH)/exp112 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' \
+		--temp='(1e-1, 10)'
