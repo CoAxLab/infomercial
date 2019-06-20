@@ -1829,3 +1829,39 @@ exp112:
 		--beta='(1e-3, 2)' \
 		--lr_R='(0.000000001, 0.2)' \
 		--temp='(1e-1, 10)'
+
+# --------------------------------
+# 6-20-2019
+# Re-run remaining tasks for softbeta, w/ temp tune
+exp113:
+	tune_bandit.py random $(DATA_PATH)/exp113 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' \
+		--temp='(1e-1, 10)'
+
+exp114:
+	tune_bandit.py random $(DATA_PATH)/exp114 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' \
+		--temp='(1e-1, 10)'
+
+exp115:
+	tune_bandit.py random $(DATA_PATH)/exp115 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' \
+		--temp='(1e-1, 10)'
