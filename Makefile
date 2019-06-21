@@ -1837,6 +1837,10 @@ exp112:
 # aca35be1d0b707e56569ed6869a0a5574edf35fe
 
 # Re-run remaining tasks for softbeta, w/ temp tune
+
+# SUM: exp113 learned a stable soln. Saw both arms.
+#      exp114 slight progress based on total_R rank. Nothing like a soln.
+#      exp115 no progress. p+best = 0 and total_R dist is symmetric
 exp113:
 	tune_bandit.py random $(DATA_PATH)/exp113 \
 		--exp_name='softbeta_bandit' \
@@ -1869,3 +1873,5 @@ exp115:
 		--beta='(1e-3, 2)' \
 		--lr_R='(0.000000001, 0.2)' \
 		--temp='(1e-1, 10)'
+
+# --------------------------------
