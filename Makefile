@@ -1875,3 +1875,94 @@ exp115:
 		--temp='(1e-1, 10)'
 
 # --------------------------------
+# 6-21-2019
+# aca35be1d0b707e56569ed6869a0a5574edf35fe
+
+# More tuning for BanditHardAndSparse10
+
+# META:
+# Begin search near some good hand tuned params.
+# 'lr_R' : 0.0001
+# 'tie_threshold' : 0.000000001
+exp116:
+	tune_bandit.py random $(DATA_PATH)/exp116 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(0.0000000005, 0.000000005)' \
+		--lr_R='(0.00005, 0.0005)' 
+
+# EP: 
+# Try some partitions on ep?
+# Move in units of 0.1 but only do 80 samples.
+# Looking for hints of progress.
+exp117:
+	tune_bandit.py random $(DATA_PATH)/exp117 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.1)' \
+		--lr_R='(0.00005, 0.0005)'  
+
+exp118:
+	tune_bandit.py random $(DATA_PATH)/exp118 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.101, 0.2)' \
+		--lr_R='(0.00005, 0.0005)'  
+
+exp119:
+	tune_bandit.py random $(DATA_PATH)/exp119 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.201, 0.3)' \
+		--lr_R='(0.00005, 0.0005)'  
+	
+exp120:
+	tune_bandit.py random $(DATA_PATH)/exp120 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.301, 0.4)' \
+		--lr_R='(0.00005, 0.0005)'  
+
+exp121:
+	tune_bandit.py random $(DATA_PATH)/exp121 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.401, 0.5)' \
+		--lr_R='(0.00005, 0.0005)'  
+
+# -
+# SFOTBETA w/ TEMP
+
+# Use good results from exp98 to get it started
+# 'beta': 0.3671269035680538,
+# 'lr_R': 0.009549127434538021,
+# 'total_R': 84.0
+exp122:
+	tune_bandit.py random $(DATA_PATH)/exp122 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(0.33, 0.39)' \
+		--lr_R='(0.008, 0.010)' \
+		--temp='(1e-1, 10)'
+
