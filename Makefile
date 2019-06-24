@@ -1957,7 +1957,7 @@ exp121:
 # 'total_R': 84.0
 exp122:
 	tune_bandit.py random $(DATA_PATH)/exp122 \
-		--exp_name='beta_bandit' \
+		--exp_name='softbeta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
 		--num_episodes=100 \
         --num_samples=1000 \
