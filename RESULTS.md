@@ -41,8 +41,8 @@ Summarize results:
 - [DONE] meta: exp116 - learns a stable soln 
   + 'tie_threshold': 3.76-09, 'lr_R': 0.00021
 
-- beta: exp110 - Close to soln. Not stable. Narrow range?
-  + 'beta': 1.53, 'lr_R': 0.049
+- [DONE} beta: exp110 - Close to soln. Not stable. Narrow range?
+  + 'beta': 2.83, 'lr_R': 0.053
 
 - [DONE] softbeta: exp122 - learns the value but needs to high a temp to ever stabilize
   + 'beta': 0.38, 'lr_R': 0.00971, 'temp': 5.9
