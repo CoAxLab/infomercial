@@ -1900,6 +1900,11 @@ exp116:
 # Try some partitions on ep?
 # Move in units of 0.1 but only do 80 samples.
 # Looking for hints of progress.
+
+# SUM: *only* exp121 learned the best value, though it's high level of 
+#      exploration limited its overall performance to p_best ~= 0.5.
+#      Presumably, adding a annealing for epsilon would allow it to converge
+#      to p_best -> 1.0.
 exp117:
 	tune_bandit.py random $(DATA_PATH)/exp117 \
 		--exp_name='epsilon_bandit' \
