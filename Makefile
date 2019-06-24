@@ -1981,3 +1981,19 @@ exp122:
 		--lr_R='(0.008, 0.010)' \
 		--temp='(1e-1, 10)'
 
+# --------------------------------------
+# 6-24-2019
+# Tweak exp110 - beta+hardandsparse10
+
+# Best from exp110: 'beta': 1.53, 'lr_R': 0.049
+# Let's search around them (2 fold)
+
+exp123:
+	tune_bandit.py random $(DATA_PATH)/exp123 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=120 \
+		--num_processes=40 \
+		--beta='(0.75, 3)' \
+		--lr_R='(0.025, 0.1)' 
