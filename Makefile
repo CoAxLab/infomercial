@@ -1884,6 +1884,8 @@ exp115:
 # Begin search near some good hand tuned params.
 # 'lr_R' : 0.0001
 # 'tie_threshold' : 0.000000001
+
+# SUM: found a stable soln (a range of them actually) 
 exp116:
 	tune_bandit.py random $(DATA_PATH)/exp116 \
 		--exp_name='meta_bandit' \
