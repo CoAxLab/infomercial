@@ -1997,3 +1997,50 @@ exp123:
 		--num_processes=40 \
 		--beta='(0.75, 3)' \
 		--lr_R='(0.025, 0.1)' 
+
+# ------------------------------------
+# 6-24-2019
+# 
+# Tweak BanditUniform 0.2-0.6, 0.8
+# 8c40c57eec610ec048e2ea5b2f10441ff83f3915
+#
+exp124:
+	tune_bandit.py random $(DATA_PATH)/exp124 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_episodes=60500 \
+        --num_samples=1000 \
+        --num_processes=40 \
+		--tie_threshold='(1e-16, 0.01)' \
+		--lr_R='(0.000000001, 0.5)' 
+
+exp125:
+	tune_bandit.py random $(DATA_PATH)/exp125 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp126:
+	tune_bandit.py random $(DATA_PATH)/exp126 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp127:
+	tune_bandit.py random $(DATA_PATH)/exp127 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--beta='(1e-3, 2)' \
+		--lr_R='(0.000000001, 0.2)' \
+		--temp='(1e-1, 10)'
