@@ -1962,6 +1962,14 @@ exp121:
 # 'beta': 0.3671269035680538,
 # 'lr_R': 0.009549127434538021,
 # 'total_R': 84.0
+
+# SUM: Bit of a surprise w/ best params for this exp.
+#      'beta': 0.38381390290530865
+#      'lr_R': 0.009705438535971703
+#      'temp': 5.919105536555171
+#
+# With the temp so high the agent does learn what the best
+# arm, but can't express it in a stable way. Anneal beta?
 exp122:
 	tune_bandit.py random $(DATA_PATH)/exp122 \
 		--exp_name='softbeta_bandit' \
