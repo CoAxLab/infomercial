@@ -1988,6 +1988,9 @@ exp122:
 # Best from exp110: 'beta': 1.53, 'lr_R': 0.049
 # Let's search around them (2 fold)
 
+# SUM: still not stable, but this soln (w/ larger)
+#      beta has a higher p_best
+# 'beta': 2.832753031081456, 'lr_R': 0.05336390016195454
 exp123:
 	tune_bandit.py random $(DATA_PATH)/exp123 \
 		--exp_name='beta_bandit' \
