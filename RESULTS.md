@@ -27,15 +27,18 @@ Summarize results:
   + 'epsilon': 0.078, 'lr_R': 0.12
 
 # BanditUniform121
-- Task was not solved by any agent.
 
-- meta: 
+- meta: exp124 - found stable soln
+  + 'tie_threshold': 0.00031, 'lr_R': 0.14
 
-- beta:
+- beta: exp126 - found stable soln (very eff.)
+  + 'beta': 0.090, 'lr_R': 0.061
 
-- softbeta:
+- softbeta: exp127 - no soln found. p_best low (temp too)
+  + 'beta': 0.60, 'lr_R': 0.097, 'temp': 0.13
 
-- epsilon:
+- epsilon - exp125: found stable soln (low ep)
+  + 'epsilon': 0.012, 'lr_R': 0.11
 
 # HardAndSparse10
 - [DONE] meta: exp116 - learns a stable soln 
