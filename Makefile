@@ -2004,7 +2004,7 @@ exp123:
 # ------------------------------------
 # 6-24-2019
 # 
-# Tweak BanditUniform 0.2-0.6, 0.8
+# Tweak BanditUniform 120 arms: 0.2-0.6, 1 best arm: 0.8
 # 8c40c57eec610ec048e2ea5b2f10441ff83f3915
 #
 # SUM:
