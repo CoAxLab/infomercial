@@ -2007,6 +2007,11 @@ exp123:
 # Tweak BanditUniform 0.2-0.6, 0.8
 # 8c40c57eec610ec048e2ea5b2f10441ff83f3915
 #
+# SUM:
+# - exp124: found stable soln
+# - exp125: found stable soln (low ep)
+# - exp126: found stable soln (very eff	)
+# - exp127: no soln found. p_best low (temp too)
 exp124:
 	tune_bandit.py random $(DATA_PATH)/exp124 \
 		--exp_name='meta_bandit' \
