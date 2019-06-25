@@ -1,3 +1,5 @@
+# Intro
+
 Summarize result for 4 agents, over 4 prototypical bandit tasks.
 
 `BanditOneHigh10` is a classic 10 armed bandit, with one clear winning arm (p_R = 0.8), all other arms are p_R = 0.2. `BanditTwoHigh10` is the same as `BanditOneHigh10` but there are two winning arms.
@@ -5,7 +7,6 @@ Summarize result for 4 agents, over 4 prototypical bandit tasks.
 `BanditUniform121` is a high dimensional random bandit. All but 1 arms have a p_R draw uniformly from (0.2-0.6). One winner arm has a p_R = 0.8.
 
 `HardAndSparse10` has a winner arm with p_R = 0.02. All other arms have a p_R = 0.01.
-
 
 
 # BanditOneHigh10
