@@ -2064,14 +2064,139 @@ exp127:
 # -
 
 # BanditOneHigh10:
-
-# meta - 'tie_threshold': 0.0041, 'lr_R': 0.31
+# meta: exp96 - learns a stable soln 
+#   + 'tie_threshold': 0.0041, 'lr_R': 0.31
 exp128:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp128.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
+# beta: exp98 - learns a stable soln 
+#   + 'beta': 0.37, 'lr_R': 0.0095
+exp129:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp129.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.31 --beta=0.37 --save=$(DATA_PATH)/exp129_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# softbeta: exp112 - learns a stable soln 
+#   + 'beta': 0.045, 'lr_R': 0.12, 'temp': 0.10
+exp130:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp130.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp130_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# epsilon: exp97 - learns a stable soln 
+#   + 'epsilon': 0.078, 'lr_R': 0.12
+exp131:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp131.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp131_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# BanditTwoHigh10
+# meta: exp100 - sees both, learns a stable soln
+#   + 'tie_threshold': 0.0058, 'lr_R': 0.14
+exp132:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp132.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0058 --lr_R=0.14 --save=$(DATA_PATH)/exp132_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# beta: exp102 - learns only one arm. Never sees best arm 2
+#   + 'beta': 0.025, 'lr_R': 0.073
+exp133:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp133.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.073 --beta=0.025 --save=$(DATA_PATH)/exp133_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# softbeta: exp113 - sees both (probably?), learns a stable soln
+#   + 'beta': 0.010, 'lr_R': 0.17, 'temp': 0.24
+exp134:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp134.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp134_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# epsilon: exp101 - learns solns, flip flops between them
+#   + 'epsilon': 0.078, 'lr_R': 0.12
+exp135:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp135.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp135_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# BanditUniform121
+# meta: exp124 - found stable soln
+#   + 'tie_threshold': 0.00031, 'lr_R': 0.14
+exp136:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp136.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000 --tie_break='next' --tie_threshold=0.00031 --lr_R=0.14 --save=$(DATA_PATH)/exp136_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# beta: exp126 - found stable soln (very eff.)
+#   + 'beta': 0.090, 'lr_R': 0.061
+exp137:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp137.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.061 --beta=0.090 --save=$(DATA_PATH)/exp137_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# softbeta: exp127 - no soln found. p_best low (temp too)
+#   + 'beta': 0.60, 'lr_R': 0.097, 'temp': 0.13
+exp138:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp138.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp138_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# epsilon: exp125: found stable soln (low ep)
+#   + 'epsilon': 0.012, 'lr_R': 0.11
+exp139:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp139.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp139_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# HardAndSparse10
+# meta: meta: exp116 - learns a stable soln 
+#   + 'tie_threshold': 3.76-09, 'lr_R': 0.00021
+exp140:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp140.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# beta: exp110 - Close to soln. Not stable. Narrow range?
+#   + 'beta': 2.83, 'lr_R': 0.053
+exp141:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp141.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# softbeta: exp122 - learns the value but needs to high a temp to ever stabilize
+#   + 'beta': 0.38, 'lr_R': 0.00971, 'temp': 5.9
+exp142:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp142.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp142_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# epsilon: exp121 - learns the value, final performance limited by high epsilon
+#   + 'epsilon': 0.42, 'lr_R': 0.00043
+exp143:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp143.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -------------------------------------
 # 6-26-2019
