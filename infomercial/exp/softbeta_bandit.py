@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import entropy
 from infomercial.memory import ConditionalCount
 from infomercial.policy import greedy
+from infomercial.utils import estimate_regret
 
 from collections import OrderedDict
 
@@ -116,6 +117,7 @@ def run(env_name='BanditOneHigh2-v0',
     # -
     memory = ConditionalCount()
     visited_states = set()
+    states = list(range(num_actions))
     E_t = 0.0
     R_t = 0.0
 
@@ -129,6 +131,7 @@ def run(env_name='BanditOneHigh2-v0',
     values = []
     actions = []
     p_bests = []
+    regrets = []
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -141,6 +144,9 @@ def run(env_name='BanditOneHigh2-v0',
         action = actor(list(critic.model.values()))
         if action in best_action:
             num_best += 1
+
+        # Est. regret and save it
+        regrets.append(estimate_regret(states, action, critic))
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -201,6 +207,7 @@ def run(env_name='BanditOneHigh2-v0',
         episodes=episodes,
         actions=actions,
         p_bests=p_bests,
+        regrets=regrets,
         critic=critic.state_dict(),
         total_E=total_E,
         total_R=total_R,
