@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import entropy
 from infomercial.memory import ConditionalCount
 from infomercial.policy import greedy
+from infomercial.utils import estimate_regret
 
 from collections import OrderedDict
 
@@ -161,6 +162,7 @@ def run(env_name='BanditOneHot2-v0',
     # -
     memory = ConditionalCount()
     visited_states = set()
+    states = list(range(num_actions))
     E_t = default_info_value
     R_t = default_reward_value
 
@@ -174,6 +176,7 @@ def run(env_name='BanditOneHot2-v0',
     values_E = []
     values_R = []
     actions = []
+    regrets = []
     p_bests = []
     ties = []
     policies = []
@@ -203,6 +206,9 @@ def run(env_name='BanditOneHot2-v0',
         action = actor(values)
         if action in best_action:
             num_best += 1
+
+        # Est. regret and save it
+        regrets.append(estimate_regret(states, action, critic))
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
@@ -278,6 +284,7 @@ def run(env_name='BanditOneHot2-v0',
         scores_R=scores_R,
         values_E=values_E,
         values_R=values_R,
+        regrets=regrets,
         env_name=env_name,
         num_episodes=num_episodes,
         tie_break=tie_break,
