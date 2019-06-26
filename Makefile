@@ -2059,7 +2059,10 @@ exp127:
 # 1. env seed
 # 2. param sensitivity (for fixed seed) +/- 10% or 50%.
 
-# Sample seeds
+# -
+# 1. Sample seeds
+# -
+
 # BanditOneHigh10:
 
 # meta - 'tie_threshold': 0.0041, 'lr_R': 0.31
@@ -2067,7 +2070,7 @@ exp128:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp128.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditOneHot2-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditOneHigh2-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 
 # -------------------------------------
