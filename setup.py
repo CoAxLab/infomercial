@@ -11,6 +11,7 @@ setup(
     packages=['infomercial'],
     scripts=[
         'infomercial/exp/meta_bandit.py', 'infomercial/exp/epsilon_bandit.py',
-        'infomercial/exp/beta_bandit.py', 'infomercial/exp/tune_bandit.py'
+        'infomercial/exp/beta_bandit.py', 'infomercial/exp/softbeta_bandit.py',
+        'infomercial/exp/tune_bandit.py'
     ],
     zip_safe=False)
