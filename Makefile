@@ -2070,7 +2070,7 @@ exp128:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp128.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 
 # -------------------------------------
