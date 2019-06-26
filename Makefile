@@ -2052,3 +2052,25 @@ exp127:
 		--beta='(1e-3, 2)' \
 		--lr_R='(0.000000001, 0.2)' \
 		--temp='(1e-1, 10)'
+
+# -------------------------------------
+# 6-26-2019
+# Now that we have optimized HP, need to do some final runs sampling
+# 1. env seed
+# 2. param sensitivity (for fixed seed) +/- 10% or 50%.
+
+# Sample seeds
+# BanditOneHigh10:
+
+# meta - 'tie_threshold': 0.0041, 'lr_R': 0.31
+exp128:
+	parallel -j 40 -v \
+			--joblog '$(DATA_PATH)/exp128.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name BanditOneHot2-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: 1..100
+
+
+# -------------------------------------
+# 6-26-2019
+# While a random search is probably fine, I'm curious to compare with
+# my replicator approach.
