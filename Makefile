@@ -2094,7 +2094,7 @@ exp131:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp131.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp131_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp131_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # BanditTwoHigh10
@@ -2128,7 +2128,7 @@ exp135:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp135.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp135_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp135_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # BanditUniform121
@@ -2162,7 +2162,7 @@ exp139:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp139.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp139_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp139_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # HardAndSparse10
@@ -2196,7 +2196,7 @@ exp143:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp143.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -------------------------------------
 # 6-26-2019
