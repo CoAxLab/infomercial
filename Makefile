@@ -2172,7 +2172,7 @@ exp140:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp140.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76e-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # beta: exp110 - Close to soln. Not stable. Narrow range?
 #   + 'beta': 2.83, 'lr_R': 0.053
