@@ -2172,7 +2172,7 @@ exp140:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp140.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # beta: exp110 - Close to soln. Not stable. Narrow range?
 #   + 'beta': 2.83, 'lr_R': 0.053
@@ -2180,7 +2180,7 @@ exp141:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp141.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # softbeta: exp122 - learns the value but needs to high a temp to ever stabilize
 #   + 'beta': 0.38, 'lr_R': 0.00971, 'temp': 5.9
@@ -2188,7 +2188,7 @@ exp142:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp142.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp142_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp142_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # epsilon: exp121 - learns the value, final performance limited by high epsilon
 #   + 'epsilon': 0.42, 'lr_R': 0.00043
@@ -2196,7 +2196,7 @@ exp143:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp143.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -------------------------------------
 # 6-26-2019
