@@ -2180,7 +2180,7 @@ exp141:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp141.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name= -v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # softbeta: exp122 - learns the value but needs to high a temp to ever stabilize
 #   + 'beta': 0.38, 'lr_R': 0.00971, 'temp': 5.9
@@ -2199,6 +2199,72 @@ exp143:
 			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -------------------------------------
-# 6-26-2019
-# While a random search is probably fine, I'm curious to compare with
-# my replicator approach.
+# 7-1-2019
+# 77e4fcc4e4f074ebb22c574aa6685bd0acb80b0d
+#
+# Meta has been doing real well (exp128-144). Better than I'd expected. 
+# To compare to SOA for AI applications let's run some
+# epsilon annealing exps. First, we'll need to tune....
+#
+# For the four envs, tune an annealed epsilon_bandit.  
+#
+# BanditOneHigh10
+exp144:
+	tune_bandit.py random $(DATA_PATH)/exp144 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditTwoHigh10
+exp145:
+	tune_bandit.py random $(DATA_PATH)/exp145 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_episodes=100 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditUniform121
+exp146:
+	tune_bandit.py random $(DATA_PATH)/exp146 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_episodes=60500 \
+        --num_samples=1000 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditHardAndSparse10
+# Full ep search
+exp147:
+	tune_bandit.py random $(DATA_PATH)/exp147 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.00005, 0.0005)' 
+
+# Hand-tuned ep range (w/ no annealing).
+exp148:
+	tune_bandit.py random $(DATA_PATH)/exp148 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_episodes=50000 \
+        --num_samples=80 \
+		--num_processes=40 \
+		--epsilon='(0.401, 0.5)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.00005, 0.0005)' 
