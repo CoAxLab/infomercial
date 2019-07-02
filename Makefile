@@ -2208,6 +2208,11 @@ exp143:
 #
 # For the four envs, tune an annealed epsilon_bandit.  
 #
+
+# SUM: - very good performance on 144 and 146.
+#      - didn't see second good arm in 145
+#      - no progress on sparse (147/8)
+
 # BanditOneHigh10
 exp144:
 	tune_bandit.py random $(DATA_PATH)/exp144 \
