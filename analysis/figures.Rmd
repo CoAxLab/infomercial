@@ -1,0 +1,57 @@
+---
+title: "Figures"
+output: html_notebook
+---
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+```
+
+```{r, echo=FALSE, message=FALSE}
+data_path <- "~/Code/infomercial/data/"
+
+# Load data
+bandit_name <- "BanditOneHigh10-v0"
+one_traces <- read_csv(paste(data_path, "table_traces_", bandit_name, ".csv", sep=""))
+one_total <- read_csv(paste(data_path, "table_total_", bandit_name, ".csv", sep=""))
+one_critic <- read_csv(paste(data_path, "table_critic_", bandit_name, ".csv", sep=""))
+one_bandit <- read_csv(paste(data_path, "table_bandit_", bandit_name, ".csv", sep=""))
+```
+
+```{r, fig.width=1.5, fig.height=0.6}
+one_traces %>% 
+  group_by(episodes, agents) %>% 
+  summarise(M = mean(p_bests), SD = sd(p_bests)) %>% 
+  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
+  geom_line(size=1, alpha=0.8) +
+  geom_linerange(aes(x=episodes, ymin=M - SD, ymax=M + SD), alpha=0.05) +
+  theme_classic() +
+  labs(x="Trial", y="P(best)")
+```
+
+
+```{r, fig.width=2, fig.height=0.6}
+one_critic %>% 
+  ggplot((aes(x=as.factor(arms), y=critic_values, color=agents))) +
+  geom_point(size=.05, position = position_jitterdodge(dodge.width=0.8, jitter.width=.1)) +
+  theme_classic() +
+  labs(x="Arm", y="Value")
+```
+
+
+```{r, fig.width=1.8, fig.height=0.8}
+one_total %>% 
+  group_by(agents) %>% 
+  summarise(M = mean(regrets), SD=sd(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  labs(x="Agent", y="Avg. regret")
+  
+```
