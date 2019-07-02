@@ -2273,3 +2273,38 @@ exp148:
 		--epsilon='(0.401, 0.5)' \
 		--epsilon_decay_tau='(0.000000001, 0.1)' \
 		--lr_R='(0.00005, 0.0005)' 
+
+
+# -----------------------------
+# Replicate exps for ep decay
+# BanditOneHigh10
+# {'epsilon': 0.16028547541549285, 'epsilon_decay_tau': 0.07969927623155562, 'lr_R': 0.10688060186632899, 'total_R': 86.0}
+exp149:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp149.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp149_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditTwoHigh10
+# {'epsilon': 0.838651023382445, 'epsilon_decay_tau': 0.07116057540412388, 'lr_R': 0.1885459873244454, 'total_R': 71.0}
+exp150:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp150.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp150_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+# {'epsilon': 0.5743595655655118, 'epsilon_decay_tau': 0.03268667798766935, 'lr_R': 0.17235910245007333, 'total_R': 48586.0}
+exp151:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp151.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp151_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditHardAndSparse10
+# {'epsilon': 0.7666645365811449, 'epsilon_decay_tau': 0.014058030361594634, 'lr_R': 7.504905974098415e-05, 'total_R': 1029.0}
+exp152:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp152.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp152_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
