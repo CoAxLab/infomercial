@@ -8,6 +8,7 @@ test/*
 data/*
 *.Rproj
 *.nb.html 
+*.Rhistory
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
