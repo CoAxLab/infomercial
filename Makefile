@@ -2308,3 +2308,36 @@ exp152:
 			--joblog '$(DATA_PATH)/exp152.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp152_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# ------------------------------------------
+# Run exps w/ a random 'learner'. Neg control.
+# Fix lr_R at 0.1. No way to opt this.
+
+exp153:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp153.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp153_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditTwoHigh10
+# {'epsilon': 0.838651023382445, 'epsilon_decay_tau': 0.07116057540412388, 'lr_R': 0.1885459873244454, 'total_R': 71.0}
+exp154:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp154.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp154_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp155:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp155.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp155_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditHardAndSparse10
+exp156:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp156.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp156_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
