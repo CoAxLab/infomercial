@@ -33,6 +33,21 @@ class Critic(object):
         return self.model
 
 
+class Actor(object):
+    def __init__(self, num_actions, seed_value=42):
+        self.num_actions = num_actions
+        self.seed_value = seed_value
+        self.prng = np.random.RandomState(self.seed_value)
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        action = self.prng.randint(0, self.num_actions, size=1)[0]
+
+        return action
+
+
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
@@ -74,6 +89,7 @@ def run(env_name='BanditOneHot2-v0',
     R_t = default_reward_value
     critic = Critic(
         env.observation_space.n, default_value=default_reward_value)
+    actor = Actor(num_actions)
 
     # ------------------------------------------------------------------------
     # Play
@@ -94,7 +110,10 @@ def run(env_name='BanditOneHot2-v0',
         # Every play is also an ep for bandit tasks.
         # Thus this reset() call
         state = int(env.reset()[0])
-        action = int(np.random.random_integers(0, num_actions))
+
+        # Choose an action; Choose a bandit
+        values = list(critic.model.values())
+        action = actor(values)
         if action in best_action:
             num_best += 1
 
