@@ -40,12 +40,14 @@ for(bandit_name in bandit_names){
 }
 
 # Set agent order
-
-traces$agents <- factor(traces$agents, levels=rev(c("eta", "beta", "softbeta", "epsilon")))
-total$agents <- factor(total$agents, levels=rev(c("eta", "beta", "softbeta", "epsilon")))
-critic$agents <- factor(critic$agents, levels=rev(c("eta", "beta", "softbeta", "epsilon")))
-traces$agents <- factor(traces$agents, levels=rev(c("eta", "beta", "softbeta", "epsilon")))
-
+traces$agents <- factor(traces$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+total$agents <- factor(total$agents, 
+                       levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+critic$agents <- factor(critic$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+traces$agents <- factor(traces$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 rm(tmp)
 ```
 
@@ -54,6 +56,7 @@ rm(tmp)
 ```{r, fig.width=1.5, fig.height=1.8}
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
+  filter(agents != "random") %>% 
   group_by(agents, env) %>% 
   summarise(M = median(regrets), SD=mad(regrets)) %>% 
   ggplot(aes(x=agents, y=M, color=agents)) +
@@ -62,14 +65,16 @@ total %>%
   theme_classic() +
   theme(legend.position="none",
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  labs(x="Agent", y="Regret") +
+  labs(x="Agent", y=" ") +
   scale_y_continuous(breaks=c(0, 15, 30)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1"))) +
   coord_flip() -> p1
 
 total %>% 
   filter(env == "BanditTwoHigh10-v0") %>% 
+  filter(agents != "random") %>% 
   group_by(agents, env) %>% 
   summarise(M = median(regrets), SD=mad(regrets)) %>% 
   ggplot(aes(x=agents, y=M, color=agents)) +
@@ -79,12 +84,14 @@ total %>%
   theme(legend.position="none",
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
-  labs(x="Agent", y="Regret") +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1"))) +
+  labs(x=" ", y=" ") +
   coord_flip() -> p2
 
 total %>% 
   filter(env == "BanditUniform121-v0") %>% 
+  filter(agents != "random") %>% 
   group_by(agents, env) %>% 
   summarise(M = median(regrets), SD=mad(regrets)) %>% 
   ggplot(aes(x=agents, y=M, color=agents)) +
@@ -93,14 +100,16 @@ total %>%
   theme_classic() +
   theme(legend.position="none",
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  labs(x="Agent", y="Regret") +
+  labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 15000, 30000)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1"))) +
   coord_flip() -> p3
 
 total %>% 
   filter(env == "BanditHardAndSparse10-v0") %>% 
+  filter(agents != "random") %>% 
   group_by(agents, env) %>% 
   summarise(M = median(regrets), SD=mad(regrets)) %>% 
   ggplot(aes(x=agents, y=M, color=agents)) +
@@ -109,10 +118,11 @@ total %>%
   theme_classic() +
   theme(legend.position="none", 
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  labs(x="Agent", y="Regret") +
+  labs(x=" ", y="Total regret") +
   scale_y_continuous(breaks=c(0, 750, 1500)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1"))) +
   coord_flip() -> p4
 
 p5 <- textGrob("One winner", vjust=-.2, gp = gpar(fontsize = 10))
@@ -144,7 +154,8 @@ total %>%
   labs(x="Agent", y=" ") +
   scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 500)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p1
 
 total %>% 
@@ -159,7 +170,8 @@ total %>%
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
   scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 500)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   labs(x=" ", y=" ") +
   coord_flip() -> p2
 
@@ -176,7 +188,8 @@ total %>%
   labs(x=" ", y=" ") +
   ylim(c(0, 100000)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p3
 
 total %>% 
@@ -189,10 +202,11 @@ total %>%
   theme_classic() +
   theme(legend.position="none", 
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  labs(x=" ", y="Total Reward") +
+  labs(x=" ", y="Total reward") +
   scale_y_continuous(breaks=c(0, 1000, 2000), limits = c(0, 2100)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p4
 
 
@@ -212,7 +226,7 @@ grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, layout_matrix=plot_grid)
 ```
 
 # P(best)
-```{r, fig.width=1.6 , fig.height=1.8}
+```{r, fig.width=1.6 , fig.height=2}
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   group_by(agents, env) %>% 
@@ -226,7 +240,8 @@ total %>%
   labs(x="Agent", y=" ") +
   ylim(c(0, 1)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p1
 
 total %>% 
@@ -241,7 +256,8 @@ total %>%
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
   ylim(c(0, 1)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   labs(x=" ", y=" ") +
   coord_flip() -> p2
 
@@ -258,7 +274,8 @@ total %>%
   labs(x=" ", y=" ") +
   ylim(c(0, 1)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p3
 
 total %>% 
@@ -274,7 +291,8 @@ total %>%
   labs(x=" ", y="P(best)") +
   ylim(c(0, 1)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3"))) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> p4
 
 
