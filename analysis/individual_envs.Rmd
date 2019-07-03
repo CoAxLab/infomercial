@@ -16,10 +16,10 @@ library(readr)
 data_path <- "~/Code/infomercial/data/"
 
 # Load data
-bandit_name <- "BanditHardAndSparse10-v0"
+# bandit_name <- "BanditHardAndSparse10-v0"
 # bandit_name <- "BanditUniform121-v0"
 # bandit_name <- "BanditOneHigh10-v0"
-# bandit_name <- "BanditTwoHigh10-v0"
+bandit_name <- "BanditTwoHigh10-v0"
 one_traces <- read_csv(paste(data_path, "table_traces_", bandit_name, ".csv", sep=""))
 one_total <- read_csv(paste(data_path, "table_total_", bandit_name, ".csv", sep=""))
 one_critic <- read_csv(paste(data_path, "table_critic_", bandit_name, ".csv", sep=""))
