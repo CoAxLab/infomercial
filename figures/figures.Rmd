@@ -54,9 +54,14 @@ traces$agents <- factor(traces$agents,
 rm(tmp)
 ```
 
+# Fig 1
+load as grob, and add labels.
+
+# Fig 2
+TODO
 
 # Fig 3
-## Subfig part 1
+## Subfig 1
 ```{r, fig.width=1.8, fig.height=2.2}
 traces %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
@@ -74,6 +79,7 @@ traces %>%
         legend.background = element_rect(colour ="black")) +
   guides(color = guide_legend(reverse = TRUE)) +
   scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   labs(x=" ", y=" ") -> p1
 
 traces %>% 
@@ -88,6 +94,7 @@ traces %>%
   theme(legend.position = "none",
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
   scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   labs(x=" ", y=" ") -> p2
 
 traces %>% 
@@ -102,6 +109,7 @@ traces %>%
   theme(legend.position = "none",
         plot.margin = margin(.2, .5, .2, .2, "cm")) +
   scale_x_continuous(breaks=c(0, 60000, 120000), limits = c(0, 120100)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   labs(x=" ", y=" ") -> p3
 
 traces %>% 
@@ -116,6 +124,7 @@ traces %>%
   theme(legend.position = "none",
     plot.margin = margin(.2, .5, .2, .2, "cm")) +
   scale_x_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   labs(x="Trial", y=" ") -> p4
 
 ylabel <- textGrob("P(best arm)", vjust=7, rot=90, gp = gpar(fontsize = 12))
@@ -129,7 +138,7 @@ plot_grid <- rbind(
 grid1 <- grid.arrange(p1, p2, p3, p4, ylabel, layout_matrix=plot_grid)
 ```
 
-## Subfig part 2
+## Subfig 2
 ```{r, fig.width=3, fig.height=2.2}
 # ------------------------------------------------------
 # Regret
