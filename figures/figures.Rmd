@@ -12,6 +12,8 @@ library(grid)
 library(readr)
 ```
 
+
+# Load data
 ```{r, echo=FALSE, message=FALSE}
 data_path <- "~/Code/infomercial/data/"
 
@@ -39,5 +41,268 @@ for(bandit_name in bandit_names){
   bandit <- rbind(bandit, tmp)
 }
 
+# Set agent order
+traces$agents <- factor(traces$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+total$agents <- factor(total$agents, 
+                       levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+critic$agents <- factor(critic$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+traces$agents <- factor(traces$agents, 
+                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+
 rm(tmp)
+```
+
+
+# Fig 3
+## Subfig part 1
+```{r, fig.width=1.8, fig.height=2.2}
+traces %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  group_by(episodes, agents) %>% 
+  summarise(M = median(p_bests)) %>% 
+  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
+  geom_line(size=.5, alpha=0.8) +
+  scale_color_manual("Agent",
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  theme_classic() +
+  theme(legend.position=c(-0.85, 0),
+        legend.key.size = unit(.5, "cm"),
+        legend.key.height=unit(0.3,"cm"),
+        plot.margin = margin(.2, .5, .2, .2, "cm"),
+        legend.background = element_rect(colour ="black")) +
+  guides(color = guide_legend(reverse = TRUE)) +
+  scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
+  labs(x=" ", y=" ") -> p1
+
+traces %>% 
+  filter(env == "BanditTwoHigh10-v0") %>% 
+  group_by(episodes, agents) %>% 
+  summarise(M = median(p_bests)) %>% 
+  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
+  geom_line(size=.5, alpha=0.8) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  theme_classic() +
+  theme(legend.position = "none",
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
+  labs(x=" ", y=" ") -> p2
+
+traces %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  group_by(episodes, agents) %>% 
+  summarise(M = median(p_bests)) %>% 
+  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
+  geom_line(size=.5, alpha=0.8) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  theme_classic() +
+  theme(legend.position = "none",
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  scale_x_continuous(breaks=c(0, 60000, 120000), limits = c(0, 120100)) +
+  labs(x=" ", y=" ") -> p3
+
+traces %>% 
+  filter(env == "BanditHardAndSparse10-v0") %>% 
+  group_by(episodes, agents) %>% 
+  summarise(M = median(p_bests)) %>% 
+  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
+  geom_line(size=.5, alpha=0.8) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  theme_classic() +
+  theme(legend.position = "none",
+    plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  scale_x_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
+  labs(x="Trial", y=" ") -> p4
+
+ylabel <- textGrob("P(best arm)", vjust=7, rot=90, gp = gpar(fontsize = 12))
+
+plot_grid <- rbind(
+  c(5, 5, 1, 1, 1),
+  c(5, 5, 2, 2, 2),
+  c(5, 5, 3, 3, 3),
+  c(5, 5, 4, 4, 4))
+
+grid1 <- grid.arrange(p1, p2, p3, p4, ylabel, layout_matrix=plot_grid)
+```
+
+## Subfig part 2
+```{r, fig.width=3, fig.height=2.2}
+# ------------------------------------------------------
+# Regret
+total %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  # filter(agents != "random") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        axis.title.x = element_text(hjust=-2),
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y=" ") +
+  scale_y_continuous(breaks=c(0, 125, 250), limits = c(0, 300)) +
+  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> c1
+
+total %>% 
+  filter(env == "BanditTwoHigh10-v0") %>% 
+  # filter(agents != "random") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  scale_y_continuous(breaks=c(0, 100, 200), limits = c(0, 250)) +
+  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  labs(x=" ", y=" ") +
+  coord_flip() -> c2
+
+total %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  # filter(agents != "random") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y=" ") +
+  scale_y_continuous(breaks=c(0, 30000, 60000), limits = c(0, 61000)) +
+  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> c3
+
+total %>% 
+  filter(env == "BanditHardAndSparse10-v0") %>% 
+  # filter(agents != "random") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none", 
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y="Total regret") +
+  scale_y_continuous(breaks=c(0, 2500, 5000), limits = c(0, 5500)) +
+  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> c4
+
+# ------------------------------------------------------
+# total R
+total %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y=" ") +
+  scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 450)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> d1
+
+total %>% 
+  filter(env == "BanditTwoHigh10-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 500)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  labs(x=" ", y=" ") +
+  coord_flip() -> d2
+
+options(scipen=1000000)
+total %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y=" ") +
+  scale_y_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> d3
+
+total %>% 
+  filter(env == "BanditHardAndSparse10-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none", 
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+  labs(x=" ", y="Total reward") +
+  scale_y_continuous(breaks=c(0, 1000, 2000), limits = c(0, 2100)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  # ylim(c(0, 400)) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> d4
+
+# -
+ylabel <- textGrob("Agent", vjust=2, rot=90, gp = gpar(fontsize = 12))
+b1 <- textGrob("One best", vjust=-.2, gp = gpar(fontsize = 10))
+b2 <- textGrob("Distractor", vjust=-.2, gp = gpar(fontsize = 10))
+b3 <- textGrob("Random 121", vjust=-.2, gp = gpar(fontsize = 10))
+b4 <- textGrob("Sparse", vjust=-.2, gp = gpar(fontsize = 10))
+
+plot_grid <- rbind(
+  c(9, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 10, 10), #, 9, 9, 9, 9),
+  c(9, 2, 2, 2, 2, 2, 6, 6, 6, 6, 6, 11, 11), # 10, 10, 10, 10),
+  c(9, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 12, 12), # 11, 11, 11, 11),
+  c(9, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 13, 13)) #, 12, 12, 12, 12))
+  
+grid2 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, b1, b2, b3, b4, layout_matrix=plot_grid)
+```
+
+
+
+
+## Build
+```{r, fig.width=4.5, fig.height=2.2}
+plot_grid <- rbind(c(1, 1, 2, 2, 2))
+grid.arrange(grid1, grid2, layout_matrix=plot_grid)
 ```
