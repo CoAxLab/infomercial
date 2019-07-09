@@ -72,7 +72,7 @@ traces %>%
   scale_color_manual("Agent",
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   theme_classic() +
-  theme(legend.position=c(-0.85, 0),
+  theme(legend.position=c(-0.95, 0),
         legend.key.size = unit(.5, "cm"),
         legend.key.height=unit(0.3,"cm"),
         plot.margin = margin(.2, .5, .2, .2, "cm"),
@@ -127,7 +127,7 @@ traces %>%
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   labs(x="Trial", y=" ") -> p4
 
-ylabel <- textGrob("P(best arm)", vjust=7, rot=90, gp = gpar(fontsize = 12))
+ylabel <- textGrob("P(best arm)", vjust=6, rot=90, gp = gpar(fontsize = 12))
 
 plot_grid <- rbind(
   c(5, 5, 1, 1, 1),
@@ -135,7 +135,7 @@ plot_grid <- rbind(
   c(5, 5, 3, 3, 3),
   c(5, 5, 4, 4, 4))
 
-grid1 <- grid.arrange(p1, p2, p3, p4, ylabel, layout_matrix=plot_grid)
+sub1 <- grid.arrange(p1, p2, p3, p4, ylabel, layout_matrix=plot_grid)
 ```
 
 ## Subfig 2
@@ -304,14 +304,14 @@ plot_grid <- rbind(
   c(9, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 12, 12), # 11, 11, 11, 11),
   c(9, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 13, 13)) #, 12, 12, 12, 12))
   
-grid2 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, b1, b2, b3, b4, layout_matrix=plot_grid)
+sub2 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, b1, b2, b3, b4, layout_matrix=plot_grid)
 ```
 
 
 
 
 ## Build
-```{r, fig.width=4.5, fig.height=2.2}
-plot_grid <- rbind(c(1, 1, 2, 2, 2))
-grid.arrange(grid1, grid2, layout_matrix=plot_grid)
+```{r, fig.width=4.6, fig.height=2.2}
+plot_grid <- rbind(c(1, 1, 1, 2, 2, 2, 2, 2))
+grid.arrange(sub1, sub2, layout_matrix=plot_grid)
 ```
