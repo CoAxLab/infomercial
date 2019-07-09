@@ -53,7 +53,7 @@ rm(tmp)
 
 
 # Regret
-```{r, fig.width=1.5, fig.height=1.8}
+```{r, fig.width=2, fig.height=1.8}
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   filter(agents != "random") %>% 
@@ -140,7 +140,7 @@ grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, layout_matrix=plot_grid)
 ```
 
 # Total Reward
-```{r, fig.width=1.5 , fig.height=1.8}
+```{r, fig.width=2 , fig.height=1.8}
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   group_by(agents, env) %>% 
@@ -226,7 +226,7 @@ grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, layout_matrix=plot_grid)
 ```
 
 # P(best)
-```{r, fig.width=1.6 , fig.height=2}
+```{r, fig.width=2 , fig.height=2}
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   group_by(agents, env) %>% 
