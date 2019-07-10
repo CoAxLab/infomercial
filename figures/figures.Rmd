@@ -10,6 +10,7 @@ library(dplyr)
 library(gridExtra)
 library(grid)
 library(readr)
+library(latex2exp)
 ```
 
 
@@ -48,8 +49,6 @@ total$agents <- factor(total$agents,
                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 critic$agents <- factor(critic$agents, 
                         levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
-traces$agents <- factor(traces$agents, 
-                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 
 rm(tmp)
 ```
@@ -58,7 +57,78 @@ rm(tmp)
 load as grob, and add labels.
 
 # Fig 2
-TODO
+# Subfig 1
+```{r, fig.width=0.8}
+bandit %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=0.8) +
+  theme_classic() +
+  lims(y=c(0,1)) +
+  labs(x="Arm", y=TeX("$P_R$")) -> sub1
+
+print(sub1)
+```
+
+# Subfig 2
+```{r, fig.width=1.2, fig.height=0.7}
+t1 <- textGrob(TeX("$P(R) = \\frac{N_R}{N_{trial}$"), 
+               just = "right", hjust = 0.3)
+t2 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a} )$"), 
+               just = "right", hjust = 0.5)
+
+sub2 <- grid.arrange(t1, t2, nrow=2)
+```
+
+# Subfig 3
+```{r, fig.width=1.2, fig.height=1.2}
+# Build an empty memory
+memory0 <- data.frame(arms=1:10, p_reward=rep(0.2, 10))
+
+bandit %>% 
+  filter(env == "BanditOneHigh10-v0") %>% select(-env) -> banditonehigh10
+
+# Simulate a learned memory
+num_trials <- 100
+memoryInf <- NULL
+for (arm in 1:10) {
+  # sample based on 'BanditOneHigh10'
+  Nr <- rbinom(1, num_trials, banditonehigh10$p_reward[arm])
+  p_reward = Nr / num_trials
+  row <- c(arm, p_reward)
+  
+  memoryInf <- rbind(memoryInf, row)
+}
+memoryInf <- as.data.frame(memoryInf)
+colnames(memoryInf) <- c("arms", "p_reward")
+
+memory0 %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward)) +
+  geom_bar(stat="identity", width=0.8) +
+  theme_classic() +
+  labs(x=" ", y=" ") +
+  lims(y=c(0,1)) +
+  ggtitle(TeX("$M_{t=1}$")) -> b1
+
+memoryInf %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward)) +
+  geom_bar(stat="identity", width=0.8) +
+  theme_classic() +
+  ggtitle(TeX("$M_{t=100}$")) +
+  labs(x="Arm", y=" ") +
+  lims(y=c(0,1)) -> b2
+
+ylabel <- textGrob(TeX("$P_R$"), rot=90, vjust=1, gp = gpar(fontsize = 12))
+
+plot_grid <- rbind(
+  c(3, 1, 1, 1, 1, 1),
+  c(3, 1, 1, 1, 1, 1),
+  c(3, 2, 2, 2, 2, 2),
+  c(3, 2, 2, 2, 2, 2))
+
+sub3 <- grid.arrange(b1, b2, ylabel, layout_matrix=plot_grid)
+```
+
 
 # Fig 3
 ## Subfig 1
