@@ -18,7 +18,13 @@ library(latex2exp)
 ```{r, echo=FALSE, message=FALSE}
 data_path <- "~/Code/infomercial/data/"
 
-# Load data
+# Load example traces
+example_traces <- rbind(
+  read_csv(paste(data_path, "example_traces_epsilon_BanditOneHigh10-v0.csv", sep="")),
+  read_csv(paste(data_path, "example_traces_eta_BanditOneHigh10-v0.csv", sep=""))
+)
+
+# Load all data
 traces <- NULL
 total <- NULL
 critic <- NULL
@@ -57,7 +63,7 @@ rm(tmp)
 load as grob, and add labels.
 
 # Fig 2
-# Subfig 1
+## Subfig 1
 ```{r, fig.width=0.8}
 bandit %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
@@ -70,7 +76,7 @@ bandit %>%
 print(sub1)
 ```
 
-# Subfig 2
+## Subfig 2
 ```{r, fig.width=1.2, fig.height=0.7}
 t1 <- textGrob(TeX("$P(R) = \\frac{N_R}{N_{trial}$"), 
                just = "right", hjust = 0.3)
@@ -80,7 +86,7 @@ t2 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a
 sub2 <- grid.arrange(t1, t2, nrow=2)
 ```
 
-# Subfig 3
+## Subfig 3
 ```{r, fig.width=1.2, fig.height=1.2}
 # Build an empty memory
 memory0 <- data.frame(arms=1:10, p_reward=rep(0.2, 10))
@@ -129,6 +135,47 @@ plot_grid <- rbind(
 sub3 <- grid.arrange(b1, b2, ylabel, layout_matrix=plot_grid)
 ```
 
+## Subfig 4
+```{r, fig.width=4, fig.height=1.2}
+example_traces %>% 
+  filter(n==1, episodes < 100) %>% 
+  ggplot(aes(x=episodes, as.factor(arms))) +
+  geom_point(size=.5) +
+  facet_grid(agents~.) + 
+  labs(y="Arm") +
+  theme_classic() -> z1
+
+example_traces %>% 
+  filter(n==1, episodes < 100) %>% 
+  ggplot(aes(x=episodes, log(values_R))) +
+  geom_point(color="darkgrey", size=.5) +
+  geom_point(aes(x=episodes, log(values_E)), color="purple", size=.5) +
+  facet_grid(agents~.) + 
+  labs(y="log Value") +
+  theme_classic() -> z2
+
+example_traces %>% 
+  filter(n==1, episodes < 100) %>% 
+  ggplot(aes(x=episodes, regrets)) +
+  geom_point(color="black", size=.5) +
+  facet_grid(agents~.) + 
+  labs(y="Regret") +
+  geom_hline(yintercept = 0, size=.2) +
+  theme_classic() -> z3
+
+example_traces %>% 
+  filter(n==1, episodes < 100) %>% 
+  group_by(agents) %>% 
+  mutate(total_R = cumsum(scores_R)) %>% 
+  ggplot(aes(x=episodes, total_R)) +
+  geom_point(color="black", size=.5) +
+  facet_grid(agents~.) + 
+  labs(y="Total R") +
+  geom_hline(yintercept = 0, size=.2) +
+  theme_classic() -> z4
+
+sub4 <- grid.arrange(z1, z2, z3, z4, ncol=4)
+```
 
 # Fig 3
 ## Subfig 1
