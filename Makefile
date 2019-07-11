@@ -2200,7 +2200,7 @@ exp143:
 
 # -------------------------------------
 # 7-1-2019
-# 77e4fcc4e4f074ebb22c574aa6685bd0acb80b0d
+# 0228db4dd6a9a57c763d88587b866ac9d22421d1
 #
 # Meta has been doing real well (exp128-144). Better than I'd expected. 
 # To compare to SOA for AI applications let's run some
