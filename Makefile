@@ -2200,7 +2200,7 @@ exp143:
 
 # -------------------------------------
 # 7-1-2019
-# 0228db4dd6a9a57c763d88587b866ac9d22421d1
+# 77e4fcc4e4f074ebb22c574aa6685bd0acb80b0d
 #
 # Meta has been doing real well (exp128-144). Better than I'd expected. 
 # To compare to SOA for AI applications let's run some
@@ -2344,7 +2344,7 @@ exp156:
 
 # ------------------------------------------
 # Prior to
-# a31c4c2507c14c9ef93c66ce32ae430a48567e71
+# 0228db4dd6a9a57c763d88587b866ac9d22421d1
 # the random seed as fixed for all Actors(). 
 # This is not idea. So. Rerun the relevant cases below.
 
@@ -2487,4 +2487,4 @@ exp172:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp172.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp172_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp17_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
