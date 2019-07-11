@@ -2341,3 +2341,150 @@ exp156:
 			--joblog '$(DATA_PATH)/exp156.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp156_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# ------------------------------------------
+# Prior to
+# a31c4c2507c14c9ef93c66ce32ae430a48567e71
+# the random seed as fixed for all Actors(). 
+# This is not idea. So. Rerun the relevant cases below.
+
+# -
+# BanditOneHigh10
+#
+# replicates exp130:
+exp157:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp157.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp157_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# replicates exp131
+exp158:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp158.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp158_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# BanditTwoHigh10
+
+# replicates exp134
+exp159:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp159.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp159_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# replicates exp135
+exp160:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp160.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp160_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# BanditUniform121
+
+# replicates exp138
+exp161:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp161.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp161_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# replicates exp139
+exp162:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp162.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp162_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# HardAndSparse
+
+# replicates exp142
+exp163:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp163.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp163_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# replicates exp143
+exp164:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp164.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp164_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# ep-decay experiments (all bandits)
+
+# BanditOneHigh10
+# replicates exp149
+exp165:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp165.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp165_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# BanditTwoHigh10
+# replicates exp150
+exp166:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp166.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp166_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+# replicates exp151
+exp167:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp167.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp167_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditHardAndSparse10
+# replicates exp152
+exp168:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp168.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp168_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# Random
+
+# BanditOneHigh10
+# replicates exp153
+exp169:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp169.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp169_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditTwoHigh10
+# replicates exp154
+exp170:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp170.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp170_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+# replicates exp155
+exp171:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp171.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp171_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditHardAndSparse10
+# replicates exp156
+exp172:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp172.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp172_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
