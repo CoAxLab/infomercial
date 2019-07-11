@@ -52,7 +52,7 @@ class Actor(object):
         self.epsilon -= (self.decay_tau * self.epsilon)
 
     def forward(self, values):
-        # If you know knowing, be random. Greedy is ill defined.
+        # If you know nothing about value, be random. Greedy is ill defined.
         if np.isclose(np.sum(values), 0):
             action = self.prng.randint(0, self.num_actions, size=1)[0]
 
