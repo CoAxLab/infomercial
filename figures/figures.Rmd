@@ -3,7 +3,7 @@ title: "Figures"
 output: html_notebook
 ---
 
-```{r}
+```{r, message=FALSE}
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -11,6 +11,8 @@ library(gridExtra)
 library(grid)
 library(readr)
 library(latex2exp)
+
+options(scipen=1000000)
 ```
 
 
@@ -18,12 +20,72 @@ library(latex2exp)
 ```{r, echo=FALSE, message=FALSE}
 data_path <- "~/Code/infomercial/data/"
 
+# ----------------------------------------------------------------------------
 # Load example traces
+
+# Get indiv. files
+example_trace1 <- read_csv(paste(data_path, "example_traces_epsilon_BanditOneHigh10-v0.csv", sep=""))
+example_trace1$env <- rep("BanditOneHigh10-v0", nrow(example_trace1))
+example_trace2 <-read_csv(paste(data_path, "example_traces_eta_BanditOneHigh10-v0.csv", sep=""))
+example_trace2$env <- rep("BanditOneHigh10-v0", nrow(example_trace2))
+example_trace3 <- read_csv(paste(data_path, "example_traces_softbeta_BanditOneHigh10-v0.csv", sep=""))  
+example_trace3$env <- rep("BanditOneHigh10-v0", nrow(example_trace3))
+
+example_trace4 <- read_csv(paste(data_path, "example_traces_epsilon_BanditTwoHigh10-v0.csv", sep=""))
+example_trace4$env <- rep("BanditTwoHigh10-v0", nrow(example_trace4))
+example_trace5 <- read_csv(paste(data_path, "example_traces_eta_BanditTwoHigh10-v0.csv", sep=""))
+example_trace5$env <- rep("BanditTwoHigh10-v0", nrow(example_trace5))
+example_trace6 <- read_csv(paste(data_path, "example_traces_softbeta_BanditTwoHigh10-v0.csv", sep=""))
+example_trace6$env <- rep("BanditTwoHigh10-v0", nrow(example_trace6))
+
+example_trace7 <- read_csv(paste(data_path, "example_traces_epsilon_BanditHardAndSparse10-v0.csv", sep=""))
+example_trace7$env <- rep("BanditHardAndSparse10-v0", nrow(example_trace7))
+example_trace8 <- read_csv(paste(data_path, "example_traces_eta_BanditHardAndSparse10-v0.csv", sep=""))
+example_trace8$env <- rep("BanditHardAndSparse10-v0", nrow(example_trace8))
+example_trace9 <- read_csv(paste(data_path, "example_traces_softbeta_BanditHardAndSparse10-v0.csv", sep=""))
+example_trace9$env <- rep("BanditHardAndSparse10-v0", nrow(example_trace9))
+
+example_trace10 <- read_csv(paste(data_path, "example_traces_epsilon_BanditUniform121-v0.csv", sep=""))
+example_trace10$env <- rep("BanditUniform121-v0", nrow(example_trace10))
+example_trace11 <- read_csv(paste(data_path, "example_traces_eta_BanditUniform121-v0.csv", sep=""))
+example_trace11$env <- rep("BanditUniform121-v0", nrow(example_trace11))
+example_trace12 <- read_csv(paste(data_path, "example_traces_softbeta_BanditUniform121-v0.csv", sep=""))
+example_trace12$env <- rep("BanditUniform121-v0", nrow(example_trace12))
+  
+# Join 'em
 example_traces <- rbind(
-  read_csv(paste(data_path, "example_traces_epsilon_BanditOneHigh10-v0.csv", sep="")),
-  read_csv(paste(data_path, "example_traces_eta_BanditOneHigh10-v0.csv", sep=""))
+  example_trace1,
+  example_trace2,
+  example_trace3,
+  example_trace4,
+  example_trace5,
+  example_trace6,
+  example_trace7,
+  example_trace8,
+  example_trace9,
+  example_trace10,
+  example_trace11,
+  example_trace12
+)
+example_traces$agents <- factor(example_traces$agents, levels=c("eta", "softbeta", "epsilon"))
+
+# Free memory
+rm(
+  example_trace1,
+  example_trace2,
+  example_trace3,
+  example_trace4,
+  example_trace5,
+  example_trace6,
+  example_trace7,
+  example_trace8,
+  example_trace9,
+  example_trace10,
+  example_trace11,
+  example_trace12
 )
 
+# ----------------------------------------------------------------------------
 # Load all data
 traces <- NULL
 total <- NULL
@@ -31,10 +93,6 @@ critic <- NULL
 bandit <- NULL
 bandit_names <- c("BanditOneHigh10-v0", "BanditTwoHigh10-v0", "BanditUniform121-v0", "BanditHardAndSparse10-v0")
 for(bandit_name in bandit_names){
-  tmp <- read_csv(paste(data_path, "table_traces_", bandit_name, ".csv", sep=""))
-  tmp$env <- rep(bandit_name, nrow(tmp))
-  traces <- rbind(traces, tmp)
-  
   tmp <- read_csv(paste(data_path, "table_total_", bandit_name, ".csv", sep=""))
   tmp$env <- rep(bandit_name, nrow(tmp))
   total <- rbind(total, tmp)
@@ -49,8 +107,6 @@ for(bandit_name in bandit_names){
 }
 
 # Set agent order
-traces$agents <- factor(traces$agents, 
-                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 total$agents <- factor(total$agents, 
                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 critic$agents <- factor(critic$agents, 
@@ -62,21 +118,9 @@ rm(tmp)
 # Fig 1
 load as grob, and add labels.
 
+
 # Fig 2
-## Subfig 1
-```{r, fig.width=0.8}
-bandit %>% 
-  filter(env == "BanditOneHigh10-v0") %>% 
-  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
-  geom_bar(stat="identity", width=0.8) +
-  theme_classic() +
-  lims(y=c(0,1)) +
-  labs(x="Arm", y=TeX("$P_R$")) -> sub1
-
-print(sub1)
-```
-
-## Subfig 2
+## Subfig - math
 ```{r, fig.width=1.2, fig.height=0.7}
 t1 <- textGrob(TeX("$M = (p_.1, p_2,..., p_a)$"), 
                just = "right", hjust = 0.3)
@@ -88,7 +132,7 @@ t3 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a
 sub2 <- grid.arrange(t1, t2, t3, nrow=3)
 ```
 
-## Subfig 3
+## Subfig - prob memory
 ```{r, fig.width=1.2, fig.height=1.2}
 # Build an empty memory
 memory0 <- data.frame(arms=1:10, p_reward=rep(0.2, 10))
@@ -123,7 +167,7 @@ memoryInf %>%
   geom_bar(stat="identity", width=0.8) +
   theme_classic() +
   ggtitle(TeX("$M_{t=100}$")) +
-  labs(x="Arm", y=" ") +
+  labs(x="S", y=" ") +
   lims(y=c(0,1)) -> b2
 
 ylabel <- textGrob(TeX("$P_R$"), rot=90, vjust=1, gp = gpar(fontsize = 12))
@@ -137,90 +181,83 @@ plot_grid <- rbind(
 sub3 <- grid.arrange(b1, b2, ylabel, layout_matrix=plot_grid)
 ```
 
-## Subfig 4
-```{r, fig.width=4, fig.height=1.4}
+## Subfig - exploration
+```{r, fig.width=2, fig.height=3}
+# ------------------------------------------------------------------------
+# Exploration panels
+
+# eta, softbeta, ep
 example_traces %>% 
-  filter(n==2, episodes < 100) %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
+  filter(n==3, episodes < 500/2) %>% 
   ggplot(aes(x=episodes, as.factor(arms))) +
-  geom_point(size=.5) +
+  geom_point(size=.001, alpha=0.4) +
+  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.9) +
   facet_grid(agents~.) + 
   labs(y="Arm") +
   theme_classic() + 
   theme(
+    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
     strip.background = element_blank(),
-    strip.text.y = element_blank()
-  ) -> z1
+    strip.text.y = element_text(angle=0)
+  ) -> explore1
 
 example_traces %>% 
-  filter(n==2, episodes < 100) %>% 
-  ggplot(aes(x=episodes, log(values_R))) +
-  geom_point(color="darkgrey", size=.5) +
-  geom_point(aes(x=episodes, log(values_E)), color="purple", size=.5) +
+  filter(env == "BanditTwoHigh10-v0") %>% 
+  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
+  filter(n==4, episodes < 500/2) %>% 
+  ggplot(aes(x=episodes, as.factor(arms))) +
+  geom_point(size=.001, alpha=0.4) +
+  geom_hline(aes(yintercept=4), color="red", size=.1, alpha=0.9) +
   facet_grid(agents~.) + 
-  labs(y="log Value") +
-  theme_classic() +
+  labs(y="Arm") +
+  theme_classic() + 
   theme(
+    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
     strip.background = element_blank(),
-    strip.text.y = element_blank()
-  ) -> z2
+    strip.text.y = element_text(angle=0)
+  ) -> explore2
+
 
 example_traces %>% 
-  filter(n==54, episodes < 100) %>% 
-  ggplot(aes(x=episodes, regrets)) +
-  geom_point(color="black", size=.5) +
+  filter(env == "BanditHardAndSparse10-v0") %>% 
+  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
+  filter(n==2, episodes < 100000/2) %>% 
+  ggplot(aes(x=episodes, as.factor(arms))) +
+  geom_point(size=.001, alpha=0.4) +
+  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.9) +
   facet_grid(agents~.) + 
-  labs(y="Regret") +
-  geom_hline(yintercept = 0, size=.2) +
-  theme_classic() +
+  labs(y="Arm") +
+  theme_classic() + 
   theme(
+    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
     strip.background = element_blank(),
-    strip.text.y = element_blank()
-  ) -> z3
+    strip.text.y = element_text(angle=0)
+  ) -> explore3
 
 example_traces %>% 
-  filter(n==54, episodes < 100) %>% 
-  group_by(agents) %>% 
-  mutate(total_R = cumsum(scores_R)) %>% 
-  ggplot(aes(x=episodes, total_R)) +
-  geom_point(color="black", size=.5) +
+  filter(env == "BanditUniform121-v0") %>% 
+  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
+  filter(n==12, episodes < 120000/2) %>% 
+  ggplot(aes(x=episodes, as.factor(arms))) +
+  geom_point(size=.001, alpha=0.4) +
+  geom_hline(aes(yintercept=55), color="red", size=.1, alpha=0.9) +
   facet_grid(agents~.) + 
-  labs(y="Total R") +
-  geom_hline(yintercept = 0, size=.2) +
-  theme_classic() +
+  labs(y="Arm") +
+  theme_classic() + 
   theme(
+    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
     strip.background = element_blank(),
-    strip.text.y = element_blank()
-  ) -> z4
+    strip.text.y = element_text(angle=0)
+  ) -> explore4
 
-agent1 <- textGrob("epsilon", vjust=-.2, gp = gpar(fontsize = 12))
-agent2 <- textGrob("eta", vjust=-.2, gp = gpar(fontsize = 12))
-
-plot_grid <- rbind(
-  c(1, 1, 2, 2, 3),
-  c(1, 1, 2, 2, 4))
-  
-sub4 <- grid.arrange(z1, z2, agent1, agent2, layout_matrix=plot_grid)
-```
-## Build
-```{r, fig.height=1.1, fig.width=6}
-task1 <- textGrob("Task", vjust=0, gp = gpar(fontsize = 12))
-mem1 <- textGrob("Memory", vjust=0, gp = gpar(fontsize = 12))
-ex1 <- textGrob("Exploration", vjust=0, gp = gpar(fontsize = 12))
-
-plot_grid <- rbind(
-  c(4, 4, 5, 5, 6, 6, 6, 6, 6),
-  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
-  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
-  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
-  c(NA, NA, NA, NA, 3, 3, 3, 3, 3))
-
-grid.arrange(sub1, sub2, sub4, task1, mem1, ex1, layout_matrix=plot_grid)
+grid.arrange(explore1, explore2, explore3, explore4, nrow=4)
 ```
 
-# Fig 3
-## Subfig 1
-```{r, fig.width=3, fig.height=2.2}
-# ------------------------------------------------------
+## Subfig - regret
+```{r, fig.width=1.2, fig.height=2}
+# ------------------------------------------------------------------------
 # Regret
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
@@ -248,7 +285,7 @@ total %>%
   scale_color_manual(
     "Agent",
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> c1
+  coord_flip() -> regret1
 
 total %>% 
   filter(env == "BanditTwoHigh10-v0") %>% 
@@ -267,26 +304,7 @@ total %>%
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   labs(x=" ", y=" ") +
-  coord_flip() -> c2
-
-total %>% 
-  filter(env == "BanditUniform121-v0") %>% 
-  # filter(agents != "random") %>% 
-  group_by(agents, env) %>% 
-  summarise(M = median(regrets), SD=mad(regrets)) %>% 
-  ggplot(aes(x=agents, y=M, color=agents)) +
-  geom_point(alpha=.9) +
-  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
-  theme_classic() +
-  theme(legend.position="none",
-        # axis.text.y=element_blank(),
-        plot.margin = margin(.1, .1, .1, .1, "cm")) +
-  labs(x=" ", y=" ") +
-  scale_y_continuous(breaks=c(0, 30000, 60000), limits = c(0, 61000)) +
-  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
-  scale_color_manual(
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> c3
+  coord_flip() -> regret2
 
 total %>% 
   filter(env == "BanditHardAndSparse10-v0") %>% 
@@ -305,9 +323,33 @@ total %>%
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> c4
+  coord_flip() -> regret3
 
-# ------------------------------------------------------
+total %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  # filter(agents != "random") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
+  labs(x=" ", y="Total regret") +
+  scale_y_continuous(breaks=c(0, 30000, 60000), limits = c(0, 61000)) +
+  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> regret4
+
+grid.arrange(regret1, regret2, regret3, regret4, nrow=4)
+```
+
+## Subfig - reward
+```{r, fig.width=1.2, fig.height=2}
+# ------------------------------------------------------------------------
 # total R
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
@@ -325,7 +367,7 @@ total %>%
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> d1
+  coord_flip() -> reward1
 
 total %>% 
   filter(env == "BanditTwoHigh10-v0") %>% 
@@ -342,27 +384,8 @@ total %>%
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  labs(x=" ", y=" ") +
-  coord_flip() -> d2
-
-options(scipen=1000000)
-total %>% 
-  filter(env == "BanditUniform121-v0") %>% 
-  group_by(agents, env) %>% 
-  summarise(M = median(total_R), SD=mad(total_R)) %>% 
-  ggplot(aes(x=agents, y=M, color=agents)) +
-  geom_point(alpha=.9) +
-  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
-  theme_classic() +
-  theme(legend.position="none",
-        axis.text.y=element_blank(),
-        plot.margin = margin(.1, .4, .1, .1, "cm")) +
-  labs(x=" ", y=" ") +
-  scale_y_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
-  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  scale_color_manual(
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> d3
+  labs(x=" ", y="Total reward") +
+  coord_flip() -> reward2
 
 total %>% 
   filter(env == "BanditHardAndSparse10-v0") %>% 
@@ -381,27 +404,33 @@ total %>%
   # ylim(c(0, 400)) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  coord_flip() -> d4
+  coord_flip() -> reward3
 
-# -
-ylabel <- textGrob("Agent", vjust=3, rot=90, gp = gpar(fontsize = 12))
+total %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=.9) +
+  geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
+  theme_classic() +
+  theme(legend.position="none",
+        axis.text.y=element_blank(),
+        plot.margin = margin(.1, .4, .1, .1, "cm")) +
+  labs(x=" ", y="Total reward") +
+  scale_y_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> reward4
 
-row1 <- textGrob("One best", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
-row2 <- textGrob("Distractor", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
-row3 <- textGrob("Random 121", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
-row4 <- textGrob("Sparse", hjust=0, vjust=0, gp = gpar(fontsize = 10))
 
-plot_grid <- rbind(
-  c(9, 1, 1, 1, 1, 5, 5, 5), # 5, 10, 10, 10), 
-  c(9, 2, 2, 2, 2, 6, 6, 6), # 6, 11, 11, 11), 
-  c(9, 3, 3, 3, 3, 7, 7, 7), # 7, 12, 12, 12), 
-  c(9, 4, 4, 4, 4, 8, 8, 8)) #, 8, 13, 13, 13)) 
-  
-sub1 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, layout_matrix=plot_grid)
+grid.arrange(reward1, reward2, reward3, reward4, nrow=4)
 ```
 
-## Subfig 2
-```{r, fig.width=4, fig.height=2.2}
+## Subfig - bandits
+```{r}
+# ------------------------------------------------------------------------
 # Bandits
 bandit %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
@@ -424,16 +453,6 @@ bandit %>%
   labs(x=" ", y=" ") -> bandit2
 
 bandit %>% 
-  filter(env == "BanditUniform121-v0") %>% 
-  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
-  geom_bar(stat="identity", width=1) +
-  geom_point(aes(x=55, y=0.9), color="red") +
-  theme_classic() +
-  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
-  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
-  labs(x=" ", y=" ") -> bandit3
-
-bandit %>% 
   filter(env == "BanditHardAndSparse10-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
   geom_bar(stat="identity", width=1) +
@@ -441,7 +460,18 @@ bandit %>%
   theme_classic() +
   theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  labs(x=" ", y=" ") -> bandit3
+
+bandit %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=1) +
+  geom_point(aes(x=55, y=0.9), color="red") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
   labs(x="Arm", y=" ") -> bandit4
+
 
 # -
 xlabel <- textGrob("Arm", vjust=-1.5, gp = gpar(fontsize = 12))
@@ -459,12 +489,12 @@ plot_grid <- rbind(
   c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
   c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
   c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
   c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
   c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3))
   # c(6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5))
  
 sub2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, ylabel, row1, row2, row3, row4, layout_matrix=plot_grid)
@@ -472,26 +502,24 @@ sub2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, ylabel, row1, row2, row
 
 
 ## Build
-```{r, fig.width=6, fig.height=2.4}
+```{r, fig.width=5, fig.height=2.4}
 task1 <- textGrob("Task", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
 perf1 <- textGrob("Total return", vjust=0, gp =  gpar(fontsize = 10, fontface="bold"))
 
-plot_grid <- rbind(
-  c(NA, 3, 3, 3, 3, 3, 3, NA, 4, 4, 4),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
-  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2)
-  )
+bandit_y <- textGrob(TeX("$P_R$"), vjust=2, rot=90, gp =  gpar(fontsize = 10))
+agent_y <- textGrob("Agent", vjust=4, rot=90, gp =  gpar(fontsize = 10))
 
-grid.arrange(sub2, sub1, task1, perf1, layout_matrix=plot_grid)
+plot_grid <- rbind(
+  c(18, 1, 1, 19, 5, 5, 5, 5, 9, 9, 9, 14, 14, 14, 14, 14, 14, NA, NA, NA, NA, NA, NA, NA),
+  c(18, 2, 2, 19, 6, 6, 6, 6, 10,10,10,15, 15, 15, 15, 15, 15, NA, NA, NA, NA, NA, NA, NA),
+  c(18, 3, 3, 19, 7, 7, 7, 7, 12,12,12,16, 16, 16, 16, 16, 16, NA, NA, NA, NA, NA, NA, NA),
+  c(18, 4, 4, 4,  4, 4, 4, 4, 4, 8, 8, 8,  8,  8,  13, 13, 13, 17, 17, 17, 17, 17, 17, NA)
+)
+
+grid.arrange(bandit1, bandit2, bandit3, bandit4, 
+             regret1, regret2, regret3, regret4, 
+             reward1, reward2, reward3, reward4,
+             explore1, explore2, explore3, explore4,
+             bandit_y, agent_y,
+             layout_matrix=plot_grid)
 ```
