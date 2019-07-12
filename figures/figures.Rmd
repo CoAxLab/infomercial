@@ -78,12 +78,14 @@ print(sub1)
 
 ## Subfig 2
 ```{r, fig.width=1.2, fig.height=0.7}
-t1 <- textGrob(TeX("$P(R) = \\frac{N_R}{N_{trial}$"), 
+t1 <- textGrob(TeX("$M = (p_.1, p_2,..., p_a)$"), 
                just = "right", hjust = 0.3)
-t2 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a} )$"), 
+t2 <- textGrob(TeX("$p_a = \\frac{N_R}{N_{trial}$"), 
+               just = "right", hjust = 0.3)
+t3 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a} )$"), 
                just = "right", hjust = 0.5)
 
-sub2 <- grid.arrange(t1, t2, nrow=2)
+sub2 <- grid.arrange(t1, t2, t3, nrow=3)
 ```
 
 ## Subfig 3
@@ -136,35 +138,47 @@ sub3 <- grid.arrange(b1, b2, ylabel, layout_matrix=plot_grid)
 ```
 
 ## Subfig 4
-```{r, fig.width=4, fig.height=1.2}
+```{r, fig.width=4, fig.height=1.4}
 example_traces %>% 
-  filter(n==1, episodes < 100) %>% 
+  filter(n==54, episodes < 100) %>% 
   ggplot(aes(x=episodes, as.factor(arms))) +
   geom_point(size=.5) +
   facet_grid(agents~.) + 
   labs(y="Arm") +
-  theme_classic() -> z1
+  theme_classic() + 
+  theme(
+    strip.background = element_blank(),
+    strip.text.y = element_blank()
+  ) -> z1
 
 example_traces %>% 
-  filter(n==1, episodes < 100) %>% 
+  filter(n==54, episodes < 100) %>% 
   ggplot(aes(x=episodes, log(values_R))) +
   geom_point(color="darkgrey", size=.5) +
   geom_point(aes(x=episodes, log(values_E)), color="purple", size=.5) +
   facet_grid(agents~.) + 
   labs(y="log Value") +
-  theme_classic() -> z2
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    strip.text.y = element_blank()
+  ) -> z2
 
 example_traces %>% 
-  filter(n==1, episodes < 100) %>% 
+  filter(n==54, episodes < 100) %>% 
   ggplot(aes(x=episodes, regrets)) +
   geom_point(color="black", size=.5) +
   facet_grid(agents~.) + 
   labs(y="Regret") +
   geom_hline(yintercept = 0, size=.2) +
-  theme_classic() -> z3
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    strip.text.y = element_blank()
+  ) -> z3
 
 example_traces %>% 
-  filter(n==1, episodes < 100) %>% 
+  filter(n==54, episodes < 100) %>% 
   group_by(agents) %>% 
   mutate(total_R = cumsum(scores_R)) %>% 
   ggplot(aes(x=episodes, total_R)) +
@@ -172,90 +186,39 @@ example_traces %>%
   facet_grid(agents~.) + 
   labs(y="Total R") +
   geom_hline(yintercept = 0, size=.2) +
-  theme_classic() -> z4
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    strip.text.y = element_blank()
+  ) -> z4
 
-sub4 <- grid.arrange(z1, z2, z3, z4, ncol=4)
+agent1 <- textGrob("epsilon", vjust=-.2, gp = gpar(fontsize = 12))
+agent2 <- textGrob("eta", vjust=-.2, gp = gpar(fontsize = 12))
+
+plot_grid <- rbind(
+  c(1, 1, 2),
+  c(1, 1, 3))
+  
+sub4 <- grid.arrange(z1, agent1, agent2, layout_matrix=plot_grid)
+```
+## Build
+```{r, fig.height=1.1, fig.width=6}
+task1 <- textGrob("Task", vjust=0, gp = gpar(fontsize = 12))
+mem1 <- textGrob("Memory", vjust=0, gp = gpar(fontsize = 12))
+ex1 <- textGrob("Exploration", vjust=0, gp = gpar(fontsize = 12))
+
+plot_grid <- rbind(
+  c(4, 4, 5, 5, 6, 6, 6, 6, 6),
+  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
+  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
+  c(1, 1, 2, 2, 3, 3, 3, 3, 3),
+  c(NA, NA, NA, NA, 3, 3, 3, 3, 3))
+
+grid.arrange(sub1, sub2, sub4, task1, mem1, ex1, layout_matrix=plot_grid)
 ```
 
 # Fig 3
 ## Subfig 1
-```{r, fig.width=1.8, fig.height=2.2}
-traces %>% 
-  filter(env == "BanditOneHigh10-v0") %>% 
-  group_by(episodes, agents) %>% 
-  summarise(M = median(p_bests)) %>% 
-  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
-  geom_line(size=.5, alpha=0.8) +
-  scale_color_manual("Agent",
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  theme_classic() +
-  theme(legend.position=c(-0.95, 0),
-        legend.key.size = unit(.5, "cm"),
-        legend.key.height=unit(0.3,"cm"),
-        plot.margin = margin(.2, .5, .2, .2, "cm"),
-        legend.background = element_rect(colour ="black")) +
-  guides(color = guide_legend(reverse = TRUE)) +
-  scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
-  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  labs(x=" ", y=" ") -> p1
-
-traces %>% 
-  filter(env == "BanditTwoHigh10-v0") %>% 
-  group_by(episodes, agents) %>% 
-  summarise(M = median(p_bests)) %>% 
-  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
-  geom_line(size=.5, alpha=0.8) +
-  scale_color_manual(
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  theme_classic() +
-  theme(legend.position = "none",
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  scale_x_continuous(breaks=c(0, 250, 500), limits = c(0, 550)) +
-  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  labs(x=" ", y=" ") -> p2
-
-traces %>% 
-  filter(env == "BanditUniform121-v0") %>% 
-  group_by(episodes, agents) %>% 
-  summarise(M = median(p_bests)) %>% 
-  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
-  geom_line(size=.5, alpha=0.8) +
-  scale_color_manual(
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  theme_classic() +
-  theme(legend.position = "none",
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  scale_x_continuous(breaks=c(0, 60000, 120000), limits = c(0, 120100)) +
-  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  labs(x=" ", y=" ") -> p3
-
-traces %>% 
-  filter(env == "BanditHardAndSparse10-v0") %>% 
-  group_by(episodes, agents) %>% 
-  summarise(M = median(p_bests)) %>% 
-  ggplot(aes(x=episodes, y=M, color=agents, group=interaction(agents))) +
-  geom_line(size=.5, alpha=0.8) +
-  scale_color_manual(
-    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  theme_classic() +
-  theme(legend.position = "none",
-    plot.margin = margin(.2, .5, .2, .2, "cm")) +
-  scale_x_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
-  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
-  labs(x="Trial", y=" ") -> p4
-
-ylabel <- textGrob("P(best arm)", vjust=6, rot=90, gp = gpar(fontsize = 12))
-
-plot_grid <- rbind(
-  c(5, 5, 1, 1, 1),
-  c(5, 5, 2, 2, 2),
-  c(5, 5, 3, 3, 3),
-  c(5, 5, 4, 4, 4))
-
-sub1 <- grid.arrange(p1, p2, p3, p4, ylabel, layout_matrix=plot_grid)
-```
-
-## Subfig 2
 ```{r, fig.width=3, fig.height=2.2}
 # ------------------------------------------------------
 # Regret
@@ -268,13 +231,22 @@ total %>%
   geom_point(alpha=.9) +
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
+  # theme(legend.position=c(-0.7, 0),
+  #       legend.direction="vertical",
+  #       legend.key.size = unit(.5, "cm"),
+  #       legend.key.height=unit(0.3,"cm"),
+  #       # plot.margin = margin(.2, .5, .2, .2, "cm"),
+  #       legend.background = element_rect(colour ="black"),
+  #       axis.text.y=element_blank(),
+  #       plot.margin = margin(.1, .1, .1, .1, "cm")) +
   theme(legend.position="none",
-        axis.title.x = element_text(hjust=-2),
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 125, 250), limits = c(0, 300)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
   scale_color_manual(
+    "Agent",
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> c1
 
@@ -288,7 +260,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none",
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
   scale_y_continuous(breaks=c(0, 100, 200), limits = c(0, 250)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
   scale_color_manual(
@@ -306,7 +279,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none",
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 30000, 60000), limits = c(0, 61000)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
@@ -324,7 +298,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none", 
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        # axis.text.y=element_blank(),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x=" ", y="Total regret") +
   scale_y_continuous(breaks=c(0, 2500, 5000), limits = c(0, 5500)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
@@ -343,8 +318,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none",
-        # axis.text.y=element_blank(),
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        axis.text.y=element_blank(),
+        plot.margin = margin(.1, .4, .1, .1, "cm")) +
   labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 450)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
@@ -361,8 +336,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none",
-        # axis.text.y=element_blank(),
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        axis.text.y=element_blank(),
+        plot.margin = margin(.1, .4, .1, .1, "cm")) +
   scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 500)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
@@ -380,8 +355,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none",
-        # axis.text.y=element_blank(),
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        axis.text.y=element_blank(),
+        plot.margin = margin(.1, .4, .1, .1, "cm")) +
   labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 50000, 100000), limits = c(0, 100100)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
@@ -398,8 +373,8 @@ total %>%
   geom_errorbar(aes(ymin=M-SD, ymax=M+SD), width=.1) +
   theme_classic() +
   theme(legend.position="none", 
-        # axis.text.y=element_blank(),
-        plot.margin = margin(.2, .5, .2, .2, "cm")) +
+        axis.text.y=element_blank(),
+        plot.margin = margin(.1, .4, .1, .1, "cm")) +
   labs(x=" ", y="Total reward") +
   scale_y_continuous(breaks=c(0, 1000, 2000), limits = c(0, 2100)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
@@ -409,26 +384,114 @@ total %>%
   coord_flip() -> d4
 
 # -
-ylabel <- textGrob("Agent", vjust=2, rot=90, gp = gpar(fontsize = 12))
-b1 <- textGrob("One best", vjust=-.2, gp = gpar(fontsize = 10))
-b2 <- textGrob("Distractor", vjust=-.2, gp = gpar(fontsize = 10))
-b3 <- textGrob("Random 121", vjust=-.2, gp = gpar(fontsize = 10))
-b4 <- textGrob("Sparse", vjust=-.2, gp = gpar(fontsize = 10))
+ylabel <- textGrob("Agent", vjust=3, rot=90, gp = gpar(fontsize = 12))
+
+row1 <- textGrob("One best", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
+row2 <- textGrob("Distractor", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
+row3 <- textGrob("Random 121", hjust=-0, vjust=0, gp = gpar(fontsize = 10))
+row4 <- textGrob("Sparse", hjust=0, vjust=0, gp = gpar(fontsize = 10))
 
 plot_grid <- rbind(
-  c(9, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 10, 10), #, 9, 9, 9, 9),
-  c(9, 2, 2, 2, 2, 2, 6, 6, 6, 6, 6, 11, 11), # 10, 10, 10, 10),
-  c(9, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 12, 12), # 11, 11, 11, 11),
-  c(9, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 13, 13)) #, 12, 12, 12, 12))
+  c(9, 1, 1, 1, 1, 5, 5, 5), # 5, 10, 10, 10), 
+  c(9, 2, 2, 2, 2, 6, 6, 6), # 6, 11, 11, 11), 
+  c(9, 3, 3, 3, 3, 7, 7, 7), # 7, 12, 12, 12), 
+  c(9, 4, 4, 4, 4, 8, 8, 8)) #, 8, 13, 13, 13)) 
   
-sub2 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, b1, b2, b3, b4, layout_matrix=plot_grid)
+sub1 <- grid.arrange(c1, c2, c3, c4, d1, d2, d3, d4, ylabel, layout_matrix=plot_grid)
+```
+
+## Subfig 2
+```{r, fig.width=4, fig.height=2.2}
+# Bandits
+bandit %>% 
+  filter(env == "BanditOneHigh10-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=1) +
+  geom_point(aes(x=8, y=0.9), color="red") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  labs(x=" ", y=" ") -> bandit1
+
+bandit %>% 
+  filter(env == "BanditTwoHigh10-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=1) +
+  geom_point(aes(x=4, y=0.9), color="red") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  labs(x=" ", y=" ") -> bandit2
+
+bandit %>% 
+  filter(env == "BanditUniform121-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=1) +
+  geom_point(aes(x=55, y=0.9), color="red") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  labs(x=" ", y=" ") -> bandit3
+
+bandit %>% 
+  filter(env == "BanditHardAndSparse10-v0") %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=1) +
+  geom_point(aes(x=8, y=0.9), color="red") +
+  theme_classic() +
+  theme(axis.text.x=element_blank(), axis.ticks.x = element_blank()) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  labs(x="Arm", y=" ") -> bandit4
+
+# -
+xlabel <- textGrob("Arm", vjust=-1.5, gp = gpar(fontsize = 12))
+ylabel <- textGrob(TeX("$P_R$"), hjust=-1, gp = gpar(fontsize = 12))
+
+row1 <- textGrob("One best", hjust=0, vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
+row2 <- textGrob("Distractor", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
+row3 <- textGrob("Random 121", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
+row4 <- textGrob("Sparse", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
+
+plot_grid <- rbind(
+  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
+  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+  # c(6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5))
+ 
+sub2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, ylabel, row1, row2, row3, row4, layout_matrix=plot_grid)
 ```
 
 
-
-
 ## Build
-```{r, fig.width=4.6, fig.height=2.2}
-plot_grid <- rbind(c(1, 1, 1, 2, 2, 2, 2, 2))
-grid.arrange(sub1, sub2, layout_matrix=plot_grid)
+```{r, fig.width=6, fig.height=2.4}
+task1 <- textGrob("Task", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
+perf1 <- textGrob("Total return", vjust=0, gp =  gpar(fontsize = 10, fontface="bold"))
+
+plot_grid <- rbind(
+  c(NA, 3, 3, 3, 3, 3, 3, NA, 4, 4, 4),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2),
+  c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2)
+  )
+
+grid.arrange(sub2, sub1, task1, perf1, layout_matrix=plot_grid)
 ```
