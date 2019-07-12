@@ -9,6 +9,7 @@ data/*
 *.Rproj
 *.nb.html 
 *.Rhistory
+*.Rdata
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
