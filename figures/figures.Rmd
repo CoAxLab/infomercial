@@ -318,7 +318,7 @@ total %>%
   theme(legend.position="none", 
         # axis.text.y=element_blank(),
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
-  labs(x=" ", y="Total regret") +
+  labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 2500, 5000), limits = c(0, 5500)) +
   geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
   scale_color_manual(
@@ -384,7 +384,7 @@ total %>%
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
-  labs(x=" ", y="Total reward") +
+  labs(x=" ", y=" ") +
   coord_flip() -> reward2
 
 total %>% 
@@ -398,7 +398,7 @@ total %>%
   theme(legend.position="none", 
         axis.text.y=element_blank(),
         plot.margin = margin(.1, .4, .1, .1, "cm")) +
-  labs(x=" ", y="Total reward") +
+  labs(x=" ", y=" ") +
   scale_y_continuous(breaks=c(0, 1000, 2000), limits = c(0, 2100)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   # ylim(c(0, 400)) +
@@ -502,24 +502,34 @@ sub2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, ylabel, row1, row2, row
 
 
 ## Build
-```{r, fig.width=5, fig.height=2.4}
-task1 <- textGrob("Task", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
-perf1 <- textGrob("Total return", vjust=0, gp =  gpar(fontsize = 10, fontface="bold"))
+```{r, fig.width=4, fig.height=2.4}
+task1 <- textGrob("N-arm bandit tasks", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
+perf1 <- textGrob("Agent performance", vjust=0, gp =  gpar(fontsize = 10, fontface="bold"))
 
-bandit_y <- textGrob(TeX("$P_R$"), vjust=2, rot=90, gp =  gpar(fontsize = 10))
+bandit_y <- textGrob("Reward probability", vjust=3, rot=90, gp =  gpar(fontsize = 10))
 agent_y <- textGrob("Agent", vjust=4, rot=90, gp =  gpar(fontsize = 10))
 
 plot_grid <- rbind(
-  c(18, 1, 1, 19, 5, 5, 5, 5, 9, 9, 9, 14, 14, 14, 14, 14, 14, NA, NA, NA, NA, NA, NA, NA),
-  c(18, 2, 2, 19, 6, 6, 6, 6, 10,10,10,15, 15, 15, 15, 15, 15, NA, NA, NA, NA, NA, NA, NA),
-  c(18, 3, 3, 19, 7, 7, 7, 7, 12,12,12,16, 16, 16, 16, 16, 16, NA, NA, NA, NA, NA, NA, NA),
-  c(18, 4, 4, 4,  4, 4, 4, 4, 4, 8, 8, 8,  8,  8,  13, 13, 13, 17, 17, 17, 17, 17, 17, NA)
+  c(15, 15,15,15, 15,15,15,15,15,NA,16,16,16,16,16, 16,16),
+  c(13, 1, 1, NA, NA,NA,NA,NA,NA,14, 5, 5, 5, 5, 9, 9, 9),
+  c(13, 1, 1, NA, NA,NA,NA,NA,NA,14, 5, 5, 5, 5, 9, 9, 9),
+  c(13, 1, 1, NA, NA,NA,NA,NA,NA,14, 5, 5, 5, 5, 9, 9, 9),
+  c(13, 2, 2, NA, NA,NA,NA,NA,NA,14, 6, 6, 6, 6, 10,10,10),
+  c(13, 2, 2, NA, NA,NA,NA,NA,NA,14, 6, 6, 6, 6, 10,10,10),
+  c(13, 2, 2, NA, NA,NA,NA,NA,NA,14, 6, 6, 6, 6, 10,10,10),
+  c(13, 3, 3, NA, NA,NA,NA,NA,NA,14, 7, 7, 7, 7, 11,11,11),
+  c(13, 3, 3, NA, NA,NA,NA,NA,NA,14, 7, 7, 7, 7, 11,11,11),
+  c(13, 3, 3, NA, NA,NA,NA,NA,NA,14, 7, 7, 7, 7, 11,11,11),
+  c(13, 4, 4, 4,  4, 4, 4, 4, 4, 14, 8, 8, 8, 8, 12,12,12),
+  c(13, 4, 4, 4,  4, 4, 4, 4, 4, 14, 8, 8, 8, 8, 12,12,12),
+  c(13, 4, 4, 4,  4, 4, 4, 4, 4, 14, 8, 8, 8, 8, 12,12,12)
 )
 
 grid.arrange(bandit1, bandit2, bandit3, bandit4, 
              regret1, regret2, regret3, regret4, 
              reward1, reward2, reward3, reward4,
-             explore1, explore2, explore3, explore4,
+             # explore1, explore2, explore3, explore4,
              bandit_y, agent_y,
+             task1, perf1,
              layout_matrix=plot_grid)
 ```
