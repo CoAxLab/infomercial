@@ -482,28 +482,13 @@ row2 <- textGrob("Distractor", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, font
 row3 <- textGrob("Random 121", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
 row4 <- textGrob("Sparse", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
 
-plot_grid <- rbind(
-  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(6, 5, 1, 1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7, 5, 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(9, 5, 4, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
-  c(8, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3))
-  # c(6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5))
- 
-sub2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, ylabel, row1, row2, row3, row4, layout_matrix=plot_grid)
+grid.arrange(bandit1, bandit2, bandit3, bandit4, nrow=4)
 ```
 
 
 ## Build
-```{r, fig.width=4, fig.height=2.4}
-task1 <- textGrob("N-arm bandit tasks", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
+```{r, fig.width=4.5, fig.height=2.4}
+task1 <- textGrob("N-armed bandit tasks", vjust=0, gp = gpar(fontsize = 10, fontface="bold"))
 perf1 <- textGrob("Agent performance", vjust=0, gp =  gpar(fontsize = 10, fontface="bold"))
 
 bandit_y <- textGrob("Reward probability", vjust=3, rot=90, gp =  gpar(fontsize = 10))
