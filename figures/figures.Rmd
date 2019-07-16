@@ -13,6 +13,10 @@ library(readr)
 library(latex2exp)
 
 options(scipen=1000000)
+
+kl_divergence <- function(p, q) {
+  sum(p * log(p/q))
+}
 ```
 
 
@@ -185,6 +189,40 @@ memory %>%
 # colnames(memoryInf) <- c("arms", "p_reward")
 
 grid.arrange(mem_state, mem_arm, nrow=2)
+```
+## Subfig - KL scaling
+```{r, fig.width=1}
+# Build an empty memory
+ps <- runif(10)
+ps <- ps / sum(ps)
+
+memory0 <- data.frame(arms=1:10, p_reward=ps)
+memory0$memory <- rep("M_0", nrow(memory0))
+
+del_p <- 0.01
+n_samples <- 100
+Es <- NULL
+dPs <- NULL
+for(t in 1:n_samples){
+  qs <- ps
+  qs[7] <- qs[7] + del_p
+  qs <- qs / sum(qs)  
+  
+  E <- kl_divergence(qs, ps)
+  
+  Es <- c(Es, E)
+  dPs <- c(dPs, sum(abs(qs - ps)))
+  
+  ps <- qs
+}
+
+flux <- data.frame(E=Es, dP=dPs)
+
+flux %>% 
+  ggplot(aes(dP, E)) +
+  geom_line() +
+  theme_classic() +
+  labs(x=TeX("$|\\Delta P|$"), y="KL")
 ```
 
 ## Subfig - exploration
