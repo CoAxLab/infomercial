@@ -121,64 +121,70 @@ load as grob, and add labels.
 
 # Fig 2
 ## Subfig - math
-```{r, fig.width=1.2, fig.height=0.7}
-t1 <- textGrob(TeX("$M = (p_.1, p_2,..., p_a)$"), 
-               just = "right", hjust = 0.3)
-t2 <- textGrob(TeX("$p_a = \\frac{N_R}{N_{trial}$"), 
-               just = "right", hjust = 0.3)
-t3 <- textGrob(TeX("KL = \\sum_{a=1}^K P_{t+1}^a log ( \\frac{P_{t}^a}{P_{t+1}^a} )$"), 
+```{r, fig.width=1.2, fig.height=0.4}
+t1 <- textGrob(TeX("KL = \\sum_{a=1}^K M_1(a) log \\frac{M_0(a)}{M_1(a)} $"), 
                just = "right", hjust = 0.5)
 
-sub2 <- grid.arrange(t1, t2, t3, nrow=3)
+sub2 <- grid.arrange(t1)
 ```
 
 ## Subfig - prob memory
-```{r, fig.width=1.2, fig.height=1.2}
+```{r, fig.width=1.4, fig.height=1.2}
 # Build an empty memory
-memory0 <- data.frame(arms=1:10, p_reward=rep(0.2, 10))
+ps <- runif(10)
+ps <- ps / sum(ps)
 
-bandit %>% 
-  filter(env == "BanditOneHigh10-v0") %>% select(-env) -> banditonehigh10
+memory0 <- data.frame(arms=1:10, p_reward=ps)
+memory0$memory <- rep("M_0", nrow(memory0))
 
-# Simulate a learned memory
-num_trials <- 100
-memoryInf <- NULL
-for (arm in 1:10) {
-  # sample based on 'BanditOneHigh10'
-  Nr <- rbinom(1, num_trials, banditonehigh10$p_reward[arm])
-  p_reward = Nr / num_trials
-  row <- c(arm, p_reward)
-  
-  memoryInf <- rbind(memoryInf, row)
-}
-memoryInf <- as.data.frame(memoryInf)
-colnames(memoryInf) <- c("arms", "p_reward")
 
-memory0 %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward)) +
-  geom_bar(stat="identity", width=0.8) +
+ps[7] <- ps[7]+.5
+ps <- ps / sum(ps)
+memory1 <- data.frame(arms=1:10, p_reward=ps)
+memory1$memory <- rep("M_1", nrow(memory1))
+
+memory <- full_join(memory0, memory1)
+
+memory %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=1), shape=18, size=0.5, show_guide = FALSE) +
   theme_classic() +
-  labs(x=" ", y=" ") +
-  lims(y=c(0,1)) +
-  ggtitle(TeX("$M_{t=1}$")) -> b1
+  theme(legend.title = element_blank()) +
+  ggtitle("Probabilistic memory") +
+  labs(x="State", y="p(state)") +
+  scale_fill_manual(values = c("grey", "black"), labels = c(TeX("M_1"), TeX("M_0"))) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) -> mem_state
 
-memoryInf %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward)) +
-  geom_bar(stat="identity", width=0.8) +
+memory %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=1), shape=18, size=0.5, show_guide = FALSE) +
   theme_classic() +
-  ggtitle(TeX("$M_{t=100}$")) +
-  labs(x="S", y=" ") +
-  lims(y=c(0,1)) -> b2
+  theme(legend.position = "none") +
+  ggtitle("Bandit memory") +
+  labs(x="Arm", y="p(1)") +
+  scale_fill_manual(values = c("grey", "black")) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) -> mem_arm
 
-ylabel <- textGrob(TeX("$P_R$"), rot=90, vjust=1, gp = gpar(fontsize = 12))
+# bandit %>% 
+#   filter(env == "BanditOneHigh10-v0") %>% select(-env) -> banditonehigh10
+# 
+# # Simulate a learned memory
+# num_trials <- 10
+# memoryInf <- NULL
+# for (arm in 1:10) {
+#   # sample based on 'BanditOneHigh10'
+#   Nr <- rbinom(1, num_trials, banditonehigh10$p_reward[arm])
+#   p_reward = Nr / num_trials
+#   row <- c(arm, p_reward)
+#   
+#   memoryInf <- rbind(memoryInf, row)
+# }
+# memoryInf <- as.data.frame(memoryInf)
+# colnames(memoryInf) <- c("arms", "p_reward")
 
-plot_grid <- rbind(
-  c(3, 1, 1, 1, 1, 1),
-  c(3, 1, 1, 1, 1, 1),
-  c(3, 2, 2, 2, 2, 2),
-  c(3, 2, 2, 2, 2, 2))
-
-sub3 <- grid.arrange(b1, b2, ylabel, layout_matrix=plot_grid)
+grid.arrange(mem_state, mem_arm, nrow=2)
 ```
 
 ## Subfig - exploration
@@ -518,3 +524,8 @@ grid.arrange(bandit1, bandit2, bandit3, bandit4,
              task1, perf1,
              layout_matrix=plot_grid)
 ```
+
+# Supplementary 
+
+## Sfig - value dynamics 
+## Sfig - exploration vis
