@@ -588,7 +588,7 @@ value_traces %>%
   ggplot(aes(x=episodes, y=log(values_R))) +
   geom_point(size=0.01, color="black") + 
   geom_point(aes(x=episodes, y=log(values_E)), size=0.1, color="darkorchid4") +
-  ggtitle("Exploration dynamics") +
+  ggtitle("Exploration dynamics (eta)") +
   labs(x="Episode", y="log(Value)") +
   theme_classic() -> ex1
 
