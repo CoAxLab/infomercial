@@ -1080,7 +1080,7 @@ exp67:
 
 # ----------------------------------------------------------------------------
 # 4-19-2019
-# Made a variation of tune_replicator where the size of the
+# Made a variation of replicator where the size of the
 # pertrubation is tuned by meta-learning. 
 # Let's try that here... on a repeat of exp67
 # Other changes:
@@ -1108,7 +1108,7 @@ exp68:
 
 # ----------------------------------------------------------------------------
 # 4-19-2019
-# meta_learning option in tune_replicator merged to master....
+# meta_learning option in replicator merged to master....
 #
 # In the process, a major issue w/ replicator was found.
 
@@ -1117,7 +1117,7 @@ exp68:
 # Author: Erik Peterson <Erik.Exists@gmail.com>
 # Date:   Fri Apr 19 14:34:53 2019 -0700
 
-#     MAJOR FIX: there were two bugs in tune_replicator
+#     MAJOR FIX: there were two bugs in replicator
     
 #     1. configs was not getting masked when having children
 #     2. childrens params were getting wrongly copied due to a copy-by-ref issue.
@@ -2518,7 +2518,7 @@ exp172:
 
 # BanditOneHigh10
 exp173:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp173 \
+	tune_bandit.py replicator $(DATA_PATH)/exp173 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
         --num_iterations=10 \
@@ -2532,7 +2532,7 @@ exp173:
 
 # BanditTwoHigh10
 exp174:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp174 \
+	tune_bandit.py replicator $(DATA_PATH)/exp174 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditTwoHigh10-v0 \
         --num_iterations=10 \
@@ -2546,7 +2546,7 @@ exp174:
 
 # BanditUniform121
 exp175:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp175 \
+	tune_bandit.py replicator $(DATA_PATH)/exp175 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_iterations=10 \
@@ -2560,7 +2560,7 @@ exp175:
 
 # BanditHardAndSparse10
 exp176:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp176 \
+	tune_bandit.py replicator $(DATA_PATH)/exp176 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -2577,7 +2577,7 @@ exp176:
 # beta
 # BanditOneHigh10
 exp177:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp177 \
+	tune_bandit.py replicator $(DATA_PATH)/exp177 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
         --num_iterations=10 \
@@ -2591,7 +2591,7 @@ exp177:
 
 # BanditTwoHigh10
 exp178:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp178 \
+	tune_bandit.py replicator $(DATA_PATH)/exp178 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditTwoHigh10-v0 \
         --num_iterations=10 \
@@ -2605,7 +2605,7 @@ exp178:
 
 # BanditUniform121
 exp179:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp179 \
+	tune_bandit.py replicator $(DATA_PATH)/exp179 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_iterations=10 \
@@ -2619,7 +2619,7 @@ exp179:
 
 # BanditHardAndSparse10
 exp180:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp180 \
+	tune_bandit.py replicator $(DATA_PATH)/exp180 \
 		--exp_name='beta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -2635,7 +2635,7 @@ exp180:
 # softbeta
 # BanditOneHigh10
 exp181:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp181 \
+	tune_bandit.py replicator $(DATA_PATH)/exp181 \
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
         --num_iterations=10 \
@@ -2650,7 +2650,7 @@ exp181:
 
 # BanditTwoHigh10
 exp182:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp182 \
+	tune_bandit.py replicator $(DATA_PATH)/exp182 \
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditTwoHigh10-v0 \
         --num_iterations=10 \
@@ -2665,7 +2665,7 @@ exp182:
 
 # BanditUniform121
 exp183:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp183 \
+	tune_bandit.py replicator $(DATA_PATH)/exp183 \
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_iterations=10 \
@@ -2680,7 +2680,7 @@ exp183:
 
 # BanditHardAndSparse10
 exp184:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp184 \
+	tune_bandit.py replicator $(DATA_PATH)/exp184 \
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -2697,7 +2697,7 @@ exp184:
 # ep:
 # BanditOneHigh10
 exp185:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp185 \
+	tune_bandit.py replicator $(DATA_PATH)/exp185 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh10-v0 \
 		--num_iterations=10 \
@@ -2711,7 +2711,7 @@ exp185:
 
 # BanditTwoHigh10
 exp186:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp186 \
+	tune_bandit.py replicator $(DATA_PATH)/exp186 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditTwoHigh10-v0 \
         --num_iterations=10 \
@@ -2725,7 +2725,7 @@ exp186:
 
 # BanditUniform121
 exp187:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp187 \
+	tune_bandit.py replicator $(DATA_PATH)/exp187 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_iterations=10 \
@@ -2739,7 +2739,7 @@ exp187:
 
 # BanditHardAndSparse10 - full ep
 exp188:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp188 \
+	tune_bandit.py replicator $(DATA_PATH)/exp188 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -2753,7 +2753,7 @@ exp188:
 
 # BanditHardAndSparse10 - select ep
 exp189:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp189 \
+	tune_bandit.py replicator $(DATA_PATH)/exp189 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
@@ -2769,7 +2769,7 @@ exp189:
 # Annealed ep:
 # BanditOneHigh10
 exp190:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp190 \
+	tune_bandit.py replicator $(DATA_PATH)/exp190 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh10-v0 \
 		--num_iterations=10 \
@@ -2784,7 +2784,7 @@ exp190:
 
 # BanditTwoHigh10
 exp191:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp191 \
+	tune_bandit.py replicator $(DATA_PATH)/exp191 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditTwoHigh10-v0 \
         --num_iterations=10 \
@@ -2799,7 +2799,7 @@ exp191:
 
 # BanditUniform121
 exp192:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp192 \
+	tune_bandit.py replicator $(DATA_PATH)/exp192 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_iterations=10 \
@@ -2814,7 +2814,7 @@ exp192:
 
 # BanditHardAndSparse10
 exp193:
-	tune_bandit.py tune_replicator $(DATA_PATH)/exp193 \
+	tune_bandit.py replicator $(DATA_PATH)/exp193 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_iterations=10 \
