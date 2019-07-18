@@ -2488,3 +2488,341 @@ exp172:
 			--joblog '$(DATA_PATH)/exp172.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp17_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+
+###########################################################################
+###########################################################################
+###########################################################################
+###########################################################################
+###########################################################################
+# 7-18-2019
+#
+# Param opt using replicator dynammics.
+#
+# Use same starting params as random search.
+	# exp_name='beta_bandit',
+	# env_name='BanditOneHigh10-v0',
+	# num_iterations=2,
+	# num_episodes=2000,
+	# num_replicators=10,
+	# num_processes=1,
+	# perturbation=0.1,
+	# metric="total_R",
+	# verbose=False,
+	# seed_value=None,
+	# **config_kwargs)
+
+# -
+# eta
+
+# BanditOneHigh10
+exp173:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp173 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+# BanditTwoHigh10
+exp174:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp174 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=200 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+# BanditUniform121
+exp175:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp175 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_iterations=10 \
+        --num_episodes=60500 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-6, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+# BanditHardAndSparse10
+exp176:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp176 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-10, 1e-08)' \
+		--lr_R='(0.000001, 0.4)' 
+
+
+# -
+# beta
+# BanditOneHigh10
+exp177:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp177 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-2, 3)' \
+		--lr_R='(1e-5, 0.2)' 
+
+# BanditTwoHigh10
+exp178:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp178 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=200 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-2, 3)' \
+		--lr_R='(1e-5, 0.2)' 
+
+# BanditUniform121
+exp179:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp179 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_iterations=10 \
+        --num_episodes=60500 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-2, 3)' \
+		--lr_R='(1e-5, 0.2)' 
+
+# BanditHardAndSparse10
+exp180:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp180 \
+		--exp_name='beta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-2, 3)' \
+		--lr_R='(1e-5, 0.2)' 
+
+# -
+# softbeta
+# BanditOneHigh10
+exp181:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp181 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+# BanditTwoHigh10
+exp182:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp182 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=200 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+# BanditUniform121
+exp183:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp183 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_iterations=10 \
+        --num_episodes=60500 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+# BanditHardAndSparse10
+exp184:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp184 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 6)'
+	
+# -
+# ep:
+# BanditOneHigh10
+exp185:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp185 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=10 \
+        --num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditTwoHigh10
+exp186:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp186 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=200 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditUniform121
+exp187:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp187 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_iterations=10 \
+        --num_episodes=60500 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditHardAndSparse10 - full ep
+exp188:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp188 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.00005, 0.0005)' 
+
+# BanditHardAndSparse10 - select ep
+exp189:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp189 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.401, 0.5)' \
+		--lr_R='(0.00005, 0.0005)' 
+
+# -
+# Annealed ep:
+# BanditOneHigh10
+exp190:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp190 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=10 \
+        --num_episodes=100 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditTwoHigh10
+exp191:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp191 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditTwoHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=200 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditUniform121
+exp192:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp192 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_iterations=10 \
+        --num_episodes=60500 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# BanditHardAndSparse10
+exp193:
+	tune_bandit.py tune_replicator $(DATA_PATH)/exp193 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50000 \
+		--num_replicators=400 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.401, 0.5)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.00005, 0.0005)' 
