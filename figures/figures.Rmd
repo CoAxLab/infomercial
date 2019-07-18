@@ -137,6 +137,9 @@ sub2 <- grid.arrange(t1)
 
 ## Subfig - prob memory
 ```{r, fig.width=1.2, fig.height=1.4}
+# Set seed for consisten Fig.
+set.seed(3124)
+
 # Build an empty memory
 ps <- runif(10)
 ps <- ps / sum(ps)
@@ -199,6 +202,9 @@ sub1 <- grid.arrange(mem_state, mem_arm, layout_matrix=plot_grid)
 ```
 ## Subfig - KL scaling
 ```{r, fig.width=1}
+# Set seed for consisten Fig.
+set.seed(3124)
+
 # Build an empty memory
 ps <- runif(10)
 ps <- ps / sum(ps)
@@ -238,6 +244,9 @@ print(sub3)
 ```
 ## Subfig - specificity
 ```{r, fig.width=2}
+# Set seed for consisten Fig.
+set.seed(3124)
+
 # Build an empty memory
 ps <- runif(10)
 ps <- ps / sum(ps)
