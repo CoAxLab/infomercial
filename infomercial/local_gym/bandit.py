@@ -236,15 +236,15 @@ class BanditOneHigh121(BanditEnv):
 
 
 class BanditTwoHigh10(BanditEnv):
-    """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
+    """A (..., 0.60, ..., 0.80. 0.2, 0.2, ...) bandit."""
 
     def __init__(self):
-        self.best = [7, 3]
+        self.best = [7]
         self.num_arms = 10
 
         p_dist = [0.2] * self.num_arms
-        p_dist[self.best[0]] = 0.40
-        p_dist[self.best[1]] = 0.80
+        p_dist[3] = 0.60
+        p_dist[self.best[0]] = 0.80
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
@@ -253,12 +253,12 @@ class BanditTwoHigh121(BanditEnv):
     """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
 
     def __init__(self):
-        self.best = [26, 71]
+        self.best = [71]
         self.num_arms = 121
 
         p_dist = [0.2] * self.num_arms
-        p_dist[self.best[0]] = 0.40
-        p_dist[self.best[1]] = 0.80
+        p_dist[26] = 0.60
+        p_dist[self.best[0]] = 0.80
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
@@ -280,12 +280,12 @@ class BanditTwoHigh1000(BanditEnv):
     """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
 
     def __init__(self):
-        self.best = [526, 731]
+        self.best = [731]
         self.num_arms = 1000
 
         p_dist = [0.2] * self.num_arms
-        p_dist[self.best[0]] = 0.40
-        p_dist[self.best[1]] = 0.80
+        p_dist[526] = 0.60
+        p_dist[self.best[0]] = 0.80
         r_dist = [1] * self.num_arms
         BanditEnv.__init__(self, p_dist=p_dist, r_dist=r_dist)
 
