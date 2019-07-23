@@ -2862,7 +2862,7 @@ exp197:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp197.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp197_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=HBanditardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp197_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # beta:
@@ -2892,7 +2892,7 @@ exp201:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp201.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp201_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp201_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # softbeta
@@ -2922,7 +2922,7 @@ exp205:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp205.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp205_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp205_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # ep
@@ -2953,7 +2953,7 @@ exp209:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp209.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'episilon_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp209_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'episilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp209_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # -
 # anneal-ep
@@ -2984,5 +2984,5 @@ exp213:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp213.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'episilon_bandit.py --env_name=HardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp213_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'episilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp213_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 			
