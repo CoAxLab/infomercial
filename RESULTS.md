@@ -88,7 +88,7 @@ Summarize result for 4 agents, over 4 prototypical bandit tasks.
 ## BanditUniform121
 - meta: {'tie_threshold': 0.00355, 'lr_R': 0.147, 'total_R': 48358.0}
 
-- beta: {'beta': 0.05683582352190725, 'lr_R': 0.1411684862500652, 'total_R': 48381.0}
+- beta: {'beta': 0.056, 'lr_R': 0.141, 'total_R': 48381.0}
 
 - softbeta: {'beta': 0.125, 'lr_R': 0.174, 'temp': 0.0811, 'total_R': 37218.0}
 
