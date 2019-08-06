@@ -11,6 +11,8 @@ library(gridExtra)
 library(grid)
 library(readr)
 library(latex2exp)
+library(MASS) 
+library(scales)
 
 options(scipen=1000000)
 
@@ -119,7 +121,7 @@ total$agents <- factor(total$agents,
 critic$agents <- factor(critic$agents, 
                         levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 
-paper_names <- c("Dual value", "Infomax (det.)", "Infomax", "E-greedy", "Anneal-E", "Random")
+paper_names <- c("Dual value", "Bayesian (det.)", "Bayesian", "E-greedy", "Anneal-E", "Random")
 total$agents <- recode(total$agents, 
                        eta=paper_names[1], 
                        beta=paper_names[2], 
@@ -129,7 +131,7 @@ total$agents <- recode(total$agents,
                        random=paper_names[6])
 
 # Drop Beta det.
-total <- filter(total, agents != "Infomax (det.)")
+total <- filter(total, agents != "Bayesian (det.)")
 rm(tmp)
 ```
 
@@ -149,8 +151,8 @@ bandit %>%
   geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.95) +
   theme_classic() +
   geom_text(x=10, y=1, label="I") +
-  theme(axis.text.x=element_blank(), plot.tag = element_text(size=14, face="bold")) + #, axis.ticks.x = element_blank()) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  scale_x_discrete(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
   labs(x=" ", y=" ", tag="A") -> bandit1
 
 bandit %>% 
@@ -160,8 +162,9 @@ bandit %>%
   geom_point(aes(x=4, y=0.9), color="red", size=0.5, alpha=0.95) +
   theme_classic() +
   geom_text(x=10, y=1, label="II") +
-  theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
+  # theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  scale_x_discrete(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
   labs(x=" ", y=" ", tag="  ") -> bandit2
 
 bandit %>% 
@@ -171,8 +174,9 @@ bandit %>%
   geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.95) +
   theme_classic() +
   geom_text(x=10, y=1, label="III") +
-  theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
+  # theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  scale_x_discrete(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
   labs(x=" ", y=" ", tag="  ") -> bandit3
 
 bandit %>% 
@@ -182,8 +186,9 @@ bandit %>%
   geom_point(aes(x=55, y=0.9), color="red", size=0.5, alpha=0.95) +
   theme_classic() +
   geom_text(x=115, y=1, label="IV") +
-  theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
+  # theme(axis.text.x=element_blank()) + #, axis.ticks.x = element_blank()) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  scale_x_discrete(breaks=seq(1, 121), labels=c(1, rep(" ", 119), 121)) +
   labs(x="Arm", y=" ", tag="  ") -> bandit4
 
 
@@ -197,219 +202,6 @@ row3 <- textGrob("Random 121", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, font
 row4 <- textGrob("Sparse", hjust=0, vjust=-.5, gp = gpar(fontsize = 10, fontface="bold"))
 
 sub1 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, nrow=4)
-```
-
-## Subfig - prob memory
-```{r, fig.width=1.2, fig.height=1.4, message=FALSE}
-# Set seed for consisten Fig.
-set.seed(3124)
-
-# Build an empty memory
-ps <- runif(10)
-ps <- ps / sum(ps)
-
-memory0 <- data.frame(arms=1:10, p_reward=ps)
-memory0$memory <- rep("t", nrow(memory0))
-
-
-ps[7] <- ps[7]+.5
-ps <- ps / sum(ps)
-memory1 <- data.frame(arms=1:10, p_reward=ps)
-memory1$memory <- rep("t+1", nrow(memory1))
-
-memory <- full_join(memory0, memory1)
-
-memory %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
-  geom_bar(stat="identity", width=0.6, position = "dodge") +
-  geom_point(aes(x=7, y=0.5), shape=18, size=0.4, show.legend = FALSE) +
-  theme_classic() +
-  theme(legend.title = element_blank(), plot.tag = element_text(size=14, face="bold")) +
-  ggtitle("Probabilistic") +
-  labs(x="State", y="State prob.", tag="B") +
-  scale_fill_manual(values = c("grey", "black"), labels = c(TeX("$M_t$"), TeX("$M_{t+1}$"))) +
-  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> mem_state
-
-memory %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
-  geom_bar(stat="identity", width=0.6, position = "dodge") +
-  geom_point(aes(x=7, y=0.5), shape=18, size=0.4, show.legend = FALSE) +
-  theme_classic() +
-  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
-  ggtitle("Bandit") +
-  labs(x="Arm", y="Reward prob.", tag="C") +
-  scale_fill_manual(values = c("grey", "darkorchid4")) +
-  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> mem_arm
-
-# bandit %>% 
-#   filter(env == "BanditOneHigh10-v0") %>% select(-env) -> banditonehigh10
-# 
-# # Simulate a learned memory
-# num_trials <- 10
-# memoryInf <- NULL
-# for (arm in 1:10) {
-#   # sample based on 'BanditOneHigh10'
-#   Nr <- rbinom(1, num_trials, banditonehigh10$p_reward[arm])
-#   p_reward = Nr / num_trials
-#   row <- c(arm, p_reward)
-#   
-#   memoryInf <- rbind(memoryInf, row)
-# }
-# memoryInf <- as.data.frame(memoryInf)
-# colnames(memoryInf) <- c("arms", "p_reward")
-
-plot_grid <- rbind(
-  c(1, 1, 1, 1),
-  c(2, 2, 2, NA)
-)
-sub2 <- grid.arrange(mem_state, mem_arm, layout_matrix=plot_grid)
-```
-## Subfig - math
-```{r, fig.width=1.2, fig.height=0.4}
-t1 <- textGrob(TeX("KL = \\sum_{a=1}^K M_{t+1}(a) log \\frac{M_t(a)}{M_{t+1}(a)} $"), 
-               just = "right", hjust = 0.5)
-
-sub3 <- grid.arrange(t1)
-```
-
-
-## Subfig - KL scaling
-```{r, fig.width=1}
-# Set seed for consisten Fig.
-set.seed(3124)
-
-# Build an empty memory
-ps <- runif(10)
-ps <- ps / sum(ps)
-
-memory0 <- data.frame(arms=1:10, p_reward=ps)
-memory0$memory <- rep("M_0", nrow(memory0))
-
-del_p <- 0.1
-n_samples <- 10000
-Es <- NULL
-dPs <- NULL
-for(t in 1:n_samples){
-  qs <- ps
-  qs[7] <- qs[7] + del_p
-  qs <- qs / sum(qs)  
-  
-  E <- kl_divergence(qs, ps)
-  
-  Es <- c(Es, E)
-  dPs <- c(dPs, sum(abs(qs - ps)))
-  
-  ps <- qs
-}
-
-flux <- data.frame(E=Es, dP=dPs)
-
-xmax <- max(flux$dP)
-
-flux %>% 
-  ggplot(aes(dP, E)) +
-  geom_line(size=1, color="darkorchid4") +
-  theme_classic() +
-  theme(plot.tag = element_text(size=14, face="bold")) +
-  # ggtitle("Probablistic information value") +
-  labs(x=TeX("Total change in probability, $|\\Delta P|$"), y="KL", tag="D") +
-  lims(x=c(0, xmax)) -> sub4
-```
-## Subfig - specificity
-```{r, fig.width=2}
-# Set seed for consisten Fig.
-set.seed(3124)
-
-# Build an empty memory
-ps <- runif(10)
-ps <- ps / sum(ps)
-
-memory0 <- data.frame(arms=1:10, p_reward=ps)
-memory0$memory <- rep("initial", nrow(memory0))
-
-# global
-ps_g <- ps
-ps_g[7] <- ps_g[7]+ps[8]
-ps_g <- ps_g / sum(ps_g)
-
-global <- data.frame(arms=1:10, p_reward=ps_g)
-global$memory <- rep("global", nrow(global))
-global <- full_join(memory0, global)
-global$memory <- factor(global$memory, levels=c("initial", "global"))
-                           
-# local
-ps_l <- ps
-ps_l[7] <- ps_l[7]+ps[8]
-ps_l[8] <- 0.0001
-ps_1 <- ps_l / sum(ps_l)
-
-local <- data.frame(arms=1:10, p_reward=ps_l)
-local$memory <- rep("local", nrow(local))
-local <- full_join(memory0, local)
-local$memory <- factor(local$memory, levels=c("initial", "local"))
-
-
-Eg <- kl_divergence(
-  filter(global, memory == "global")$p_reward,
-  filter(global, memory == "initial")$p_reward)
-
-El <- kl_divergence(
-  filter(local, memory == "local")$p_reward,
-  filter(local, memory == "initial")$p_reward)
-
-Edf <- data.frame(memory=c("local", "global"), E=c(El, Eg))
-
-global %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
-  geom_bar(stat="identity", width=0.6, position = "dodge") +
-  geom_point(aes(x=7, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
-  theme_classic() +
-  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
-  ggtitle("Global change") +
-  labs(x=" ", y="Reward prob.", tag="E") +
-  scale_fill_manual(values = c("grey", "mediumpurple1")) +
-  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> pg
-
-local %>% 
-  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
-  geom_bar(stat="identity", width=0.6, position = "dodge") +
-  geom_point(aes(x=7, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
-  geom_point(aes(x=8, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
-  theme_classic() +
-  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
-  ggtitle("Local change") +
-  labs(x="Arm", y="Reward prob.", tag="F") +
-  scale_fill_manual(values = c("grey", "mediumpurple4")) +
-  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> pl
-
-Edf %>% 
-  ggplot(aes(x=memory, y=E, fill=memory)) +
-  geom_bar(stat="identity", width=0.6) +
-  theme_classic() +
-  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
-  scale_fill_manual(values = c("mediumpurple1", "mediumpurple4")) +
-  labs(y="KL", x=" ", tag="G") -> pe
-
-plot_grid <- rbind(
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(1, 3),
-  c(NA, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3),
-  c(2, 3)
-)
-sub5 <- grid.arrange(pg, pl, pe, layout_matrix=plot_grid)
 ```
 
 ## Subfig - regret
@@ -439,10 +231,10 @@ total %>%
          plot.tag = element_text(size=14, face="bold"),
         # axis.text.y=element_blank(),
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
-  labs(x=" ", y=" ", tag="H") +
+  labs(x=" ", y=" ", tag="B") +
   # scale_y_continuous(breaks=c(0, 125, 250), limits = c(0, 300)) +
   # scale_y_continuous(breaks=c(0, 10, 100, 1000), limits = c(0, 1000)) +
-  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  geom_hline(aes(yintercept=0), color="black", size=.2) +
   scale_color_manual(
     "Agent",
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
@@ -470,7 +262,7 @@ total %>%
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
   # scale_y_continuous(breaks=c(0, 100, 200), limits = c(0, 250)) +
   # scale_y_continuous(breaks=c(0, 10, 100, 1000), limits = c(0, 1000)) +
-  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  geom_hline(aes(yintercept=0), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   labs(x=" ", y=" ", tag="  ") +
@@ -498,7 +290,7 @@ total %>%
   labs(x=" ", y=" ", tag="  ") +
   # scale_y_continuous(breaks=c(0, 2500, 5000), limits = c(0, 5500)) +
   # scale_y_continuous(breaks=c(0, 10, 100, 1000, 10000), limits = c(0, 10000)) +
-  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  geom_hline(aes(yintercept=0), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   scale_y_log10(
@@ -506,9 +298,6 @@ total %>%
     labels = trans_format("log10", math_format(10^.x))
   ) +
   coord_flip() -> regret3
-
-library(MASS) # to access Animals data sets
-library(scales) # to access break formatting functions
 
 total %>% 
   filter(env == "BanditUniform121-v0") %>% 
@@ -527,7 +316,7 @@ total %>%
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x=" ", y="Total regret", tag="  ") +
   # scale_y_continuous(breaks=c(0, 30000, 60000), limits = c(0, 61000)) +
-  geom_hline(aes(yintercept=min(M)), color="black", size=.2) +
+  geom_hline(aes(yintercept=0), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   scale_y_log10(
@@ -562,7 +351,7 @@ total %>%
         axis.text.y=element_blank(),
         plot.tag = element_text(size=14, face="bold"),
         plot.margin = margin(.1, .4, .1, .1, "cm")) +
-  labs(x=" ", y=" ", tag="I") +
+  labs(x=" ", y=" ", tag="C") +
   # scale_y_continuous(breaks=c(0, 200, 400), limits = c(0, 450)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
@@ -657,152 +446,284 @@ grid.arrange(reward1, reward2, reward3, reward4, nrow=4)
 ```
 
 ## Build
-```{r, fig.width=6, fig.height=4}
+```{r, fig.width=6, fig.height=3.5}
 head1 <- textGrob("Multi-armed bandits", vjust=0, gp = gpar(fontsize = 13))
-head3 <- textGrob("Memory, specificity, and value", vjust=0, gp = gpar(fontsize = 13))
-head2 <- textGrob("Probabilistic information value", vjust=0, gp = gpar(fontsize = 13))
-head4 <- textGrob("Memory models", vjust=0, gp = gpar(fontsize = 13))
-head5 <- textGrob("Agent performance", vjust=0, gp = gpar(fontsize = 13))
-
-y1 <- textGrob("Reward probability", vjust=3, rot=90, gp =  gpar(fontsize = 12))
+head2 <- textGrob("Agent performance", vjust=0, gp = gpar(fontsize = 13))
+y1 <- textGrob("Reward probability", vjust=1, rot=90, gp =  gpar(fontsize = 12))
 
 plot_grid <- rbind(
-  c(NA, 9, 9, 9, 9,NA,NA,NA,NA,13,13,13,13,NA, NA, NA, 22, 22, 22, 22, 22, 22, 22),
-  c(12, 1, 1, 1,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 1, 1, 1,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 1, 1, 1,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 1, 1, 1,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 2, 2, 2,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 2, 2, 2,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 2, 2, 2,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 14, 14, 14, 14, 18, 18, 18),
-  c(12, 2, 2, 2,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 3, 3, 3,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 3, 3, 3,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 3, 3, 3,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 3, 3, 3,NA,NA,NA,NA,NA,5, 5, 5, 5,  5, 5,  NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4,  4, NA, NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4,  4, NA, NA, 15, 15, 15, 15, 19, 19, 19),
-  c(12, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4,  4, NA, NA, 16, 16, 16, 16, 20, 20, 20),
-  c(12, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4,  4, NA, NA, 16, 16, 16, 16, 20, 20, 20),
-  c(12, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4,  4, NA, NA, 16, 16, 16, 16, 20, 20, 20),
-  c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,  NA, 16, 16, 16, 16, 20, 20, 20),
-  c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,  NA, 16, 16, 16, 16, 20, 20, 20),
-  c(10,10,10,10,10,10,10,NA,11,11,11,11,11,11,11,  NA, 16, 16, 16, 16, 20, 20, 20),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 16, 16, 16, 16, 20, 20, 20),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6,  6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6,  6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6,  6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, 17, 17, 17, 17, 21, 21, 21),
-  c(6 , 6, 6, 6, 6, 6, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  # c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  # c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA),
-  c(7 , 7, 7, 7, 7, 7, NA,8, 8, 8, 8, 8, 8, 8, 8,  NA, NA, NA, NA, NA, NA, NA, NA)
+  c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NA, 7, 7, 7, 7, 7, 7, 7,  7,  7,  7,  7,  7),
+  c(2, 3, 3, 3, 3, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 8, 8, 8, 8, 8, 8, 8, 12, 12, 12, 12, 12),
+  c(2, 3, 3, 3, 3, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 8, 8, 8, 8, 8, 8, 8, 12, 12, 12, 12, 12),
+  c(2, 3, 3, 3, 3, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 8, 8, 8, 8, 8, 8, 8, 12, 12, 12, 12, 12),
+  c(2, 3, 3, 3, 3, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 8, 8, 8, 8, 8, 8, 8, 12, 12, 12, 12, 12),
+  c(2, 4, 4, 4, 4, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 13, 13),
+  c(2, 4, 4, 4, 4, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 13, 13),
+  c(2, 4, 4, 4, 4, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 13, 13),
+  c(2, 4, 4, 4, 4, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 13, 13),
+  c(2, 5, 5, 5, 5, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 10,10,10,10,10,10,10, 14, 14, 14, 14, 14),
+  c(2, 5, 5, 5, 5, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 10,10,10,10,10,10,10, 14, 14, 14, 14, 14),
+  c(2, 5, 5, 5, 5, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 10,10,10,10,10,10,10, 14, 14, 14, 14, 14),
+  c(2, 5, 5, 5, 5, NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA, 10,10,10,10,10,10,10, 14, 14, 14, 14, 14),
+  c(2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 11,11,11,11,11,11,11, 15, 15, 15, 15, 15),
+  c(2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 11,11,11,11,11,11,11, 15, 15, 15, 15, 15),
+  c(2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 11,11,11,11,11,11,11, 15, 15, 15, 15, 15),
+  c(2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 11,11,11,11,11,11,11, 15, 15, 15, 15, 15)
 )
-
-fig2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, # 1 2 3 4
-                     sub2, # 5
-                     sub4, sub3, # 6 7
-                     sub5, # 8
-                     head1, head2, head3, y1, # 9 10 11 12
-                     head4, # 13
-                     regret1, regret2, regret3, regret4, # 14 15 16 17 
-                     reward1, reward2, reward3, reward4, # 18 19 20 21
-                     head5, # 22
+fig2 <- grid.arrange(head1, # 1
+                     y1,    # 2
+                     bandit1, bandit2, bandit3, bandit4,  # 3  4  5  6
+                     head2, # 7
+                     regret1, regret2, regret3, regret4,  # 8  9  10 11
+                     reward1, reward2, reward3, reward4,  # 12 13 14 15
                      layout_matrix=plot_grid)
 ggsave("img/fig2.png", fig2, width=6*2, height=4*2)
 ```
 
 # Supplementary 
-## Subfig - exploration dynamics
-```{r, eval=FALSE, fig.width=2, fig.height=3}
-# ------------------------------------------------------------------------
+## Subfig - prob memory
+```{r, fig.width=1.5, fig.height=2, message=FALSE}
+# Set seed for consisten Fig.
+set.seed(3124)
+
+# Build an empty memory
+ps <- runif(10)
+ps <- ps / sum(ps)
+
+memory0 <- data.frame(arms=1:10, p_reward=ps)
+memory0$memory <- rep("t", nrow(memory0))
 
 
-# Exploration panels
+ps[7] <- ps[7]+.5
+ps <- ps / sum(ps)
+memory1 <- data.frame(arms=1:10, p_reward=ps)
+memory1$memory <- rep("t+1", nrow(memory1))
 
-# eta, softbeta, ep
-example_traces %>% 
-  filter(env == "BanditOneHigh10-v0") %>% 
-  filter(agents %in% c("eta", "epsilon")) %>% 
-  filter(n==3, episodes < 500/2) %>% 
-  ggplot(aes(x=episodes, as.factor(arms))) +
-  geom_point(size=.001, alpha=0.4) +
-  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.9) +
-  facet_grid(agents~.) + 
-  labs(y="Arm") +
-  theme_classic() + 
-  theme(
-    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
-    strip.background = element_blank(),
-    strip.text.y = element_text(angle=0)
-  ) -> explore1
+memory <- full_join(memory0, memory1)
 
-example_traces %>% 
-  filter(env == "BanditTwoHigh10-v0") %>% 
-  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
-  filter(n==4, episodes < 500/2) %>% 
-  ggplot(aes(x=episodes, as.factor(arms))) +
-  geom_point(size=.001, alpha=0.4) +
-  geom_hline(aes(yintercept=4), color="red", size=.1, alpha=0.9) +
-  facet_grid(agents~.) + 
-  labs(y="Arm") +
-  theme_classic() + 
-  theme(
-    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
-    strip.background = element_blank(),
-    strip.text.y = element_text(angle=0)
-  ) -> explore2
+memory %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=0.5), shape=18, size=0.4, show.legend = FALSE) +
+  theme_classic() +
+  theme(legend.title = element_blank(), plot.tag = element_text(size=14, face="bold")) +
+  ggtitle("Probabilistic") +
+  labs(x="State", y="State prob.", tag="A") +
+  scale_fill_manual(values = c("grey", "black"), labels = c(TeX("$M_t$"), TeX("$M_{t+1}$"))) +
+  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> mem_state
 
-example_traces %>% 
-  filter(env == "BanditHardAndSparse10-v0") %>% 
-  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
-  filter(n==2, episodes < 100000/2) %>% 
-  ggplot(aes(x=episodes, as.factor(arms))) +
-  geom_point(size=.001, alpha=0.4) +
-  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.9) +
-  facet_grid(agents~.) + 
-  labs(y="Arm") +
-  theme_classic() + 
-  theme(
-    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
-    strip.background = element_blank(),
-    strip.text.y = element_text(angle=0)
-  ) -> explore3
+memory %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=0.5), shape=18, size=0.4, show.legend = FALSE) +
+  theme_classic() +
+  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
+  ggtitle("Bandit") +
+  labs(x="Arm", y="Reward prob.", tag="B") +
+  scale_fill_manual(values = c("grey", "darkorchid4")) +
+  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> mem_arm
 
-example_traces %>% 
-  filter(env == "BanditUniform121-v0") %>% 
-  filter(agents %in% c("eta", "softbeta", "epsilon")) %>% 
-  filter(n==12, episodes < 120000/2) %>% 
-  ggplot(aes(x=episodes, as.factor(arms))) +
-  geom_point(size=.001, alpha=0.4) +
-  geom_hline(aes(yintercept=55), color="red", size=.1, alpha=0.9) +
-  facet_grid(agents~.) + 
-  labs(y="Arm") +
-  theme_classic() + 
-  theme(
-    axis.text.y=element_blank(), axis.ticks.y = element_blank(),
-    strip.background = element_blank(),
-    strip.text.y = element_text(angle=0)
-  ) -> explore4
+# bandit %>% 
+#   filter(env == "BanditOneHigh10-v0") %>% select(-env) -> banditonehigh10
+# 
+# # Simulate a learned memory
+# num_trials <- 10
+# memoryInf <- NULL
+# for (arm in 1:10) {
+#   # sample based on 'BanditOneHigh10'
+#   Nr <- rbinom(1, num_trials, banditonehigh10$p_reward[arm])
+#   p_reward = Nr / num_trials
+#   row <- c(arm, p_reward)
+#   
+#   memoryInf <- rbind(memoryInf, row)
+# }
+# memoryInf <- as.data.frame(memoryInf)
+# colnames(memoryInf) <- c("arms", "p_reward")
 
-grid.arrange(explore1, explore2, explore3, explore4, nrow=4)
+head1 <- textGrob("Memory models", vjust=1, gp = gpar(fontsize = 13))
+
+plot_grid <- rbind(
+  c(3, 3, 3, 3),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(1, 1, 1, 1),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA),
+  c(2, 2, 2, NA)
+)
+subfig1 <- grid.arrange(mem_state, mem_arm, head1, layout_matrix=plot_grid)
+ggsave("img/subfig1.png", subfig1, width=1.5*2, height=2*2)
 ```
 
+
+## Subfig - KL scaling with total P
+```{r, fig.width=1.3, fig.height=1}
+# Set seed for consisten Fig.
+set.seed(3124)
+
+# Build an empty memory
+ps <- runif(10)
+ps <- ps / sum(ps)
+
+memory0 <- data.frame(arms=1:10, p_reward=ps)
+memory0$memory <- rep("M_0", nrow(memory0))
+
+del_p <- 0.1
+n_samples <- 10000
+Es <- NULL
+dPs <- NULL
+for(t in 1:n_samples){
+  qs <- ps
+  qs[7] <- qs[7] + del_p
+  qs <- qs / sum(qs)  
+  
+  E <- kl_divergence(qs, ps)
+  
+  Es <- c(Es, E)
+  dPs <- c(dPs, sum(abs(qs - ps)))
+  
+  ps <- qs
+}
+
+flux <- data.frame(E=Es, dP=dPs)
+
+xmax <- max(flux$dP)
+
+flux %>% 
+  ggplot(aes(dP, E)) +
+  geom_line(size=1, color="darkorchid4") +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  # ggtitle("Probablistic information value") +
+  labs(x="Total change in probability", y="KL") -> subfig2
+
+ggsave("img/subfig2.png", subfig2, width=1.3*2, height=1*2)
+```
+
+## Subfig - specificity
+```{r, fig.width=2.2, fig.height=2}
+# Set seed for consisten Fig.
+set.seed(3124)
+
+# Build an empty memory
+ps <- runif(10)
+ps <- ps / sum(ps)
+
+memory0 <- data.frame(arms=1:10, p_reward=ps)
+memory0$memory <- rep("initial", nrow(memory0))
+
+# global
+ps_g <- ps
+ps_g[7] <- ps_g[7]+ps[8]
+ps_g <- ps_g / sum(ps_g)
+
+global <- data.frame(arms=1:10, p_reward=ps_g)
+global$memory <- rep("global", nrow(global))
+global <- full_join(memory0, global)
+global$memory <- factor(global$memory, levels=c("initial", "global"))
+                           
+# local
+ps_l <- ps
+ps_l[7] <- ps_l[7]+ps[8]
+ps_l[8] <- 0.0001
+ps_1 <- ps_l / sum(ps_l)
+
+local <- data.frame(arms=1:10, p_reward=ps_l)
+local$memory <- rep("local", nrow(local))
+local <- full_join(memory0, local)
+local$memory <- factor(local$memory, levels=c("initial", "local"))
+
+
+Eg <- kl_divergence(
+  filter(global, memory == "global")$p_reward,
+  filter(global, memory == "initial")$p_reward)
+
+El <- kl_divergence(
+  filter(local, memory == "local")$p_reward,
+  filter(local, memory == "initial")$p_reward)
+
+Edf <- data.frame(memory=c("local", "global"), E=c(El, Eg))
+
+global %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
+  theme_classic() +
+  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
+  ggtitle("Global change") +
+  labs(x=" ", y="Reward prob.", tag="A") +
+  scale_fill_manual(values = c("grey", "mediumpurple1")) +
+  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> pg
+
+local %>% 
+  ggplot(aes(x=as.factor(arms), y=p_reward, fill=memory)) +
+  geom_bar(stat="identity", width=0.6, position = "dodge") +
+  geom_point(aes(x=7, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
+  geom_point(aes(x=8, y=0.5), shape=18, size=0.5, show.legend = FALSE) +
+  theme_classic() +
+  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
+  ggtitle("Local change") +
+  labs(x="Arm", y="Reward prob.", tag="B") +
+  scale_fill_manual(values = c("grey", "mediumpurple4")) +
+  scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> pl
+
+Edf %>% 
+  ggplot(aes(x=memory, y=E, fill=memory)) +
+  geom_bar(stat="identity", width=0.6) +
+  theme_classic() +
+  theme(legend.position = "none", plot.tag = element_text(size=14, face="bold")) +
+  scale_fill_manual(values = c("mediumpurple1", "mediumpurple4")) +
+  labs(y="KL", x=" ", tag="C") -> pe
+
+plot_grid <- rbind(
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(1, 3),
+  c(NA, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3),
+  c(2, 3)
+)
+subfig3 <- grid.arrange(pg, pl, pe, layout_matrix=plot_grid)
+
+ggsave("img/subfig3.png", subfig3, width=2.2*2, height=2*2)
+```
+
+```{r}
+head3 <- textGrob("Memory, specificity, and value", vjust=0, gp = gpar(fontsize = 13))
+
+```
+
+
 ## Subfig - value dynamics
-```{r, eval=FALSE, fig.height=1.2, fig.width=1}
+```{r, eval=FALSE, fig.height=3.25, fig.width=1.2}
 value_traces %>% 
   filter(n==3) %>% 
   ggplot(aes(x=episodes, y=log(values_R))) +
   geom_point(size=0.01, color="black") + 
   geom_point(aes(x=episodes, y=log(values_E)), size=0.1, color="darkorchid4") +
   geom_hline((aes(yintercept=log(0.0053))), color="darkorchid4", alpha=0.2) +
-  labs(x="", y="Value", tag="H") +
+  labs(x="Trial", y="Value", tag="A", title="Dual value") + 
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) -> ex1
 
@@ -810,21 +731,55 @@ value_traces %>%
   filter(n==3) %>%
   ggplot(aes(x=episodes, y=arms+1)) +
   geom_point(size=0.01, color="black") + 
-  labs(x="Trial", y="Arm", tag="I") +
-  scale_y_continuous(breaks=1:10, limits = c(0, 10)) +
+  labs(x="Trial", y="Arm", tag="B", title="Dual value") +
+  scale_y_continuous(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) +
   geom_hline(aes(yintercept=8), color="red", size=.25, alpha=0.95) +
   theme() -> ex2
 
+# softbeta
+example_traces %>% 
+  filter(env == "BanditOneHigh10-v0", agents=="softbeta") %>% 
+  filter(n==3) %>%
+  ggplot(aes(x=episodes, y=arms+1)) +
+  geom_point(size=0.01, color="black") + 
+  labs(x="Trial", y="Arm", tag="C", title="Bayesian") +
+  scale_y_continuous(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  geom_hline(aes(yintercept=8), color="red", size=.25, alpha=0.95) +
+  theme() -> ex3
+
+# epsilon
+example_traces %>% 
+  filter(env == "BanditOneHigh10-v0", agents=="epsilon") %>% 
+  filter(n==4) %>%
+  ggplot(aes(x=episodes, y=arms+1)) +
+  geom_point(size=0.01, color="black") + 
+  labs(x="Trial", y="Arm", tag="D", title="E-greedy") +
+  scale_y_continuous(breaks=seq(1, 10), labels=c(1, rep(" ", 8), 10)) +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  geom_hline(aes(yintercept=8), color="red", size=.25, alpha=0.95) +
+  theme() -> ex4
+
+head1 <- textGrob("Bandit I", vjust=0.7, gp = gpar(fontsize = 13))
+
 plot_grid <- rbind(
-  c(1, 1),
-  # c(1, 1),
-  # c(1, 1),
+  c(5, 5),
   c(1, 1),
   c(1, 1),
   c(1, 1),
   c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
+  c(1, 1),
   c(2, 2),
   c(2, 2),
   c(2, 2),
@@ -832,9 +787,26 @@ plot_grid <- rbind(
   c(2, 2),
   c(2, 2),
   c(2, 2),
-  c(2, 2)
+  c(2, 2),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(3, 3),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4),
+  c(4, 4)
 )
-sub6 <- grid.arrange(ex1, ex2, layout_matrix=plot_grid)
+subfig4 <- grid.arrange(ex1, ex2, ex3, ex4, head1, layout_matrix=plot_grid)
+ggsave("img/subfig4.png", subfig4, width=1.2*2, height=3.25*2)
 ```
 
 
