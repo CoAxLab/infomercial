@@ -210,7 +210,7 @@ fig2 <- grid.arrange(bandit1, bandit2, bandit3, bandit4, head1, layout_matrix=pl
 ggsave("img/fig2.png", fig2, width=2.3*2, height=1.2*2, dpi = 300)
 ```
 
-# Fig 3
+# Fig 3 - Agent performance
 ## Subfig - regret
 ```{r, fig.width=1.2, fig.height=2}
 # ------------------------------------------------------------------------
