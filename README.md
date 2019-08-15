@@ -1,6 +1,6 @@
 # Information games
 
-`infomercial` contains code for [A way around the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v3), BioArxiv 671362v3 (2019)
+`infomercial` contains code for [A way around the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v3), bioArxiv _671362v3_ (2019).
 
 In this paper we present an alternative interpretation of the classic exploration-exploitation dilemma. 
 
