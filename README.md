@@ -18,4 +18,7 @@ We show, for the first time, that nearly any dilemma problem can also be viewed 
 # Install
 `pip install . -e` following cloning of this repo.
 
+# Experiments
 All experiments can be (re)run from the top-level Makefile, found in the `infomercial` repo. 
+
+For analysis see `./analysis/`
