@@ -21,4 +21,6 @@ We show, for the first time, that nearly any dilemma problem can also be viewed 
 # Experiments
 All experiments can be (re)run from the top-level Makefile, found in the `infomercial` repo. 
 
-For analysis see `./analysis/`
+For analysis see `./notebooks/`
+
+For paper figures see `./figures/`
