@@ -1,4 +1,4 @@
-# Information games
+# Informercial
 
 `infomercial` contains code for [A way around the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v3), bioArxiv _671362v3_ (2019).
 
