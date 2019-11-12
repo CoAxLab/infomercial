@@ -58,6 +58,9 @@ class Count(Memory):
             p.append(self.forward(x))
         return p
 
+    def values(self, xs):
+        return self.probs(xs)
+
 
 class ConditionalCount(Count):
     """A conditional discrete distribution."""
@@ -110,6 +113,9 @@ class ConditionalCount(Count):
             p.append(self.forward(x, cond))
         return p
 
+    def values(self, xs, conds):
+        return self.probs(xs, conds)
+
 
 class ConditionalMean(Memory):
     """An averaging memory."""
@@ -148,6 +154,12 @@ class ConditionalMean(Memory):
         # Get the mean
         return self.means[i]
 
+    def values(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+        return p
+
 
 class ConditionalDeviance(Memory):
     """A memory for deviance."""
@@ -163,6 +175,12 @@ class ConditionalDeviance(Memory):
 
     def forward(self, x, cond):
         return x - self.mean(x, cond)
+
+    def values(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+        return p
 
 
 class ConditionalDerivative(Memory):
@@ -199,6 +217,12 @@ class ConditionalDerivative(Memory):
 
         # Est. the dirative
         return self.deltas[i] / self.delta_t
+
+    def values(self, xs, conds):
+        p = []
+        for x, cond in zip(xs, conds):
+            p.append(self.forward(x, cond))
+        return p
 
 
 class EfficientConditionalCount(Memory):
@@ -242,6 +266,9 @@ class EfficientConditionalCount(Memory):
             p.append(self.forward(x, cond))
 
         return p
+
+    def values(self, xs, conds):
+        return self.probs(xs, conds)
 
 
 class ForgetfulConditionalCount(Memory):
@@ -298,6 +325,9 @@ class ForgetfulConditionalCount(Memory):
         for x, cond in zip(xs, conds):
             p.append(self.forward(x, cond))
         return p
+
+    def values(self, xs, conds):
+        return self.probs(xs, conds)
 
 
 class Kernel(Memory):
