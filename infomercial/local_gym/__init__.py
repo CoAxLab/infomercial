@@ -1,5 +1,6 @@
 from gym.envs.registration import register
 
+from infomercial.local_gym.bandit import BanditEnv
 from infomercial.local_gym.bandit import BanditOneHot2
 from infomercial.local_gym.bandit import BanditOneHot10
 from infomercial.local_gym.bandit import BanditOneHot121
