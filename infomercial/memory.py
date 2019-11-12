@@ -111,6 +111,96 @@ class ConditionalCount(Count):
         return p
 
 
+class ConditionalMean(Memory):
+    """An averaging memory."""
+
+    def __init__(self):
+        self.conds = []
+        self.means = []
+        self.N = 1
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    def update(self, x, cond):
+        # Add cond?
+        if cond not in self.conds:
+            self.conds.append(cond)
+            self.deltas.append(x)
+
+        # Locate cond.
+        i = self.conds.index(cond)
+
+        # Update the mean
+        delta = x - self.means[i]
+        self.means[i] += delta / self.N
+
+        # Update count
+        self.N += 1
+
+    def forward(self, x, cond):
+        # Locate cond.
+        if cond not in self.conds:
+            return 0
+        else:
+            i = self.conds.index(cond)
+
+        # Get the mean
+        return self.means[i]
+
+
+class ConditionalDeviance(Memory):
+    """A memory for deviance."""
+
+    def __init__(self):
+        self.mean = ConditionalMean()
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    def update(self, x, cond):
+        self.mean.update(x, cond)
+
+    def forward(self, x, cond):
+        return x - self.mean(x, cond)
+
+
+class ConditionalDerivative(Memory):
+    """A memory for change."""
+
+    def __init__(self, delta_t=1):
+        self.conds = []
+        self.deltas = []
+        self.delta_t = delta_t
+        if self.delta_t < 0:
+            raise ValueError("delta_t must be positive")
+
+    def __call__(self, x, cond):
+        return self.forward(x, cond)
+
+    def update(self, x, cond):
+        # Add cond?
+        if cond not in self.conds:
+            self.conds.append(cond)
+            self.deltas.append(x)
+
+        # Locate cond.
+        i = self.conds.index(cond)
+
+        # Update counts for cond
+        self.deltas[i] = x - self.deltas[i]
+
+    def forward(self, x, cond):
+        # Locate cond.
+        if cond not in self.conds:
+            return 0
+        else:
+            i = self.conds.index(cond)
+
+        # Est. the dirative
+        return self.deltas[i] / self.delta_t
+
+
 class EfficientConditionalCount(Memory):
     """Forget x when over-capacity"""
 
