@@ -20,7 +20,6 @@ class BanditEnv(gym.Env):
     r_dist : list or list or lists
         A list of either rewards (if number) or means and standard deviations (if list) of the payout that bandit has
     """
-
     def __init__(self, p_dist, r_dist):
         if len(p_dist) != len(r_dist):
             raise ValueError(
@@ -71,7 +70,6 @@ class BanditEnv(gym.Env):
 
 class UnstableBanditEnv(gym.Env):
     """n-armed bandit, but the winning probabilites are unstable."""
-
     def __init__(self, p_dists, r_dists, unstable_rate):
         for p_dist, r_dist in zip(p_dists, r_dists):
             if len(p_dist) != len(r_dist):
@@ -137,9 +135,81 @@ class UnstableBanditEnv(gym.Env):
         pass
 
 
+class DecptiveBanditEnv(gym.Env):
+    """
+    n-armed bandit environment, you have to move n_away to find the best arm.
+
+    Params
+    ------
+    p_dist : list
+        A list of probabilities of the likelihood that a particular bandit will pay out
+    r_dist : list or list or lists
+        A list of either rewards (if number) or means and standard deviations (if list) of the payout that bandit has
+    """
+    def __init__(self, p_dist, r_dist, n_away=1):
+        if len(p_dist) != len(r_dist):
+            raise ValueError(
+                "Probability and Reward distribution must be the same length")
+
+        if min(p_dist) < 0 or max(p_dist) > 1:
+            raise ValueError("All probabilities must be between 0 and 1")
+
+        for reward in r_dist:
+            if isinstance(reward, list) and reward[1] <= 0:
+                raise ValueError(
+                    "Standard deviation in rewards must all be greater than 0")
+
+        self.best = []
+        self.p_dist = p_dist
+        self.r_dist = r_dist
+        self.steps = 0
+        self.n_away = n_away
+
+        self.n_bandits = len(p_dist)
+        self.action_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(self.n_bandits)
+
+        self.seed()
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+
+    def step(self, action):
+        assert self.action_space.contains(action)
+
+        # Get the reward
+        reward = 0
+        done = True
+        if self.np_random.uniform() < self.p_dist[action]:
+            if not isinstance(self.r_dist[action], list):
+                reward = self.r_dist[action]
+            else:
+                reward = self.np_random.normal(self.r_dist[action][0],
+                                               self.r_dist[action][1])
+
+        # Add deceptiveness. Only the best arms are deceptive.
+        if action in self.best:
+
+            # Don't step away if you have gone
+            # far enough away already.
+            if self.steps < self.n_away:
+                reward *= (1 - (self.steps / self.n_away))
+
+        # Finish
+        self.steps += 1
+        return [0], reward, done, {}
+
+    def reset(self):
+        self.steps = 0
+        return [0]
+
+    def render(self, mode='human', close=False):
+        pass
+
+
 class BanditOneHot2(BanditEnv):
     """A one winner bandit."""
-
     def __init__(self):
         self.best = [0]
         self.num_arms = 2
@@ -152,7 +222,6 @@ class BanditOneHot2(BanditEnv):
 
 class BanditOneHot10(BanditEnv):
     """A one winner bandit."""
-
     def __init__(self):
         self.best = [7]
         self.num_arms = 10
@@ -165,7 +234,6 @@ class BanditOneHot10(BanditEnv):
 
 class BanditOneHot121(BanditEnv):
     """A one winner bandit."""
-
     def __init__(self):
         self.best = [54]
         self.num_arms = 121
@@ -178,7 +246,6 @@ class BanditOneHot121(BanditEnv):
 
 class BanditOneHot1000(BanditEnv):
     """A one winner bandit."""
-
     def __init__(self):
         self.best = [526]
         self.num_arms = 1000
@@ -191,14 +258,12 @@ class BanditOneHot1000(BanditEnv):
 
 class BanditEvenOdds2(BanditEnv):
     """A 50/50 bandit."""
-
     def __init__(self):
         BanditEnv.__init__(self, p_dist=[0.5, 0.5], r_dist=[1, 1])
 
 
 class BanditOneHigh2(BanditEnv):
     """A (0.8, 0.2) bandit."""
-
     def __init__(self):
         self.best = [0]
         self.num_arms = 2
@@ -211,7 +276,6 @@ class BanditOneHigh2(BanditEnv):
 
 class BanditOneHigh10(BanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [7]
         self.num_arms = 10
@@ -224,7 +288,6 @@ class BanditOneHigh10(BanditEnv):
 
 class BanditOneHigh121(BanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [54]
         self.num_arms = 121
@@ -237,7 +300,6 @@ class BanditOneHigh121(BanditEnv):
 
 class BanditTwoHigh10(BanditEnv):
     """A (..., 0.60, ..., 0.80. 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [7]
         self.num_arms = 10
@@ -251,7 +313,6 @@ class BanditTwoHigh10(BanditEnv):
 
 class BanditTwoHigh121(BanditEnv):
     """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [71]
         self.num_arms = 121
@@ -265,7 +326,6 @@ class BanditTwoHigh121(BanditEnv):
 
 class BanditOneHigh1000(BanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [526]
         self.num_arms = 1000
@@ -278,7 +338,6 @@ class BanditOneHigh1000(BanditEnv):
 
 class BanditTwoHigh1000(BanditEnv):
     """A (..., 0.80, ..., 0.80. 0.2, 0.2, ...) bandit."""
-
     def __init__(self):
         self.best = [731]
         self.num_arms = 1000
@@ -292,7 +351,6 @@ class BanditTwoHigh1000(BanditEnv):
 
 class BanditTwoExtreme1000(BanditEnv):
     """A (..., 0.99, ..., 0.99. 0.01, 0.01, ...) bandit."""
-
     def __init__(self):
         self.best = [526, 731]
         self.num_arms = 1000
@@ -306,7 +364,6 @@ class BanditTwoExtreme1000(BanditEnv):
 
 class BanditHardAndSparse2(BanditEnv):
     """A (0.10,0.08,0.08,....) bandit"""
-
     def __init__(self):
         self.best = [0]
         self.num_arms = 2
@@ -319,7 +376,6 @@ class BanditHardAndSparse2(BanditEnv):
 
 class BanditHardAndSparse10(BanditEnv):
     """A (0.10,0.08,0.08,....) bandit"""
-
     def __init__(self):
         self.best = [7]
         self.num_arms = 10
@@ -332,7 +388,6 @@ class BanditHardAndSparse10(BanditEnv):
 
 class BanditHardAndSparse121(BanditEnv):
     """A (0.10,0.08,0.08,....) bandit"""
-
     def __init__(self):
         self.best = [54]
         self.num_arms = 121
@@ -345,7 +400,6 @@ class BanditHardAndSparse121(BanditEnv):
 
 class BanditHardAndSparse1000(BanditEnv):
     """A (0.10,0.08,0.08,....) bandit"""
-
     def __init__(self):
         self.best = [526]
         self.num_arms = 1000
@@ -358,7 +412,6 @@ class BanditHardAndSparse1000(BanditEnv):
 
 class BanditUniform10(BanditEnv):
     """A U(0.2, 0.75) bandit, with one best set 0.8."""
-
     def __init__(self):
         self.best = [7]
         self.num_arms = 10
@@ -372,8 +425,8 @@ class BanditUniform10(BanditEnv):
         self.np_random, seed = seeding.np_random(seed)
 
         # Reset p(R) dist with the seed
-        self.p_dist = self.np_random.uniform(
-            0.2, 0.6, size=self.num_arms).tolist()
+        self.p_dist = self.np_random.uniform(0.2, 0.6,
+                                             size=self.num_arms).tolist()
         self.p_dist[self.best[0]] = 0.8
 
         return [seed]
@@ -381,7 +434,6 @@ class BanditUniform10(BanditEnv):
 
 class BanditUniform121(BanditEnv):
     """A U(0.2, 0.75) bandit, with one best set 0.8."""
-
     def __init__(self):
         self.best = [54]
         self.num_arms = 121
@@ -395,8 +447,8 @@ class BanditUniform121(BanditEnv):
         self.np_random, seed = seeding.np_random(seed)
 
         # Reset p(R) dist with the seed
-        self.p_dist = self.np_random.uniform(
-            0.2, 0.6, size=self.num_arms).tolist()
+        self.p_dist = self.np_random.uniform(0.2, 0.6,
+                                             size=self.num_arms).tolist()
         self.p_dist[self.best[0]] = 0.8
 
         return [seed]
@@ -411,7 +463,6 @@ class BanditGaussian10(BanditEnv):
     Mean of payout is pulled from a normal distribution (0, 1) (called q*(a))
     Actual reward is drawn from a normal distribution (q*(a), 1)
     """
-
     def __init__(self, bandits=10):
         p_dist = np.full(bandits, 1)
         r_dist = []
