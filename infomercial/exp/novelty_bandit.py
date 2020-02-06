@@ -10,80 +10,11 @@ from infomercial.utils import estimate_regret
 
 from collections import OrderedDict
 
-
-class Critic(object):
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class Actor(object):
-    def __init__(self,
-                 num_actions,
-                 epsilon=0.1,
-                 decay_tau=0.001,
-                 seed_value=42):
-        self.epsilon = epsilon
-        self.decay_tau = decay_tau
-        self.num_actions = num_actions
-        self.seed_value = seed_value
-        self.prng = np.random.RandomState(self.seed_value)
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def decay_epsilon(self):
-        self.epsilon -= (self.decay_tau * self.epsilon)
-
-    def forward(self, values):
-        # If you know nothing about value, be random. Greedy is ill defined.
-        if np.isclose(np.sum(values), 0):
-            action = self.prng.randint(0, self.num_actions, size=1)[0]
-
-            return action
-
-        # Ep greedy
-        if self.prng.rand() < self.epsilon:
-            action = self.prng.randint(0, self.num_actions, size=1)[0]
-        else:
-            action = np.argmax(values)
-
-        return action
-
-
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
-
-
-def Q_update(state, reward, critic, lr):
-    """Really simple Q learning"""
-    update = lr * (reward - critic(state))
-    critic.update_(state, update)
-
-    return critic
+from infomercial.exp.epsilon_bandit import Q_update
+from infomercial.exp.epsilon_bandit import Actor
+from infomercial.exp.epsilon_bandit import Critic
+from infomercial.exp.epsilon_bandit import save_checkpoint
+from infomercial.exp.epsilon_bandit import load_checkpoint
 
 
 def run(env_name='BanditOneHot2-v0',
@@ -104,6 +35,7 @@ def run(env_name='BanditOneHot2-v0',
     env.seed(seed_value)
     num_actions = env.action_space.n
     best_action = env.best
+    novelty_bonus = np.ones(num_actions)
 
     # -
     default_reward_value = 0  # Null R

@@ -2991,28 +2991,28 @@ exp213:
 # 2-6-2020
 # 860b5a07bf5a0232d03550edc7cd94f14ea2621f
 #
-# Run all agents (for the first time) on DecptiveBanditOneHigh10.
+# Run all agents (for the first time) on DeceptiveBanditOneHigh10.
 # Just take HPs from the  OneHigh10 bandit. Why not? 
 exp214:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp214.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DecptiveBanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp214_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp214_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 exp215:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp215.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DecptiveBanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp215_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp215_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 exp216:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp216.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DecptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp216_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp216_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 exp217:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp217.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanDecptiveBanditOneHigh10ditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp217_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp217_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}

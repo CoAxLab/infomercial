@@ -208,7 +208,7 @@ class DeceptiveBanditEnv(gym.Env):
         pass
 
 
-class DecptiveBanditOneHigh10(DeceptiveBanditEnv):
+class DeceptiveBanditOneHigh10(DeceptiveBanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit."""
     def __init__(self):
         self.best = [7]
