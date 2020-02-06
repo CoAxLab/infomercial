@@ -137,7 +137,7 @@ class UnstableBanditEnv(gym.Env):
 
 class DeceptiveBanditEnv(gym.Env):
     """
-    n-armed bandit environment, you have to move n_away to find the best arm.
+    n-armed bandit environment, you have to move num_away to find the best arm.
 
     Params
     ------
@@ -146,7 +146,7 @@ class DeceptiveBanditEnv(gym.Env):
     r_dist : list or list or lists
         A list of either rewards (if number) or means and standard deviations (if list) of the payout that bandit has
     """
-    def __init__(self, p_dist, r_dist, n_away=1):
+    def __init__(self, p_dist, r_dist, num_away=1):
         if len(p_dist) != len(r_dist):
             raise ValueError(
                 "Probability and Reward distribution must be the same length")
@@ -159,11 +159,12 @@ class DeceptiveBanditEnv(gym.Env):
                 raise ValueError(
                     "Standard deviation in rewards must all be greater than 0")
 
-        self.best = []
         self.p_dist = p_dist
         self.r_dist = r_dist
         self.steps = 0
-        self.n_away = n_away
+        self.num_away = num_away
+        self.scale = np.concatenate(
+            (np.linspace(1, 0, num_away), np.linspace(0, 1, num_away)))
 
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
@@ -176,9 +177,11 @@ class DeceptiveBanditEnv(gym.Env):
         return [seed]
 
     def step(self, action):
+        # Action is in the space?
+        action = int(action)
         assert self.action_space.contains(action)
 
-        # Get the reward
+        # Get the reward....
         reward = 0
         done = True
         if self.np_random.uniform() < self.p_dist[action]:
@@ -189,19 +192,16 @@ class DeceptiveBanditEnv(gym.Env):
                                                self.r_dist[action][1])
 
         # Add deceptiveness. Only the best arms are deceptive.
-        if action in self.best:
+        if (action in self.best) and (reward == 1):
+            try:
+                reward *= self.scale[self.steps]
+            except IndexError:
+                pass
+            self.steps += 1
 
-            # Don't step away if you have gone
-            # far enough away already.
-            if self.steps < self.n_away:
-                reward *= (1 - (self.steps / self.n_away))
-
-        # Finish
-        self.steps += 1
-        return [0], reward, done, {}
+        return [0], float(reward), done, {}
 
     def reset(self):
-        self.steps = 0
         return [0]
 
     def render(self, mode='human', close=False):
@@ -220,7 +220,7 @@ class DecptiveBanditOneHigh10(DeceptiveBanditEnv):
         DeceptiveBanditEnv.__init__(self,
                                     p_dist=p_dist,
                                     r_dist=r_dist,
-                                    n_away=10)
+                                    num_away=10)
 
 
 class BanditOneHot2(BanditEnv):
