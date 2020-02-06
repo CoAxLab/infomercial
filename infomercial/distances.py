@@ -24,4 +24,5 @@ def linf(x, y):
 
 
 def kl(p, q, base=None):
-    return scientropy(p, q, base=base)
+    d = scientropy(p, q, base=base)
+    return d
