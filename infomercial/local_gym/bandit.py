@@ -135,7 +135,7 @@ class UnstableBanditEnv(gym.Env):
         pass
 
 
-class DecptiveBanditEnv(gym.Env):
+class DeceptiveBanditEnv(gym.Env):
     """
     n-armed bandit environment, you have to move n_away to find the best arm.
 
@@ -206,6 +206,21 @@ class DecptiveBanditEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         pass
+
+
+class DecptiveBanditOneHigh10(DeceptiveBanditEnv):
+    """A (0.8, 0.2, 0.2, ...) bandit."""
+    def __init__(self):
+        self.best = [7]
+        self.num_arms = 10
+
+        p_dist = [0.2] * self.num_arms
+        p_dist[self.best[0]] = 0.8
+        r_dist = [1] * self.num_arms
+        DeceptiveBanditEnv.__init__(self,
+                                    p_dist=p_dist,
+                                    r_dist=r_dist,
+                                    n_away=10)
 
 
 class BanditOneHot2(BanditEnv):
