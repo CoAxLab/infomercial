@@ -103,7 +103,7 @@ def run(env_name='BanditOneHot2-v0',
     env = gym.make(env_name)
     env.seed(seed_value)
     num_actions = env.action_space.n
-    best_action = env.env.best
+    best_action = env.best
 
     # -
     default_reward_value = 0  # Null R
@@ -181,7 +181,7 @@ def run(env_name='BanditOneHot2-v0',
     # -
     episodes = list(range(num_episodes))
     result = dict(
-        best=env.env.best,
+        best=env.best,
         episodes=episodes,
         num_episodes=num_episodes,
         lr_R=lr_R,

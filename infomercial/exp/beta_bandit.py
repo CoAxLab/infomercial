@@ -132,16 +132,17 @@ def run(env_name='BanditOneHigh2-v0',
 
     # -
     default_reward_value = 0  # Null R
-    default_info_value = entropy(
-        np.ones(num_actions) / num_actions)  # Uniform p(a)
+    default_info_value = entropy(np.ones(num_actions) /
+                                 num_actions)  # Uniform p(a)
 
-    critic = Critic(
-        env.observation_space.n,
-        default_value=default_reward_value + (beta * default_info_value))
-    actor = Actor(
-        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+    critic = Critic(env.observation_space.n,
+                    default_value=default_reward_value +
+                    (beta * default_info_value))
+    actor = Actor(num_actions,
+                  tie_break=tie_break,
+                  tie_threshold=tie_threshold)
 
-    best_action = env.env.best
+    best_action = env.best
 
     # -
     memory = ConditionalCount()
@@ -233,23 +234,22 @@ def run(env_name='BanditOneHigh2-v0',
     # -
     # Save models to disk when done?
     episodes = list(range(num_episodes))
-    result = dict(
-        best=env.env.best,
-        lr_R=lr_R,
-        beta=beta,
-        tie_break=tie_break,
-        tie_threshold=tie_threshold,
-        episodes=episodes,
-        actions=actions,
-        p_bests=p_bests,
-        regrets=regrets,
-        ties=ties,
-        critic=critic.state_dict(),
-        total_E=total_E,
-        total_R=total_R,
-        scores_E=scores_E,
-        scores_R=scores_R,
-        values_R=values)
+    result = dict(best=env.best,
+                  lr_R=lr_R,
+                  beta=beta,
+                  tie_break=tie_break,
+                  tie_threshold=tie_threshold,
+                  episodes=episodes,
+                  actions=actions,
+                  p_bests=p_bests,
+                  regrets=regrets,
+                  ties=ties,
+                  critic=critic.state_dict(),
+                  total_E=total_E,
+                  total_R=total_R,
+                  scores_E=scores_E,
+                  scores_R=scores_R,
+                  values_R=values)
 
     if save is not None:
         save_checkpoint(result, filename=save)

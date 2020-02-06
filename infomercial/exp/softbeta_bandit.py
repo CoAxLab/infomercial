@@ -112,7 +112,7 @@ def run(env_name='BanditOneHigh2-v0',
         default_value=default_reward_value + (beta * default_info_value))
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=seed_value)
 
-    best_action = env.env.best
+    best_action = env.best
 
     # -
     memory = ConditionalCount()
@@ -200,7 +200,7 @@ def run(env_name='BanditOneHigh2-v0',
     # Save models to disk when done?
     episodes = list(range(num_episodes))
     result = dict(
-        best=env.env.best,
+        best=env.best,
         lr_R=lr_R,
         beta=beta,
         temp=temp,
