@@ -144,20 +144,22 @@ def run(env_name='BanditOneHot2-v0',
 
     # -
     default_reward_value = 0  # Null R
-    default_info_value = entropy(
-        np.ones(num_actions) / num_actions)  # Uniform p(a)
+    default_info_value = entropy(np.ones(num_actions) /
+                                 num_actions)  # Uniform p(a)
 
-    critic_R = Critic(
-        env.observation_space.n, default_value=default_reward_value)
-    critic_E = Critic(
-        env.observation_space.n, default_value=default_info_value)
+    critic_R = Critic(env.observation_space.n,
+                      default_value=default_reward_value)
+    critic_E = Critic(env.observation_space.n,
+                      default_value=default_info_value)
 
-    actor_R = Actor(
-        num_actions, tie_break='first', tie_threshold=tie_threshold)
-    actor_E = Actor(
-        num_actions, tie_break=tie_break, tie_threshold=tie_threshold)
+    actor_R = Actor(num_actions,
+                    tie_break='first',
+                    tie_threshold=tie_threshold)
+    actor_E = Actor(num_actions,
+                    tie_break=tie_break,
+                    tie_threshold=tie_threshold)
 
-    best_action = env.env.best
+    best_action = env.best
 
     # -
     memory = ConditionalCount()
@@ -268,28 +270,27 @@ def run(env_name='BanditOneHot2-v0',
 
     # -
     episodes = list(range(num_episodes))
-    result = dict(
-        best=best_action,
-        episodes=episodes,
-        policies=policies,
-        actions=actions,
-        p_bests=p_bests,
-        ties=ties,
-        critic_E=critic_E.state_dict(),
-        critic_R=critic_R.state_dict(),
-        total_E=total_E,
-        total_R=total_R,
-        total_E_R=total_E + total_R,
-        scores_E=scores_E,
-        scores_R=scores_R,
-        values_E=values_E,
-        values_R=values_R,
-        regrets=regrets,
-        env_name=env_name,
-        num_episodes=num_episodes,
-        tie_break=tie_break,
-        tie_threshold=tie_threshold,
-        lr_R=lr_R)
+    result = dict(best=best_action,
+                  episodes=episodes,
+                  policies=policies,
+                  actions=actions,
+                  p_bests=p_bests,
+                  ties=ties,
+                  critic_E=critic_E.state_dict(),
+                  critic_R=critic_R.state_dict(),
+                  total_E=total_E,
+                  total_R=total_R,
+                  total_E_R=total_E + total_R,
+                  scores_E=scores_E,
+                  scores_R=scores_R,
+                  values_E=values_E,
+                  values_R=values_R,
+                  regrets=regrets,
+                  env_name=env_name,
+                  num_episodes=num_episodes,
+                  tie_break=tie_break,
+                  tie_threshold=tie_threshold,
+                  lr_R=lr_R)
 
     # Save models to disk when done?
     if save is not None:
