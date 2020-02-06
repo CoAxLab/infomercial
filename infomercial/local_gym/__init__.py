@@ -21,6 +21,7 @@ from infomercial.local_gym.bandit import BanditGaussian10
 from infomercial.local_gym.bandit import BanditTwoExtreme1000
 from infomercial.local_gym.bandit import BanditUniform10
 from infomercial.local_gym.bandit import BanditUniform121
+from infomercial.local_gym.bandit import DecptiveBanditOneHigh10
 
 # Gym is annoying these days...
 import warnings
@@ -47,6 +48,7 @@ environments = [
     ['BanditUniform10', 'v0', 1],
     ['BanditUniform121', 'v0', 1],
     ['BanditGaussian10', 'v0', 1],
+    ['DecptiveBanditOneHigh10', 'v0', 1],
 ]
 
 for environment in environments:
