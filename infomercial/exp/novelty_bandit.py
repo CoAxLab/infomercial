@@ -52,6 +52,7 @@ def run(env_name='BanditOneHot2-v0',
     num_best = 0
     total_R = 0.0
     scores_R = []
+    novelty_R = []
     values_R = []
     actions = []
     p_bests = []
@@ -80,7 +81,14 @@ def run(env_name='BanditOneHot2-v0',
         # Pull a lever.
         state, reward, _, _ = env.step(action)
         state = int(state[0])
-        R_t = reward  # Notation consistency
+
+        # Add novelty bonus, then zero it.
+        bonus = novelty_bonus[int(action)]
+        reward += bonus
+        novelty_bonus[int(action)] = 0
+
+        # Notation consistency
+        R_t = reward
 
         # Critic learns
         critic = Q_update(action, R_t, critic, lr_R)
@@ -94,6 +102,7 @@ def run(env_name='BanditOneHot2-v0',
         actions.append(action)
         total_R += R_t
         scores_R.append(R_t)
+        novelty_R.append(bonus)
         values_R.append(critic(action))
         epsilons.append(actor.epsilon)
         p_bests.append(num_best / (n + 1))
@@ -123,6 +132,7 @@ def run(env_name='BanditOneHot2-v0',
                   critic_R=critic.state_dict(),
                   total_R=total_R,
                   scores_R=scores_R,
+                  novelty_R=novelty_R,
                   values_R=values_R)
 
     # Save models to disk when done?
