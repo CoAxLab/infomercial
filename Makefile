@@ -3016,3 +3016,41 @@ exp217:
 			--joblog '$(DATA_PATH)/exp217.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp217_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# ---------------------------------------------------------------------------
+# f5e76cc8765953dc39809fd14de10903a605a6e6
+# 2-13-2020
+#
+# The first try on DeceptiveBanditOneHigh10 had too long a learning period
+# (exp214-217). This hid the deception. The deception is the point. 
+# Try again with. 
+# This time the game ends after 20 steps. 
+#
+# The expected value of the best arm is 0.4. The expected value of the rest of the arms is 0.2.
+# 
+# A new round of HP tuning is needed give the short duration of these experiments. To check things out let's just try some params from BanditOneHigh10. This is what I did last time as well.
+exp218:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp218.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp218_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp219:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp219.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp219_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp220:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp220.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp220_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp221:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp221.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp221_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
