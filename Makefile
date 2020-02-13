@@ -3029,7 +3029,7 @@ exp217:
 #
 # The expected value of the best arm is 0.4. The expected value of the rest of the arms is 0.2.
 # 
-# A new round of HP tuning is needed give the short duration of these experiments. To check things out let's just try some params from BanditOneHigh10. This is what I did last time as well.
+# A new round of HP tuning is needed because of the short duration of these experiments. To check things out let's just try some params from BanditOneHigh10. This is what I did last time as well.
 exp218:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp218.log' \
