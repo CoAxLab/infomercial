@@ -137,7 +137,7 @@ class UnstableBanditEnv(gym.Env):
 
 class DeceptiveBanditEnv(gym.Env):
     """
-    n-armed bandit environment, you have to move num_away to find the best arm.
+    n-armed bandit environment, you have to move steps_away to find the best arm.
 
     Params
     ------
@@ -146,7 +146,7 @@ class DeceptiveBanditEnv(gym.Env):
     r_dist : list or list or lists
         A list of either rewards (if number) or means and standard deviations (if list) of the payout that bandit has
     """
-    def __init__(self, p_dist, r_dist, num_away=1):
+    def __init__(self, p_dist, r_dist, steps_away=1, max_steps=30):
         if len(p_dist) != len(r_dist):
             raise ValueError(
                 "Probability and Reward distribution must be the same length")
@@ -159,12 +159,15 @@ class DeceptiveBanditEnv(gym.Env):
                 raise ValueError(
                     "Standard deviation in rewards must all be greater than 0")
 
+        if max_steps < (2 * steps_away):
+            raise ValueError("max_steps must be greater than 2*steps_away")
         self.p_dist = p_dist
         self.r_dist = r_dist
         self.steps = 0
-        self.num_away = num_away
+        self.max_steps = max_steps
+        self.steps_away = steps_away
         self.scale = np.concatenate(
-            (np.linspace(1, 0, num_away), np.linspace(0, 1, num_away)))
+            (np.linspace(1, 0, steps_away), np.linspace(0, 1, steps_away)))
 
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
@@ -177,6 +180,10 @@ class DeceptiveBanditEnv(gym.Env):
         return [seed]
 
     def step(self, action):
+        # Sanity
+        if self.steps > self.max_steps:
+            raise EnvironmentError("Number of steps exceeded max.")
+
         # Action is in the space?
         action = int(action)
         assert self.action_space.contains(action)
@@ -192,7 +199,7 @@ class DeceptiveBanditEnv(gym.Env):
                                                self.r_dist[action][1])
 
         # Add deceptiveness. Only the best arms are deceptive.
-        if (action in self.best) and (reward == 1):
+        if (action in self.best) and (reward != 0):
             try:
                 reward *= self.scale[self.steps]
             except IndexError:
@@ -202,6 +209,7 @@ class DeceptiveBanditEnv(gym.Env):
         return [0], float(reward), done, {}
 
     def reset(self):
+        self.steps = 0
         return [0]
 
     def render(self, mode='human', close=False):
@@ -214,13 +222,18 @@ class DeceptiveBanditOneHigh10(DeceptiveBanditEnv):
         self.best = [7]
         self.num_arms = 10
 
+        # Set p(R > 0)
         p_dist = [0.2] * self.num_arms
         p_dist[self.best[0]] = 0.8
+
+        # Set baseline R
         r_dist = [1] * self.num_arms
+
         DeceptiveBanditEnv.__init__(self,
                                     p_dist=p_dist,
                                     r_dist=r_dist,
-                                    num_away=10)
+                                    steps_away=10,
+                                    max_steps=20)
 
 
 class BanditOneHot2(BanditEnv):
