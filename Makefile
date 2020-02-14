@@ -3034,6 +3034,7 @@ exp217:
 # RESULTS: meta does better than the rest. Both in terms of final p_best and 
 #          rewards. ep is not far off. softbeta and anneal-ep are bad. 
 #          I should give them five trials at the end? 
+
 exp218:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp218.log' \
@@ -3059,3 +3060,38 @@ exp221:
 			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp221_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 
+# ---------------------------------------------------------------------------
+# 252bcd09d3c8beffbdff3e4a4c6fa26fbd27b87b
+# 2-14-2020
+#
+# Another round of deception exps. Redfined deception as a single U-turn 
+# bandit. As you walk away at the start reward is nagetive. Once you hit the 
+# U-turn point value becomes positive. 
+# - Overall the p(reward) for the U-turn arm is 0.8.  
+# - All other arms have p(reward) = 0.2. 
+# - If the best arm is choosen about 50 times its higher expected value 
+#   should be clear. 
+
+exp222:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp222.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp222_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp223:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp223.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp223_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp224:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp224.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp224_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp225:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp225.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp225_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
