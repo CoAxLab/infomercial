@@ -3071,7 +3071,10 @@ exp221:
 # - All other arms have p(reward) = 0.2. 
 # - If the best arm is choosen about 50 times its higher expected value 
 #   should be clear. 
-
+#
+# RESULTS: Only meta/pipi makes any progress in finding the best arm in the
+#          end. Even then it's a small improvement. 
+#          Let's run the experiment out twice as long.
 exp222:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp222.log' \
@@ -3095,3 +3098,31 @@ exp225:
 			--joblog '$(DATA_PATH)/exp225.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp225_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# ---------------------------------------------------------------------------
+# 2-14-2020
+# 
+# Repeat last exps222-225 but with num_episodes=100. Which is up from 50.
+exp226:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp226.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp226_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp227:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp227.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp227_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp228:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp228.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp228_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+exp229:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp229.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp229_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
