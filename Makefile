@@ -3030,6 +3030,10 @@ exp217:
 # The expected value of the best arm is 0.4. The expected value of the rest of the arms is 0.2.
 # 
 # A new round of HP tuning is needed because of the short duration of these experiments. To check things out let's just try some params from BanditOneHigh10. This is what I did last time as well.
+
+# RESULTS: meta does better than the rest. Both in terms of final p_best and 
+#          rewards. ep is not far off. softbeta and anneal-ep are bad. 
+#          I should give them five trials at the end? 
 exp218:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp218.log' \
@@ -3053,4 +3057,5 @@ exp221:
 			--joblog '$(DATA_PATH)/exp221.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp221_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
 
