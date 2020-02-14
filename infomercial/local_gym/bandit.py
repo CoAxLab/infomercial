@@ -167,7 +167,7 @@ class DeceptiveBanditEnv(gym.Env):
         self.max_steps = max_steps
         self.steps_away = steps_away
         self.scale = np.concatenate(
-            (np.linspace(1, 0, steps_away), np.linspace(0, 1, steps_away)))
+            (np.linspace(-1, 0, steps_away), np.linspace(0, 1, steps_away)))
 
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
@@ -181,8 +181,8 @@ class DeceptiveBanditEnv(gym.Env):
 
     def step(self, action):
         # Sanity
-        if self.steps > self.max_steps:
-            raise EnvironmentError("Number of steps exceeded max.")
+        # if self.steps > self.max_steps:
+        # raise EnvironmentError("Number of steps exceeded max.")
 
         # Action is in the space?
         action = int(action)
@@ -203,7 +203,8 @@ class DeceptiveBanditEnv(gym.Env):
             try:
                 reward *= self.scale[self.steps]
             except IndexError:
-                pass
+                reward *= np.max(self.scale)
+
             self.steps += 1
 
         return [0], float(reward), done, {}
@@ -233,7 +234,7 @@ class DeceptiveBanditOneHigh10(DeceptiveBanditEnv):
                                     p_dist=p_dist,
                                     r_dist=r_dist,
                                     steps_away=10,
-                                    max_steps=20)
+                                    max_steps=30)
 
 
 class BanditOneHot2(BanditEnv):
