@@ -3140,7 +3140,7 @@ exp230:
 	tune_bandit.py replicator $(DATA_PATH)/exp230 \
 		--exp_name='meta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-        --num_iterations=10 \
+        --num_iterations=100 \
         --num_episodes=50 \
 		--num_replicators=800 \
 		--num_processes=40 \
@@ -3153,7 +3153,7 @@ exp231:
 	tune_bandit.py replicator $(DATA_PATH)/exp231 \
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-        --num_iterations=10 \
+        --num_iterations=100 \
         --num_episodes=50 \
 		--num_replicators=800 \
 		--num_processes=40 \
@@ -3167,7 +3167,7 @@ exp232:
 	tune_bandit.py replicator $(DATA_PATH)/exp232 \
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-		--num_iterations=10 \
+		--num_iterations=100 \
         --num_episodes=50 \
 		--num_replicators=800 \
 		--num_processes=40 \
@@ -3180,7 +3180,7 @@ exp233:
 	tune_bandit.py replicator $(DATA_PATH)/exp233 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh10-v0 \
-		--num_iterations=10 \
+		--num_iterations=100 \
         --num_episodes=50 \
 		--num_replicators=800 \
 		--num_processes=40 \
