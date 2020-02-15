@@ -3103,6 +3103,9 @@ exp225:
 # 2-14-2020
 # 
 # Repeat last exps222-225 but with num_episodes=100. Which is up from 50.
+#
+# RESULTS: meta didn't converge to best. None did. Time to try some HP tuning.
+#          See what happends then. I think this task design is right.
 exp226:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp226.log' \
@@ -3126,3 +3129,63 @@ exp229:
 			--joblog '$(DATA_PATH)/exp229.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp229_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# ----------------------------------------------------------------------------
+# 2-15-202
+# cbc1dac28a486aa2360d9fcd5a201fbb603f9bd2
+#
+# Replicator HP tuning - round 1 - DeceptiveBanditOneHigh10
+
+exp230:
+	tune_bandit.py replicator $(DATA_PATH)/exp230 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+exp231:
+	tune_bandit.py replicator $(DATA_PATH)/exp231 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_iterations=10 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+exp232:
+	tune_bandit.py replicator $(DATA_PATH)/exp232 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)'
+
+exp233:
+	tune_bandit.py replicator $(DATA_PATH)/exp233 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_iterations=10 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
