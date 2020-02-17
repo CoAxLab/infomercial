@@ -4,7 +4,7 @@ import cloudpickle
 import numpy as np
 
 from scipy.stats import entropy
-from infomercial.memory import ConditionalCount
+# from infomercial.memory import ConditionalCount
 from infomercial.policy import greedy
 from infomercial.utils import estimate_regret
 
@@ -87,8 +87,8 @@ def run(env_name='BanditOneHot2-v0',
     # -
     default_reward_value = 0  # Null R
     R_t = default_reward_value
-    critic = Critic(
-        env.observation_space.n, default_value=default_reward_value)
+    critic = Critic(env.observation_space.n,
+                    default_value=default_reward_value)
     actor = Actor(num_actions, seed_value=seed_value)
 
     # ------------------------------------------------------------------------
@@ -149,18 +149,17 @@ def run(env_name='BanditOneHot2-v0',
 
     # -
     episodes = list(range(num_episodes))
-    result = dict(
-        best=env.best,
-        episodes=episodes,
-        num_episodes=num_episodes,
-        actions=actions,
-        p_bests=p_bests,
-        regrets=regrets,
-        visited_states=visited_states,
-        critic_R=critic.state_dict(),
-        total_R=total_R,
-        scores_R=scores_R,
-        values_R=values_R)
+    result = dict(best=env.best,
+                  episodes=episodes,
+                  num_episodes=num_episodes,
+                  actions=actions,
+                  p_bests=p_bests,
+                  regrets=regrets,
+                  visited_states=visited_states,
+                  critic_R=critic.state_dict(),
+                  total_R=total_R,
+                  scores_R=scores_R,
+                  values_R=values_R)
 
     # Save models to disk when done?
     if save is not None:

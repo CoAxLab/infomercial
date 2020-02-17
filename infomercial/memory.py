@@ -12,7 +12,6 @@ from sklearn.neighbors import KernelDensity
 
 class Memory(object):
     """Base Memory"""
-
     def update(self, x):
         """Update the Memory"""
         pass
@@ -32,7 +31,6 @@ class Memory(object):
 
 class Count(Memory):
     """A discrete distribution."""
-
     def __init__(self):
         self.N = 0
         self.count = OrderedDict()
@@ -52,74 +50,76 @@ class Count(Memory):
         else:
             return self.count[x] / self.N
 
-    def probs(self, xs):
-        p = []
-        for x in xs:
-            p.append(self.forward(x))
-        return p
+    def keys(self):
+        return list(self.count.keys())
 
-    def values(self, xs):
-        return self.probs(xs)
+    def values(self):
+        return list(self.count.values())
 
 
-class ConditionalCount(Count):
-    """A conditional discrete distribution."""
+# class ConditionalCount(Count):
+#     """A conditional discrete distribution."""
+#     def __init__(self):
+#         self.Ns = []
+#         self.conds = []
+#         self.counts = []
 
-    def __init__(self):
-        self.Ns = []
-        self.conds = []
-        self.counts = []
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
 
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
+#     def keys(self, cond):
+#         if cond in self.conds:
+#             i = self.conds.index(cond)
+#             return list(self.counts[i].keys())
+#         else:
+#             return []
 
-    def update(self, x, cond):
-        # Add cond?
-        if cond not in self.conds:
-            self.conds.append(cond)
-            self.counts.append(OrderedDict())
-            self.Ns.append(0)
+#     def update(self, x, cond):
+#         # Add cond?
+#         if cond not in self.conds:
+#             self.conds.append(cond)
+#             self.counts.append(OrderedDict())
+#             self.Ns.append(0)
 
-        # Locate cond.
-        i = self.conds.index(cond)
+#         # Locate cond.
+#         i = self.conds.index(cond)
 
-        # Update counts for cond
-        if x in self.counts[i]:
-            self.counts[i][x] += 1
-        else:
-            self.counts[i][x] = 1
+#         # Update counts for cond
+#         if x in self.counts[i]:
+#             self.counts[i][x] += 1
+#         else:
+#             self.counts[i][x] = 1
 
-        # Update cond count normalizer
-        self.Ns[i] += 1
+#         # Update cond count normalizer
+#         self.Ns[i] += 1
 
-    def forward(self, x, cond):
-        # Locate cond.
-        if cond not in self.conds:
-            return 0
-        else:
-            i = self.conds.index(cond)
+#     def forward(self, x, cond):
+#         # Locate cond.
+#         if cond not in self.conds:
+#             return 0
+#         else:
+#             i = self.conds.index(cond)
 
-        # Get p(x|cond)
-        if x not in self.counts[i]:
-            return 0
-        elif self.Ns[i] == 0:
-            return 0
-        else:
-            return self.counts[i][x] / self.Ns[i]
+#         # Get p(x|cond)
+#         if x not in self.counts[i]:
+#             return 0
+#         elif self.Ns[i] == 0:
+#             return 0
+#         else:
+#             return self.counts[i][x] / self.Ns[i]
 
-    def probs(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-        return p
+#     def probs(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+#         return p
 
-    def values(self, xs, conds):
-        return self.probs(xs, conds)
+#     def values(self, xs, conds):
+#         return self.probs(xs, conds)
 
 
 class ConditionalMean(Memory):
     """An averaging memory."""
-
     def __init__(self):
         self.conds = []
         self.means = []
@@ -163,7 +163,6 @@ class ConditionalMean(Memory):
 
 class ConditionalDeviance(Memory):
     """A memory for deviance."""
-
     def __init__(self):
         self.mean = ConditionalMean()
 
@@ -185,7 +184,6 @@ class ConditionalDeviance(Memory):
 
 class ConditionalDerivative(Memory):
     """A memory for change."""
-
     def __init__(self, delta_t=1):
         self.conds = []
         self.deltas = []
@@ -227,7 +225,6 @@ class ConditionalDerivative(Memory):
 
 class EfficientConditionalCount(Memory):
     """Forget x when over-capacity"""
-
     def __init__(self, capacity=1):
         if capacity < 1:
             raise ValueError("capacity must be >= 1")
@@ -273,7 +270,6 @@ class EfficientConditionalCount(Memory):
 
 class ForgetfulConditionalCount(Memory):
     """Forget conditions when over-capacity"""
-
     def __init__(self, capacity=1):
         if capacity < 1:
             raise ValueError("capacity must be >= 1")
@@ -339,7 +335,6 @@ class Kernel(Memory):
     For information on its hyperparamers see,
     https://scikit-learn.org/stable/modules/density.html#kernel-density
     """
-
     def __init__(self, **kernel_kwargs):
         self.dist = KernelDensity(**kernel_kwargs)
         self.X = []
@@ -389,7 +384,6 @@ Re-implementation by Andrej Karpathy based on https://arxiv.org/abs/1502.03509
 
 class MaskedLinear(nn.Linear):
     """ same as Linear except has a configurable mask on the weights """
-
     def __init__(self, in_features, out_features, bias=True):
         super().__init__(in_features, out_features, bias)
         self.register_buffer('mask', torch.ones(out_features, in_features))
@@ -460,8 +454,9 @@ class MADE(nn.Module):
         self.m[-1] = np.arange(
             self.nin) if self.natural_ordering else rng.permutation(self.nin)
         for l in range(L):
-            self.m[l] = rng.randint(
-                self.m[l - 1].min(), self.nin - 1, size=self.hidden_sizes[l])
+            self.m[l] = rng.randint(self.m[l - 1].min(),
+                                    self.nin - 1,
+                                    size=self.hidden_sizes[l])
 
         # construct the mask matrices
         masks = [

@@ -3,8 +3,10 @@ import gym
 import cloudpickle
 import numpy as np
 
+from copy import deepcopy
 from scipy.stats import entropy
-from infomercial.memory import ConditionalCount
+# from infomercial.memory import ConditionalCount
+from infomercial.memory import Count
 from infomercial.policy import greedy
 from infomercial.utils import estimate_regret
 
@@ -88,10 +90,21 @@ class Actor(object):
         return action
 
 
-def information_value(p_new, p_old, base=None):
+def information_value(memory_new, memory_old, default, base=None):
     """Calculate information value."""
-    if np.isclose(np.sum(p_old), 0.0):
-        return 0.0  # Hack
+    # Handle empty
+
+    # Find a common set of keys
+    keys = set(memory_new.keys() + memory_old.keys())
+
+    # Get ps
+    p_old = [memory_old(k) for k in keys]
+    p_new = [memory_new(k) for k in keys]
+
+    if np.isclose(np.sum(p_old), 0):
+        return default
+    if np.isclose(np.sum(p_new), 0):
+        return default
 
     return entropy(p_old, qk=p_new, base=base)
 
@@ -141,35 +154,32 @@ def run(env_name='BanditOneHot2-v0',
     env = gym.make(env_name)
     env.seed(seed_value)
     num_actions = env.action_space.n
+    best_action = env.best
+
+    default_reward_value = 0
+    default_info_value = entropy(np.ones(num_actions) / num_actions)
+    E_t = default_info_value
+    R_t = default_reward_value
+
+    visited_states = set()
+    states = list(range(num_actions))
 
     # -
-    default_reward_value = 0  # Null R
-    default_info_value = entropy(np.ones(num_actions) /
-                                 num_actions)  # Uniform p(a)
-
+    # Agents and memories
     critic_R = Critic(env.observation_space.n,
                       default_value=default_reward_value)
     critic_E = Critic(env.observation_space.n,
                       default_value=default_info_value)
-
     actor_R = Actor(num_actions,
                     tie_break='first',
                     tie_threshold=tie_threshold)
     actor_E = Actor(num_actions,
                     tie_break=tie_break,
                     tie_threshold=tie_threshold)
-
-    best_action = env.best
+    memories = [Count() for _ in range(num_actions)]
 
     # -
-    memory = ConditionalCount()
-    visited_states = set()
-    states = list(range(num_actions))
-    E_t = default_info_value
-    R_t = default_reward_value
-
-    # ------------------------------------------------------------------------
-    # Play
+    # Init log
     num_best = 0
     total_R = 0.0
     total_E = 0.0
@@ -182,6 +192,8 @@ def run(env_name='BanditOneHot2-v0',
     p_bests = []
     ties = []
     policies = []
+
+    # ------------------------------------------------------------------------
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -218,39 +230,18 @@ def run(env_name='BanditOneHot2-v0',
         R_t = reward  # Notation consistency
         visited_states.add(action)  # Action is state here
 
-        # Est E
-        cond_sample = [action, action]
-        state_sample = [0, 1]
+        # Estimate E
+        old = deepcopy(memories[action])
+        memories[action].update(reward)
+        new = deepcopy(memories[action])
+        E_t = information_value(new, old, default_info_value)
 
-        p_old = memory.probs(state_sample, cond_sample)
-        memory.update(reward, action)
-        p_new = memory.probs(state_sample, cond_sample)
-
-        if np.isclose(np.sum(p_old), 0.0):
-            info = default_info_value
-        else:
-            info = information_value(p_new, p_old)
-        E_t = info
-
-        # -
-        if debug:
-            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
-            print(f">>> Cond sample: {cond_sample}")
-            print(f">>> State sample: {state_sample}")
-            print(f">>> p_old: {p_old}")
-            print(f">>> p_new: {p_new}")
-            print(f">>> E_t: {E_t}\n")
-
-        # Critic learns
+        # Learning, both policies.
         critic_R = R_update(action, R_t, critic_R, lr_R)
         critic_E = E_update(action, E_t, critic_E, lr=1)
 
         # Log data
         actions.append(action)
-        if actor.tied:
-            ties.append(1)
-        else:
-            ties.append(0)
         total_R += R_t
         total_E += E_t
         scores_E.append(E_t)
@@ -258,9 +249,12 @@ def run(env_name='BanditOneHot2-v0',
         values_E.append(critic_E(action))
         values_R.append(critic_R(action))
         p_bests.append(num_best / (n + 1))
-
-        # -
+        if actor.tied:
+            ties.append(1)
+        else:
+            ties.append(0)
         if debug:
+            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
             print(f">>> critic_R: {critic_R.state_dict()}")
             print(f">>> critic_E: {critic_E.state_dict()}")
         if progress:

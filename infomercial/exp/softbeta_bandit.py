@@ -3,8 +3,9 @@ import gym
 import cloudpickle
 import numpy as np
 
+from copy import deepcopy
 from scipy.stats import entropy
-from infomercial.memory import ConditionalCount
+from infomercial.memory import Count
 from infomercial.policy import greedy
 from infomercial.utils import estimate_regret
 
@@ -101,28 +102,25 @@ def run(env_name='BanditOneHigh2-v0',
     env = gym.make(env_name)
     env.seed(seed_value)
     num_actions = env.action_space.n
-
-    # -
-    default_reward_value = 0  # Null R
-    default_info_value = entropy(
-        np.ones(num_actions) / num_actions)  # Uniform p(a)
-
-    critic = Critic(
-        env.observation_space.n,
-        default_value=default_reward_value + (beta * default_info_value))
-    actor = SoftmaxActor(num_actions, temp=temp, seed_value=seed_value)
-
     best_action = env.best
 
-    # -
-    memory = ConditionalCount()
+    default_reward_value = 0  # Null R
+    default_info_value = entropy(np.ones(num_actions) /
+                                 num_actions)  # Uniform p(a)
+    E_t = default_info_value
+    R_t = default_reward_value
+
     visited_states = set()
     states = list(range(num_actions))
-    E_t = 0.0
-    R_t = 0.0
 
-    # ------------------------------------------------------------------------
-    # Play
+    # Agents and memories
+    critic = Critic(env.observation_space.n,
+                    default_value=default_reward_value +
+                    (beta * default_info_value))
+    actor = SoftmaxActor(num_actions, temp=temp, seed_value=seed_value)
+    memories = [Count() for _ in range(num_actions)]
+
+    # Init log
     total_R = 0.0
     total_E = 0.0
     num_best = 0
@@ -132,6 +130,8 @@ def run(env_name='BanditOneHigh2-v0',
     actions = []
     p_bests = []
     regrets = []
+
+    # ------------------------------------------------------------------------
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -154,27 +154,11 @@ def run(env_name='BanditOneHigh2-v0',
         R_t = reward  # Notation consistency
         visited_states.add(action)  # Action is state here
 
-        # Build memory sampling lists, state:
-        # r in (0,1); cond: bandit code
-        cond_sample = list(visited_states) * 2
-        state_sample = [0] * len(visited_states) + [1] * len(visited_states)
-
-        # Update the memory and est. information value of the state
-        p_old = memory.probs(state_sample, cond_sample)
-        memory.update(reward, action)
-        p_new = memory.probs(state_sample, cond_sample)
-
-        info = information_value(p_new, p_old)
-        E_t = info
-
-        # -
-        if debug:
-            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
-            print(f">>> Cond sample: {cond_sample}")
-            print(f">>> State sample: {state_sample}")
-            print(f">>> p_old: {p_old}")
-            print(f">>> p_new: {p_new}")
-            print(f">>> E_t: {E_t}\n")
+        # Estimate E
+        old = deepcopy(memories[action])
+        memories[action].update(reward)
+        new = deepcopy(memories[action])
+        E_t = information_value(new, old, default_info_value)
 
         # Critic learns
         critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
@@ -187,9 +171,9 @@ def run(env_name='BanditOneHigh2-v0',
         scores_R.append(R_t)
         values.append(critic(action))
         p_bests.append(num_best / (n + 1))
-
-        # -
         if debug:
+            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
+            print(f">>> E_t: {E_t}\n")
             print(f">>> critic: {critic.state_dict()}")
         if progress:
             print(f">>> Episode {n}.")
@@ -199,21 +183,20 @@ def run(env_name='BanditOneHigh2-v0',
     # -
     # Save models to disk when done?
     episodes = list(range(num_episodes))
-    result = dict(
-        best=env.best,
-        lr_R=lr_R,
-        beta=beta,
-        temp=temp,
-        episodes=episodes,
-        actions=actions,
-        p_bests=p_bests,
-        regrets=regrets,
-        critic=critic.state_dict(),
-        total_E=total_E,
-        total_R=total_R,
-        scores_E=scores_E,
-        scores_R=scores_R,
-        values_R=values)
+    result = dict(best=env.best,
+                  lr_R=lr_R,
+                  beta=beta,
+                  temp=temp,
+                  episodes=episodes,
+                  actions=actions,
+                  p_bests=p_bests,
+                  regrets=regrets,
+                  critic=critic.state_dict(),
+                  total_E=total_E,
+                  total_R=total_R,
+                  scores_E=scores_E,
+                  scores_R=scores_R,
+                  values_R=values)
 
     if save is not None:
         save_checkpoint(result, filename=save)

@@ -4,7 +4,7 @@ import cloudpickle
 import numpy as np
 
 from scipy.stats import entropy
-from infomercial.memory import ConditionalCount
+# from infomercial.memory import ConditionalCount
 from infomercial.policy import greedy
 from infomercial.utils import estimate_regret
 
