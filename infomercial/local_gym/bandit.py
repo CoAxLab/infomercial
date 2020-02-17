@@ -210,7 +210,7 @@ class DeceptiveBanditEnv(gym.Env):
         return [0], float(reward), done, {}
 
     def reset(self):
-        self.steps = 0
+        # self.steps = 0
         return [0]
 
     def render(self, mode='human', close=False):
