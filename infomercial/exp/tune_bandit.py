@@ -53,11 +53,10 @@ def train(exp_func=None,
           config=None):
 
     # Run
-    trial = exp_func(
-        env_name=env_name,
-        num_episodes=num_episodes,
-        seed_value=seed_value,
-        **config)
+    trial = exp_func(env_name=env_name,
+                     num_episodes=num_episodes,
+                     seed_value=seed_value,
+                     **config)
 
     # Save metadata
     trial.update({
@@ -97,12 +96,11 @@ def tune_random(name,
         trials.append(result)
 
     # Setup default params
-    params = dict(
-        exp_func=exp_func,
-        env_name=env_name,
-        num_episodes=num_episodes,
-        seed_value=seed_value,
-        config={})
+    params = dict(exp_func=exp_func,
+                  env_name=env_name,
+                  num_episodes=num_episodes,
+                  seed_value=seed_value,
+                  config={})
 
     # ------------------------------------------------------------------------
     # Run!
@@ -120,8 +118,9 @@ def tune_random(name,
 
         # A worker gets the new sample
         workers.append(
-            pool.apply_async(
-                train, kwds=deepcopy(params), callback=append_to_results))
+            pool.apply_async(train,
+                             kwds=deepcopy(params),
+                             callback=append_to_results))
 
     # Get the worker's result (blocks until complete)
     for worker in workers:
@@ -136,16 +135,16 @@ def tune_random(name,
     # Best trial config
     best_config = best["config"]
     best_config.update(get_best_result(trials, 'total_R'))
-    save_checkpoint(
-        best_config, filename=os.path.join(path, name + "_best.pkl"))
+    save_checkpoint(best_config,
+                    filename=os.path.join(path, name + "_best.pkl"))
 
     # Sort and save the configs of all trials
     sorted_configs = {}
     for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
         sorted_configs[i] = trial["config"]
         sorted_configs[i].update({"total_R": trial["total_R"]})
-    save_checkpoint(
-        sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
+    save_checkpoint(sorted_configs,
+                    filename=os.path.join(path, name + "_sorted.pkl"))
 
     return best, trials
 
@@ -180,12 +179,11 @@ def tune_pbt(name,
         trials.append(result)
 
     # Setup default params
-    params = dict(
-        exp_func=exp_func,
-        env_name=env_name,
-        num_episodes=num_episodes,
-        seed_value=seed_value,
-        config={})
+    params = dict(exp_func=exp_func,
+                  env_name=env_name,
+                  num_episodes=num_episodes,
+                  seed_value=seed_value,
+                  config={})
 
     # ------------------------------------------------------------------------
     # Run first set!
@@ -203,8 +201,9 @@ def tune_pbt(name,
 
         # A worker gets the new sample
         workers.append(
-            pool.apply_async(
-                train, kwds=deepcopy(params), callback=append_to_results))
+            pool.apply_async(train,
+                             kwds=deepcopy(params),
+                             callback=append_to_results))
 
     # Get the worker's result (blocks until complete)
     for worker in workers:
@@ -244,8 +243,8 @@ def tune_pbt(name,
 
         # Extend run time
         if extend_episodes:
-            params["num_episodes"] += int(
-                params["num_episodes"] * top_threshold)
+            params["num_episodes"] += int(params["num_episodes"] *
+                                          top_threshold)
             print(f"Update {params['num_episodes']}")
 
         # Re-init the pool
@@ -259,8 +258,9 @@ def tune_pbt(name,
 
             # A worker gets the new sample
             workers.append(
-                pool.apply_async(
-                    train, kwds=deepcopy(params), callback=append_to_results))
+                pool.apply_async(train,
+                                 kwds=deepcopy(params),
+                                 callback=append_to_results))
 
         # Get the worker's result (blocks until complete)
         for worker in workers:
@@ -276,16 +276,16 @@ def tune_pbt(name,
     # Best trial config
     best_config = best["config"]
     best_config.update(get_best_result(trials, 'total_R'))
-    save_checkpoint(
-        best_config, filename=os.path.join(path, name + "_best.pkl"))
+    save_checkpoint(best_config,
+                    filename=os.path.join(path, name + "_best.pkl"))
 
     # Sort and save the configs of all trials
     sorted_configs = {}
     for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
         sorted_configs[i] = trial["config"]
         sorted_configs[i].update({"total_R": trial["total_R"]})
-    save_checkpoint(
-        sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
+    save_checkpoint(sorted_configs,
+                    filename=os.path.join(path, name + "_sorted.pkl"))
 
     return best, trials
 
@@ -320,12 +320,11 @@ def tune_replicator(name,
         trials.append(result)
 
     # Setup default params
-    params = dict(
-        exp_func=exp_func,
-        env_name=env_name,
-        num_episodes=num_episodes,
-        seed_value=seed_value,
-        config={})
+    params = dict(exp_func=exp_func,
+                  env_name=env_name,
+                  num_episodes=num_episodes,
+                  seed_value=seed_value,
+                  config={})
 
     # ------------------------------------------------------------------------
     # Run first population!
@@ -351,8 +350,9 @@ def tune_replicator(name,
 
         # A worker gets the new sample
         workers.append(
-            pool.apply_async(
-                train, kwds=deepcopy(params), callback=append_to_results))
+            pool.apply_async(train,
+                             kwds=deepcopy(params),
+                             callback=append_to_results))
 
     # Get the worker's result (blocks until complete)
     for worker in workers:
@@ -422,8 +422,8 @@ def tune_replicator(name,
 
         # Sample from the meta_population to find a perturbation
         if meta:
-            ith_meta = prng.choice(
-                range(meta_population.size), p=meta_population)
+            ith_meta = prng.choice(range(meta_population.size),
+                                   p=meta_population)
             perturbation = perturbations[ith_meta]
 
             if verbose: print(f">>> perturbation {perturbation} ({ith_meta})")
@@ -479,8 +479,9 @@ def tune_replicator(name,
 
             # A worker gets the new sample
             workers.append(
-                pool.apply_async(
-                    train, kwds=deepcopy(params), callback=append_to_results))
+                pool.apply_async(train,
+                                 kwds=deepcopy(params),
+                                 callback=append_to_results))
 
         # Get the worker's result (blocks until complete)
         for worker in workers:
@@ -516,16 +517,16 @@ def tune_replicator(name,
     # Best trial config
     best_config = best["config"]
     best_config.update(get_best_result(trials, metric))
-    save_checkpoint(
-        best_config, filename=os.path.join(path, name + "_best.pkl"))
+    save_checkpoint(best_config,
+                    filename=os.path.join(path, name + "_best.pkl"))
 
     # Sort and save the configs of all trials
     sorted_configs = {}
     for i, trial in enumerate(get_sorted_trials(trials, metric)):
         sorted_configs[i] = trial["config"]
         sorted_configs[i].update({metric: trial[metric]})
-    save_checkpoint(
-        sorted_configs, filename=os.path.join(path, name + "_sorted.pkl"))
+    save_checkpoint(sorted_configs,
+                    filename=os.path.join(path, name + "_sorted.pkl"))
 
     return best, trials
 
