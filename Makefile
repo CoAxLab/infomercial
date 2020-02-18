@@ -3380,7 +3380,7 @@ exp252:
 			--nice 19 --delay 2 --colsep ',' \
 			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp252_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 			
- -
+# -
 # Random
 
 # BanditOneHigh10
