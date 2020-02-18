@@ -3478,6 +3478,13 @@ exp259:
 
 # RESULTS: exp260 is looks promising in the low eta regime. This matches 
 #          hand tuning. 
+#          exp261 the critic does not learn the best arm
+#          exp262 the critic does not learn the best arm
+#          exp263 the critic does not learn the best arm
+#          The above hold for num_episodes=100. If that is increased to 1000
+#          all the agents solve the task. But this is a much easier task.
+#          Deception doesn't matter really when you have noise and endless 
+#          attempts. That is, for AI. But for animals? For us?
 exp260:
 	tune_bandit.py random $(DATA_PATH)/exp260 \
 		--exp_name='meta_bandit' \
