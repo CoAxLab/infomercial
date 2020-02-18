@@ -3403,3 +3403,63 @@ exp255:
 			--joblog '$(DATA_PATH)/exp255.log' \
 			--nice 19 --delay 2 --colsep ',' \
 			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# ---------------------------------------------------------------------------
+# 2-18-2020
+# 4f6d73c4b3c62f59d777061b3cb839b5cd63d2e9
+#
+# Random tuning for DeceptiveBanditOneHigh10 - round 1
+#
+# Replicator tuning is doing less well than my efforts at hand
+# tuning. Given the replicator is my own experiment in HP, best
+# to now abaonden it and move to something simpler. Plain old
+# random search. 
+# 
+# If this works out I'll need to retune all the other models/agents/tasks.
+
+exp256:
+	tune_bandit.py random $(DATA_PATH)/exp256 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_samples=2500 \
+        --num_episodes=50 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+exp257:
+	tune_bandit.py random $(DATA_PATH)/exp257 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_samples=2500 \
+        --num_episodes=50 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+exp258:
+	tune_bandit.py random $(DATA_PATH)/exp258 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=2500 \
+        --num_episodes=50 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)'
+
+exp259:
+	tune_bandit.py random $(DATA_PATH)/exp259 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=2500 \
+        --num_episodes=50 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
