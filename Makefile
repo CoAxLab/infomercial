@@ -3476,6 +3476,8 @@ exp259:
 # - Increased to num_episodes=100
 # - Tweak search ranges
 
+# RESULTS: exp260 is looks promising in the low eta regime. This matches 
+#          hand tuning. 
 exp260:
 	tune_bandit.py random $(DATA_PATH)/exp260 \
 		--exp_name='meta_bandit' \
