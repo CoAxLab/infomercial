@@ -3422,7 +3422,7 @@ exp256:
 	tune_bandit.py random $(DATA_PATH)/exp256 \
 		--exp_name='meta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-        --num_samples=2500 \
+        --num_samples=5000 \
         --num_episodes=50 \
 		--num_processes=40 \
 		--metric="total_R" \
@@ -3433,7 +3433,7 @@ exp257:
 	tune_bandit.py random $(DATA_PATH)/exp257 \
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-        --num_samples=2500 \
+        --num_samples=5000 \
         --num_episodes=50 \
 		--num_processes=40 \
 		--metric="total_R" \
@@ -3445,7 +3445,7 @@ exp258:
 	tune_bandit.py random $(DATA_PATH)/exp258 \
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-		--num_samples=2500 \
+		--num_samples=5000 \
         --num_episodes=50 \
 		--num_processes=40 \
 		--metric="total_R" \
@@ -3456,7 +3456,7 @@ exp259:
 	tune_bandit.py random $(DATA_PATH)/exp259 \
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
-		--num_samples=2500 \
+		--num_samples=5000 \
         --num_episodes=50 \
 		--num_processes=40 \
 		--metric="total_R" \
