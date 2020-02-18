@@ -4,9 +4,9 @@ import cloudpickle
 import numpy as np
 
 from scipy.stats import entropy
-# from infomercial.memory import ConditionalCount
-from infomercial.policy import greedy
 from infomercial.utils import estimate_regret
+from infomercial.utils import load_checkpoint
+from infomercial.utils import save_checkpoint
 
 from collections import OrderedDict
 
@@ -65,17 +65,6 @@ class Actor(object):
             action = np.argmax(values)
 
         return action
-
-
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
 
 
 def Q_update(state, reward, critic, lr):

@@ -2,6 +2,16 @@ import fire
 import ray
 import os
 from copy import deepcopy
+
+from functools import partial
+from multiprocessing import Pool
+
+import numpy as np
+
+from infomercial import exp
+from infomercial.utils import save_checkpoint
+from infomercial.utils import load_checkpoint
+
 # from ray.tune import sample_from
 # from ray.tune import function
 # from ray.tune import grid_search
@@ -9,16 +19,6 @@ from copy import deepcopy
 # from ray.tune import run as ray_run
 # from ray.tune import Trainable
 # from ray.tune.schedulers import PopulationBasedTraining
-from multiprocessing import Pool
-
-import numpy as np
-from infomercial import exp
-# from infomercial.exp import beta_bandit
-# from infomercial.exp import epsilon_bandit
-from infomercial.exp.meta_bandit import save_checkpoint
-from infomercial.exp.meta_bandit import load_checkpoint
-
-from functools import partial
 
 
 def get_best_trial(trial_list, metric):

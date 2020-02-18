@@ -9,6 +9,33 @@ from collections import deque
 
 from sklearn.neighbors import KernelDensity
 
+import random
+
+
+class ModulusMemory(object):
+    """A very generic memory system, with a finite capacity."""
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.memory = []
+        self.position = 0
+
+    def push(self, *args):
+        """Saves a transition."""
+        if len(self.memory) < self.capacity:
+            self.memory.append(None)
+        self.memory[self.position] = args
+        self.position = (self.position + 1) % self.capacity
+
+    def sample(self, batch_size):
+        return random.sample(self.memory, batch_size)
+
+    def reset(self):
+        self.memory = []
+        self.position = 0
+
+    def __len__(self):
+        return len(self.memory)
+
 
 class Memory(object):
     """Base Memory"""
@@ -27,6 +54,9 @@ class Memory(object):
 
     def __call__(self, x):
         return self.forward(x)
+
+    def __len__(self):
+        pass
 
 
 class Count(Memory):
@@ -56,274 +86,8 @@ class Count(Memory):
     def values(self):
         return list(self.count.values())
 
-
-# class ConditionalCount(Count):
-#     """A conditional discrete distribution."""
-#     def __init__(self):
-#         self.Ns = []
-#         self.conds = []
-#         self.counts = []
-
-#     def __call__(self, x, cond):
-#         return self.forward(x, cond)
-
-#     def keys(self, cond):
-#         if cond in self.conds:
-#             i = self.conds.index(cond)
-#             return list(self.counts[i].keys())
-#         else:
-#             return []
-
-#     def update(self, x, cond):
-#         # Add cond?
-#         if cond not in self.conds:
-#             self.conds.append(cond)
-#             self.counts.append(OrderedDict())
-#             self.Ns.append(0)
-
-#         # Locate cond.
-#         i = self.conds.index(cond)
-
-#         # Update counts for cond
-#         if x in self.counts[i]:
-#             self.counts[i][x] += 1
-#         else:
-#             self.counts[i][x] = 1
-
-#         # Update cond count normalizer
-#         self.Ns[i] += 1
-
-#     def forward(self, x, cond):
-#         # Locate cond.
-#         if cond not in self.conds:
-#             return 0
-#         else:
-#             i = self.conds.index(cond)
-
-#         # Get p(x|cond)
-#         if x not in self.counts[i]:
-#             return 0
-#         elif self.Ns[i] == 0:
-#             return 0
-#         else:
-#             return self.counts[i][x] / self.Ns[i]
-
-#     def probs(self, xs, conds):
-#         p = []
-#         for x, cond in zip(xs, conds):
-#             p.append(self.forward(x, cond))
-#         return p
-
-#     def values(self, xs, conds):
-#         return self.probs(xs, conds)
-
-
-class ConditionalMean(Memory):
-    """An averaging memory."""
-    def __init__(self):
-        self.conds = []
-        self.means = []
-        self.N = 1
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    def update(self, x, cond):
-        # Add cond?
-        if cond not in self.conds:
-            self.conds.append(cond)
-            self.deltas.append(x)
-
-        # Locate cond.
-        i = self.conds.index(cond)
-
-        # Update the mean
-        delta = x - self.means[i]
-        self.means[i] += delta / self.N
-
-        # Update count
-        self.N += 1
-
-    def forward(self, x, cond):
-        # Locate cond.
-        if cond not in self.conds:
-            return 0
-        else:
-            i = self.conds.index(cond)
-
-        # Get the mean
-        return self.means[i]
-
-    def values(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-        return p
-
-
-class ConditionalDeviance(Memory):
-    """A memory for deviance."""
-    def __init__(self):
-        self.mean = ConditionalMean()
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    def update(self, x, cond):
-        self.mean.update(x, cond)
-
-    def forward(self, x, cond):
-        return x - self.mean(x, cond)
-
-    def values(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-        return p
-
-
-class ConditionalDerivative(Memory):
-    """A memory for change."""
-    def __init__(self, delta_t=1):
-        self.conds = []
-        self.deltas = []
-        self.delta_t = delta_t
-        if self.delta_t < 0:
-            raise ValueError("delta_t must be positive")
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    def update(self, x, cond):
-        # Add cond?
-        if cond not in self.conds:
-            self.conds.append(cond)
-            self.deltas.append(x)
-
-        # Locate cond.
-        i = self.conds.index(cond)
-
-        # Update counts for cond
-        self.deltas[i] = x - self.deltas[i]
-
-    def forward(self, x, cond):
-        # Locate cond.
-        if cond not in self.conds:
-            return 0
-        else:
-            i = self.conds.index(cond)
-
-        # Est. the dirative
-        return self.deltas[i] / self.delta_t
-
-    def values(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-        return p
-
-
-class EfficientConditionalCount(Memory):
-    """Forget x when over-capacity"""
-    def __init__(self, capacity=1):
-        if capacity < 1:
-            raise ValueError("capacity must be >= 1")
-        self.capacity = capacity
-        self.conds = []
-        self.datas = []
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    def update(self, x, cond):
-        # Add cond?
-        if cond not in self.conds:
-            self.conds.append(cond)
-            self.datas.append(deque(maxlen=self.capacity))
-
-        # Locate cond.
-        i = self.conds.index(cond)
-
-        # Update
-        self.datas[i].append(x)
-
-    def forward(self, x, cond):
-        # Locate cond.
-        if cond not in self.conds:
-            return 0
-        else:
-            i = self.conds.index(cond)
-
-        count = self.datas[i].count(x)
-        return count / self.capacity
-
-    def probs(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-
-        return p
-
-    def values(self, xs, conds):
-        return self.probs(xs, conds)
-
-
-class ForgetfulConditionalCount(Memory):
-    """Forget conditions when over-capacity"""
-    def __init__(self, capacity=1):
-        if capacity < 1:
-            raise ValueError("capacity must be >= 1")
-
-        self.capacity = capacity
-        self.Ns = deque(maxlen=self.capacity)
-        self.conds = deque(maxlen=self.capacity)
-        self.counts = deque(maxlen=self.capacity)
-
-    def __call__(self, x, cond):
-        return self.forward(x, cond)
-
-    def update(self, x, cond):
-        # Add cond?
-        if cond not in self.conds:
-            self.conds.append(cond)
-            self.counts.append(OrderedDict())
-            self.Ns.append(0)
-
-        # Locate cond.
-        i = self.conds.index(cond)
-
-        # Update counts for cond
-        if x in self.counts[i]:
-            self.counts[i][x] += 1
-        else:
-            self.counts[i][x] = 1
-
-        # Update cond count normalizer
-        self.Ns[i] += 1
-
-    def forward(self, x, cond):
-        # Locate cond.
-        if cond not in self.conds:
-            return 0
-        else:
-            i = self.conds.index(cond)
-
-        # Get p(x|cond)
-        if x not in self.counts[i]:
-            return 0
-        elif self.Ns[i] == 0:
-            return 0
-        else:
-            return self.counts[i][x] / self.Ns[i]
-
-    def probs(self, xs, conds):
-        p = []
-        for x, cond in zip(xs, conds):
-            p.append(self.forward(x, cond))
-        return p
-
-    def values(self, xs, conds):
-        return self.probs(xs, conds)
+    def __len__(self):
+        return len(self.count)
 
 
 class Kernel(Memory):
@@ -372,6 +136,269 @@ class Kernel(Memory):
         # Scores of log(p), but we want p.
         return float(np.exp(self.dist.score_samples(x)))
 
+
+# # class ConditionalCount(Count):
+# #     """A conditional discrete distribution."""
+# #     def __init__(self):
+# #         self.Ns = []
+# #         self.conds = []
+# #         self.counts = []
+
+# #     def __call__(self, x, cond):
+# #         return self.forward(x, cond)
+
+# #     def keys(self, cond):
+# #         if cond in self.conds:
+# #             i = self.conds.index(cond)
+# #             return list(self.counts[i].keys())
+# #         else:
+# #             return []
+
+# #     def update(self, x, cond):
+# #         # Add cond?
+# #         if cond not in self.conds:
+# #             self.conds.append(cond)
+# #             self.counts.append(OrderedDict())
+# #             self.Ns.append(0)
+
+# #         # Locate cond.
+# #         i = self.conds.index(cond)
+
+# #         # Update counts for cond
+# #         if x in self.counts[i]:
+# #             self.counts[i][x] += 1
+# #         else:
+# #             self.counts[i][x] = 1
+
+# #         # Update cond count normalizer
+# #         self.Ns[i] += 1
+
+# #     def forward(self, x, cond):
+# #         # Locate cond.
+# #         if cond not in self.conds:
+# #             return 0
+# #         else:
+# #             i = self.conds.index(cond)
+
+# #         # Get p(x|cond)
+# #         if x not in self.counts[i]:
+# #             return 0
+# #         elif self.Ns[i] == 0:
+# #             return 0
+# #         else:
+# #             return self.counts[i][x] / self.Ns[i]
+
+# #     def probs(self, xs, conds):
+# #         p = []
+# #         for x, cond in zip(xs, conds):
+# #             p.append(self.forward(x, cond))
+# #         return p
+
+# #     def values(self, xs, conds):
+# #         return self.probs(xs, conds)
+
+# class ConditionalMean(Memory):
+#     """An averaging memory."""
+#     def __init__(self):
+#         self.conds = []
+#         self.means = []
+#         self.N = 1
+
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
+
+#     def update(self, x, cond):
+#         # Add cond?
+#         if cond not in self.conds:
+#             self.conds.append(cond)
+#             self.deltas.append(x)
+
+#         # Locate cond.
+#         i = self.conds.index(cond)
+
+#         # Update the mean
+#         delta = x - self.means[i]
+#         self.means[i] += delta / self.N
+
+#         # Update count
+#         self.N += 1
+
+#     def forward(self, x, cond):
+#         # Locate cond.
+#         if cond not in self.conds:
+#             return 0
+#         else:
+#             i = self.conds.index(cond)
+
+#         # Get the mean
+#         return self.means[i]
+
+#     def values(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+#         return p
+
+# class ConditionalDeviance(Memory):
+#     """A memory for deviance."""
+#     def __init__(self):
+#         self.mean = ConditionalMean()
+
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
+
+#     def update(self, x, cond):
+#         self.mean.update(x, cond)
+
+#     def forward(self, x, cond):
+#         return x - self.mean(x, cond)
+
+#     def values(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+#         return p
+
+# class ConditionalDerivative(Memory):
+#     """A memory for change."""
+#     def __init__(self, delta_t=1):
+#         self.conds = []
+#         self.deltas = []
+#         self.delta_t = delta_t
+#         if self.delta_t < 0:
+#             raise ValueError("delta_t must be positive")
+
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
+
+#     def update(self, x, cond):
+#         # Add cond?
+#         if cond not in self.conds:
+#             self.conds.append(cond)
+#             self.deltas.append(x)
+
+#         # Locate cond.
+#         i = self.conds.index(cond)
+
+#         # Update counts for cond
+#         self.deltas[i] = x - self.deltas[i]
+
+#     def forward(self, x, cond):
+#         # Locate cond.
+#         if cond not in self.conds:
+#             return 0
+#         else:
+#             i = self.conds.index(cond)
+
+#         # Est. the dirative
+#         return self.deltas[i] / self.delta_t
+
+#     def values(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+#         return p
+
+# class EfficientConditionalCount(Memory):
+#     """Forget x when over-capacity"""
+#     def __init__(self, capacity=1):
+#         if capacity < 1:
+#             raise ValueError("capacity must be >= 1")
+#         self.capacity = capacity
+#         self.conds = []
+#         self.datas = []
+
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
+
+#     def update(self, x, cond):
+#         # Add cond?
+#         if cond not in self.conds:
+#             self.conds.append(cond)
+#             self.datas.append(deque(maxlen=self.capacity))
+
+#         # Locate cond.
+#         i = self.conds.index(cond)
+
+#         # Update
+#         self.datas[i].append(x)
+
+#     def forward(self, x, cond):
+#         # Locate cond.
+#         if cond not in self.conds:
+#             return 0
+#         else:
+#             i = self.conds.index(cond)
+
+#         count = self.datas[i].count(x)
+#         return count / self.capacity
+
+#     def probs(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+
+#         return p
+
+#     def values(self, xs, conds):
+#         return self.probs(xs, conds)
+
+# class ForgetfulConditionalCount(Memory):
+#     """Forget conditions when over-capacity"""
+#     def __init__(self, capacity=1):
+#         if capacity < 1:
+#             raise ValueError("capacity must be >= 1")
+
+#         self.capacity = capacity
+#         self.Ns = deque(maxlen=self.capacity)
+#         self.conds = deque(maxlen=self.capacity)
+#         self.counts = deque(maxlen=self.capacity)
+
+#     def __call__(self, x, cond):
+#         return self.forward(x, cond)
+
+#     def update(self, x, cond):
+#         # Add cond?
+#         if cond not in self.conds:
+#             self.conds.append(cond)
+#             self.counts.append(OrderedDict())
+#             self.Ns.append(0)
+
+#         # Locate cond.
+#         i = self.conds.index(cond)
+
+#         # Update counts for cond
+#         if x in self.counts[i]:
+#             self.counts[i][x] += 1
+#         else:
+#             self.counts[i][x] = 1
+
+#         # Update cond count normalizer
+#         self.Ns[i] += 1
+
+#     def forward(self, x, cond):
+#         # Locate cond.
+#         if cond not in self.conds:
+#             return 0
+#         else:
+#             i = self.conds.index(cond)
+
+#         # Get p(x|cond)
+#         if x not in self.counts[i]:
+#             return 0
+#         elif self.Ns[i] == 0:
+#             return 0
+#         else:
+#             return self.counts[i][x] / self.Ns[i]
+
+#     def probs(self, xs, conds):
+#         p = []
+#         for x, cond in zip(xs, conds):
+#             p.append(self.forward(x, cond))
+#         return p
+
+#     def values(self, xs, conds):
+#         return self.probs(xs, conds)
 
 # ----------------------------------------------------------------------------
 """

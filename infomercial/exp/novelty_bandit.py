@@ -4,17 +4,14 @@ import cloudpickle
 import numpy as np
 
 from scipy.stats import entropy
-# from infomercial.memory import ConditionalCount
-from infomercial.policy import greedy
-from infomercial.utils import estimate_regret
-
 from collections import OrderedDict
 
+from infomercial.utils import estimate_regret
+from infomercial.utils import save_checkpoint
+from infomercial.utils import load_checkpoint
 from infomercial.exp.epsilon_bandit import Q_update
 from infomercial.exp.epsilon_bandit import Actor
 from infomercial.exp.epsilon_bandit import Critic
-from infomercial.exp.epsilon_bandit import save_checkpoint
-from infomercial.exp.epsilon_bandit import load_checkpoint
 
 
 def run(env_name='BanditOneHot2-v0',

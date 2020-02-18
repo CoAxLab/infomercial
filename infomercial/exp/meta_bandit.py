@@ -1,16 +1,17 @@
 import fire
 import gym
-import cloudpickle
+
 import numpy as np
 
 from copy import deepcopy
 from scipy.stats import entropy
-# from infomercial.memory import ConditionalCount
-from infomercial.memory import Count
-from infomercial.policy import greedy
-from infomercial.utils import estimate_regret
-
 from collections import OrderedDict
+
+from infomercial.memory import Count
+from infomercial.distance import kl
+from infomercial.utils import estimate_regret
+from infomercial.utils import load_checkpoint
+from infomercial.utils import save_checkpoint
 
 
 class Critic(object):
@@ -88,36 +89,6 @@ class Actor(object):
             raise ValueError("tie_break must be 'first' or 'next'")
 
         return action
-
-
-def information_value(memory_new, memory_old, default, base=None):
-    """Calculate information value."""
-    # Handle empty
-
-    # Find a common set of keys
-    keys = set(memory_new.keys() + memory_old.keys())
-
-    # Get ps
-    p_old = [memory_old(k) for k in keys]
-    p_new = [memory_new(k) for k in keys]
-
-    if np.isclose(np.sum(p_old), 0):
-        return default
-    if np.isclose(np.sum(p_new), 0):
-        return default
-
-    return entropy(p_old, qk=p_new, base=base)
-
-
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
 
 
 def R_update(state, reward, critic, lr):
@@ -234,7 +205,7 @@ def run(env_name='BanditOneHot2-v0',
         old = deepcopy(memories[action])
         memories[action].update(reward)
         new = deepcopy(memories[action])
-        E_t = information_value(new, old, default_info_value)
+        E_t = kl(new, old, default_info_value)
 
         # Learning, both policies.
         critic_R = R_update(action, R_t, critic_R, lr_R)

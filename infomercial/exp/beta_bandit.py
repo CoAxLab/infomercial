@@ -3,12 +3,15 @@ import gym
 import cloudpickle
 import numpy as np
 
-from scipy.stats import entropy
-# from infomercial.memory import ConditionalCount
-from infomercial.policy import greedy
-from infomercial.utils import estimate_regret
-
 from collections import OrderedDict
+from scipy.stats import entropy
+from copy import deepcopy
+
+from infomercial.distance import kl
+from infomercial.memory import Count
+from infomercial.utils import estimate_regret
+from infomercial.utils import save_checkpoint
+from infomercial.utils import load_checkpoint
 
 
 class Critic(object):
@@ -84,25 +87,6 @@ class Actor(object):
         return action
 
 
-def information_value(p_new, p_old, base=None):
-    """Calculate information value."""
-    if np.isclose(np.sum(p_old), 0.0):
-        return 0.0  # Hack
-
-    return entropy(p_old, qk=p_new, base=base)
-
-
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
-
-
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
@@ -129,30 +113,27 @@ def run(env_name='BanditOneHigh2-v0',
     env = gym.make(env_name)
     env.seed(seed_value)
     num_actions = env.action_space.n
+    best_action = env.best
 
-    # -
     default_reward_value = 0  # Null R
     default_info_value = entropy(np.ones(num_actions) /
                                  num_actions)  # Uniform p(a)
+    E_t = default_info_value
+    R_t = default_reward_value
 
+    visited_states = set()
+    states = list(range(num_actions))
+
+    # Agents and memories
     critic = Critic(env.observation_space.n,
                     default_value=default_reward_value +
                     (beta * default_info_value))
     actor = Actor(num_actions,
                   tie_break=tie_break,
                   tie_threshold=tie_threshold)
+    memories = [Count() for _ in range(num_actions)]
 
-    best_action = env.best
-
-    # -
-    memory = ConditionalCount()
-    visited_states = set()
-    states = list(range(num_actions))
-    E_t = 0.0
-    R_t = 0.0
-
-    # ------------------------------------------------------------------------
-    # Play
+    # Init log
     total_R = 0.0
     total_E = 0.0
     num_best = 0
@@ -163,6 +144,8 @@ def run(env_name='BanditOneHigh2-v0',
     p_bests = []
     regrets = []
     ties = []
+
+    # ------------------------------------------------------------------------
     for n in range(num_episodes):
         if debug:
             print(f"\n>>> Episode {n}")
@@ -185,27 +168,11 @@ def run(env_name='BanditOneHigh2-v0',
         R_t = reward  # Notation consistency
         visited_states.add(action)  # Action is state here
 
-        # Build memory sampling lists, state:
-        # r in (0,1); cond: bandit code
-        cond_sample = list(visited_states) * 2
-        state_sample = [0] * len(visited_states) + [1] * len(visited_states)
-
-        # Update the memory and est. information value of the state
-        p_old = memory.probs(state_sample, cond_sample)
-        memory.update(reward, action)
-        p_new = memory.probs(state_sample, cond_sample)
-
-        info = information_value(p_new, p_old)
-        E_t = info
-
-        # -
-        if debug:
-            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
-            print(f">>> Cond sample: {cond_sample}")
-            print(f">>> State sample: {state_sample}")
-            print(f">>> p_old: {p_old}")
-            print(f">>> p_new: {p_new}")
-            print(f">>> E_t: {E_t}\n")
+        # Estimate E
+        old = deepcopy(memories[action])
+        memories[action].update(reward)
+        new = deepcopy(memories[action])
+        E_t = kl(new, old, default_info_value)
 
         # Critic learns
         critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
@@ -222,9 +189,8 @@ def run(env_name='BanditOneHigh2-v0',
         scores_R.append(R_t)
         values.append(critic(action))
         p_bests.append(num_best / (n + 1))
-
-        # -
         if debug:
+            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
             print(f">>> critic: {critic.state_dict()}")
         if progress:
             print(f">>> Episode {n}.")

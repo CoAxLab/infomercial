@@ -5,11 +5,14 @@ import numpy as np
 
 from copy import deepcopy
 from scipy.stats import entropy
-from infomercial.memory import Count
-from infomercial.policy import greedy
-from infomercial.utils import estimate_regret
 
 from collections import OrderedDict
+
+from infomercial.memory import Count
+from infomercial.utils import estimate_regret
+from infomercial.utils import save_checkpoint
+from infomercial.utils import load_checkpoint
+from infomercial.distance import kl
 
 
 class Critic(object):
@@ -56,25 +59,6 @@ class SoftmaxActor(object):
         action = self.prng.choice(self.actions, p=ps)
 
         return action
-
-
-def information_value(p_new, p_old, base=None):
-    """Calculate information value."""
-    if np.isclose(np.sum(p_old), 0.0):
-        return 0.0  # Hack
-
-    return entropy(p_old, qk=p_new, base=base)
-
-
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
 
 
 def Q_update(state, reward, critic, lr):
@@ -158,7 +142,7 @@ def run(env_name='BanditOneHigh2-v0',
         old = deepcopy(memories[action])
         memories[action].update(reward)
         new = deepcopy(memories[action])
-        E_t = information_value(new, old, default_info_value)
+        E_t = kl(new, old, default_info_value)
 
         # Critic learns
         critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
