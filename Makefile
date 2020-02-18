@@ -3250,3 +3250,156 @@ exp237:
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.000000001, 0.1)' \
 		--lr_R='(0.000000001, 0.2)' 
+
+# ----------------------------------------------------------------------------
+# 2-17-20
+# 4f6d73c4b3c62f59d777061b3cb839b5cd63d2e9
+#
+# Redesigned slightly the memory model and how E is calculated for meta
+# and the beta variations. Re-running those on the standard four bandits.
+# Though the TwoHigh condition is dropped. So that is the three standard 
+# bandits now. Two will be replaced in the paper by a Deception exp.
+
+# Meta
+# BanditOneHigh10
+exp238:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp238.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp238_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp239:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp239.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00355 --lr_R=0.147 --save=$(DATA_PATH)/exp239_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# HardAndSparse10
+exp240:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp240.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp240_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# beta:
+# BanditOneHigh10
+exp241:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp241.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.22 --lr_R=0.18 --save=$(DATA_PATH)/exp241_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp242:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp242.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --beta=0.056 --lr_R=0.141 --save=$(DATA_PATH)/exp242_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# HardAndSparse10
+exp243:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp243.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp243_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# softbeta
+# BanditOneHigh10
+exp244:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp244.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp244_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp245:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp245.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0.125 --lr_R=0.174 --temp=0.0811 --save=$(DATA_PATH)/exp245_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# HardAndSparse10
+exp246:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp246.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp246_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# ----------------------------------------------------------------------------
+# For the sake of having everything run from the same commit, I am also 
+# re-running the ep and random models now...
+
+# -
+# ep
+
+# BanditOneHigh10
+exp247:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp247.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp247_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp248:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp248.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.0117 --lr_R=0.137 --save=$(DATA_PATH)/exp248_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# HardAndSparse10
+exp249:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp249.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp249_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# -
+# anneal-ep
+
+# BanditOneHigh10
+exp250:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp250.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp250_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp251:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp251.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.850 --lr_R=0.173 --epsilon_decay_tau=0.00777 --save=$(DATA_PATH)/exp251_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# HardAndSparse10
+exp252:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp252.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp252_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			
+ -
+# Random
+
+# BanditOneHigh10
+exp253:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp253.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp253_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditUniform121
+exp254:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp254.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp254_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# BanditHardAndSparse10
+exp255:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp255.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
