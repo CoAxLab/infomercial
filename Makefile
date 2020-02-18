@@ -3538,6 +3538,19 @@ exp263:
 #
 # It won't be worth using this in the paper. Explanation burden. Unless for
 # some reason it does A LOT better. This looks unlikely.
+#
+# RESULTS: exp264 the replicator version of 260 looks quite a bit stronger
+#          for consistency (there are many models near 40 total R). exp260
+#          only had 1-3 models near this best point. Peak performance between
+#          the two methods is looking the same. To a first pass analysis.
+#
+#          In comparison exp265 (replicator) and exp261 (random) look about 
+#          the same. Both in peak AND consistency. I'd need to run A LOT more
+#          samples of both to claim this as a result though. Run a 100000
+#          sample versions?
+# 
+# 		   A similiar no improvement trend held between 262/6 and 263/7.
+# 		   Again need a large N run.
 exp264:
 	tune_bandit.py replicator $(DATA_PATH)/exp264 \
 		--exp_name='meta_bandit' \
