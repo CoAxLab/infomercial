@@ -3189,3 +3189,64 @@ exp233:
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.000000001, 0.1)' \
 		--lr_R='(0.000000001, 0.2)' 
+
+# ----------------------------------------------------------------------------
+# 2-17-2020
+# 94892aeeccb4ee46c0643c9523aacebda92e5121 
+#
+# RERUN after FIX 
+# Replicator HP tuning - round 3 - DeceptiveBanditOneHigh10
+
+exp234:
+	tune_bandit.py replicator $(DATA_PATH)/exp234 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_iterations=100 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+exp235:
+	tune_bandit.py replicator $(DATA_PATH)/exp235 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_iterations=100 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--beta='(1e-3, 3)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+exp236:
+	tune_bandit.py replicator $(DATA_PATH)/exp236 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_iterations=100 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)'
+
+exp237:
+	tune_bandit.py replicator $(DATA_PATH)/exp237 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_iterations=100 \
+        --num_episodes=50 \
+		--num_replicators=800 \
+		--num_processes=40 \
+		--perturbation=0.05 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
