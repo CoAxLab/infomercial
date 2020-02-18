@@ -3418,6 +3418,10 @@ exp255:
 # 
 # If this works out I'll need to retune all the other models/agents/tasks.
 
+# RESULT: only looked at meta, which I know from hand tuning can find the right
+#         best arm. The others can't. Again, by hand. Though this seems robust
+#         enough when I putter I take it seriously. 
+#         Perhaps num_episodes is too small? Let's double it and try again.
 exp256:
 	tune_bandit.py random $(DATA_PATH)/exp256 \
 		--exp_name='meta_bandit' \
@@ -3458,6 +3462,60 @@ exp259:
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=5000 \
         --num_episodes=50 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+# ---------------------------------------------------------------------------
+# 2-18-2020
+# 4f6d73c4b3c62f59d777061b3cb839b5cd63d2e9
+#
+# Random tuning for DeceptiveBanditOneHigh10 - round 2
+# - Increased to num_episodes=100
+# - Tweak search ranges
+
+exp260:
+	tune_bandit.py random $(DATA_PATH)/exp260 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_samples=5000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--tie_threshold='(1e-6, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+exp261:
+	tune_bandit.py random $(DATA_PATH)/exp261 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_samples=5000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(2e-3, 20)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
+
+exp262:
+	tune_bandit.py random $(DATA_PATH)/exp262 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=5000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)'
+
+exp263:
+	tune_bandit.py random $(DATA_PATH)/exp263 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=5000 \
+        --num_episodes=100 \
 		--num_processes=40 \
 		--metric="total_R" \
 		--epsilon='(0.01, 0.99)' \
