@@ -14,6 +14,7 @@ library(readr)
 library(latex2exp)
 library(MASS) 
 library(scales)
+library(tikzDevice)
 
 options(scipen=1000000)
 
@@ -21,12 +22,6 @@ kl_divergence <- function(p, q) {
   sum(p * log(p/q))
 }
 ```
-
-# Tikz example
-library(tikzDevice)
-tikz(file = "plot_test.tex", width = 5, height = 5)
-plot(fig3)
-dev.off()
 
 
 # Load data
@@ -147,7 +142,9 @@ rm(tmp)
 This is dummy section; see image itself.
 
 # Fig - Simple 10 cartoon
-```{r, fig.height=0.8, fig.width=0.7}
+```{r, fig.height=0.8, fig.width=0.7, fig.}
+fig <- NULL
+
 bandit %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
@@ -158,11 +155,28 @@ bandit %>%
   scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
   labs(x="Arm", y="Average\nReward") +
   coord_flip() -> bandit1
-bandit1 + plot_annotation(title="Simple 10")
+
+fig <- bandit1 + plot_annotation(title="Simple 10")
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "simple10-bandit"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Simple 10 value example
 ```{r, fig.height=0.8, fig.width=1.2}
+fig <- NULL
 value_traces %>% 
   filter(n==3) %>% 
   filter(episodes < 100) %>% 
@@ -172,11 +186,28 @@ value_traces %>%
   labs(x="Trial", y="log Value", title="Dual value dynamics") + 
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) -> value1
-value1
+
+fig <- value1
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "simple10-value_example"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*0.8, width = 2*1.2)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*1.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*0.8, width = 2*1.2, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Simple 10 exploration examples
 ```{r, fig.height=2.4, fig.width=2.6}
+fig <- NULL
 value_traces %>% 
   filter(n < 10) %>%
   filter(episodes < 100) %>% 
@@ -230,12 +261,28 @@ example_traces %>%
   geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.95) +
   theme() -> p3
 
-p1 + p2 + p3 +
+fig <- p1 + p2 + p3 +
   plot_annotation(tag_levels = 'a', tag_suffix = ".") 
+
+# -----------------------------------------------------------------------------------
+name <- "simple10-exploration_example"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.4, width = 2*2.6)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.4, width = 2*2.6, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*2.4, width = 2*2.6, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Simple 10 results
 ```{r, fig.height=1.4, fig.width=1.2}
+fig <- NULL
+
 total %>% 
   filter(env == "BanditOneHigh10-v0") %>% 
   group_by(agents, env) %>% 
@@ -276,12 +323,28 @@ total %>%
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> regret1
 
-(reward1 / regret1) +
+fig <- (reward1 / regret1) +
   plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Simple 10") 
+
+# -----------------------------------------------------------------------------------
+name <- "simple10-results"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.4, width = 2*1.2)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.4, width = 2*1.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.4, width = 2*1.2, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Random 121 cartoon
 ```{r, fig.height=2, fig.width=0.75}
+fig <- NULL
+
 bandit %>% 
   filter(env == "BanditUniform121-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
@@ -292,11 +355,28 @@ bandit %>%
   scale_x_discrete(breaks=c(1, 121), labels=c(1, 121)) +
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> bandit2
-bandit2 + plot_annotation(title="Random 121")
+
+fig <- bandit2 + plot_annotation(title="Random 121")
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "random121-bandit"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.0, width = 2*0.75)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.0, width = 2*0.75, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*2.0, width = 2*0.75, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Random 121 results
 ```{r, fig.height=1.4, fig.width=1.2}
+fig <- NULL
+
 total %>% 
   filter(env == "BanditUniform121-v0") %>% 
   group_by(agents, env) %>% 
@@ -337,12 +417,29 @@ total %>%
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> regret2
 
-(reward2 / regret2) +
+fig <- (reward2 / regret2) +
   plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Random 121") 
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "random121-results"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.4, width = 2*1.2)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.4, width = 2*1.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.4, width = 2*1.2, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Sparse 10 cartoon
 ```{r, fig.height=0.8, fig.width=0.7}
+fig <- NULL
+
 bandit %>% 
   filter(env == "BanditHardAndSparse10-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
@@ -353,11 +450,27 @@ bandit %>%
   scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> bandit3
-bandit3 + plot_annotation(title="Sparse 10")
+fig <- bandit3 + plot_annotation(title="Sparse 10")
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "sparse10-bandit"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*0.8, width = 2*0.7)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Sparse 10 results
 ```{r, fig.height=1.6, fig.width=1.2}
+fig <- NULL
+
 total %>% 
   # Stats
   filter(env == "BanditHardAndSparse10-v0") %>% 
@@ -398,12 +511,28 @@ total %>%
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> regret3
 
-(reward3 / regret3) +
+fig <- (reward3 / regret3) +
   plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Sparse 10") 
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "sparse121-results"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.6, width = 2*1.2)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.6, width = 2*1.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.6, width = 2*1.2, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Fig - Deception 10 cartoon
 ```{r, fig.height=2.4, fig.width=1.1}
+fig <- NULL
+
 deception_value <- data.frame(
   max_value=c(
     rev(seq(0,1,.1)), 
@@ -452,13 +581,29 @@ deception_expected_value %>%
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> expected4
 
-(bandit4 / value4 / expected4) + 
+fig <- (bandit4 / value4 / expected4) + 
   plot_annotation(tag_levels = 'a', tag_suffix = ".", title="Deception 10") 
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "deception-10-cartoon"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.4, width = 2*1.1)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.4, width = 2*1.1, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*2.4, width = 2*1.1, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
 
 # Supplementary 
 ## Subfig1 - World model and distance
-```{r, fig.width=2.2, fig.height=1, message=FALSE}
+```{r, fig.height=1, fig.width=2.2, message=FALSE}
+fig <- NULL
+
 # Set seed for consisten Fig.
 set.seed(3124)
 
@@ -474,10 +619,10 @@ example_memory <- data.frame(arms=1:10, p_reward=ps)
 
 example_memory %>% 
   ggplot(aes(x=as.factor(arms), y=p_reward)) +
-  geom_bar(stat="identity", width=0.6, position = "dodge", fill="darkorchid4") +
+  geom_bar(stat="identity", width=0.6, position = "dodge", fill="black") +
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) +
-  labs(x="Arm", y="Reward prob.", title="World model", tag="A") +
+  labs(x="Arm", y="Reward prob.", title="World model", tag="a.") +
   scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> memory1
 
 # ------------------------------------------------------------
@@ -514,10 +659,22 @@ flux %>%
   geom_line(size=1.25, color="darkorchid4") +
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) +
-  labs(x="Total change in prob.", y="KL", title="Distance", tag="B") -> distance1
+  labs(x="Total change in prob.", y="KL", title="Distance", tag="b.") -> distance1
 
-# ------------------------------------------------------
-# BUILD
-subfig1 <- grid.arrange(memory1, distance1, nrow=1)
-ggsave("img/subfig1.png", subfig1, width=2.2*2, height=1.0*2)
+fig <- memory1 + distance1 +
+  plot_annotation(tag_levels = 'a', tag_suffix = ".") 
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "world_model-cartoon"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.0, width = 2*2.2)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.0, width = 2*2.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.0, width = 2*2.2, standAlone = FALSE)
+plot(fig)
+dev.off()
 ```
