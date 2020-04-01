@@ -3551,6 +3551,9 @@ exp263:
 # 
 # 		   A similiar no improvement trend held between 262/6 and 263/7.
 # 		   Again need a large N run.
+#          
+#          A this point a large N random run seems like a safe bet. It
+#          would be easier to explain and the best models are the same-ish.
 exp264:
 	tune_bandit.py replicator $(DATA_PATH)/exp264 \
 		--exp_name='meta_bandit' \
@@ -3604,3 +3607,67 @@ exp267:
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.000000001, 0.1)' \
 		--lr_R='(0.000000001, 0.2)' 
+
+# --------------------------------------------------------------------------
+# 4-1-2020
+#
+#
+# For UCSD talk I need a set of results for Deception10. The replicator are
+# the most reliable looking, so run the best of those in n=100 
+#
+# Copy best params from the analysis ipynb notebooks:
+# exp264:
+# {'tie_threshold': 0.0014841871547063938,
+#  'lr_R': 0.351967767293941,
+#  'total_R': 46.0}
+# exp265:
+# {'beta': 0.3119265393399749,
+#  'lr_R': 0.1862363578566501,
+#  'temp': 0.08251127278311668,
+#  'total_R': 32.111111111111114}
+# exp266:
+# {'epsilon': 0.011348183941763144, 
+#  'lr_R': 0.11581362623794718,
+#  'total_R': 31.0}
+# exp267:
+# {'epsilon': 0.08053999525431153,
+#  'epsilon_decay_tau': 0.039934523969666534,
+#  'lr_R': 0.10524012976913527,
+#  'total_R': 33.0}
+
+# meta - sample results from exp264 best_params
+exp269:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp269.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0014 --lr_R=0.35 --save=$(DATA_PATH)/exp269_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# ep - sample results from exp266 best_params
+exp270:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp270.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.011 --lr_R=0.115 --save=$(DATA_PATH)/exp270_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+
+# anneal - sample results from exp267 best_params
+exp271:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp271.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.080 --epsilon_decay_tau=0.039 --lr_R=0.10 --save=$(DATA_PATH)/exp271_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# softbeta - sample results from exp265 best_params
+exp272:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp272.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0.31 --lr_R=0.18 --temp=0.082 --save=$(DATA_PATH)/exp272_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+
+# random - just run 100. (There is nothing to tune.)
+exp273:
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp273.log' \
+			--nice 19 --delay 2 --colsep ',' \
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --save=$(DATA_PATH)/exp273_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+		
