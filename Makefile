@@ -3382,7 +3382,6 @@ exp252:
 			
 # -
 # Random
-
 # BanditOneHigh10
 exp253:
 	parallel -j 40 \
@@ -3395,14 +3394,14 @@ exp254:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp254.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp254_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500  --lr_R=0.1 --save=$(DATA_PATH)/exp254_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 exp255:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp255.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 
 
 # ---------------------------------------------------------------------------
