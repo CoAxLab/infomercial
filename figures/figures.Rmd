@@ -96,14 +96,14 @@ rm(
   example_trace12
 )
 ```
-```{r}
-# ----------------------------------------------------------------------------
-# Load all data
+```{r, message=FALSE}
+bandit_names <- c("BanditOneHigh10-v0", "DeceptiveBanditOneHigh10-v0", "BanditUniform121-v0",
+                  "BanditHardAndSparse10-v0")
+
 traces <- NULL
 total <- NULL
 critic <- NULL
 bandit <- NULL
-bandit_names <- c("BanditOneHigh10-v0", "BanditTwoHigh10-v0", "BanditUniform121-v0", "BanditHardAndSparse10-v0")
 for(bandit_name in bandit_names){
   tmp <- read_csv(paste(data_path, "table_total_", bandit_name, ".csv", sep=""))
   tmp$env <- rep(bandit_name, nrow(tmp))
@@ -120,26 +120,61 @@ for(bandit_name in bandit_names){
 
 # Set agent order
 total$agents <- factor(total$agents, 
-                       levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+                       levels=rev(c("eta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 critic$agents <- factor(critic$agents, 
-                        levels=rev(c("eta", "beta", "softbeta", "epsilon", "anneal-epsilon", "random")))
+                        levels=rev(c("eta", "softbeta", "epsilon", "anneal-epsilon", "random")))
 
-paper_names <- c("Dual value", "Bayesian (det.)", "Bayesian", "E-greedy", "Anneal-E", "Random")
+paper_names <- c("dual value", "bayesian", "e-greedy", "anneal-e", "random")
 total$agents <- recode(total$agents, 
                        eta=paper_names[1], 
-                       beta=paper_names[2], 
-                       softbeta=paper_names[3], 
-                       epsilon=paper_names[4], 
-                       'anneal-epsilon'=paper_names[5], 
-                       random=paper_names[6])
+                       softbeta=paper_names[2], 
+                       epsilon=paper_names[3], 
+                       'anneal-epsilon'=paper_names[4], 
+                       random=paper_names[5])
 
-# Drop Beta det.
-total <- filter(total, agents != "Bayesian (det.)")
 rm(tmp)
 ```
 
 # Fig - Bee cartoon
 This is dummy section; see image itself.
+
+# Fig - Generic 10 cartoon
+Create and plot a generic 10 armed bandit used only to explain the task.
+```{r, fig.height=0.8, fig.width=0.7, fig.}
+fig <- NULL
+generic <- data.frame(arms=0:9, p_reward=runif(10, min=0.1, max=0.6))
+generic$p_reward[8] <- 0.8
+
+generic %>% 
+  ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_bar(stat="identity", width=0.6, fill="black") +
+  geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.9) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
+  scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
+  labs(x="Arm", y="Average\nReward") +
+  coord_flip() -> bandit1
+
+fig <- bandit1 +
+  plot_annotation(title = "Payout",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "generic10-bandit"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*0.8, width = 2*0.7)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = FALSE)
+plot(fig)
+dev.off()
+```
 
 # Fig - Simple 10 cartoon
 ```{r, fig.height=0.8, fig.width=0.7, fig.}
@@ -149,21 +184,24 @@ bandit %>%
   filter(env == "BanditOneHigh10-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
   geom_bar(stat="identity", width=0.6, fill="black") +
-  geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.05) +
+  geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.9) +
   theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
   scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
   labs(x="Arm", y="Average\nReward") +
   coord_flip() -> bandit1
 
-fig <- bandit1 + plot_annotation(title="Simple 10")
+fig <- bandit1 +
+  plot_annotation(title = "Simple 10",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
 plot(fig)
 
 # -----------------------------------------------------------------------------------
 name <- "simple10-bandit"
 
 # Save a png
-ggsave(paste(name, ".png", sep=""), plot=fig)
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*0.8, width = 2*0.7)
 
 # Save a tex
 tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = TRUE)
@@ -183,11 +221,13 @@ value_traces %>%
   ggplot(aes(x=episodes, y=log10(values_R))) +
   geom_point(size=0.5, color="black", alpha=.9) +
   geom_point(aes(x=episodes, y=log10(values_E)), size=0.5, color="darkorchid4", alpha=.9) +
-  labs(x="Trial", y="log Value", title="Dual value dynamics") + 
+  labs(x="Trial", y="log Value") + 
   theme_classic() +
   theme(plot.tag = element_text(size=14, face="bold")) -> value1
 
-fig <- value1
+fig <- value1 +
+  plot_annotation(title = "Dual value in action",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
 plot(fig)
 
 # -----------------------------------------------------------------------------------
@@ -206,14 +246,15 @@ dev.off()
 ```
 
 # Fig - Simple 10 exploration examples
-```{r, fig.height=2.4, fig.width=2.6}
+## n=10
+```{r, fig.height=3.2, fig.width=2.6}
 fig <- NULL
 value_traces %>% 
   filter(n < 10) %>%
-  filter(episodes < 100) %>% 
+  filter(episodes < 50) %>% 
   ggplot(aes(x=episodes, y=arms+1)) +
-  geom_point(size=0.01, color="black") + 
-  labs(x="Trial", y="Arm", title="Dual value") +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="dual value") +
   scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
   facet_wrap(.~n, ncol=1) +
   theme_classic() +
@@ -228,10 +269,10 @@ value_traces %>%
 example_traces %>% 
   filter(env == "BanditOneHigh10-v0", agents=="epsilon") %>% 
   filter(n < 10) %>%
-  filter(episodes < 100) %>% 
+  filter(episodes < 50) %>% 
   ggplot(aes(x=episodes, y=arms+1)) +
-  geom_point(size=0.01, color="black") + 
-  labs(x="Trial", y="Arm", title="E-greedy") +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="e-greedy") +
   scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
   facet_wrap(.~n, ncol=1) +
   theme_classic() +
@@ -246,10 +287,10 @@ example_traces %>%
 example_traces %>% 
   filter(env == "BanditOneHigh10-v0", agents=="softbeta") %>% 
   filter(n < 10) %>%
-  filter(episodes < 100) %>% 
+  filter(episodes < 50) %>% 
   ggplot(aes(x=episodes, y=arms+1)) +
-  geom_point(size=0.01, color="black") + 
-  labs(x="Trial", y="Arm", title="Bayesian") +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="bayesian") +
   scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
   facet_wrap(.~n, ncol=1) +
   theme_classic() +
@@ -262,19 +303,99 @@ example_traces %>%
   theme() -> p3
 
 fig <- p1 + p2 + p3 +
-  plot_annotation(tag_levels = 'a', tag_suffix = ".") 
+  plot_annotation(tag_levels = 'a', tag_suffix = ".") + 
+  plot_annotation(title = "Exploration in action",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
+plot(fig)
 
 # -----------------------------------------------------------------------------------
-name <- "simple10-exploration_example"
+name <- "simple10-exploration_example_n10"
 
 # Save a png
-ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.4, width = 2*2.6)
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*3.2, width = 2*2.6)
 
 # Save a tex
-tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.4, width = 2*2.6, standAlone = TRUE)
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*3.2, width = 2*2.6, standAlone = TRUE)
 plot(fig)
 dev.off()
-tikz(file = paste(name, ".tex", sep=""), height = 2*2.4, width = 2*2.6, standAlone = FALSE)
+tikz(file = paste(name, ".tex", sep=""), height = 2*3.2, width = 2*2.6, standAlone = FALSE)
+plot(fig)
+dev.off()
+```
+
+## n=6
+```{r, fig.height=2, fig.width=2.6}
+fig <- NULL
+value_traces %>% 
+  filter(n < 6) %>%
+  filter(episodes < 50) %>% 
+  ggplot(aes(x=episodes, y=arms+1)) +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="dual value") +
+  scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
+  facet_wrap(.~n, ncol=1) +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(panel.spacing = unit(.35, "lines"),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.95) +
+  theme() -> p1
+
+example_traces %>% 
+  filter(env == "BanditOneHigh10-v0", agents=="epsilon") %>% 
+  filter(n < 6) %>%
+  filter(episodes < 50) %>% 
+  ggplot(aes(x=episodes, y=arms+1)) +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="e-greedy") +
+  scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
+  facet_wrap(.~n, ncol=1) +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(panel.spacing = unit(.35, "lines"),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.95) +
+  theme() -> p2
+
+example_traces %>% 
+  filter(env == "BanditOneHigh10-v0", agents=="softbeta") %>% 
+  filter(n < 6) %>%
+  filter(episodes < 50) %>% 
+  ggplot(aes(x=episodes, y=arms+1)) +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trial", y="Arm choice", title="bayesian") +
+  scale_y_continuous(breaks=c(1, 10), labels=c(1,10)) +
+  facet_wrap(.~n, ncol=1) +
+  theme_classic() +
+  theme(plot.tag = element_text(size=14, face="bold")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(panel.spacing = unit(.35, "lines"),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  geom_hline(aes(yintercept=8), color="red", size=.1, alpha=0.95) +
+  theme() -> p3
+
+fig <- p1 + p2 + p3 +
+  plot_annotation(tag_levels = 'a', tag_suffix = ".") + 
+  plot_annotation(title = "Exploration in action",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "simple10-exploration_example_n6"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2, width = 2*2.6)
+
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2, width = 2*2.6, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*2, width = 2*2.6, standAlone = FALSE)
 plot(fig)
 dev.off()
 ```
@@ -324,7 +445,11 @@ total %>%
   coord_flip() -> regret1
 
 fig <- (reward1 / regret1) +
-  plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Simple 10") 
+  plot_annotation(tag_levels = 'a', 
+                  tag_suffix = ".", 
+                  title = "Simple 10 results",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))
+plot(fig)
 
 # -----------------------------------------------------------------------------------
 name <- "simple10-results"
@@ -342,33 +467,34 @@ dev.off()
 ```
 
 # Fig - Random 121 cartoon
-```{r, fig.height=2, fig.width=0.75}
+```{r, fig.height=2.6, fig.width=0.75}
 fig <- NULL
 
 bandit %>% 
   filter(env == "BanditUniform121-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
+  geom_point(aes(x=55, y=0.9), color="red", size=0.5, alpha=0.9) +
   geom_bar(stat="identity", width=0.6, fill="black") +
-  geom_point(aes(x=55, y=0.9), alpha=0.05, color="red", size=0.5) +
   theme_classic() +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
   scale_x_discrete(breaks=c(1, 121), labels=c(1, 121)) +
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> bandit2
 
-fig <- bandit2 + plot_annotation(title="Random 121")
+fig <- bandit2 + plot_annotation(title="Random 121", 
+                                 theme=theme(plot.title = element_text(hjust = 0.5)))
 plot(fig)
 
 # -----------------------------------------------------------------------------------
 name <- "random121-bandit"
 
 # Save a png
-ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.0, width = 2*0.75)
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.2, width = 2*0.75)
 # Save a tex
-tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.0, width = 2*0.75, standAlone = TRUE)
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.2, width = 2*0.75, standAlone = TRUE)
 plot(fig)
 dev.off()
-tikz(file = paste(name, ".tex", sep=""), height = 2*2.0, width = 2*0.75, standAlone = FALSE)
+tikz(file = paste(name, ".tex", sep=""), height = 2*2.2, width = 2*0.75, standAlone = FALSE)
 plot(fig)
 dev.off()
 ```
@@ -418,7 +544,9 @@ total %>%
   coord_flip() -> regret2
 
 fig <- (reward2 / regret2) +
-  plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Random 121") 
+  plot_annotation(tag_levels = 'a', 
+                  tag_suffix = ".", 
+                  title = "Random 121 results", theme=theme(plot.title = element_text(hjust = 0.5))) 
 plot(fig)
 
 # -----------------------------------------------------------------------------------
@@ -444,13 +572,14 @@ bandit %>%
   filter(env == "BanditHardAndSparse10-v0") %>% 
   ggplot(aes(x=as.factor(arms+1), y=p_reward)) +
   geom_bar(stat="identity", width=0.6, fill="black") +
-  geom_point(aes(x=8, y=0.05), color="red", size=0.5, alpha=0.05) +
+  geom_point(aes(x=8, y=0.05), color="red", size=0.5, alpha=0.9) +
   theme_classic() +
   scale_y_continuous(breaks=c(0, 0.05, 1), limits = c(0, .05)) +
   scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> bandit3
-fig <- bandit3 + plot_annotation(title="Sparse 10")
+fig <- bandit3 + plot_annotation(title="Sparse 10",
+                                 theme=theme(plot.title = element_text(hjust = 0.5)))
 plot(fig)
 
 # -----------------------------------------------------------------------------------
@@ -485,7 +614,7 @@ total %>%
         plot.tag = element_text(size=14, face="bold"),
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x="Model", y="Total reward") +
-  scale_y_continuous(breaks=c(0, 1000/2, 1000), limits = c(0, 1000)) +
+  # scale_y_continuous(breaks=c(0, 1000/2, 1000), limits = c(0, 1000)) +
   geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
@@ -505,18 +634,22 @@ total %>%
         plot.tag = element_text(size=14, face="bold"),
         plot.margin = margin(.1, .1, .1, .1, "cm")) +
   labs(x="Model", y="Total regret") +
-  scale_y_continuous(breaks=c(0, 3000/2, 3000), limits = c(0, 3000)) +
+  # scale_y_continuous(breaks=c(0, 3000/2, 3000), limits = c(0, 5000)) +
   geom_hline(aes(yintercept=0), color="black", size=.2) +
   scale_color_manual(
     values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
   coord_flip() -> regret3
 
 fig <- (reward3 / regret3) +
-  plot_annotation(tag_levels = 'a', tag_suffix = ".", title = "Sparse 10") 
+  plot_annotation(tag_levels = 'a', 
+                  tag_suffix = ".", 
+                  title = "Sparse 10 results",
+                  theme=theme(plot.title = element_text(hjust = 0.5))
+                  ) 
 plot(fig)
 
 # -----------------------------------------------------------------------------------
-name <- "sparse121-results"
+name <- "sparse10-results"
 
 # Save a png
 ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.6, width = 2*1.2)
@@ -530,7 +663,7 @@ dev.off()
 ```
 
 # Fig - Deception 10 cartoon
-```{r, fig.height=2.4, fig.width=1.1}
+```{r, fig.height=1.8, fig.width=2.1}
 fig <- NULL
 
 deception_value <- data.frame(
@@ -540,7 +673,7 @@ deception_value <- data.frame(
     rep(1,10), 
     rep(1,31)),
   arm=c(
-    rep("Arm 9",31), 
+    rep("Arm 8",31), 
     c(rep("Rest",31))), 
   episodes=c(1:31, 1:31))
 
@@ -563,7 +696,7 @@ bandit %>%
 # But has as changing value structure
 deception_value %>% 
   ggplot(aes(x=episodes, y=max_value)) +
-  geom_point(size=.5) +
+  geom_line(size=.8) +
   facet_grid(arm~.) +
   theme_classic() +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -574,31 +707,100 @@ deception_value %>%
 deception_expected_value %>% 
   ggplot(aes(x=as.factor(arms), y=expected_value)) +
   geom_bar(stat="identity", width=0.6, fill="black") +
-  geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.05) +
+  geom_point(aes(x=8, y=0.9), color="red", size=0.5, alpha=0.9) +
   theme_classic() +
   scale_y_continuous(breaks=c(0, 0.5, 1), limits = c(0, 1)) +
   scale_x_discrete(breaks=c(1, 10), labels=c(1, 10)) +
   labs(x="Arm", y="Average\nreward") +
   coord_flip() -> expected4
 
-fig <- (bandit4 / value4 / expected4) + 
-  plot_annotation(tag_levels = 'a', tag_suffix = ".", title="Deception 10") 
+fig <- ((bandit4 / expected4) | (value4)) + 
+  plot_annotation(tag_levels = 'a', 
+                  tag_suffix = ".",
+                  plot_annotation(title = "Deception 10",
+                  theme=theme(plot.title = element_text(hjust = 0.5)))) +
+  plot_layout(heights = c(1,3))
 plot(fig)
 
 # -----------------------------------------------------------------------------------
-name <- "deception-10-cartoon"
+name <- "deception-10-bandit"
 
 # Save a png
-ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*2.4, width = 2*1.1)
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.8, width = 2*2.1)
 # Save a tex
-tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*2.4, width = 2*1.1, standAlone = TRUE)
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.8, width = 2*2.1, standAlone = TRUE)
 plot(fig)
 dev.off()
-tikz(file = paste(name, ".tex", sep=""), height = 2*2.4, width = 2*1.1, standAlone = FALSE)
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.8, width = 2*2.1, standAlone = FALSE)
 plot(fig)
 dev.off()
 ```
 
+# Fig Deception 10 results
+```{r, fig.height=1.6, fig.width=1.2}
+fig <- NULL
+
+total %>% 
+  # Stats
+  filter(env == "DeceptiveBanditOneHigh10-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(total_R), SD=mad(total_R)) %>% 
+  # Plots
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=1, size=1.5) +
+  geom_linerange(aes(ymin=M-SD, ymax=M+SD)) +
+  theme_classic() +
+  theme(legend.position="none",
+        plot.tag = element_text(size=14, face="bold"),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
+  labs(x="Model", y="Total reward") +
+  scale_y_continuous(breaks=c(0, 50/2, 50), limits = c(0, 50)) +
+  geom_hline(aes(yintercept=max(M)), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> reward3
+
+total %>% 
+  # Stats
+  filter(env == "DeceptiveBanditOneHigh10-v0") %>% 
+  group_by(agents, env) %>% 
+  summarise(M = median(regrets), SD=mad(regrets)) %>% 
+  # Plots
+  ggplot(aes(x=agents, y=M, color=agents)) +
+  geom_point(alpha=1, size=1.5) +
+  geom_linerange(aes(ymin=M-SD, ymax=M+SD)) +
+  theme_classic() +
+  theme(legend.position="none",
+        plot.tag = element_text(size=14, face="bold"),
+        plot.margin = margin(.1, .1, .1, .1, "cm")) +
+  labs(x="Model", y="Total regret") +
+  scale_y_continuous(breaks=c(0, 50/2, 50), limits = c(0, 50)) +
+  geom_hline(aes(yintercept=0), color="black", size=.2) +
+  scale_color_manual(
+    values=rev(c("darkorchid4", "mediumpurple3", "mediumpurple1", "steelblue3", "steelblue1", "grey"))) +
+  coord_flip() -> regret3
+
+fig <- (reward3 / regret3) +
+  plot_annotation(tag_levels = 'a', 
+                  tag_suffix = ".", 
+                  title = "Deception 10 results",
+                  theme=theme(plot.title = element_text(hjust = 0.5))
+                  ) 
+plot(fig)
+
+# -----------------------------------------------------------------------------------
+name <- "deception010-results"
+
+# Save a png
+ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.6, width = 2*1.2)
+# Save a tex
+tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*1.6, width = 2*1.2, standAlone = TRUE)
+plot(fig)
+dev.off()
+tikz(file = paste(name, ".tex", sep=""), height = 2*1.6, width = 2*1.2, standAlone = FALSE)
+plot(fig)
+dev.off()
+```
 # Supplementary 
 ## Subfig1 - World model and distance
 ```{r, fig.height=1, fig.width=2.2, message=FALSE}
@@ -621,8 +823,9 @@ example_memory %>%
   ggplot(aes(x=as.factor(arms), y=p_reward)) +
   geom_bar(stat="identity", width=0.6, position = "dodge", fill="black") +
   theme_classic() +
-  theme(plot.tag = element_text(size=14, face="bold")) +
-  labs(x="Arm", y="Reward prob.", title="World model", tag="a.") +
+  theme(plot.tag = element_text(size=14, face="bold"),
+        plot.title = element_text(hjust = 0.5)) +
+  labs(x="Arm", y="Reward\nprobability", title="World model", tag="a.") +
   scale_y_continuous(breaks=c(0, 0.25, 0.5), limits = c(0, 0.5)) -> memory1
 
 # ------------------------------------------------------------
@@ -658,15 +861,16 @@ flux %>%
   ggplot(aes(dP, E)) +
   geom_line(size=1.25, color="darkorchid4") +
   theme_classic() +
-  theme(plot.tag = element_text(size=14, face="bold")) +
-  labs(x="Total change in prob.", y="KL", title="Distance", tag="b.") -> distance1
+  theme(plot.tag = element_text(size=14, face="bold"), 
+        plot.title = element_text(hjust = 0.5)) +
+  labs(x="Change probability", y="KL", title="Distance", tag="b.") -> distance1
 
 fig <- memory1 + distance1 +
   plot_annotation(tag_levels = 'a', tag_suffix = ".") 
 plot(fig)
 
 # -----------------------------------------------------------------------------------
-name <- "world_model-cartoon"
+name <- "world_model"
 
 # Save a png
 ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*1.0, width = 2*2.2)
