@@ -3856,7 +3856,7 @@ exp290:
 		--lr_R='(0.000001, 0.4)'
 
 exp291:
-	tune_bandit.py replicator $(DATA_PATH)/exp291 \
+	tune_bandit.py random $(DATA_PATH)/exp291 \
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=10000 \
@@ -3867,7 +3867,7 @@ exp291:
 		--lr_R='(0.000000001, 0.2)'
 
 exp292:
-	tune_bandit.py replicator $(DATA_PATH)/exp292 \
+	tune_bandit.py random $(DATA_PATH)/exp292 \
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=10000 \
