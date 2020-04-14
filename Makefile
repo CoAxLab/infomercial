@@ -3680,9 +3680,9 @@ exp278:
 	tune_bandit.py random $(DATA_PATH)/exp278 \
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh10-v0 \
-        --num_samples=10 \
+        --num_samples=10000 \
         --num_episodes=100 \
-		--num_processes=4 \
+		--num_processes=40 \
 		--metric="total_R" \
 		--tie_threshold='(1e-5, .1)' \
 		--lr_R='(0.000001, 0.4)'
