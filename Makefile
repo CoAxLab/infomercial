@@ -3676,6 +3676,12 @@ exp273:
 # best HP, testing more models as a result.
 #
 # This is next exp is simple test for this new functionality.
+
+# ---------------
+# BanditOneHigh10
+# ---------------
+
+# meta
 exp278:
 	tune_bandit.py random $(DATA_PATH)/exp278 \
 		--exp_name='meta_bandit' \
@@ -3684,5 +3690,202 @@ exp278:
         --num_episodes=100 \
 		--num_processes=40 \
 		--metric="total_R" \
-		--tie_threshold='(1e-5, .1)' \
+		--tie_threshold='(1e-9, .1)' \
 		--lr_R='(0.000001, 0.4)'
+
+# ep
+exp279:
+	tune_bandit.py random $(DATA_PATH)/exp279 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# anneal-ep
+exp280:
+	tune_bandit.py random $(DATA_PATH)/exp280 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# beta
+exp281:
+	tune_bandit.py random $(DATA_PATH)/exp281 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(1e-3, 10)' \
+		--lr_R='(1e-5, 0.4)' \
+		--temp='(1e-1, 3)'
+
+# ---------------------
+# BanditHardAndSparse10
+# ---------------------
+
+# meta
+exp282:
+	tune_bandit.py random $(DATA_PATH)/exp282 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+        --num_samples=10000 \
+        --num_episodes=50000 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+# ep
+exp283:
+	tune_bandit.py random $(DATA_PATH)/exp283 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=10000 \
+        --num_episodes=50000 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# anneal-ep
+exp284:
+	tune_bandit.py random $(DATA_PATH)/exp284 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=10000 \
+        --num_episodes=50000 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# beta
+exp285:
+	tune_bandit.py random $(DATA_PATH)/exp285 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=10000 \
+        --num_episodes=50000 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(1e-3, 10)' \
+		--lr_R='(1e-5, 0.4)' \
+		--temp='(1e-1, 3)'
+
+# ----------------
+# BanditUniform121
+# ----------------
+
+# meta
+exp286:
+	tune_bandit.py random $(DATA_PATH)/exp286 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+        --num_samples=10000 \
+        --num_episodes=60500 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+# ep
+exp287:
+	tune_bandit.py random $(DATA_PATH)/exp287 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=10000 \
+        --num_episodes=60500 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# anneal-ep
+exp288:
+	tune_bandit.py random $(DATA_PATH)/exp288 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=10000 \
+        --num_episodes=60500 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.4)' 
+
+# beta
+exp289:
+	tune_bandit.py random $(DATA_PATH)/exp289 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=10000 \
+        --num_episodes=60500 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(1e-3, 10)' \
+		--lr_R='(1e-5, 0.4)' \
+		--temp='(1e-1, 3)'
+
+# ---------------------
+# DeceptiveBanditOneHigh10
+# ---------------------
+
+# meta
+exp290:
+	tune_bandit.py random $(DATA_PATH)/exp290 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, .1)' \
+		--lr_R='(0.000001, 0.4)'
+
+exp291:
+	tune_bandit.py replicator $(DATA_PATH)/exp291 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.2)'
+
+exp292:
+	tune_bandit.py replicator $(DATA_PATH)/exp292 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.000000001, 0.1)' \
+		--lr_R='(0.000000001, 0.2)' 
+
+exp293:
+	tune_bandit.py random $(DATA_PATH)/exp293 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+        --num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=40 \
+		--metric="total_R" \
+		--beta='(1e-3, 10)' \
+		--lr_R='(1e-5, 0.2)' \
+		--temp='(1e-1, 3)'
