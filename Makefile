@@ -3670,3 +3670,19 @@ exp273:
 			--nice 19 --delay 2 --colsep ',' \
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --save=$(DATA_PATH)/exp273_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 		
+
+# -
+# Added csv output to all tune_* methods. This will let me more easily run 
+# best HP, testing more models as a result.
+#
+# This is next exp is simple test for this new functionality.
+exp278:
+	tune_bandit.py random $(DATA_PATH)/exp278 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+        --num_samples=10 \
+        --num_episodes=100 \
+		--num_processes=4 \
+		--metric="total_R" \
+		--tie_threshold='(1e-5, .1)' \
+		--lr_R='(0.000001, 0.4)'

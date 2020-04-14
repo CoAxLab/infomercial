@@ -1,6 +1,7 @@
 import fire
 import ray
 import os
+import csv
 from copy import deepcopy
 
 from functools import partial
@@ -44,6 +45,27 @@ def get_configs(trial_list):
 def get_metrics(trial_list, metric):
     """Extract metric"""
     return [trial[metric] for trial in trial_list]
+
+
+def save_csv(trials, filename=None):
+    # Init the head
+    head = list(trials[0].keys())
+    head.insert(0, 'index')
+
+    # Init csv writer
+    with open(filename, mode='w') as fi:
+        writer = csv.writer(fi,
+                            delimiter=',',
+                            quotechar='"',
+                            quoting=csv.QUOTE_MINIMAL)
+
+        # Write the header
+        writer.writerow(head)
+
+        # Finally, write the trials
+        for i, trial in trials.items():
+            row = [i] + list(trial.values())
+            writer.writerow(row)
 
 
 def train(exp_func=None,
@@ -146,6 +168,7 @@ def tune_random(name,
         sorted_configs[i].update({metric: trial[metric]})
     save_checkpoint(sorted_configs,
                     filename=os.path.join(path, name + "_sorted.pkl"))
+    save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
 
     return best, trials
 
@@ -287,6 +310,7 @@ def tune_pbt(name,
         sorted_configs[i].update({"total_R": trial["total_R"]})
     save_checkpoint(sorted_configs,
                     filename=os.path.join(path, name + "_sorted.pkl"))
+    save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
 
     return best, trials
 
@@ -528,6 +552,7 @@ def tune_replicator(name,
         sorted_configs[i].update({metric: trial[metric]})
     save_checkpoint(sorted_configs,
                     filename=os.path.join(path, name + "_sorted.pkl"))
+    save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
 
     return best, trials
 
