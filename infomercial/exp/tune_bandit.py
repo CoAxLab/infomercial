@@ -116,7 +116,13 @@ def tune_random(name,
     trials = []
 
     def append_to_results(result):
-        trials.append(result)
+        # Keep only params and scores, to save
+        # memory for when N is large
+        trial = {}
+        trial["config"] = result["config"]
+        trial[metric] = result[metric]
+
+        trials.append(trial)
 
     # Setup default params
     params = dict(exp_func=exp_func,
