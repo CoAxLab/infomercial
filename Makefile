@@ -3690,7 +3690,7 @@ exp278:
         --num_episodes=100 \
 		--num_processes=40 \
 		--metric="total_R" \
-		--tie_threshold='(1e-9, .1)' \
+		--tie_threshold='(1e-10, .1)' \
 		--lr_R='(0.000001, 0.4)'
 
 # ep
@@ -3744,7 +3744,7 @@ exp282:
         --num_episodes=50000 \
 		--num_processes=40 \
 		--metric="total_R" \
-		--tie_threshold='(1e-9, .1)' \
+		--tie_threshold='(1e-10, .1)' \
 		--lr_R='(0.000001, 0.4)'
 
 # ep
@@ -3798,7 +3798,7 @@ exp286:
         --num_episodes=60500 \
 		--num_processes=40 \
 		--metric="total_R" \
-		--tie_threshold='(1e-9, .1)' \
+		--tie_threshold='(1e-10, .1)' \
 		--lr_R='(0.000001, 0.4)'
 
 # ep
@@ -3852,7 +3852,7 @@ exp290:
         --num_episodes=100 \
 		--num_processes=40 \
 		--metric="total_R" \
-		--tie_threshold='(1e-9, .1)' \
+		--tie_threshold='(1e-10, .1)' \
 		--lr_R='(0.000001, 0.4)'
 
 exp291:
