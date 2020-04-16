@@ -3671,11 +3671,22 @@ exp273:
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --save=$(DATA_PATH)/exp273_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
 		
 
-# -
-# Added csv output to all tune_* methods. This will let me more easily run 
-# best HP, testing more models as a result.
+# -------------------------------------------------------------------------
+# 4-14-2020
+# e39d0f4f3b70cf002e5609727e26bfbb54b8cb65
+
+# Another, even larger, HP tuning set of exps. All agents and envs this time.
 #
-# This is next exp is simple test for this new functionality.
+# Note: Added csv output to all tune_* methods. 
+# This will let me more easily run best HP, and so 
+# testing more models as a result.
+
+#
+# RESULTS: Overall it looks like 10000 samples was enough for most agent
+#          on most tasks to find consistent solutions. The sampling was also
+#          very wide. This should rule out undiscovered improvement as a 
+#          criticism in the final results. But N=50000 would be even better.
+#          So would N=100000. And so on. I should stop here, I think.
 
 # ---------------
 # BanditOneHigh10
