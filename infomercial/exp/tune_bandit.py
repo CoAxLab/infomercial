@@ -144,7 +144,7 @@ def tune_random(name,
 
         # Make a new sample
         for k, (low, high) in config_kwargs.items():
-            if not log_space:
+            if log_space:
                 params["config"][k] = loguniform(low,
                                                  high).rvs(random_state=prng)
             else:
