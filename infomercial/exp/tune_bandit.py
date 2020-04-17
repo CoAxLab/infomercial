@@ -3,11 +3,11 @@ import ray
 import os
 import csv
 from copy import deepcopy
+import numpy as np
 
 from functools import partial
 from multiprocessing import Pool
-
-import numpy as np
+from scipy.stats import loguniform
 
 from infomercial import exp
 from infomercial.utils import save_checkpoint
@@ -98,6 +98,7 @@ def tune_random(name,
                 num_samples=10,
                 num_processes=1,
                 metric="total_R",
+                log_space=False,
                 verbose=False,
                 seed_value=None,
                 **config_kwargs):
@@ -143,7 +144,11 @@ def tune_random(name,
 
         # Make a new sample
         for k, (low, high) in config_kwargs.items():
-            params["config"][k] = prng.uniform(low=low, high=high)
+            if not log_space:
+                params["config"][k] = loguniform(low,
+                                                 high).rvs(random_state=prng)
+            else:
+                params["config"][k] = prng.uniform(low=low, high=high)
 
         # A worker gets the new sample
         workers.append(
@@ -188,6 +193,7 @@ def tune_pbt(name,
              num_processes=1,
              extend_episodes=False,
              verbose=False,
+             metric='total_R',
              seed_value=None,
              **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
@@ -247,7 +253,7 @@ def tune_pbt(name,
     for _ in range(num_iterations):
         # Sort and save the top configs
         top_configs = {}
-        for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
+        for i, trial in enumerate(get_sorted_trials(trials, metric)):
             if i < int(top_threshold * len(trials)):
                 top_configs[i] = trial["config"]
 
@@ -300,20 +306,20 @@ def tune_pbt(name,
         pool.terminate()
 
     # ------------------------------------------------------------------------
-    # Save configs and total_R (full model data is dropped):
-    best = get_best_trial(trials, 'total_R')
+    # Save configs and metric (full model data is dropped):
+    best = get_best_trial(trials, metric)
 
     # Best trial config
     best_config = best["config"]
-    best_config.update(get_best_result(trials, 'total_R'))
+    best_config.update(get_best_result(trials, metric))
     save_checkpoint(best_config,
                     filename=os.path.join(path, name + "_best.pkl"))
 
     # Sort and save the configs of all trials
     sorted_configs = {}
-    for i, trial in enumerate(get_sorted_trials(trials, 'total_R')):
+    for i, trial in enumerate(get_sorted_trials(trials, metric)):
         sorted_configs[i] = trial["config"]
-        sorted_configs[i].update({"total_R": trial["total_R"]})
+        sorted_configs[i].update({metric: trial[metric]})
     save_checkpoint(sorted_configs,
                     filename=os.path.join(path, name + "_sorted.pkl"))
     save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
