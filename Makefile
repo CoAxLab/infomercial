@@ -3921,6 +3921,11 @@ exp293:
 # ....So I added a log_space option to tune_random. 
 #
 # And so I repeat the 'last tune', one more time!
+#
+# RESULTS: meta is reliably solving the sparse task, and other agents 
+#          performance *seems* to be no worse, and sometimes better. Given 
+#          these take a couple days to run, and seem like a decent enough HP
+#          sample (N=10000), I'm calling it. 
 
 # ---------------
 # BanditOneHigh10
