@@ -4187,7 +4187,7 @@ exp311:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp311.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp311_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp311_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4199,7 +4199,7 @@ exp312:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp312.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp312_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp312_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4211,7 +4211,7 @@ exp313:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp313.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp313_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp313_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4239,7 +4239,7 @@ exp315:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp315.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp315_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp315_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4251,7 +4251,7 @@ exp316:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp316.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp316_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp316_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4263,7 +4263,7 @@ exp317:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp317.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp317_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp317_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4291,7 +4291,7 @@ exp319:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp319.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp319_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp319_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4303,7 +4303,7 @@ exp320:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp320.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp320_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp320_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4315,7 +4315,7 @@ exp321:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp321.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp321_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp321_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4343,7 +4343,7 @@ exp323:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp323.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp323_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp323_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4355,7 +4355,7 @@ exp324:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp324.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp324_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp324_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4367,6 +4367,6 @@ exp325:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp325.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp325_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp325_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
