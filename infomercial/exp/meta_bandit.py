@@ -114,9 +114,9 @@ def R_homeostasis(reward, total_reward, set_point):
     Value based on Keramati and Gutkin, 2014.
     https://elifesciences.org/articles/04811
     """
-    D_last = np.abs(set_point - total_reward)
-    D = np.abs(set_point - (total_reward + reward))
-    reward_value = D_last - D
+    deviance_last = np.abs(set_point - total_reward)
+    deviance = np.abs(set_point - (total_reward + reward))
+    reward_value = deviance_last - deviance
     return reward_value
 
 
