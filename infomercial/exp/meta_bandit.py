@@ -108,6 +108,18 @@ def E_update(state, value, critic, lr):
     return critic
 
 
+def R_homeostasis(reward, total_reward, set_point):
+    """Update reward value assuming homeostatic value.
+    
+    Value based on Keramati and Gutkin, 2014.
+    https://elifesciences.org/articles/04811
+    """
+    D_last = np.abs(set_point - total_reward)
+    D = np.abs(set_point - (total_reward + reward))
+    reward_value = D_last - D
+    return reward_value
+
+
 def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         tie_break='next',
@@ -173,6 +185,11 @@ def run(env_name='BanditOneHot2-v0',
         # Thus this reset() call
         state = int(env.reset()[0])
 
+        # Update reward value assuming homeostatsis, but
+        # also greedyness. The set_point is perfect play,
+        # which is the same as the num_episodes.
+        R_t = R_homeostasis(R_t, total_R, num_episodes)
+
         # Use the the meta-greedy policy to
         # pick an actor, critic pair.
         if (E_t - tie_threshold) > R_t:
@@ -215,7 +232,7 @@ def run(env_name='BanditOneHot2-v0',
         actions.append(action)
         total_R += R_t
         total_E += E_t
-        scores_E.append(E_t)
+        scores_E.append(E_t - tie_threshold)
         scores_R.append(R_t)
         values_E.append(critic_E(action))
         values_R.append(critic_R(action))
