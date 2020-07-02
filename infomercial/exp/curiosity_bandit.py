@@ -121,11 +121,10 @@ def run(env_name='BanditOneHot2-v0',
     E_t = default_info_value
 
     # Agents and memories
-    visited_states = set()
-    states = list(range(num_actions))
+    visited_arms = set()
+    all_actions = list(range(num_actions))
 
-    critic_E = Critic(env.observation_space.n,
-                      default_value=default_info_value)
+    critic_E = Critic(num_actions, default_value=default_info_value)
     actor_E = Actor(num_actions,
                     tie_break=tie_break,
                     tie_threshold=tie_threshold)
@@ -158,33 +157,35 @@ def run(env_name='BanditOneHot2-v0',
             num_best += 1
 
         # Est. regret, and save it
-        regrets.append(estimate_regret(states, action, critic_E))
+        regrets.append(estimate_regret(all_actions, action, critic_E))
 
         # Pull a lever.
-        next_state, reward, _, _ = env.step(action)
-        visited_states.add(action)
+        state, reward, _, _ = env.step(action)
+        visited_arms.add(action)
         if reward_mode:
-            next_state = reward
+            state = reward
 
         # Estimate E
         old = deepcopy(memories[action])
-        memories[action].update(next_state)
+        memories[action].update(state)
         new = deepcopy(memories[action])
         E_t = kl(new, old, default_info_value)
 
         # Learn
         critic_E = E_update(action, E_t, critic_E, lr=1)
-        state = deepcopy(next_state)
 
         # Log data
         actions.append(action)
         total_E += E_t
+        scores_E.append(E_t)
         values_E.append(critic_E(action) - tie_threshold)
         p_bests.append(num_best / (n + 1))
+
         if actor_E.tied:
             ties.append(1)
         else:
             ties.append(0)
+
         if debug:
             print(f">>> critic_E: {critic_E.state_dict()}")
         if progress:
