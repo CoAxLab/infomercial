@@ -39,7 +39,72 @@ class Critic(object):
         return self.model
 
 
-class Actor(object):
+def softmax(X, beta=1.0, axis=None):
+    """
+    Compute the softmax of each element along an axis of X.
+
+    Note
+    ----
+
+    Taken from: https://nolanbconaway.github.io/blog/2017/softmax-numpy.html
+
+    Parameters
+    ----------
+    X: Array. 
+    beta (optional): float parameter, used as a multiplier
+        prior to exponentiation. Default = 1.0
+    axis (optional): axis to compute values along. Default is the
+        first non-singleton axis.
+
+    Returns an array the same size as X. The result will sum to 1
+    along the specified axis.
+    """
+
+    # make X at least 2d
+    y = np.atleast_2d(X)
+
+    # find axis
+    if axis is None:
+        axis = next(j[0] for j in enumerate(y.shape) if j[1] > 1)
+
+    # multiply y against the beta parameter,
+    y = y * float(beta)
+    y = y - np.expand_dims(np.max(y, axis=axis), axis)
+    y = np.exp(y)
+    ax_sum = np.expand_dims(np.sum(y, axis=axis), axis)
+    p = y / ax_sum
+
+    # flatten if X was 1D
+    if len(X.shape) == 1: p = p.flatten()
+
+    return p
+
+
+class SoftmaxActor(object):
+    def __init__(self, num_actions, beta=1.0, tie_threshold=0.0, seed=None):
+        self.prng = np.random.RandomState(seed)
+        self.beta = beta
+        self.tie_threshold = tie_threshold
+        self.num_actions = num_actions
+        self.actions = list(range(self.num_actions))
+        self.action_count = 0
+
+        # Undef for softmax. Set to False: API consistency.
+        self.tied = False
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        values = np.asarray(values)
+        values[values < self.tie_threshold] = 1e-16  # 'zer0'
+        probs = softmax(values, self.beta)
+        action = self.prng.choice(self.actions, p=probs)
+
+        return action
+
+
+class DeterministicActor(object):
     def __init__(self, num_actions, tie_break='next', tie_threshold=0.0):
         self.num_actions = num_actions
         self.tie_break = tie_break
@@ -91,7 +156,7 @@ class Actor(object):
         return action
 
 
-def E_update(state, value, critic, lr):
+def update_E(state, value, critic, lr):
     """Bellman update"""
     update = lr * value
     critic.update_(state, update, replace=True)
@@ -99,10 +164,34 @@ def E_update(state, value, critic, lr):
     return critic
 
 
+# def E_oracle(actions, critic, memories, env, default_info_value):
+#     """Find the best E, by one step rollout on the env"""
+#     possible_values = []
+#     for action in actions:
+#         env_copy = deepcopy(env)
+#         m_copy = deepcopy(memories)
+
+#         state, _, _, _ = env_copy.step(action)
+
+#         E, _ = estimate_E(action, state, m_copy, default_info_value)
+#         possible_values.append(E)
+
+#     return np.max(possible_values)
+
+
+def estimate_E(action, state, memories, default_info_value):
+    old = deepcopy(memories[action])
+    memories[action].update(state)
+    new = deepcopy(memories[action])
+
+    return kl(new, old, default_info_value), memories
+
+
 def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
+        beta=None,
         seed_value=42,
         reward_mode=False,
         save=None,
@@ -125,9 +214,15 @@ def run(env_name='BanditOneHot2-v0',
     all_actions = list(range(num_actions))
 
     critic_E = Critic(num_actions, default_value=default_info_value)
-    actor_E = Actor(num_actions,
-                    tie_break=tie_break,
-                    tie_threshold=tie_threshold)
+    if beta is None:
+        actor_E = DeterministicActor(num_actions,
+                                     tie_break=tie_break,
+                                     tie_threshold=tie_threshold)
+    else:
+        actor_E = SoftmaxActor(num_actions,
+                               beta=beta,
+                               tie_threshold=tie_threshold,
+                               seed=seed_value)
 
     memories = [Count() for _ in range(num_actions)]
 
@@ -156,9 +251,6 @@ def run(env_name='BanditOneHot2-v0',
         if action in best_action:
             num_best += 1
 
-        # Est. regret, and save it
-        regrets.append(estimate_regret(all_actions, action, critic_E))
-
         # Pull a lever.
         state, reward, _, _ = env.step(action)
         visited_arms.add(action)
@@ -166,13 +258,13 @@ def run(env_name='BanditOneHot2-v0',
             state = reward
 
         # Estimate E
-        old = deepcopy(memories[action])
-        memories[action].update(state)
-        new = deepcopy(memories[action])
-        E_t = kl(new, old, default_info_value)
+        E_t, memories = estimate_E(action, state, memories, default_info_value)
+
+        # Est regrets
+        regrets.append(estimate_regret(all_actions, action, critic_E))
 
         # Learn
-        critic_E = E_update(action, E_t, critic_E, lr=1)
+        critic_E = update_E(action, E_t, critic_E, lr=1)
 
         # Log data
         actions.append(action)
