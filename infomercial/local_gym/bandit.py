@@ -9,6 +9,142 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+class InfoBanditEnv(gym.Env):
+    """
+    n-armed info bandit environment. Rewards are alwats zero, but the return
+    states can offer information, abstractly.
+
+    Params
+    ------
+    stim : list 
+        A list of possible return states    
+    p_dists : list of tuples 
+        A list of prob of stim, for each bandit
+    """
+    def __init__(self, stim, p_dists):
+
+        # check for sizes and p_norm
+        for i, p_dist in enumerate(p_dists):
+            if len(p_dist) != len(stim):
+                raise ValueError(f"Entry {i} in p_dists is the wrong len")
+            if not np.isclose(np.sum(p_dist), 1):
+                raise ValueError(f"Entry {i} in p_dists does not sum to 1")
+
+        self.n_stim = len(stim)
+        self.stim = stim
+        self.p_dists = p_dists
+        self.n_bandits = len(p_dists)
+
+        self.action_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(self.n_stim)
+        self.seed()
+        self.reset()
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+
+    def step(self, action):
+        assert self.action_space.contains(action)
+        if self.done:
+            raise ValueError("Cannot step, env is done.")
+
+        reward = 0
+        self.done = True
+        p_dist = self.p_dists[action]
+        state = self.np_random.choice(self.stim, p=p_dist)
+
+        return state, reward, self.done, {}
+
+    def reset(self):
+        self.done = False
+        return [0]
+
+    def render(self, mode='human', close=False):
+        pass
+
+
+class InfoBlueYellow2a(InfoBanditEnv):
+    """A blue/yellow info bandit with one nearly certain arm,
+     and one max entropy arm.
+     
+    Stimuli code:
+    ----
+    Blue : 1
+    Yellow : 2
+    """
+    def __init__(self):
+        self.best = [1]
+        self.num_arms = 2
+        stim = [1, 2]
+        p_dists = [(0.99, 0.01), (0.5, 0.5)]
+        InfoBanditEnv.__init__(self, stim=stim, p_dists=p_dists)
+
+
+class InfoBlueYellow2b(InfoBanditEnv):
+    """A blue/yellow info bandit, with two max entropy arms.
+    
+    Stimuli code:
+    ----
+    Blue : 1
+    Yellow : 2
+    """
+    def __init__(self):
+        self.best = [0, 1]
+        self.num_arms = 2
+        stim = [1, 2]
+        p_dists = [(0.5, 0.5), (0.5, 0.5)]
+        InfoBanditEnv.__init__(self, stim=stim, p_dists=p_dists)
+
+
+class InfoBlueYellow4a(InfoBanditEnv):
+    """A blue/yellow info bandit, with one max entropy arm.
+    
+    Stimuli code:
+    ----
+    Blue : 1
+    Yellow : 2
+    """
+    def __init__(self):
+        self.best = [1]
+        self.num_arms = 4
+        stim = [1, 2]
+        p_dists = [(0.99, 0.01), (0.5, 0.5), (0.99, 0.01), (0.01, 0.99)]
+        InfoBanditEnv.__init__(self, stim=stim, p_dists=p_dists)
+
+
+class InfoBlueYellow4b(InfoBanditEnv):
+    """A blue/yellow info bandit, with max entropy arms
+
+    Stimuli code:
+    ----
+    Blue : 1
+    Yellow : 2
+    """
+    def __init__(self):
+        self.best = [0, 1, 2, 3]
+        self.num_arms = 4
+        stim = [1, 2]
+        p_dists = [(0.5, 0.5), (0.5, 0.5), (0.5, 0.5), (0.5, 0.5)]
+        InfoBanditEnv.__init__(self, stim=stim, p_dists=p_dists)
+
+
+class InfoBlueYellow4c(InfoBanditEnv):
+    """A blue/yellow info bandit, with a variety of arm probs.
+
+    Stimuli code:
+    ----
+    Blue : 1
+    Yellow : 2
+    """
+    def __init__(self):
+        self.best = [1]
+        self.num_arms = 4
+        stim = [1, 2]
+        p_dists = [(0.6, 0.4), (0.5, 0.5), (0.9, 0.1), (0.2, 0.8)]
+        InfoBanditEnv.__init__(self, stim=stim, p_dists=p_dists)
+
+
 class BanditEnv(gym.Env):
     """
     n-armed bandit environment  
