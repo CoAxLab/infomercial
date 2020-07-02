@@ -32,12 +32,12 @@ def sample_action(policy, state, mode='Categorical'):
     return policy, action.item(), log_prob
 
 
-def estimate_regret(states, action, critic):
-    """Estimate regret, given a state, action, and a critic"""
+def estimate_regret(states, state, critic):
+    """Estimate regret, given a critic."""
 
     values = [critic(s) for s in states]
     best = np.max(values)
-    actual = values[action]
+    actual = values[state]
 
     return best - actual
 
