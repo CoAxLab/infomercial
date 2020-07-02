@@ -181,7 +181,7 @@ def run(env_name='BanditOneHot2-v0',
         total_E += E_t
         values_E.append(critic_E(action) - tie_threshold)
         p_bests.append(num_best / (n + 1))
-        if actor.tied:
+        if actor_E.tied:
             ties.append(1)
         else:
             ties.append(0)
@@ -208,8 +208,7 @@ def run(env_name='BanditOneHot2-v0',
                   env_name=env_name,
                   num_episodes=num_episodes,
                   tie_break=tie_break,
-                  tie_threshold=tie_threshold,
-                  lr_R=lr_R)
+                  tie_threshold=tie_threshold)
     if save is not None:
         save_checkpoint(result, filename=save)
     if interactive:
