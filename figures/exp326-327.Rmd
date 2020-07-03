@@ -75,6 +75,7 @@ result327 %>%
 
 p1 / p2
 ```
+
 ## Ties
 ```{r, fig.height=1.4, fig.width=1.2}
 result326 %>% 
