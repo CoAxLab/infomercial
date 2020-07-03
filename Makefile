@@ -4377,10 +4377,10 @@ exp325:
 # Deterministic mode
 exp326:
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
         --num_episodes=400 \
         --tie_break='next' \
-        --tie_threshold=1e-6 \
+        --tie_threshold=1e-4 \
         --beta=None \
         --seed_value=110 \
         --reward_mode=False \
@@ -4389,12 +4389,39 @@ exp326:
 # Sampling mode
 exp327:
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
         --num_episodes=400 \
         --tie_break='next' \
-        --tie_threshold=0.0 \
+        --tie_threshold=1e-4 \
         --beta=1000 \
         --seed_value=11 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp327
-		
+
+
+# ----------------------------------------
+# Same agent, two different random seeds
+# ----------------------------------------
+# seed=124
+exp328:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4c-v0' \
+        --num_episodes=40 \
+        --tie_break='next' \
+        --tie_threshold=1e-3 \
+        --beta=None \
+        --seed_value=124 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp328
+
+# seed=23
+exp329:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4c-v0' \
+        --num_episodes=40 \
+        --tie_break='next' \
+        --tie_threshold=1e-3 \
+        --beta=None \
+        --seed_value=23 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp329
