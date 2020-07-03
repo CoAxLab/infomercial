@@ -244,7 +244,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                   env_name=env_name,
                   num_episodes=num_episodes,
                   tie_break=tie_break,
-                  num_stop=num_stop,
+                  num_stop=num_stop + 1,
                   beta=beta,
                   tie_threshold=tie_threshold)
 
