@@ -4372,8 +4372,10 @@ exp325:
 	rm tmp
 
 # ----------------------------------------
+# c1315c993d65103f5e62e09f3d73f287a6d897a7
+# 7-3-2020
 # Curiosity bandits - testing and examples
-# ----------------------------------------
+#
 # Deterministic mode
 exp326:
 	curiosity_bandit.py \
@@ -4400,8 +4402,10 @@ exp327:
 
 
 # ----------------------------------------
+# c1315c993d65103f5e62e09f3d73f287a6d897a7
+# 7-3-2020
 # Same agent, two different random seeds
-# ----------------------------------------
+
 # seed=124
 exp328:
 	curiosity_bandit.py \
