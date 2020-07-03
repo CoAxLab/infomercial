@@ -1,7 +1,11 @@
 import fire
 import gym
+import os
 
 import numpy as np
+from scipy.special import softmax
+
+from noboard.csv import SummaryWriter
 
 from copy import deepcopy
 from scipy.stats import entropy
@@ -39,47 +43,6 @@ class Critic(object):
         return self.model
 
 
-def softmax(X, beta=1.0, axis=None):
-    """
-    Compute the softmax of each element along an axis of X.
-
-    Note
-    ----
-
-    Taken from: https://nolanbconaway.github.io/blog/2017/softmax-numpy.html
-
-    Parameters
-    ----------
-    X: Array. 
-    beta (optional): float parameter, used as a multiplier
-        prior to exponentiation. Default = 1.0
-    axis (optional): axis to compute values along. Default is the
-        first non-singleton axis.
-
-    Returns an array the same size as X. The result will sum to 1
-    along the specified axis.
-    """
-
-    # make X at least 2d
-    y = np.atleast_2d(X)
-
-    # find axis
-    if axis is None:
-        axis = next(j[0] for j in enumerate(y.shape) if j[1] > 1)
-
-    # multiply y against the beta parameter,
-    y = y * float(beta)
-    y = y - np.expand_dims(np.max(y, axis=axis), axis)
-    y = np.exp(y)
-    ax_sum = np.expand_dims(np.sum(y, axis=axis), axis)
-    p = y / ax_sum
-
-    # flatten if X was 1D
-    if len(X.shape) == 1: p = p.flatten()
-
-    return p
-
-
 class SoftmaxActor(object):
     def __init__(self, num_actions, beta=1.0, tie_threshold=0.0, seed=None):
         self.prng = np.random.RandomState(seed)
@@ -98,7 +61,7 @@ class SoftmaxActor(object):
     def forward(self, values):
         values = np.asarray(values)
         values[values < self.tie_threshold] = 1e-16  # 'zer0'
-        probs = softmax(values, self.beta)
+        probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
 
         return action
@@ -164,43 +127,19 @@ def update_E(state, value, critic, lr):
     return critic
 
 
-# def E_oracle(actions, critic, memories, env, default_info_value):
-#     """Find the best E, by one step rollout on the env"""
-#     possible_values = []
-#     for action in actions:
-#         env_copy = deepcopy(env)
-#         m_copy = deepcopy(memories)
-
-#         state, _, _, _ = env_copy.step(action)
-
-#         E, _ = estimate_E(action, state, m_copy, default_info_value)
-#         possible_values.append(E)
-
-#     return np.max(possible_values)
-
-
-def estimate_E(action, state, memories, default_info_value):
-    old = deepcopy(memories[action])
-    memories[action].update(state)
-    new = deepcopy(memories[action])
-
-    return kl(new, old, default_info_value), memories
-
-
-def run(env_name='BanditOneHot2-v0',
+def run(env_name='InfoBlueYellow4b-v0',
         num_episodes=1,
         tie_break='next',
         tie_threshold=0.0,
         beta=None,
         seed_value=42,
         reward_mode=False,
-        save=None,
-        progress=False,
-        debug=False,
-        interactive=True):
+        log_dir=None):
     """Play some slots!"""
 
     # --- Init ---
+    writer = SummaryWriter(log_dir=log_dir)
+
     env = gym.make(env_name)
     env.seed(seed_value)
 
@@ -210,7 +149,6 @@ def run(env_name='BanditOneHot2-v0',
     E_t = default_info_value
 
     # Agents and memories
-    visited_arms = set()
     all_actions = list(range(num_actions))
 
     critic_E = Critic(num_actions, default_value=default_info_value)
@@ -229,85 +167,67 @@ def run(env_name='BanditOneHot2-v0',
     # --- Init log ---
     num_best = 0
     total_E = 0.0
-    scores_E = []
-    values_E = []
-    actions = []
-    regrets = []
-    p_bests = []
-    ties = []
-    policies = []
+    total_regret = 0.0
 
     # --- Main loop ---
     for n in range(num_episodes):
-        if debug:
-            print(f"\n>>> Episode {n}")
-
         # Each ep resets the env
         env.reset()
 
         # Choose a bandit arm
         values = list(critic_E.model.values())
         action = actor_E(values)
-        if action in best_action:
-            num_best += 1
+        regret = estimate_regret(all_actions, action, critic_E)
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
-        visited_arms.add(action)
         if reward_mode:
             state = reward
 
-        # Estimate E
-        E_t, memories = estimate_E(action, state, memories, default_info_value)
+        # Estimate E, save regret
+        old = deepcopy(memories[action])
+        memories[action].update(state)
+        new = deepcopy(memories[action])
+        E_t = kl(new, old, default_info_value)
+        # print(f"{action} - {E_t} - {old.values()}, {new.values()}")
 
-        # Est regrets
-        regrets.append(estimate_regret(all_actions, action, critic_E))
-
-        # Learn
+        # --- Learn ---
         critic_E = update_E(action, E_t, critic_E, lr=1)
 
-        # Log data
-        actions.append(action)
+        # --- Log data ---
+        writer.add_scalar("regret", regret, n)
+        writer.add_scalar("score_E", E_t, n)
+        writer.add_scalar("value_E", critic_E(action) - tie_threshold, n)
+
         total_E += E_t
-        scores_E.append(E_t)
-        values_E.append(critic_E(action) - tie_threshold)
-        p_bests.append(num_best / (n + 1))
+        total_regret += regret
+        writer.add_scalar("total_regret", total_regret, n)
+        writer.add_scalar("total_E", total_E, n)
 
+        if action in best_action:
+            num_best += 1
+        writer.add_scalar("p_bests", num_best / (n + 1), n)
+        writer.add_scalar("action", action, n)
+        tie = 0
         if actor_E.tied:
-            ties.append(1)
-        else:
-            ties.append(0)
+            tie = 1
+        writer.add_scalar("ties", tie, n)
 
-        if debug:
-            print(f">>> critic_E: {critic_E.state_dict()}")
-        if progress:
-            print(f">>> Episode {n}.")
-        if progress or debug:
-            print(f">>> Total E: {total_E}\n")
-
-    # -- Build the result, and save or return it ---
-    episodes = list(range(num_episodes))
+    # -- Build the final result, and save or return it ---
     result = dict(best=best_action,
-                  episodes=episodes,
-                  policies=policies,
-                  actions=actions,
-                  p_bests=p_bests,
-                  ties=ties,
                   critic_E=critic_E.state_dict(),
                   total_E=total_E,
-                  scores_E=scores_E,
-                  values_E=values_E,
-                  regrets=regrets,
+                  total_regret=total_regret,
                   env_name=env_name,
                   num_episodes=num_episodes,
                   tie_break=tie_break,
+                  beta=beta,
                   tie_threshold=tie_threshold)
-    if save is not None:
-        save_checkpoint(result, filename=save)
-    if interactive:
-        return result
-    else:
-        return None
+
+    save_checkpoint(result,
+                    filename=os.path.join(writer.log_dir, "result.pkl"))
+
+    return result
 
 
 if __name__ == "__main__":
