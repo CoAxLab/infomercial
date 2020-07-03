@@ -1,0 +1,30 @@
+---
+title: "Cartoons"
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+library(MASS) 
+library(scales)
+library(network)
+library(ggnetwork)
+library(sna)
+# library(tikzDevice)
+
+options(scipen=1000000)
+
+kl_divergence <- function(p, q) {
+  sum(p * log(p/q))
+}
+```
+
