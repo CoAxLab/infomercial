@@ -58,8 +58,19 @@ class SoftmaxActor(object):
     def __call__(self, values):
         return self.forward(values)
 
+    def _is_zero(self, values):
+        if np.sum(values < self.tie_threshold) == len(values):
+            print(np.sum(values < self.tie_threshold))
+            return True
+
     def forward(self, values):
         values = np.asarray(values)
+
+        # Default and stop?
+        if self._is_zero(values):
+            return None
+
+        # Other wise go explore
         values[values < self.tie_threshold] = 1e-16  # 'zer0'
         probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
@@ -95,19 +106,27 @@ class DeterministicActor(object):
 
         return tied
 
+    def _is_zero(self, values):
+        if np.sum(values < self.tie_threshold) == len(values):
+            return True
+
     def __call__(self, values):
         return self.forward(values)
 
     def forward(self, values):
+        values = np.asarray(values)
+
+        # Default and stop?
+        if self._is_zero(values):
+            return None
+
+        # Other wise go explore:
         # Pick the best as the base case, ....
         action = np.argmax(values)
 
         # then check for ties.
-        #
-        # Using the first element is argmax's tie breaking strategy
         if self.tie_break == 'first':
             pass
-        # Round robin through the options for each new tie.
         elif self.tie_break == 'next':
             self.tied = self._is_tied(values)
             if self.tied:
@@ -177,6 +196,8 @@ def run(env_name='InfoBlueYellow4b-v0',
         # Choose a bandit arm
         values = list(critic_E.model.values())
         action = actor_E(values)
+        if action is None:
+            break
         regret = estimate_regret(all_actions, action, critic_E)
 
         # Pull a lever.
@@ -195,6 +216,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         critic_E = update_E(action, E_t, critic_E, lr=1)
 
         # --- Log data ---
+        num_stop = n
         writer.add_scalar("regret", regret, n)
         writer.add_scalar("score_E", E_t, n)
         writer.add_scalar("value_E", critic_E(action) - tie_threshold, n)
@@ -214,6 +236,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         writer.add_scalar("ties", tie, n)
 
     # -- Build the final result, and save or return it ---
+
     result = dict(best=best_action,
                   critic_E=critic_E.state_dict(),
                   total_E=total_E,
@@ -221,12 +244,16 @@ def run(env_name='InfoBlueYellow4b-v0',
                   env_name=env_name,
                   num_episodes=num_episodes,
                   tie_break=tie_break,
+                  num_stop=num_stop,
                   beta=beta,
                   tie_threshold=tie_threshold)
 
+    # Save the result and flush, and close the writer
     save_checkpoint(result,
                     filename=os.path.join(writer.log_dir, "result.pkl"))
+    writer.close()
 
+    # -
     return result
 
 
