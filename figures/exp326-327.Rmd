@@ -38,6 +38,7 @@ for(name in file_names[2:6]){
   tmp <- read_csv(paste(data_path, exp_name, paste(name, "csv", sep="."), sep="/"))
   result326[[name]] <- tmp[[name]]
 }
+result326$exp <- "Deterministic"
 
 exp_name <- "exp327"
 result327 <- read_csv(paste(data_path, exp_name, paste(file_names[1], "csv", sep="."), sep="/"))
@@ -45,6 +46,7 @@ for(name in file_names[2:6]){
   tmp <- read_csv(paste(data_path, exp_name, paste(name, "csv", sep="."), sep="/"))
   result327[[name]] <- tmp[[name]]
 }
+result327$exp <- "Stocastic"
 ```
 
 
@@ -90,8 +92,8 @@ result327 %>%
 
 p1 / p2
 ```
-
-# Scores
+# Scores 
+## Timecourse
 ```{r, fig.height=1.4, fig.width=1.2}
 result326 %>% 
   ggplot(aes(x=global_step, y=score_E)) +
@@ -107,8 +109,26 @@ result327 %>%
 
 p1/p2
 ```
+## Score histograms
+```{r, fig.height=1.4, fig.width=2.6}
+result326 %>% 
+  ggplot(aes(x=log10(score_E))) +
+  geom_histogram() + 
+  geom_vline(xintercept = log10(median(result326$score_E)), 
+             color="red", alpha=0.6) +
+  theme_classic() -> p1
 
-# Regret
+result327 %>% 
+  ggplot(aes(x=log10(score_E))) +
+  geom_histogram() + 
+  geom_vline(xintercept = log10(median(result327$score_E)), 
+             color="red", alpha=0.6) +
+  theme_classic() -> p2
+
+p1 / p2
+```
+# Regret 
+## Timecourse
 ```{r, fig.height=1.4, fig.width=1.2}
 result326 %>% 
   ggplot(aes(x=global_step, y=regret)) +
@@ -123,4 +143,51 @@ result327 %>%
   theme_classic() -> p2
 
 p1/p2
+```
+## Regret histograms
+```{r, fig.height=1.4, fig.width=2.6}
+result326 %>% 
+  ggplot(aes(x=log10(regret))) +
+  geom_histogram() + 
+  geom_vline(xintercept = log10(median(result326$regret)), 
+             color="red", alpha=0.6) +
+  theme_classic() -> p1
+
+result327 %>% 
+  ggplot(aes(x=log10(regret))) +
+  geom_histogram() + 
+  geom_vline(xintercept = log10(median(result327$regret)), 
+             color="red", alpha=0.6) +
+  theme_classic() -> p2
+
+p1 / p2
+```
+
+# Scores and regrets 
+## Totals
+```{r, fig.height=0.9, fig.width=2}
+full_join(result326, result327) %>% 
+  group_by(exp) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_E)) +
+  geom_bar(stat = "identity") +
+  theme_classic() +
+  coord_flip() ->
+  p1
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_regret)) +
+  geom_bar(stat = "identity") +
+  theme_classic() +
+  coord_flip() ->
+  p2
+
+p1 | p2 
+
+rm(tmp)
 ```
