@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -4370,3 +4370,31 @@ exp325:
 			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp325_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# ----------------------------------------
+# Curiosity bandits - testing and examples
+# ----------------------------------------
+# Deterministic mode
+exp326:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+        --num_episodes=400 \
+        --tie_break='next' \
+        --tie_threshold=1e-6 \
+        --beta=None \
+        --seed_value=110 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp326
+
+# Sampling mode
+exp327:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+        --num_episodes=400 \
+        --tie_break='next' \
+        --tie_threshold=0.0 \
+        --beta=1000 \
+        --seed_value=11 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp327
+		
