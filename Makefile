@@ -4380,11 +4380,11 @@ exp325:
 exp326:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
-        --num_episodes=400 \
+        --num_episodes=160 \
         --tie_break='next' \
-        --tie_threshold=1e-4 \
+        --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=110 \
+        --seed_value=42 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp326
 
@@ -4392,11 +4392,11 @@ exp326:
 exp327:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
-        --num_episodes=400 \
+        --num_episodes=160 \
         --tie_break='next' \
-        --tie_threshold=1e-4 \
+        --tie_threshold=1e-5 \
         --beta=1000 \
-        --seed_value=11 \
+        --seed_value=42 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp327
 
@@ -4404,28 +4404,57 @@ exp327:
 # ----------------------------------------
 # c1315c993d65103f5e62e09f3d73f287a6d897a7
 # 7-3-2020
-# Same agent, two different random seeds
+# Same agent, different random seeds
 
 # seed=124
 exp328:
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4c-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
         --num_episodes=40 \
         --tie_break='next' \
-        --tie_threshold=1e-3 \
+        --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=124 \
+        --seed_value=127 \
         --reward_mode=False \
-        --log_dir=$(DATA_PATH)/exp328
-
-# seed=23
-exp329:
+        --log_dir=$(DATA_PATH)/exp328/run1/
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4c-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
         --num_episodes=40 \
         --tie_break='next' \
-        --tie_threshold=1e-3 \
+        --tie_threshold=1e-5 \
         --beta=None \
         --seed_value=23 \
         --reward_mode=False \
-        --log_dir=$(DATA_PATH)/exp329
+        --log_dir=$(DATA_PATH)/exp328/run2/
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+        --num_episodes=40 \
+        --tie_break='next' \
+        --tie_threshold=1e-5 \
+        --beta=None \
+        --seed_value=802 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp328/run3/
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+        --num_episodes=40 \
+        --tie_break='next' \
+        --tie_threshold=1e-5 \
+        --beta=None \
+        --seed_value=42 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp328/run4/
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+        --num_episodes=40 \
+        --tie_break='next' \
+        --tie_threshold=1e-5 \
+        --beta=None \
+        --seed_value=673 \
+        --reward_mode=False \
+        --log_dir=$(DATA_PATH)/exp328/run5/
+
+# TODO: the important of boredom
+# TODO: eta sensitivity for reward bandits. -> Supp.
+# TODO: info/reward bandits. Dense, dense. Sparse/Dense S+R vectors.
+# TODO: port all models to SummaryWriter
