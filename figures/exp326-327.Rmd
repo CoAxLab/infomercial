@@ -30,6 +30,8 @@ data_path <- "~/Code/infomercial/data/"
 
 ## Loader defs
 ```{r, message=FALSE}
+num_episodes <- 160
+
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties")
 
 exp_name <- "exp326"
@@ -55,11 +57,13 @@ result327$exp <- "Stocastic"
 result326 %>% 
   ggplot(aes(x=global_step, y=action)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   theme_classic() -> p1
 
 result327 %>% 
   ggplot(aes(x=global_step, y=action)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   theme_classic() -> p2
 
 p1 / p2
@@ -83,11 +87,13 @@ p1 / p2
 result326 %>% 
   ggplot(aes(x=global_step, y=ties)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   theme_classic() -> p1
 
 result327 %>% 
   ggplot(aes(x=global_step, y=ties)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   theme_classic() -> p2
 
 p1 / p2
@@ -98,12 +104,14 @@ p1 / p2
 result326 %>% 
   ggplot(aes(x=global_step, y=score_E)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   scale_y_log10() +
   theme_classic() -> p1
 
 result327 %>% 
   ggplot(aes(x=global_step, y=score_E)) +
   geom_point() + 
+  lims(x=c(0, num_episodes)) +
   scale_y_log10() +
   theme_classic() -> p2
 
@@ -165,7 +173,7 @@ p1 / p2
 
 # Scores and regrets 
 ## Totals
-```{r, fig.height=0.9, fig.width=2}
+```{r, fig.height=0.6, fig.width=2.2}
 full_join(result326, result327) %>% 
   group_by(exp) %>% 
   summarise(total_E = sum(score_E),
@@ -175,14 +183,14 @@ full_join(result326, result327) %>%
 
 tmp %>% 
   ggplot(aes(x=exp, y=total_E)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", width=0.8) +
   theme_classic() +
   coord_flip() ->
   p1
 
 tmp %>% 
   ggplot(aes(x=exp, y=total_regret)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", width=0.8) +
   theme_classic() +
   coord_flip() ->
   p2
