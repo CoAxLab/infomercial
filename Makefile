@@ -4380,9 +4380,10 @@ exp325:
 exp326:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
-        --num_episodes=160 \
+        --num_episodes=320 \
+		--lr_E=1 \
         --tie_break='next' \
-        --tie_threshold=1e-5 \
+        --tie_threshold=1e-4 \
         --beta=None \
         --seed_value=42 \
         --reward_mode=False \
@@ -4392,9 +4393,10 @@ exp326:
 exp327:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
-        --num_episodes=160 \
+        --num_episodes=320 \
+		--lr_E=1 \
         --tie_break='next' \
-        --tie_threshold=1e-5 \
+        --tie_threshold=1e-4 \
         --beta=1000 \
         --seed_value=42 \
         --reward_mode=False \
@@ -4454,7 +4456,30 @@ exp328:
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run5/
 
+# ----------------------------------------
+# f9c61b4a5722e3d52512cbd079ef00816feac164
+# 7-9-2020
+# Curiosity bandits - testing and examples
+# N = 100 runs
+
+# Deterministic mode
+exp329:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp329.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp329/run{1}' ::: {1..100}
+
+# Softmx mode
+exp330:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp330.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp330/run{1}' ::: {1..100}
+
+
 # TODO: the important of boredom
 # TODO: eta sensitivity for reward bandits. -> Supp.
 # TODO: info/reward bandits. Dense, dense. Sparse/Dense S+R vectors.
 # TODO: port all models to SummaryWriter
+
+
