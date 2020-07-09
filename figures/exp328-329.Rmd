@@ -33,11 +33,11 @@ data_path <- "~/Code/infomercial/data/"
 ## Loader defs
 ```{r, message=FALSE}
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties")
-run_names <- c("run1", "run2", "run3", "run4", "run5")
+run_names <- c("run1", "run2", "run3", "run4", "run5", "run6")
 
 exp_name <- "exp328"
 result328 <- NULL
-for (run in run_names[1:5]){
+for (run in run_names){
   runtmp <- read_csv(paste(data_path, exp_name, run, paste(file_names[1], "csv", sep="."), sep="/"))
   for (name in file_names[2:6]){
     tmp <- read_csv(paste(data_path, exp_name, run, paste(name, "csv", sep="."), sep="/"))  
@@ -62,7 +62,6 @@ result328 %>%
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.5, "lines")) + 
   facet_grid(run~.) -> p1
 print(p1)
 ```
