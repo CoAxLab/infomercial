@@ -4489,14 +4489,14 @@ exp331:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp331.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp331/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp331/run{1}' ::: {1..100}
 
 # Softmx mode
 exp332:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp332.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp332/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp332/run{1}' ::: {1..100}
 
 # TODO: the important of boredom
 # TODO: eta sensitivity for reward bandits. -> Supp.
