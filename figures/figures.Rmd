@@ -166,6 +166,9 @@ for(name in file_names[2:6]){
   result327[[name]] <- tmp[[name]]
 }
 result327$exp <- "Stocastic"
+
+# Truncate to Det samples
+result327 <- filter(result327, global_step < nrow(result326))
 ```
 
 ## Plot
@@ -201,7 +204,6 @@ result326 %>%
 
 # --
 full_join(result326, result327) -> tmp
-tmp$score_E[tmp$score_E == 0] <- NA
 tmp %>% 
   ggplot(aes(x=global_step, y=log10(value_E), color=exp)) +
   geom_point(size=0.6, alpha=.9, alpha=.9) +
@@ -214,7 +216,6 @@ tmp %>%
 # print(p1)
 
 full_join(result326, result327) -> tmp
-tmp$score_E[tmp$score_E == 0] <- NA
 tmp %>% 
   ggplot(aes(x=global_step, y=regret, color=exp)) +
   geom_point(size=0.6, alpha=.9, alpha=.9) +
@@ -237,7 +238,7 @@ tmp %>%
   ggplot(aes(x=exp, y=total_E, fill=exp)) +
   geom_bar(stat = "identity", width=0.8) +
   scale_fill_manual("",  values=c("darkorchid4", "dodgerblue4")) +
-  theme_pubr(base_size = 8) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   labs(x="", y="Total value", tag="e.") +
   theme(strip.background = element_blank()) +
@@ -254,6 +255,7 @@ tmp %>%
   coord_flip() ->
   p6
 
+p5 + p6
 (p1 + p2) / p3 / p4 + plot_annotation(title="Deterministic versus stocastic curiosity", theme = theme_pubr(base_size = 8))
 ```
 
