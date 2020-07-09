@@ -61,15 +61,18 @@ class Memory(object):
 
 class Count(Memory):
     """A discrete distribution."""
-    def __init__(self):
+    def __init__(self, intial_bins=None):
         self.N = 0
         self.count = OrderedDict()
+        if intial_bins is not None:
+            for bin_name in intial_bins:
+                self.count[bin_name] = 1
 
     def update(self, x):
         if x in self.count:
             self.count[x] += 1
         else:
-            self.count[x] = 1
+            self.count[x] = 2
         self.N += 1
 
     def forward(self, x):
