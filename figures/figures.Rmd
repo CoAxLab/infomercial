@@ -3,18 +3,21 @@ title: "Figures"
 output: html_notebook
 ---
 
+# Libraries
 ```{r, message=FALSE}
 library(ggplot2)
 library(patchwork)
 library(tidyr)
 library(dplyr)
+library(patchwork)
+library(ggthemes)
+library(ggpubr)
 library(gridExtra)
 library(grid)
 library(readr)
 library(latex2exp)
 library(MASS) 
 library(scales)
-library(tikzDevice)
 
 options(scipen=1000000)
 
@@ -96,6 +99,7 @@ rm(
   example_trace12
 )
 ```
+
 ```{r, message=FALSE}
 bandit_names <- c("BanditOneHigh10-v0", "DeceptiveBanditOneHigh10-v0", "BanditUniform121-v0",
                   "BanditHardAndSparse10-v0")
@@ -138,6 +142,194 @@ rm(tmp)
 # Fig - Bee cartoon
 This is dummy section; see image itself.
 
+# Fig - Deterministic versus random exploration
+....When the goal is only learning.
+## Load
+```{r, message=FALSE}
+data_path <- "~/Code/infomercial/data/"
+# num_episodes <- 140
+
+file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties")
+
+exp_name <- "exp326"
+result326 <- read_csv(paste(data_path, exp_name, paste(file_names[1], "csv", sep="."), sep="/"))
+for(name in file_names[2:6]){
+  tmp <- read_csv(paste(data_path, exp_name, paste(name, "csv", sep="."), sep="/"))
+  result326[[name]] <- tmp[[name]]
+}
+result326$exp <- "Deterministic"
+
+exp_name <- "exp327"
+result327 <- read_csv(paste(data_path, exp_name, paste(file_names[1], "csv", sep="."), sep="/"))
+for(name in file_names[2:6]){
+  tmp <- read_csv(paste(data_path, exp_name, paste(name, "csv", sep="."), sep="/"))
+  result327[[name]] <- tmp[[name]]
+}
+result327$exp <- "Stocastic"
+```
+
+## Plot
+```{r, fig.width=2.4, fig.height=2.1}
+# ---
+result327 %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6, color="dodgerblue4") +
+  # geom_line(size=0.2, color="dodgerblue4") +
+  labs(x="Trial", y="Arm", tag="a.") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) -> p1
+
+result326 %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6, color="darkorchid4") + 
+  # geom_line(size=0.2, color="darkorchid4") +
+  labs(x="Trial", y="Arm", tag="b.") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) -> p2
+
+# --
+full_join(result326, result327) -> tmp
+tmp$score_E[tmp$score_E == 0] <- NA
+tmp %>% 
+  ggplot(aes(x=global_step, y=log10(value_E), color=exp)) +
+  geom_point(size=0.6, alpha=.9, alpha=.9) +
+  geom_line(size=0.2) +
+  labs(x="Trial", y="Info value", tag="c.") + 
+  scale_color_manual("Mode", values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "right") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=10, face="bold")) -> p3
+# print(p1)
+
+full_join(result326, result327) -> tmp
+tmp$score_E[tmp$score_E == 0] <- NA
+tmp %>% 
+  ggplot(aes(x=global_step, y=regret, color=exp)) +
+  geom_point(size=0.6, alpha=.9, alpha=.9) +
+  geom_line(size=0.2) +
+  labs(x="Trial", y="Regret", tag="d.") + 
+  scale_color_manual("Mode", values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=10, face="bold")) -> p4
+
+# ---
+full_join(result326, result327) %>% 
+  group_by(exp) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_E, fill=exp)) +
+  geom_bar(stat = "identity", width=0.8) +
+  scale_fill_manual("",  values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8) +
+  theme(strip.background = element_blank()) +
+  labs(x="", y="Total value", tag="e.") +
+  theme(strip.background = element_blank()) +
+  coord_flip() ->
+  p5
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_regret, fill=exp)) +
+  geom_bar(stat = "identity", width=0.8) +
+  scale_fill_manual("",  values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  labs(x="", y="Total regret", tag="f.") +
+  coord_flip() ->
+  p6
+
+(p1 + p2) / p3 / p4 + plot_annotation(title="Deterministic versus stocastic curiosity", theme = theme_pubr(base_size = 8))
+```
+
+# Fig - Curiosity in a random world
+## Load
+```{r, message=FALSE}
+file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties")
+run_names <- c("run1", "run2", "run3", "run4", "run5", "run6")
+
+exp_name <- "exp328"
+result328 <- NULL
+for (run in run_names){
+  runtmp <- read_csv(paste(data_path, exp_name, run, paste(file_names[1], "csv", sep="."), sep="/"))
+  for (name in file_names[2:6]){
+    tmp <- read_csv(paste(data_path, exp_name, run, paste(name, "csv", sep="."), sep="/"))  
+    runtmp[[name]] <- tmp[[name]]
+  }
+  runtmp$run <- run
+  result328 <- bind_rows(result328, runtmp)  
+}
+rm(runtmp, tmp)
+```
+## Plot
+```{r, fig.height=1.5, fig.width=1.8}
+result328 %>% 
+  filter(global_step < 40) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trials", y="Arm", title="Deterministic curiosity\nin a random world") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme() -> p1
+# plot(p1)
+
+result328 %>% 
+  filter(global_step < 40) %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(width=0.9) + 
+  labs(x="Arm", y="Relative count", title="40 episodes") +
+  theme_pubr(base_size=8, legend = "none")  +
+  theme(text = element_text(color = "black")) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) +
+  theme(plot.title = element_text(vjust = -3, hjust = 0, size = 6)) +
+  facet_grid(run~.) -> p2
+# print(p2)
+
+result328 %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(width=0.9) + 
+  labs(x="Arm", y="", title="4000 episodes") +
+  theme_pubr(base_size=8, legend = "none")  +
+  theme(text = element_text(color = "black")) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  # theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) +
+  theme(plot.title = element_text(vjust = -3, hjust = 0.5, size = 6)) +
+  facet_grid(run~.) -> p3
+# print(p3)
+
+(p1 | (p2 + p3)) + 
+  plot_layout(widths = c(0.5, 0.5)) 
+```
 # Fig - Generic 10 cartoon
 Create and plot a generic 10 armed bandit used only to explain the task.
 ```{r, fig.height=0.8, fig.width=0.7, fig.}
@@ -160,20 +352,6 @@ fig <- bandit1 +
   plot_annotation(title = "Payout",
                   theme=theme(plot.title = element_text(hjust = 0.5)))
 plot(fig)
-
-# -----------------------------------------------------------------------------------
-name <- "generic10-bandit"
-
-# Save a png
-ggsave(paste(name, ".png", sep=""), plot=fig, height = 2*0.8, width = 2*0.7)
-
-# Save a tex
-tikz(file = paste(name, "_standalone.tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = TRUE)
-plot(fig)
-dev.off()
-tikz(file = paste(name, ".tex", sep=""), height = 2*0.8, width = 2*0.7, standAlone = FALSE)
-plot(fig)
-dev.off()
 ```
 
 # Fig - Simple 10 cartoon
