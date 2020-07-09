@@ -128,6 +128,7 @@ result331 %>%
   filter(global_step < 80) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.6) + 
+  geom_line(size=0.1) +
   labs(x="Trial", y="Arm", title = "Det.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
@@ -143,6 +144,7 @@ result332 %>%
   filter(global_step < 80) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.6) + 
+  geom_line(size=0.1) +
   labs(x="Trial", y="Arm", title = "Sto.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
@@ -183,6 +185,26 @@ print(p1)
 
 rm(tmp)
 ```
+# E jitter
+```{r, fig.height=0.6, fig.width=1.6}
+full_join(result331, result332) -> 
+  tmp
+tmp %>% 
+  ggplot(aes(x=exp, y=log10(value_E))) +
+  geom_jitter(size=0.01, width = 0.2, alpha=0.1) +
+  stat_summary(fun=median, color="red", alpha=0.9, size=0.5, shape="|") +
+  theme_classic() +
+  labs(y="Total E") +
+  theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+rm(tmp)
+```
+
 # Regret dist
 ```{r, fig.height=0.8, fig.width=1.6}
 full_join(result331, result332) %>% 
@@ -225,6 +247,7 @@ tmp %>%
   geom_boxplot(notch = TRUE) +
   theme_classic() +
   labs(y="Total E") +
+  lims(y=c(5.5,6)) +
   coord_flip() ->
   p1
 print(p1)
@@ -243,9 +266,10 @@ full_join(result331, result332) %>%
 tmp %>% 
   ggplot(aes(x=exp, y=total_E)) +
   geom_jitter(size=0.4, width = 0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.9, size=0.5, shape="|") +
+  stat_summary(fun=median, color="red", alpha=0.9, size=0.5, shape="|") +
   theme_classic() +
   labs(y="Total E") +
+  lims(y=c(5.5,6)) +
   theme(
   strip.background = element_blank(),
   strip.text.x = element_blank()

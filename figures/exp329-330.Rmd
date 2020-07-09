@@ -179,7 +179,7 @@ result330 %>%
 
 p1 | p2
 ```
-# Score dist
+# E dist
 ```{r, fig.height=0.8, fig.width=2.4}
 full_join(result329, result330) %>% 
   ggplot(aes(x=log10(value_E), fill=exp)) +
@@ -190,7 +190,7 @@ full_join(result329, result330) %>%
   theme_classic() -> p1
 p1
 ```
-## Total E boxplot
+# E boxplot
 ```{r, fig.height=0.6, fig.width=1.6}
 full_join(result329, result330) -> 
   tmp
@@ -205,6 +205,26 @@ print(p1)
 
 rm(tmp)
 ```
+# E jitter
+```{r, fig.height=0.6, fig.width=1.6}
+full_join(result329, result330) ->
+  tmp
+tmp %>% 
+  ggplot(aes(x=exp, y=log10(value_E))) +
+  geom_jitter(size=0.01, width = 0.2, alpha=0.1) +
+  stat_summary(fun=median, color="red", alpha=0.9, size=0.5, shape="|") +
+  theme_classic() +
+  labs(y="Total E") +
+  theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+rm(tmp)
+```
+
 # Regret dist
 ```{r, fig.height=0.8, fig.width=1.6}
 full_join(result329, result330) %>% 
