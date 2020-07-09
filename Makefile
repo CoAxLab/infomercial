@@ -4498,6 +4498,28 @@ exp332:
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp332/run{1}' ::: {1..100}
 
+# ----------------------------------------
+# d44dd50c538994f2f8d62d5ec90e50903874884f
+# 7-9-2020
+# Curiosity bandits - testing and examples
+# N = 100 runs
+# Mixture of arms: InfoBlueYellow4c
+
+# Deterministic mode
+exp333:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp333.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp333/run{1}' ::: {1..100}
+
+# Softmx mode
+exp334:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp334.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp334/run{1}' ::: {1..100}
+
+
 # TODO: the important of boredom
 # TODO: eta sensitivity for reward bandits. -> Supp.
 # TODO: info/reward bandits. Dense, dense. Sparse/Dense S+R vectors.
