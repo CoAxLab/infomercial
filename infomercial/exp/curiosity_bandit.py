@@ -33,11 +33,8 @@ class Critic(object):
     def forward(self, state):
         return self.model[state]
 
-    def update_(self, state, update, replace=False):
-        if replace:
-            self.model[state] = update
-        else:
-            self.model[state] += update
+    def update_(self, state, update):
+        self.model[state] = update
 
     def state_dict(self):
         return self.model
@@ -64,14 +61,14 @@ class SoftmaxActor(object):
             return True
 
     def forward(self, values):
-        values = np.asarray(values)
+        values = np.asarray(values) - self.tie_threshold
 
-        # Default and stop?
-        if self._is_zero(values):
-            return None
+        # # Default and stop?
+        # if self._is_zero(values):
+        #     return None
+        # values[values < self.tie_threshold] = 1e-16  # 'zer0'
 
         # Other wise go explore
-        values[values < self.tie_threshold] = 1e-16  # 'zer0'
         probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
 
@@ -138,16 +135,18 @@ class DeterministicActor(object):
         return action
 
 
-def update_E(state, value, critic, lr):
+def update_E(state, E_t, critic, lr):
     """Bellman update"""
-    update = lr * value
-    critic.update_(state, update, replace=True)
+    V = critic(state)
+    update = V + (lr * (E_t - V))
+    critic.update_(state, update)
 
     return critic
 
 
 def run(env_name='InfoBlueYellow4b-v0',
         num_episodes=1,
+        lr_E=1.0,
         tie_break='next',
         tie_threshold=0.0,
         beta=None,
@@ -181,7 +180,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                                tie_threshold=tie_threshold,
                                seed=seed_value)
 
-    memories = [Count() for _ in range(num_actions)]
+    memories = [Count(intial_bins=[1, 2]) for _ in range(num_actions)]
 
     # --- Init log ---
     num_best = 0
@@ -213,10 +212,11 @@ def run(env_name='InfoBlueYellow4b-v0',
         # print(f"{action} - {E_t} - {old.values()}, {new.values()}")
 
         # --- Learn ---
-        critic_E = update_E(action, E_t, critic_E, lr=1)
+        critic_E = update_E(action, E_t, critic_E, lr=lr_E)
 
         # --- Log data ---
         num_stop = n
+        writer.add_scalar("state", state, n)
         writer.add_scalar("regret", regret, n)
         writer.add_scalar("score_E", E_t, n)
         writer.add_scalar("value_E", critic_E(action) - tie_threshold, n)
@@ -243,6 +243,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                   total_regret=total_regret,
                   env_name=env_name,
                   num_episodes=num_episodes,
+                  lr_E=lr_E,
                   tie_break=tie_break,
                   num_stop=num_stop + 1,
                   beta=beta,
