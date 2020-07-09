@@ -62,13 +62,6 @@ class SoftmaxActor(object):
 
     def forward(self, values):
         values = np.asarray(values) - self.tie_threshold
-
-        # # Default and stop?
-        # if self._is_zero(values):
-        #     return None
-        # values[values < self.tie_threshold] = 1e-16  # 'zer0'
-
-        # Other wise go explore
         probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
 
