@@ -159,9 +159,8 @@ def run(env_name='InfoBlueYellow4b-v0',
     default_info_value = entropy(np.ones(num_actions) / num_actions)
     E_t = default_info_value
 
-    # Agents and memories
+    # --- Agents and memories ---
     all_actions = list(range(num_actions))
-
     critic_E = Critic(num_actions, default_value=default_info_value)
     if beta is None:
         actor_E = DeterministicActor(num_actions,
@@ -173,6 +172,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                                tie_threshold=tie_threshold,
                                seed=seed_value)
 
+    # -
     memories = [Count(intial_bins=[1, 2]) for _ in range(num_actions)]
 
     # --- Init log ---
