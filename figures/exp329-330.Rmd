@@ -1,5 +1,5 @@
 ---
-title: "Exp329-330 - 100 replicates of curiosity bandits, det v samp."
+title: "Exp333-334: 100 replicates of curiosity bandits, det v samp."
 output: html_notebook
 ---
 
@@ -30,8 +30,6 @@ data_path <- "~/Code/infomercial/data/"
 
 ## Loader defs
 ```{r, message=FALSE}
-num_episodes <- 160
-
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties", "state")
 run_names <- 1:100
 
@@ -39,12 +37,14 @@ run_names <- 1:100
 exp_name <- "exp329"
 result329 <- NULL
 for (run in run_names){
-  runtmp <- read_csv(paste(data_path, exp_name, 
+  runtmp <- read_csv(paste(data_path, 
+                           exp_name, 
                            paste("run", run, sep=""), 
                            paste(file_names[1], "csv", sep="."), sep="/"))
   for (name in file_names[2:7]){
     tmp <- read_csv(paste(data_path, 
-                          exp_name, paste("run", run, sep=""), 
+                          exp_name, 
+                          paste("run", run, sep=""), 
                           paste(name, "csv", sep="."), sep="/"))  
     runtmp[[name]] <- tmp[[name]]
   }
@@ -60,12 +60,14 @@ rm(runtmp, tmp)
 exp_name <- "exp330"
 result330 <- NULL
 for (run in run_names){
-  runtmp <- read_csv(paste(data_path, exp_name, 
+  runtmp <- read_csv(paste(data_path, 
+                           exp_name, 
                            paste("run", run, sep=""), 
                            paste(file_names[1], "csv", sep="."), sep="/"))
   for (name in file_names[2:7]){
     tmp <- read_csv(paste(data_path, 
-                          exp_name, paste("run", run, sep=""), 
+                          exp_name, 
+                          paste("run", run, sep=""), 
                           paste(name, "csv", sep="."), sep="/"))  
     runtmp[[name]] <- tmp[[name]]
   }
@@ -93,16 +95,32 @@ rm(tmpfull, tmp1, tmp2, tmp3)
 ```{r, fig.height=0.8, fig.width=1.2}
 result329 %>% 
   ggplot(aes(x=state)) +
-  geom_bar(stat="count") + 
+  geom_bar(stat="count", fill="mediumorchid4") + 
   labs(x="State", title="Det.") +
   scale_x_continuous(breaks=c(1, 2), labels=c(1,2)) +
   theme_classic() -> p1
 
 result330 %>% 
   ggplot(aes(x=state)) +
-  geom_bar(stat="count") + 
+  geom_bar(stat="count", fill="plum4") + 
   labs(x="State", title="Sto.") +
   scale_x_continuous(breaks=c(1, 2), labels=c(1,2)) +
+  theme_classic() -> p2
+
+p1 | p2
+```
+# Action dist
+```{r, fig.height=0.8, fig.width=1.6}
+result329 %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(stat="count", fill="mediumorchid4") + 
+  labs(x="Arm", title="Det.") +
+  theme_classic() -> p1
+
+result330 %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(stat="count", fill="plum4") + 
+  labs(x="Arm", title="Sto.") +
   theme_classic() -> p2
 
 p1 | p2
@@ -111,9 +129,10 @@ p1 | p2
 ```{r, fig.height=2.4, fig.width=3}
 result329 %>% 
   filter(run < 13) %>% 
-  filter(global_step < 120) %>% 
+  filter(global_step < 80) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.6) + 
+  geom_point(size=0.6, color="mediumorchid4") + 
+  geom_line(size=0.1, color="mediumorchid4") +
   labs(x="Trial", y="Arm", title = "Det.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
@@ -126,9 +145,10 @@ result329 %>%
 
 result330 %>% 
   filter(run < 13) %>% 
-  filter(global_step < 120) %>% 
+  filter(global_step < 80) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.6) + 
+  geom_point(size=0.6, color="plum4") + 
+  geom_line(size=0.1, color="plum4") +
   labs(x="Trial", y="Arm", title = "Sto.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
@@ -142,62 +162,31 @@ result330 %>%
 p1 / p2
 ```
 
-# Action dist
-```{r, fig.height=0.8, fig.width=1.6}
-result329 %>% 
-  ggplot(aes(x=action+1)) +
-  geom_bar(stat="count") + 
-  labs(x="Arm", title="Det.") +
-  theme_classic() -> p1
 
-result330 %>% 
-  ggplot(aes(x=action+1)) +
-  geom_bar(stat="count") + 
-  labs(x="Arm", title="Sto.") +
-  theme_classic() -> p2
-
-p1 | p2
-```
-# Random examples actions
-TODO
-
-# State/action dist
-```{r, fig.height=0.8, fig.width=1.6}
-result329 %>% 
-  ggplot(aes(x=action+1)) +
-  geom_bar(stat="count") + 
-  labs(x="Arm", title="Det.") +
-  facet_grid(.~state) +
-  theme_classic() -> p1
-
-result330 %>% 
-  ggplot(aes(x=action+1)) +
-  geom_bar(stat="count") + 
-  labs(x="Arm", title="Sto.") +
-  facet_grid(.~state) +
-  theme_classic() -> p2
-
-p1 | p2
-```
-# E dist
+# Trials
+## E dist
 ```{r, fig.height=0.8, fig.width=2.4}
 full_join(result329, result330) %>% 
+  filter(value_E > 0) %>%
   ggplot(aes(x=log10(value_E), fill=exp)) +
-  geom_histogram(alpha=0.8, bins=100, color=NA) +
-  scale_fill_grey("") +
+  geom_density(alpha=0.7, color=NA) +
+  scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
   labs(x="log E", y="Fraction") +
   theme_classic() -> p1
 p1
 ```
-# E boxplot
+## E boxplot
 ```{r, fig.height=0.6, fig.width=1.6}
 full_join(result329, result330) -> 
   tmp
 tmp %>%
-  ggplot(aes(x=exp, y=log10(value_E))) +
-  geom_boxplot(outlier.colour = NA) +
+  filter(value_E > 0) %>%
+  ggplot(aes(x=exp, y=log10(value_E), fill=exp)) +
+  geom_boxplot() +
+  scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   theme_classic() +
+  theme(legend.position = "none") +
   labs(y="log E") +
   coord_flip() ->
   p1
@@ -205,17 +194,20 @@ print(p1)
 
 rm(tmp)
 ```
-# E jitter
+## E jitter
 ```{r, fig.height=0.6, fig.width=1.6}
-full_join(result329, result330) ->
+full_join(result329, result330) -> 
   tmp
 tmp %>% 
-  ggplot(aes(x=exp, y=log10(value_E))) +
+  filter(value_E > 0) %>%
+  ggplot(aes(x=exp, y=log10(value_E), color=exp)) +
   geom_jitter(size=0.01, width = 0.2, alpha=0.1) +
-  stat_summary(fun=median, color="red", alpha=0.9, size=0.5, shape="|") +
+  stat_summary(fun=median, color="black", alpha=0.9, size=0.5, shape="|") +
   theme_classic() +
   labs(y="Total E") +
+  scale_color_manual("", values=c("mediumorchid4", "plum4")) +
   theme(
+  legend.position = "none",
   strip.background = element_blank(),
   strip.text.x = element_blank()
   ) +
@@ -225,12 +217,13 @@ print(p1)
 rm(tmp)
 ```
 
-# Regret dist
+## Regret dist
 ```{r, fig.height=0.8, fig.width=1.6}
 full_join(result329, result330) %>% 
+  filter(value_E > 0) %>%
   ggplot(aes(x=log10(regret), fill=exp)) +
   geom_histogram(aes(y=..count../sum(..count..)), alpha=0.8,  color=NA) +
-  scale_fill_grey("") +
+  scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
   labs(x="Regret", y="Fraction") +
   theme_classic() -> p1
@@ -241,14 +234,15 @@ p1
 ```{r, fig.height=0.6, fig.width=1.6}
 full_join(result329, result330) %>% 
   group_by(exp, run) %>% 
+  filter(value_E > 0) %>%
   summarise(total_E = sum(score_E),
             total_regret = sum(regret)) %>% 
   ungroup() ->
   tmp
 tmp %>% 
  ggplot(aes(x=total_E, fill=exp)) +
-  geom_histogram(aes(y=..count../sum(..count..)), alpha=0.8,  color=NA) +
-  scale_fill_grey("") +
+  geom_density(alpha=0.7, color=NA) +
+  scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
   labs(x="Total E", y="Fraction") +
   theme_classic() -> p1
@@ -257,15 +251,18 @@ p1
 ## Total E boxplot
 ```{r, fig.height=0.6, fig.width=1.6}
 full_join(result329, result330) %>% 
+  filter(value_E > 0) %>%
   group_by(exp, run) %>% 
   summarise(total_E = sum(score_E),
             total_regret = sum(regret)) %>% 
   ungroup() ->
   tmp
 tmp %>%
-  ggplot(aes(x=exp, y=total_E)) +
+  ggplot(aes(x=exp, y=total_E, fill=exp)) +
   geom_boxplot(notch = TRUE) +
+  scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   theme_classic() +
+  theme(legend.position = "none") +
   labs(y="Total E") +
   coord_flip() ->
   p1
@@ -274,8 +271,9 @@ print(p1)
 rm(tmp)
 ```
 ## Total E jitter
-```{r, fig.height=0.4, fig.width=1.2}
+```{r, fig.height=0.6, fig.width=1.2}
 full_join(result329, result330) %>% 
+  filter(value_E > 0) %>%
   group_by(exp, run) %>% 
   summarise(total_E = sum(score_E),
             total_regret = sum(regret)) %>% 
@@ -283,15 +281,15 @@ full_join(result329, result330) %>%
   tmp
 
 tmp %>% 
-  ggplot(aes(x=exp, y=total_E)) +
+  ggplot(aes(x=exp, y=total_E, color=exp)) +
   geom_jitter(size=0.4, width = 0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.9, size=0.5, shape="|") +
+  stat_summary(fun=median, color="black", alpha=0.9, size=1, shape="|") +
   theme_classic() +
+  scale_color_manual("", values=c("mediumorchid4", "plum4")) +
   labs(y="Total E") +
-  theme(
-  strip.background = element_blank(),
-  strip.text.x = element_blank()
-  ) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(legend.position = "none") +
   coord_flip() ->
   p1
 print(p1)
@@ -306,15 +304,15 @@ full_join(result329, result330) %>%
   tmp
 
 tmp %>% 
-  ggplot(aes(x=exp, y=total_regret)) +
+  ggplot(aes(x=exp, y=total_regret, color=exp)) +
   geom_jitter(size=0.4, width = 0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.9, size=0.5, shape="|") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=0.7, shape="|") +
   theme_classic() +
+  scale_color_manual("", values=c("mediumorchid4", "plum4")) +
   labs(y="Total regret") +
-  theme(
-  strip.background = element_blank(),
-  strip.text.x = element_blank()
-  ) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(legend.position = "none") +
   coord_flip() ->
   p1
 print(p1)
@@ -330,9 +328,11 @@ full_join(result329, result330) %>%
   tmp
 
 tmp %>% 
-  ggplot(aes(x=exp, y=total_regret)) +
+  ggplot(aes(x=exp, y=total_regret, color=exp)) +
   geom_bar(stat = "identity", width=0.8) +
+  scale_color_manual("", values=c("mediumorchid4", "plum4")) +
   theme_classic() +
+  theme(legend.position = "none") +
   labs(y="Total regret") +
   coord_flip() ->
   p2
