@@ -1,0 +1,300 @@
+---
+title: "Exp331-332: 100 replicates of curiosity bandits, det v samp."
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(ggplot2)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+kl_divergence <- function(p, q) {
+  sum(p * log(p/q))
+}
+```
+
+# Load data
+## Set a main path
+```{r}
+data_path <- "~/Code/infomercial/data/"
+```
+
+## Loader defs
+```{r, message=FALSE}
+file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties", "state")
+run_names <- 1:100
+
+# ---
+exp_name <- "exp331"
+result331 <- NULL
+for (run in run_names){
+  runtmp <- read_csv(paste(data_path, exp_name, 
+                           paste("run", run, sep=""), 
+                           paste(file_names[1], "csv", sep="."), sep="/"))
+  for (name in file_names[2:7]){
+    tmp <- read_csv(paste(data_path, 
+                          exp_name, paste("run", run, sep=""), 
+                          paste(name, "csv", sep="."), sep="/"))  
+    runtmp[[name]] <- tmp[[name]]
+  }
+  runtmp$run <- run
+  runtmp$num_trials <- nrow(tmp)
+  result331 <- bind_rows(result331, runtmp)  
+  
+}
+result331$exp <- "Deterministic"
+rm(runtmp, tmp)
+
+# ---
+exp_name <- "exp332"
+result332 <- NULL
+for (run in run_names){
+  runtmp <- read_csv(paste(data_path, exp_name, 
+                           paste("run", run, sep=""), 
+                           paste(file_names[1], "csv", sep="."), sep="/"))
+  for (name in file_names[2:7]){
+    tmp <- read_csv(paste(data_path, 
+                          exp_name, paste("run", run, sep=""), 
+                          paste(name, "csv", sep="."), sep="/"))  
+    runtmp[[name]] <- tmp[[name]]
+  }
+  runtmp$run <- run
+  runtmp$num_trials <- nrow(tmp)
+  result332 <- bind_rows(result332, runtmp)  
+  
+}
+result332$exp <- "Stocastic"
+rm(runtmp, tmp)
+
+# --- Drop sto trials when det stopped
+tmpfull <- NULL
+for (n in run_names){
+  tmp1 <- filter(result331, n == run)
+  tmp2 <- filter(result332, n == run)
+  tmp3 <- filter(tmp2, global_step < tmp1$num_trials[1])
+  tmpfull <- bind_rows(tmpfull, tmp3)
+}
+result332 <- tmpfull
+rm(tmpfull, tmp1, tmp2, tmp3)
+```
+
+# State dist
+```{r, fig.height=0.8, fig.width=1.2}
+result331 %>% 
+  ggplot(aes(x=state)) +
+  geom_bar(stat="count") + 
+  labs(x="State", title="Det.") +
+  scale_x_continuous(breaks=c(1, 2), labels=c(1,2)) +
+  theme_classic() -> p1
+
+result332 %>% 
+  ggplot(aes(x=state)) +
+  geom_bar(stat="count") + 
+  labs(x="State", title="Sto.") +
+  scale_x_continuous(breaks=c(1, 2), labels=c(1,2)) +
+  theme_classic() -> p2
+
+p1 | p2
+```
+# Action dist
+```{r, fig.height=0.8, fig.width=1.6}
+result331 %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(stat="count") + 
+  labs(x="Arm", title="Det.") +
+  theme_classic() -> p1
+
+result332 %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(stat="count") + 
+  labs(x="Arm", title="Sto.") +
+  theme_classic() -> p2
+
+p1 | p2
+```
+# Random examples actions
+```{r, fig.height=2.4, fig.width=3}
+result331 %>% 
+  filter(run < 13) %>% 
+  filter(global_step < 80) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6) + 
+  labs(x="Trial", y="Arm", title = "Det.") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol = 3) +
+  theme_classic() + 
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) ->
+  p1
+# print(p1)
+
+result332 %>% 
+  filter(run < 13) %>% 
+  filter(global_step < 80) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6) + 
+  labs(x="Trial", y="Arm", title = "Sto.") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol = 3) +
+  theme_classic() + 
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) ->
+  p2
+# print(p2)
+
+p1 / p2
+```
+
+
+# Score dist
+```{r, fig.height=0.8, fig.width=2.4}
+full_join(result331, result332) %>% 
+  ggplot(aes(x=log10(value_E), fill=exp)) +
+  geom_histogram(alpha=0.8, bins=100, color=NA) +
+  scale_fill_grey("") +
+  scale_colour_grey() +
+  labs(x="log E", y="Fraction") +
+  theme_classic() -> p1
+p1
+```
+## Total E boxplot
+```{r, fig.height=0.6, fig.width=1.6}
+full_join(result331, result332) -> 
+  tmp
+tmp %>%
+  ggplot(aes(x=exp, y=log10(value_E))) +
+  geom_boxplot() +
+  theme_classic() +
+  labs(y="log E") +
+  coord_flip() ->
+  p1
+print(p1)
+
+rm(tmp)
+```
+# Regret dist
+```{r, fig.height=0.8, fig.width=1.6}
+full_join(result331, result332) %>% 
+  ggplot(aes(x=log10(regret), fill=exp)) +
+  geom_histogram(aes(y=..count../sum(..count..)), alpha=0.8,  color=NA) +
+  scale_fill_grey("") +
+  scale_colour_grey() +
+  labs(x="Regret", y="Fraction") +
+  theme_classic() -> p1
+p1
+```
+# Totals
+## Total E dist
+```{r, fig.height=0.6, fig.width=1.6}
+full_join(result331, result332) %>% 
+  group_by(exp, run) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+tmp %>% 
+ ggplot(aes(x=total_E, fill=exp)) +
+  geom_histogram(aes(y=..count../sum(..count..)), alpha=0.8,  color=NA) +
+  scale_fill_grey("") +
+  scale_colour_grey() +
+  labs(x="Total E", y="Fraction") +
+  theme_classic() -> p1
+p1
+```
+## Total E boxplot
+```{r, fig.height=0.6, fig.width=1.6}
+full_join(result331, result332) %>% 
+  group_by(exp, run) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+tmp %>%
+  ggplot(aes(x=exp, y=total_E)) +
+  geom_boxplot(notch = TRUE) +
+  theme_classic() +
+  labs(y="Total E") +
+  coord_flip() ->
+  p1
+print(p1)
+
+rm(tmp)
+```
+## Total E jitter
+```{r, fig.height=0.4, fig.width=1.2}
+full_join(result331, result332) %>% 
+  group_by(exp, run) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_E)) +
+  geom_jitter(size=0.4, width = 0.2) +
+  stat_summary(fun=mean, color="red", alpha=0.9, size=0.5, shape="|") +
+  theme_classic() +
+  labs(y="Total E") +
+  theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+```
+## Total regret jitter
+```{r, fig.height=0.4, fig.width=1.2}
+full_join(result331, result332) %>% 
+  group_by(exp, run) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_regret)) +
+  geom_jitter(size=0.4, width = 0.2) +
+  stat_summary(fun=mean, color="red", alpha=0.9, size=0.5, shape="|") +
+  theme_classic() +
+  labs(y="Total regret") +
+  theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+```
+## Total regret bar
+```{r, fig.height=0.6, fig.width=1}
+full_join(result331, result332) %>% 
+  # filter(global_step > 4) %>% # Drop first 4 rows -> E_0
+  group_by(exp, run) %>% 
+  summarise(total_E = sum(score_E),
+            total_regret = sum(regret)) %>% 
+  ungroup() ->
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=exp, y=total_regret)) +
+  geom_bar(stat = "identity", width=0.8) +
+  theme_classic() +
+  labs(y="Total regret") +
+  coord_flip() ->
+  p2
+print(p2)
+
+rm(tmp)
+```
