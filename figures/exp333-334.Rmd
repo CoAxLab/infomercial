@@ -164,6 +164,11 @@ p1 / p2
 
 
 # Trials
+## Wilcox
+```{r}
+wilcox.test(x=log10(filter(result333, value_E > 0)$value_E), 
+            y=log10(filter(result334, value_E > 0)$value_E))
+```
 ## E dist
 ```{r, fig.height=0.8, fig.width=2.4}
 full_join(result333, result334) %>% 
@@ -202,7 +207,7 @@ tmp %>%
   filter(value_E > 0) %>%
   ggplot(aes(x=exp, y=log10(value_E), color=exp)) +
   geom_jitter(size=0.01, width = 0.2, alpha=0.1) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=0.5, shape="|") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=0.5, shape="|") +
   theme_classic() +
   labs(y="Total E") +
   scale_color_manual("", values=c("mediumorchid4", "plum4")) +
@@ -218,20 +223,22 @@ rm(tmp)
 ```
 
 ## Regret dist
-```{r, fig.height=0.8, fig.width=1.6}
+```{r, fig.height=0.8, fig.width=1.2}
 full_join(result333, result334) %>% 
   filter(regret > 0) %>%
   ggplot(aes(x=log10(regret), fill=exp)) +
-  geom_histogram(aes(y=..count../sum(..count..)), alpha=0.8,  color=NA) +
+  geom_density(color=NA) +
   scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
   labs(x="Regret", y="Fraction") +
-  theme_classic() -> p1
-p1
+  theme_classic() + 
+  theme(legend.position = "none") -> 
+  p1
+print(p1)
 ```
 # Totals
 ## Total E dist
-```{r, fig.height=0.6, fig.width=1.6}
+```{r, fig.height=0.6, fig.width=1.2}
 full_join(result333, result334) %>% 
   filter(value_E > 0) %>%
   group_by(exp, run) %>% 
@@ -245,7 +252,9 @@ tmp %>%
   scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
   labs(x="Total E", y="Fraction") +
-  theme_classic() -> p1
+  theme_classic() + 
+  theme(legend.position = "none") -> 
+  p1
 p1
 ```
 ## Total E boxplot
@@ -268,6 +277,7 @@ tmp %>%
   p1
 print(p1)
 
+# ---
 rm(tmp)
 ```
 ## Total E jitter
@@ -283,7 +293,7 @@ full_join(result333, result334) %>%
 tmp %>% 
   ggplot(aes(x=exp, y=total_E, color=exp)) +
   geom_jitter(size=0.4, width = 0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=1, shape="|") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
   theme_classic() +
   scale_color_manual("", values=c("mediumorchid4", "plum4")) +
   labs(y="Total E") +

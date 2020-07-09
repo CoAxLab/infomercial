@@ -164,6 +164,12 @@ p1 / p2
 
 
 # Trials
+## Wilcox
+```{r}
+wilcox.test(x=log10(filter(result331, value_E > 0)$value_E), 
+            y=log10(filter(result332, value_E > 0)$value_E))
+```
+
 ## E dist
 ```{r, fig.height=0.8, fig.width=2.4}
 full_join(result331, result332) %>% 
@@ -240,7 +246,7 @@ full_join(result331, result332) %>%
   ungroup() ->
   tmp
 tmp %>% 
- ggplot(aes(x=total_E, fill=exp)) +
+ ggplot(aes(x=total_E-4*1.38, fill=exp)) +
   geom_density(alpha=0.7, color=NA) +
   scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   scale_colour_grey() +
@@ -258,7 +264,7 @@ full_join(result331, result332) %>%
   ungroup() ->
   tmp
 tmp %>%
-  ggplot(aes(x=exp, y=total_E, fill=exp)) +
+  ggplot(aes(x=exp, y=total_E-4*1.38, fill=exp)) +
   geom_boxplot(notch = TRUE) +
   scale_fill_manual("", values=c("mediumorchid4", "plum4")) +
   theme_classic() +
@@ -281,7 +287,7 @@ full_join(result331, result332) %>%
   tmp
 
 tmp %>% 
-  ggplot(aes(x=exp, y=total_E, color=exp)) +
+  ggplot(aes(x=exp, y=total_E-4*1.38, color=exp)) +
   geom_jitter(size=0.4, width = 0.2) +
   stat_summary(fun=median, color="black", alpha=0.9, size=1, shape="|") +
   theme_classic() +

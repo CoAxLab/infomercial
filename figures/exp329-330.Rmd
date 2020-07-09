@@ -164,6 +164,12 @@ p1 / p2
 
 
 # Trials
+## Wilcox
+```{r}
+wilcox.test(x=log10(filter(result329, value_E > 0)$value_E), 
+            y=log10(filter(result330, value_E > 0)$value_E))
+```
+
 ## E dist
 ```{r, fig.height=0.8, fig.width=2.4}
 full_join(result329, result330) %>% 
