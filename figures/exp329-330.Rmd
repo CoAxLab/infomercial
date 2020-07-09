@@ -107,6 +107,41 @@ result330 %>%
 
 p1 | p2
 ```
+# Random examples actions
+```{r, fig.height=2.4, fig.width=3}
+result329 %>% 
+  filter(run < 13) %>% 
+  filter(global_step < 120) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6) + 
+  labs(x="Trial", y="Arm", title = "Det.") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol = 3) +
+  theme_classic() + 
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) ->
+  p1
+# print(p1)
+
+result330 %>% 
+  filter(run < 13) %>% 
+  filter(global_step < 120) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6) + 
+  labs(x="Trial", y="Arm", title = "Sto.") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol = 3) +
+  theme_classic() + 
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) ->
+  p2
+# print(p2)
+
+p1 / p2
+```
+
 # Action dist
 ```{r, fig.height=0.8, fig.width=1.6}
 result329 %>% 
