@@ -148,6 +148,8 @@ print(p5)
 ```
 
 ## Assemble
-```{r, fig.height=4, fig.width=3}
-p1 / p2 / p3 / p4 / p5 + plot_layout(heights = c(0.5, 0.1, 0.1, 0.1, 0.1))
+```{r, fig.height=3, fig.width=3}
+(p1 + labs(title="Exploration in action")) / 
+(p2 + labs(title="Information value")) / 
+(p4 + labs(title="Regret")) + plot_layout(heights = c(0.5, 0.25, 0.25))
 ```
