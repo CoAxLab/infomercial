@@ -4573,6 +4573,7 @@ exp335:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp335/RandomActor 
 
+# Repeat 335 
 exp336:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
@@ -4612,6 +4613,7 @@ exp336:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp336/RandomActor 
 
+# Repeat 335 again
 exp337:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4b-v0' \
@@ -4651,7 +4653,7 @@ exp337:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/RandomActor 
 
-
+# Try InfoBlueYellow4a now
 exp338:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
