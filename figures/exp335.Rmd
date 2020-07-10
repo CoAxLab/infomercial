@@ -56,7 +56,7 @@ rm(tmp, runtmp, run, name)
 ```
 
 
-```{r, fig.width=1, fig.height=1.6}
+```{r, fig.width=2, fig.height=1.6}
 result335 %>% 
   ggplot(aes(x=global_step, y=action+1, color=exp)) +
   geom_point(size=0.6) + 
@@ -69,40 +69,28 @@ result335 %>%
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") +
+  theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.text.x = element_blank()) ->
   p1
 print(p1)
 ```
 
-## E dist
-```{r, fig.height=0.8, fig.width=2.4}
-result335 %>% 
-  filter(value_E > 0) %>%
-  ggplot(aes(x=log10(value_E), fill=exp)) +
-  geom_density(alpha=0.6, color="black") +
-  scale_fill_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
-  labs(x="log E", y="Fraction") +
-  theme_classic() -> p1
-p1
-```
-
 ## E boxplot
-```{r, fig.height=0.6, fig.width=1.6}
+```{r, fig.height=0.6, fig.width=2}
 result335 %>%
   filter(value_E > 0) %>%
   ggplot(aes(x=exp, y=log10(value_E), fill=exp)) +
-  geom_boxplot() +
+  geom_boxplot(notch = TRUE) +
   scale_fill_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
   theme_classic() +
   theme(legend.position = "none") +
   labs(y="log E") +
   coord_flip() ->
-  p1
-print(p1)
+  p2
+print(p2)
 
 rm(tmp)
 ```
-
 ## E jitter
 ```{r, fig.height=0.6, fig.width=2}
 
@@ -121,34 +109,22 @@ result335 %>%
   strip.text.x = element_blank()
   ) +
   coord_flip() ->
-  p1
-print(p1)
+  p3
+print(p3)
 ```
 
-## Regret dist
-```{r, fig.height=0.8, fig.width=2}
-result335 %>% 
-  filter(regret > 0) %>%
-  ggplot(aes(x=regret, fill=exp)) +
-  geom_density(alpha=0.7, color="black") +
-  scale_fill_manual("", values=c("grey", "plum4",  "paleturquoise4")) +
-  scale_x_log10() +
-  labs(x="Regret", y="Fraction") +
-  theme_classic() -> p1
-p1
-```
 ## Regret boxplot
-```{r, fig.height=0.6, fig.width=1.6}
+```{r, fig.height=0.6, fig.width=2}
 result335 %>%
   ggplot(aes(x=exp, y=log10(regret), fill=exp)) +
-  geom_boxplot() +
+  geom_boxplot(notch = TRUE) +
   scale_fill_manual("", values=c("grey", "plum4",  "paleturquoise4")) +
   theme_classic() +
   theme(legend.position = "none") +
   labs(y="log Regret") +
   coord_flip() ->
-  p1
-print(p1)
+  p4
+print(p4)
 
 rm(tmp)
 ```
@@ -163,12 +139,15 @@ result335 %>%
   labs(y="Regret") +
   scale_y_log10() +
   scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
-  theme(
-  legend.position = "none",
-  strip.background = element_blank(),
-  strip.text.x = element_blank()
-  ) +
+  theme(legend.position = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
   coord_flip() ->
-  p1
-print(p1)
+  p5
+print(p5)
+```
+
+## Assemble
+```{r, fig.height=4, fig.width=3}
+p1 / p2 / p3 / p4 / p5 + plot_layout(heights = c(0.5, 0.1, 0.1, 0.1, 0.1))
 ```
