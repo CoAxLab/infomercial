@@ -4650,3 +4650,43 @@ exp337:
 		--seed_value=12 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/RandomActor 
+
+
+exp338:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/ThresholdActor \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/RandomActor 
