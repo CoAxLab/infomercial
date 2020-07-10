@@ -1,0 +1,174 @@
+---
+title: "Exp335 - curiosity, testing some new actors"
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(ggplot2)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+kl_divergence <- function(p, q) {
+  sum(p * log(p/q))
+}
+```
+
+# Load data
+## Set a main path
+```{r}
+data_path <- "~/Code/infomercial/data/"
+```
+
+## Loader defs
+```{r, message=FALSE}
+file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties", "state")
+run_names <- c("DeterministicActor", "SoftmaxActor", "ThresholdActor", "RandomActor")
+
+# ---
+exp_name <- "exp335"
+result335 <- NULL
+for (run in run_names){
+  runtmp <- read_csv(paste(data_path, 
+                           exp_name, 
+                           run,
+                           paste(file_names[1], "csv", sep="."), sep="/"))
+  for (name in file_names[2:7]){
+    tmp <- read_csv(paste(data_path, 
+                          exp_name, 
+                          run,
+                          paste(name, "csv", sep="."), sep="/"))  
+    runtmp[[name]] <- tmp[[name]]
+  }
+  runtmp$exp <- run
+  runtmp$num_trials <- nrow(tmp)
+  result335 <- bind_rows(result335, runtmp) 
+}
+rm(tmp, runtmp, run, name)
+```
+
+
+```{r, fig.width=1, fig.height=1.6}
+result335 %>% 
+  ggplot(aes(x=global_step, y=action+1, color=exp)) +
+  geom_point(size=0.6) + 
+  geom_line(size=0.1) +
+  labs(x="Trial", y="Arm") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_grid(exp~.) +
+  theme_classic() + 
+  scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(strip.text.x = element_blank()) ->
+  p1
+print(p1)
+```
+
+## E dist
+```{r, fig.height=0.8, fig.width=2.4}
+result335 %>% 
+  filter(value_E > 0) %>%
+  ggplot(aes(x=log10(value_E), fill=exp)) +
+  geom_density(alpha=0.6, color="black") +
+  scale_fill_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  labs(x="log E", y="Fraction") +
+  theme_classic() -> p1
+p1
+```
+
+## E boxplot
+```{r, fig.height=0.6, fig.width=1.6}
+result335 %>%
+  filter(value_E > 0) %>%
+  ggplot(aes(x=exp, y=log10(value_E), fill=exp)) +
+  geom_boxplot() +
+  scale_fill_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  labs(y="log E") +
+  coord_flip() ->
+  p1
+print(p1)
+
+rm(tmp)
+```
+
+## E jitter
+```{r, fig.height=0.6, fig.width=2}
+
+result335 %>% 
+  filter(value_E > 0) %>%
+  ggplot(aes(x=exp, y=value_E, color=exp)) +
+  geom_jitter(size=0.1, width = 0.2, alpha=0.9) +
+  stat_summary(fun=mean, color="black", alpha=1, size=0.6, shape="|") +
+  theme_classic() +
+  labs(y="E") +
+  scale_y_log10() +
+  scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  theme(
+  legend.position = "none",
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+```
+
+## Regret dist
+```{r, fig.height=0.8, fig.width=2}
+result335 %>% 
+  filter(regret > 0) %>%
+  ggplot(aes(x=regret, fill=exp)) +
+  geom_density(alpha=0.7, color="black") +
+  scale_fill_manual("", values=c("grey", "plum4",  "paleturquoise4")) +
+  scale_x_log10() +
+  labs(x="Regret", y="Fraction") +
+  theme_classic() -> p1
+p1
+```
+## Regret boxplot
+```{r, fig.height=0.6, fig.width=1.6}
+result335 %>%
+  ggplot(aes(x=exp, y=log10(regret), fill=exp)) +
+  geom_boxplot() +
+  scale_fill_manual("", values=c("grey", "plum4",  "paleturquoise4")) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  labs(y="log Regret") +
+  coord_flip() ->
+  p1
+print(p1)
+
+rm(tmp)
+```
+## Regret jitter
+```{r, fig.height=0.6, fig.width=2}
+result335 %>% 
+  # filter(regret > 0) %>%
+  ggplot(aes(x=exp, y=regret, color=exp)) +
+  geom_jitter(size=0.1, width = 0.2, alpha=0.9) +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=0.5, shape="|") +
+  theme_classic() +
+  labs(y="Regret") +
+  scale_y_log10() +
+  scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  theme(
+  legend.position = "none",
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+  ) +
+  coord_flip() ->
+  p1
+print(p1)
+```
