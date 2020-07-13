@@ -4752,7 +4752,7 @@ exp340:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='DeterministicActor' \
-		--num_episodes=80 \
+		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
@@ -4764,7 +4764,7 @@ exp340:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='SoftmaxActor' \
-		--num_episodes=80 \
+		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
@@ -4776,7 +4776,7 @@ exp340:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='ThresholdActor' \
-		--num_episodes=80 \
+		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
@@ -4787,7 +4787,7 @@ exp340:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='RandomActor' \
-		--num_episodes=80 \
+		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
