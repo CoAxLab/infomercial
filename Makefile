@@ -4747,7 +4747,7 @@ exp339:
 		--log_dir=$(DATA_PATH)/exp339/RandomActor \
 		--tie_threshold=1e-3 
 
-# All actors can now stop early. Try InfoBlueYellow4b next.
+# Repeat 339, with decreased boredom
 exp340:
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
@@ -4760,7 +4760,7 @@ exp340:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/DeterministicActor \
 		--tie_break='next' \
-		--tie_threshold=1e-3 
+		--tie_threshold=1e-4 
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='SoftmaxActor' \
@@ -4772,7 +4772,7 @@ exp340:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/SoftmaxActor \
 		--beta=500 \
-		--tie_threshold=1e-3 
+		--tie_threshold=1e-4 
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='ThresholdActor' \
@@ -4783,7 +4783,7 @@ exp340:
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/ThresholdActor \
-		--tie_threshold=1e-3 
+		--tie_threshold=1e-4 
 	curiosity_bandit.py \
 		--env_name='InfoBlueYellow4a-v0' \
 		--actor='RandomActor' \
@@ -4794,5 +4794,55 @@ exp340:
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/RandomActor \
-		--tie_threshold=1e-3 
+		--tie_threshold=1e-4 
+
+
+# Repeat 340, InfoBlueYellow4b (all max ent arms)
+exp341:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/RandomActor \
+		--tie_threshold=1e-4 
 
