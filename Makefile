@@ -4800,7 +4800,7 @@ exp340:
 # Repeat 340, InfoBlueYellow4b (all max ent arms)
 exp341:
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
 		--actor='DeterministicActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
@@ -4812,7 +4812,7 @@ exp341:
 		--tie_break='next' \
 		--tie_threshold=1e-4 
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
 		--actor='SoftmaxActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
@@ -4824,7 +4824,7 @@ exp341:
 		--beta=500 \
 		--tie_threshold=1e-4 
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
 		--actor='ThresholdActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
@@ -4835,7 +4835,7 @@ exp341:
 		--log_dir=$(DATA_PATH)/exp341/ThresholdActor \
 		--tie_threshold=1e-4 
 	curiosity_bandit.py \
-		--env_name='InfoBlueYellow4a-v0' \
+		--env_name='InfoBlueYellow4b-v0' \
 		--actor='RandomActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
@@ -4845,4 +4845,3 @@ exp341:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/RandomActor \
 		--tie_threshold=1e-4 
-
