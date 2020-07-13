@@ -194,6 +194,8 @@ def run(env_name='InfoBlueYellow4b-v0',
         num_episodes=1,
         lr_E=1.0,
         actor='DeterministicActor',
+        initial_count=1,
+        intial_bins=None,
         seed_value=42,
         reward_mode=False,
         log_dir=None,
@@ -205,7 +207,6 @@ def run(env_name='InfoBlueYellow4b-v0',
 
     env = gym.make(env_name)
     env.seed(seed_value)
-
     num_actions = env.action_space.n
     best_action = env.best
     default_info_value = entropy(np.ones(num_actions) / num_actions)
@@ -226,7 +227,10 @@ def run(env_name='InfoBlueYellow4b-v0',
         raise ValueError("actor was not a valid choice")
 
     # -
-    memories = [Count(intial_bins=[1, 2]) for _ in range(num_actions)]
+    memories = [
+        Count(intial_bins=intial_bins, initial_count=initial_count)
+        for _ in range(num_actions)
+    ]
 
     # --- Init log ---
     num_best = 0
