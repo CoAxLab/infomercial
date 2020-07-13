@@ -218,7 +218,7 @@ def run(env_name='InfoBlueYellow4b-v0',
     elif actor == "SoftmaxActor":
         actor_E = SoftmaxActor(num_actions, **actor_kwargs, seed=seed_value)
     elif actor == "RandomActor":
-        actor_E = RandomActor(num_actions, seed=seed_value)
+        actor_E = RandomActor(num_actions, **actor_kwargs, seed=seed_value)
     elif actor == "ThresholdActor":
         actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=seed_value)
     else:

@@ -4735,4 +4735,5 @@ exp339:
 		--lr_E=1 \
 		--seed_value=42 \
 		--reward_mode=False \
-		--log_dir=$(DATA_PATH)/exp339/RandomActor 
+		--log_dir=$(DATA_PATH)/exp339/RandomActor \
+		--tie_threshold=1e-3 
