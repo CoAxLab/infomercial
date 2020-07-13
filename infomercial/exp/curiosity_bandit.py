@@ -40,6 +40,61 @@ class Critic(object):
         return self.model
 
 
+class ThresholdActor(object):
+    def __init__(self, num_actions, tie_threshold=0.0, seed=None):
+        self.prng = np.random.RandomState(seed)
+        self.tie_threshold = tie_threshold
+        self.num_actions = num_actions
+        self.actions = list(range(self.num_actions))
+        self.action_count = 0
+        self.tied = False
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        # Threshold
+        values = np.asarray(values) - self.tie_threshold
+
+        # Pick from postive values, while there still are positive values.
+        mask = values > 0
+        if np.sum(mask) > 0:
+            filtered = [a for (a, m) in zip(self.actions, mask) if m]
+            action = self.prng.choice(filtered)
+        else:
+            self.tied = True
+            action = None
+
+        return action
+
+
+class RandomActor(object):
+    def __init__(self, num_actions, tie_threshold=0.0, seed=None):
+        self.prng = np.random.RandomState(seed)
+        self.tie_threshold = tie_threshold
+        self.num_actions = num_actions
+        self.actions = list(range(self.num_actions))
+        # Undef for softmax. Set to False: API consistency.
+        self.tied = False
+
+    def __call__(self, values):
+        return self.forward(values)
+
+    def forward(self, values):
+        """Values are a dummy var. Pick at random"""
+
+        # Threshold
+        values = np.asarray(values) - self.tie_threshold
+
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
+            return None
+
+        # Make a random choice
+        action = self.prng.choice(self.actions)
+        return action
+
+
 class SoftmaxActor(object):
     def __init__(self, num_actions, beta=1.0, tie_threshold=0.0, seed=None):
         self.prng = np.random.RandomState(seed)
@@ -47,7 +102,6 @@ class SoftmaxActor(object):
         self.tie_threshold = tie_threshold
         self.num_actions = num_actions
         self.actions = list(range(self.num_actions))
-        self.action_count = 0
 
         # Undef for softmax. Set to False: API consistency.
         self.tied = False
@@ -55,13 +109,15 @@ class SoftmaxActor(object):
     def __call__(self, values):
         return self.forward(values)
 
-    def _is_zero(self, values):
-        if np.sum(values < self.tie_threshold) == len(values):
-            print(np.sum(values < self.tie_threshold))
-            return True
-
     def forward(self, values):
+        # Threshold
         values = np.asarray(values) - self.tie_threshold
+
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
+            return None
+
+        # Make a soft choice
         probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
 
@@ -82,7 +138,7 @@ class DeterministicActor(object):
             return False
 
         # Apply the threshold, rectifying values less than 0
-        t_values = [max(0, v - self.tie_threshold) for v in values]
+        t_values = [max(0, v) for v in values]
 
         # Check for any difference, if there's a difference then
         # there can be no tie.
@@ -96,18 +152,15 @@ class DeterministicActor(object):
 
         return tied
 
-    def _is_zero(self, values):
-        if np.sum(values < self.tie_threshold) == len(values):
-            return True
-
     def __call__(self, values):
         return self.forward(values)
 
     def forward(self, values):
-        values = np.asarray(values)
+        # Threshold
+        values = np.asarray(values) - self.tie_threshold
 
-        # Default and stop?
-        if self._is_zero(values):
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
             return None
 
         # Other wise go explore:
@@ -140,12 +193,13 @@ def update_E(state, E_t, critic, lr):
 def run(env_name='InfoBlueYellow4b-v0',
         num_episodes=1,
         lr_E=1.0,
-        tie_break='next',
-        tie_threshold=0.0,
-        beta=None,
+        actor='DeterministicActor',
+        initial_count=1,
+        initial_bins=None,
         seed_value=42,
         reward_mode=False,
-        log_dir=None):
+        log_dir=None,
+        **actor_kwargs):
     """Play some slots!"""
 
     # --- Init ---
@@ -153,7 +207,6 @@ def run(env_name='InfoBlueYellow4b-v0',
 
     env = gym.make(env_name)
     env.seed(seed_value)
-
     num_actions = env.action_space.n
     best_action = env.best
     default_info_value = entropy(np.ones(num_actions) / num_actions)
@@ -162,18 +215,22 @@ def run(env_name='InfoBlueYellow4b-v0',
     # --- Agents and memories ---
     all_actions = list(range(num_actions))
     critic_E = Critic(num_actions, default_value=default_info_value)
-    if beta is None:
-        actor_E = DeterministicActor(num_actions,
-                                     tie_break=tie_break,
-                                     tie_threshold=tie_threshold)
+    if actor == "DeterministicActor":
+        actor_E = DeterministicActor(num_actions, **actor_kwargs)
+    elif actor == "SoftmaxActor":
+        actor_E = SoftmaxActor(num_actions, **actor_kwargs, seed=seed_value)
+    elif actor == "RandomActor":
+        actor_E = RandomActor(num_actions, **actor_kwargs, seed=seed_value)
+    elif actor == "ThresholdActor":
+        actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=seed_value)
     else:
-        actor_E = SoftmaxActor(num_actions,
-                               beta=beta,
-                               tie_threshold=tie_threshold,
-                               seed=seed_value)
+        raise ValueError("actor was not a valid choice")
 
     # -
-    memories = [Count(intial_bins=[1, 2]) for _ in range(num_actions)]
+    memories = [
+        Count(intial_bins=initial_bins, initial_count=initial_count)
+        for _ in range(num_actions)
+    ]
 
     # --- Init log ---
     num_best = 0
@@ -212,7 +269,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         writer.add_scalar("state", state, n)
         writer.add_scalar("regret", regret, n)
         writer.add_scalar("score_E", E_t, n)
-        writer.add_scalar("value_E", critic_E(action) - tie_threshold, n)
+        writer.add_scalar("value_E", critic_E(action), n)
 
         total_E += E_t
         total_regret += regret
@@ -237,10 +294,10 @@ def run(env_name='InfoBlueYellow4b-v0',
                   env_name=env_name,
                   num_episodes=num_episodes,
                   lr_E=lr_E,
-                  tie_break=tie_break,
-                  num_stop=num_stop + 1,
-                  beta=beta,
-                  tie_threshold=tie_threshold)
+                  initial_bins=initial_bins,
+                  initial_count=initial_count,
+                  actor_kwargs=actor_kwargs,
+                  num_stop=num_stop + 1)
 
     # Save the result and flush, and close the writer
     save_checkpoint(result,

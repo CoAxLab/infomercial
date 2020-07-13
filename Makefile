@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -4526,3 +4526,368 @@ exp334:
 # TODO: port all models to SummaryWriter
 
 
+# -----------------------------------------------------------------------
+# BREAKING CHANGE TO `curiosity_bandit` API. 
+# -----------------------------------------------------------------------
+# 7-10-2020
+# 691fce1
+# I needed to introduce even more actor classes. So....
+# You must now specify the actor, and its kwargs which go at the end.
+#
+# Here's a simple example of the new api, and the new actors:
+exp335:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp335/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp335/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp335/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp335/RandomActor 
+
+# Repeat 335 
+exp336:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=693 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp336/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=693 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp336/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=693 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp336/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=693 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp336/RandomActor 
+
+# Repeat 335 again
+exp337:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=12 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp337/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=12 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp337/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=12 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp337/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--seed_value=12 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp337/RandomActor 
+
+# Try InfoBlueYellow4a now
+exp338:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/ThresholdActor \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp338/RandomActor 
+
+# ---------------------------------------------------------------------------
+# 7-13-2020
+# 5eccfc011c9d528c2483305c27562b2c85180671
+#
+# All actors can now stop early. Let's test this on InfoBlueYellow4a first.
+exp339:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp339/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp339/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp339/ThresholdActor \
+		--tie_threshold=1e-3 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=80 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp339/RandomActor \
+		--tie_threshold=1e-3 
+
+# Repeat 339, with decreased boredom
+exp340:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp340/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp340/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp340/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp340/RandomActor \
+		--tie_threshold=1e-4 
+
+
+# Repeat 340, InfoBlueYellow4b (all max ent arms)
+exp341:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp341/RandomActor \
+		--tie_threshold=1e-4 
+
+# Repeat 340, but TURN off initial_count
+# We offer the memory no intial knowledge.
+exp342:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/RandomActor \
+		--tie_threshold=1e-4 
