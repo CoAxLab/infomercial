@@ -53,7 +53,10 @@ class ThresholdActor(object):
         return self.forward(values)
 
     def forward(self, values):
+        # Threshold
         values = np.asarray(values) - self.tie_threshold
+
+        # Pick from postive values, while there still are positive values.
         mask = values > 0
         if np.sum(mask) > 0:
             filtered = [a for (a, m) in zip(self.actions, mask) if m]
@@ -78,6 +81,15 @@ class RandomActor(object):
 
     def forward(self, values):
         """Values are a dummy var. Pick at random"""
+
+        # Threshold
+        values = np.asarray(values) - self.tie_threshold
+
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
+            return None
+
+        # Make a random choice
         action = self.prng.choice(self.actions)
         return action
 
@@ -96,13 +108,15 @@ class SoftmaxActor(object):
     def __call__(self, values):
         return self.forward(values)
 
-    def _is_zero(self, values):
-        if np.sum(values < self.tie_threshold) == len(values):
-            print(np.sum(values < self.tie_threshold))
-            return True
-
     def forward(self, values):
+        # Threshold
         values = np.asarray(values) - self.tie_threshold
+
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
+            return None
+
+        # Make a soft choice
         probs = softmax(values * self.beta)
         action = self.prng.choice(self.actions, p=probs)
 
@@ -137,18 +151,15 @@ class DeterministicActor(object):
 
         return tied
 
-    def _is_zero(self, values):
-        if np.sum(values < self.tie_threshold) == len(values):
-            return True
-
     def __call__(self, values):
         return self.forward(values)
 
     def forward(self, values):
-        values = np.asarray(values)
+        # Threshold
+        values = np.asarray(values) - self.tie_threshold
 
-        # Default and stop?
-        if self._is_zero(values):
+        # Move the the default policy?
+        if np.sum(values < 0) == len(values):
             return None
 
         # Other wise go explore:
