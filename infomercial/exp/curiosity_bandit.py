@@ -297,6 +297,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                   seed_value=seed_value,
                   initial_bins=initial_bins,
                   initial_count=initial_count,
+                  actor=actor,
                   actor_kwargs=actor_kwargs,
                   num_stop=num_stop + 1)
 
