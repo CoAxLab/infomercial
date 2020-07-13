@@ -4530,6 +4530,7 @@ exp334:
 # BREAKING CHANGE TO `curiosity_bandit` API. 
 # -----------------------------------------------------------------------
 # 7-10-2020
+# 691fce1
 # I needed to introduce even more actor classes. So....
 # You must now specify the actor, and its kwargs which go at the end.
 #
@@ -4704,6 +4705,8 @@ exp339:
 		--actor='DeterministicActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/DeterministicActor \
@@ -4714,6 +4717,8 @@ exp339:
 		--actor='SoftmaxActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/SoftmaxActor \
@@ -4724,6 +4729,8 @@ exp339:
 		--actor='ThresholdActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/ThresholdActor \
@@ -4733,7 +4740,11 @@ exp339:
 		--actor='RandomActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
 		--seed_value=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/RandomActor \
 		--tie_threshold=1e-3 
+
+
