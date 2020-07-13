@@ -195,7 +195,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         lr_E=1.0,
         actor='DeterministicActor',
         initial_count=1,
-        intial_bins=None,
+        initial_bins=None,
         seed_value=42,
         reward_mode=False,
         log_dir=None,
@@ -228,7 +228,7 @@ def run(env_name='InfoBlueYellow4b-v0',
 
     # -
     memories = [
-        Count(intial_bins=intial_bins, initial_count=initial_count)
+        Count(intial_bins=initial_bins, initial_count=initial_count)
         for _ in range(num_actions)
     ]
 
@@ -294,6 +294,8 @@ def run(env_name='InfoBlueYellow4b-v0',
                   env_name=env_name,
                   num_episodes=num_episodes,
                   lr_E=lr_E,
+                  initial_bins=initial_bins,
+                  initial_count=initial_count,
                   actor_kwargs=actor_kwargs,
                   num_stop=num_stop + 1)
 
