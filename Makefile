@@ -4899,7 +4899,7 @@ exp342:
 # - Compare exploration when no initial information is available, 
 #   compared to when it is. 
 # - Try 100 different seeds
-# - Use InfoBlueYellow4a-v0 (all arms are max ent)
+# - Use InfoBlueYellow4b-v0 (all arms are max ent)
 
 # --- EXPERIMENT ---
 exp343: exp343a exp343b exp343c exp343d exp343e exp343f exp343g exp343h
