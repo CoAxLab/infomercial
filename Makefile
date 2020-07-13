@@ -4942,13 +4942,13 @@ exp343f:
 		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --- RandomActor ---
-exp343f:
+exp343g:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343f.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
-exp343g:
+exp343h:
 	parallel -j 39  \
 			--joblog '$(DATA_PATH)/exp343g.log' \
 			--nice 19 --delay 0 \
