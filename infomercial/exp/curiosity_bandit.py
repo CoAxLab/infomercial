@@ -69,8 +69,9 @@ class ThresholdActor(object):
 
 
 class RandomActor(object):
-    def __init__(self, num_actions, seed=None):
+    def __init__(self, num_actions, tie_threshold=0.0, seed=None):
         self.prng = np.random.RandomState(seed)
+        self.tie_threshold = tie_threshold
         self.num_actions = num_actions
         self.actions = list(range(self.num_actions))
         # Undef for softmax. Set to False: API consistency.
