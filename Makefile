@@ -4845,3 +4845,49 @@ exp341:
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/RandomActor \
 		--tie_threshold=1e-4 
+
+# Repeat 340, but TURN off initial_count
+# We offer the memory no intial knowledge.
+exp342:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/SoftmaxActor \
+		--beta=500 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='ThresholdActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/ThresholdActor \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_count=0 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp342/RandomActor \
+		--tie_threshold=1e-4 
