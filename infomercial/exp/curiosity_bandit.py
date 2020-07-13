@@ -138,7 +138,7 @@ class DeterministicActor(object):
             return False
 
         # Apply the threshold, rectifying values less than 0
-        t_values = [max(0, v - self.tie_threshold) for v in values]
+        t_values = [max(0, v) for v in values]
 
         # Check for any difference, if there's a difference then
         # there can be no tie.
