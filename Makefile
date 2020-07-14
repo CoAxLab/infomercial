@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -5057,7 +5057,7 @@ exp345d:
 			--joblog '$(DATA_PATH)/exp345d.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
-		
+
 # --- ThresholdActor ---
 exp345e:
 	parallel -j 39 \
@@ -5083,3 +5083,152 @@ exp345h:
 			--joblog '$(DATA_PATH)/exp345g.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+
+# --------------------------------------------------------------------------
+# Figure data - det versus sto.
+# 7-14-20
+# 
+# Repeat 340, with increase beta (need to tune this to a 'fair' value).
+exp346:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp346/DeterministicActor \
+		--tie_break='next' \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp346/SoftmaxActor \
+		--beta=10000 \
+		--tie_threshold=1e-4 
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4a-v0' \
+		--actor='RandomActor' \
+		--num_episodes=320 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp346/RandomActor \
+		--tie_threshold=1e-4 
+
+# ----------------------------------------
+# 7-14-2020
+# df69237
+
+# Figure data - Det C in random world
+exp347:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=127 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run1/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=23 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run2/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=802 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run3/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run4/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=673 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run5/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='DeterministicActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=592\
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp347/run6/ \
+		--tie_break='next' \
+		--tie_threshold=1e-4
+
+
+
+# ----------------------------------------
+# 7-14-2020
+# df69237
+
+# Figure data - 100 experiments, sto v det
+exp348: exp348a exp348b exp348c
+
+exp348a:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp348a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+exp348b:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp348b.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/SoftmaxActor/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+
+exp348c:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp348c.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
