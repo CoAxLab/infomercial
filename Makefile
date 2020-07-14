@@ -4955,3 +4955,131 @@ exp343h:
 			--joblog '$(DATA_PATH)/exp343g.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+# --------------------------------------------------------------------------
+# 7-14-2020
+# f36a82e
+#
+# - Compare exploration when no initial information is available, 
+#   compared to when it is. 
+# - Try 100 different seeds
+# - Use InfoBlueYellow4a-v0 (arm 2 is max ent, rest are nearly deterministic)
+
+# --- EXPERIMENT ---
+exp344: exp344a exp344b exp344c exp344d exp344e exp344f exp344g exp344h
+
+# --- DeterministicActor ---
+exp344a:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+exp344b:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+# --- SoftmaxActor ---
+exp344c:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344c.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+
+exp344d:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344d.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		
+# --- ThresholdActor ---
+exp344e:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344e.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+exp344f:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344f.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+# --- RandomActor ---
+exp344g:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp344f.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+exp344h:
+	parallel -j 39  \
+			--joblog '$(DATA_PATH)/exp344g.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+# --------------------------------------------------------------------------
+# 7-14-2020
+# f36a82e
+#
+# - Compare exploration when no initial information is available, 
+#   compared to when it is. 
+# - Try 100 different seeds
+# - Use InfoBlueYellow4c-v0 (each arm has its own ent, 2 is max ent)
+
+# --- EXPERIMENT ---
+exp345: exp345a exp345b exp345c exp345d exp345e exp345f exp345g exp345h
+
+# --- DeterministicActor ---
+exp345a:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+exp345b:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+# --- SoftmaxActor ---
+exp345c:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345c.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+
+exp345d:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345d.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		
+# --- ThresholdActor ---
+exp345e:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345e.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+exp345f:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345f.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+# --- RandomActor ---
+exp345g:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp345f.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+exp345h:
+	parallel -j 39  \
+			--joblog '$(DATA_PATH)/exp345g.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
