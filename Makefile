@@ -5232,3 +5232,166 @@ exp348c:
 			--joblog '$(DATA_PATH)/exp348c.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
+
+# --------------------------------------------------------------------------
+# 7-14-2020
+# Figure data - explore boredom, over the same task
+
+# exp349:
+
+# ----------------------------------------
+# 7-14-2020
+# df69237
+
+# Figure data - Sto C in random world...
+
+# Tim asked what the softmax version of exp347 looked like,
+# which is a good Q
+exp350:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=127 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run1/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=23 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run2/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=802 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run3/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run4/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=673 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run5/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=592\
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp350/run6/ \
+		--beta=10000 \
+		--tie_threshold=1e-4
+
+# exp350, but decrease beta to 500
+exp351:
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=127 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run1/ \
+		--beta=500 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=23 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run2/ \
+		--beta=500 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=802 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run3/ \
+		--beta=500 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=42 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run4/ \
+		--beta=500 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=673 \
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run5/ \
+		--beta=500 \
+		--tie_threshold=1e-4
+	curiosity_bandit.py \
+		--env_name='InfoBlueYellow4b-v0' \
+		--actor='SoftmaxActor' \
+		--num_episodes=4000 \
+		--lr_E=1 \
+		--initial_bins='[1,2]' \
+		--initial_count=1 \
+		--seed_value=592\
+		--reward_mode=False \
+		--log_dir=$(DATA_PATH)/exp351/run6/ \
+		--beta=500 \
+		--tie_threshold=1e-4
