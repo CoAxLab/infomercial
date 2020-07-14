@@ -30,8 +30,9 @@ data_path <- "~/Code/infomercial/data/"
 
 ## Loader defs
 ```{r, message=FALSE}
-file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties", "state")
+file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties", "state", "total_E", "total_regret")
 run_names <- c("DeterministicActor", "SoftmaxActor", "ThresholdActor", "RandomActor")
+run_names <- c("DeterministicActor", "SoftmaxActor", "RandomActor")
 
 # ---
 exp_name <- "exp340"
@@ -41,7 +42,7 @@ for (run in run_names){
                            exp_name, 
                            run,
                            paste(file_names[1], "csv", sep="."), sep="/"))
-  for (name in file_names[2:7]){
+  for (name in file_names[2:9]){
     tmp <- read_csv(paste(data_path, 
                           exp_name, 
                           run,
@@ -52,19 +53,81 @@ for (run in run_names){
   runtmp$num_trials <- nrow(tmp)
   result340 <- bind_rows(result340, runtmp) 
 }
+
+result340$exp <- factor(result340$exp, levels=c("DeterministicActor", "SoftmaxActor", "ThresholdActor", "RandomActor"))
 rm(tmp, runtmp, run, name)
 ```
 
-# values
-```{r, fig.width=2, fig.height=1.6}
+# values timecourse
+```{r, fig.width=2, fig.height=1.2}
 result340 %>% 
+  filter(global_step > 10) %>% 
   ggplot(aes(x=global_step, y=log10(value_E), color=exp)) +
   geom_point(size=0.6) + 
   geom_line(size=0.1) +
-  labs(x="Trial", y="E") +
+  labs(x="Trial", y="log E") +
   facet_grid(exp~.) +
   theme_classic() + 
-  scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
+  scale_color_manual("", values=c("mediumorchid4", "plum4", "paleturquoise4", "grey")) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) ->
+  p1
+print(p1)
+```
+# total values timecourse
+```{r, fig.width=2, fig.height=0.8}
+result340 %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=total_E, color=exp)) +
+  geom_point(size=0.6) + 
+  geom_line(size=0.1) +
+  labs(x="Trial", y="Total E") +
+  # facet_grid(exp~.) +
+  theme_classic() + 
+  scale_color_manual("", values=c("mediumorchid4", "plum4", "paleturquoise4", "grey")) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "right") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) ->
+  p1
+print(p1)
+```
+
+# reget timecourse
+```{r, fig.width=2, fig.height=1}
+result340 %>% 
+  filter(global_step > 10) %>%
+  ggplot(aes(x=global_step, y=log10(regret), color=exp)) +
+  geom_point(size=0.6) +
+  # geom_line(size=0.5) +
+  labs(x="Trial", y="log regret") +
+  facet_grid(exp~.) +
+  theme_classic() + 
+  scale_color_manual("", values=c("mediumorchid4", "plum4", "paleturquoise4", "grey")) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) ->
+  p1
+print(p1)
+```
+
+# total reget timecourse
+```{r, fig.width=2, fig.height=1}
+result340 %>% 
+  filter(global_step > 10) %>%
+  ggplot(aes(x=global_step, y=log10(total_regret), color=exp)) +
+  geom_point(size=0.6) + 
+  geom_line(size=0.1) +
+  labs(x="Trial", y="Total regret") +
+  # facet_grid(exp~.) +
+  theme_classic() + 
+  scale_color_manual("", values=c("mediumorchid4", "plum4", "paleturquoise4", "grey")) +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") +
