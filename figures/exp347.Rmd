@@ -1,5 +1,5 @@
 ---
-title: "Exp328-329 - two examples of curiosity bandits"
+title: "Exp347 - Deterministic curiosity in a random world"
 output: html_notebook
 ---
 
@@ -54,11 +54,12 @@ rm(runtmp, tmp)
 result347 %>% 
   filter(global_step < 40) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.3, color="mediumorchid4") + 
+  geom_point(size=0.5, shape=15, color="mediumorchid4") + 
+  geom_line(size=.1, color="mediumorchid4") +
   labs(x="Time", y="Room choice") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol=1) +
-  theme_pubr(base_size = 8, legend = "none") +
+  theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
   theme(panel.spacing = unit(0.75, "lines")) +
@@ -73,7 +74,7 @@ result347 %>%
   ggplot(aes(x=action+1)) +
   geom_bar(width=0.9) + 
   labs(x="Room", y="Relative count", title="40 steps") +
-  theme_pubr(base_size=8, legend = "none")  +
+  theme_pubr(base_size=6, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
@@ -89,7 +90,7 @@ result347 %>%
   ggplot(aes(x=action+1)) +
   geom_bar(width=0.9) + 
   labs(x="Room", y="", title="All steps") +
-  theme_pubr(base_size=8, legend = "none")  +
+  theme_pubr(base_size=6, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
