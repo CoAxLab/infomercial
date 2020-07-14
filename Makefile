@@ -5244,19 +5244,19 @@ exp349a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value=42 --reward_mode=False --log_dir=$(DATA_PATH)/exp349/DeterministicActor/threshold{1}/run{2} --tie_break='next' --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/DeterministicActor/threshold{1}/run{2} --tie_break='next' --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 exp349b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/SoftmaxActor/threshold{1}/run{2} --beta=500 --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/SoftmaxActor/threshold{1}/run{2} --beta=500 --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 exp349c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/RandomActor/threshold{1}/run{2} --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/RandomActor/threshold{1}/run{2} --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 
 # ----------------------------------------
