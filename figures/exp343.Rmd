@@ -1,5 +1,5 @@
 ---
-title: "Exp343 - 100 experiments (seeds) with and without initial values in M."
+title: "Exp343 - InfoBlueYellow4b, 100 experiments (seeds) with and without initial values in M."
 output: html_notebook
 ---
 
@@ -111,7 +111,7 @@ summary343 %>%
   geom_jitter(size=0.1, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
   scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
-  labs(x="", y="N", title="Number of steps") +
+  labs(x="", y="N", title="Steps until bored") +
   facet_grid(memory~.) +
   theme_classic() +
   theme(legend.position = "none") + 
@@ -146,12 +146,13 @@ summary343 %>%
   geom_jitter(size=1, alpha=0.4, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
   scale_color_manual("", values=c("mediumorchid4", "grey", "plum4",  "paleturquoise4")) +
-  labs(x="", y="E", title="Average information value") +
+  labs(x="", y="E", title="Average value") +
   facet_grid(memory~.) +
   theme_classic() +
   theme(legend.position = "none") + 
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) +
+  theme(axis.text.y = element_blank()) +
   theme(strip.text.y = element_text(angle = 0)) +
   coord_flip() ->
   p4
@@ -160,6 +161,6 @@ print(p4)
 
 
 ## Assemble
-```{r, fig.height=2.8, fig.width=3.5}
-p1 / p2 / (p3 + p4)
+```{r, fig.height=1.2, fig.width=3}
+(p2 + p4)
 ```
