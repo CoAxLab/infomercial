@@ -30,14 +30,14 @@ kl_divergence <- function(p, q) {
 data_path <- "~/Code/infomercial/data/"
 ```
 
-## Loader defs
+## Load
 ```{r, message=FALSE}
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", "ties")
-run_names <- c("run1", "run2", "run3", "run4", "run5")
+run_names <- c("run1", "run2", "run3", "run4", "run5", "run6")
 
 exp_name <- "exp328"
 result328 <- NULL
-for (run in run_names[1:5]){
+for (run in run_names){
   runtmp <- read_csv(paste(data_path, exp_name, run, paste(file_names[1], "csv", sep="."), sep="/"))
   for (name in file_names[2:6]){
     tmp <- read_csv(paste(data_path, exp_name, run, paste(name, "csv", sep="."), sep="/"))  
@@ -45,74 +45,61 @@ for (run in run_names[1:5]){
   }
   runtmp$run <- run
   result328 <- bind_rows(result328, runtmp)  
-  
 }
-
 rm(runtmp, tmp)
 ```
 
-
-# Actions
-```{r, fig.height=1.2, fig.width=1}
+## Plot
+```{r, fig.height=1.5, fig.width=1.8}
 result328 %>% 
-  ggplot(aes(x=global_step, y=action+1, color=run)) +
-  geom_point(size=0.1) + 
-  labs(x="Trial", y="Arm", title="Behave") +
+  filter(global_step < 40) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.3, color="black") + 
+  labs(x="Trials", y="Arm", title="Deterministic curiosity\nin a random world") +
+  scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
+  facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
-  theme(text = element_text(color = "black")) +
-  theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.5, "lines")) + 
-  facet_grid(run~.) -> p1
-print(p1)
-```
-```{r, fig.height=1.2, fig.width=0.5}
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme() -> p1
+# plot(p1)
+
 result328 %>% 
-  ggplot(aes(x=action, fill=run)) +
-  geom_histogram() + 
-  labs(x="Arm") +
+  filter(global_step < 40) %>% 
+  ggplot(aes(x=action+1)) +
+  geom_bar(width=0.9) + 
+  labs(x="Arm", y="Relative count", title="40 episodes") +
   theme_pubr(base_size=8, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) +
+  theme(plot.title = element_text(vjust = -3, hjust = 0, size = 6)) +
   facet_grid(run~.) -> p2
-print(p2)
-```
-# Scores
-```{r, fig.height=0.5, fig.width=2}
-result328 %>% 
-  ggplot(aes(x=global_step, y=score_E, color=run)) +
-  geom_line(size=0.25, alpha=0.3) +
-  geom_point(size=0.5) +
-  scale_y_log10() +
-  labs(y="E", x="Trial", title="Value") +
-  theme_pubr(legend="none", base_size = 8) +
-  theme(strip.background = element_blank()) -> p3
-print(p3)
-```
+# print(p2)
 
-# Regret
-```{r, fig.height=0.6, fig.width=1}
-# Total value and regret, by run
 result328 %>% 
-  group_by(run) %>% 
-  summarise(total_E = sum(score_E),
-            total_regret = sum(regret)) %>% 
-  ungroup() ->
-  tmp
-
-tmp %>% 
-  ggplot(aes(x=run, y=total_E, fill=run)) +
-  geom_bar(stat = "identity", width=0.6) +
-  labs(y="Total E", x="") +
-  theme_pubr(legend="none", base_size = 8) +
+  ggplot(aes(x=action+1)) +
+  geom_bar(width=0.9) + 
+  labs(x="Arm", y="", title="4000 episodes") +
+  theme_pubr(base_size=8, legend = "none")  +
+  theme(text = element_text(color = "black")) +
+  theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
-  coord_flip() +
-  labs() -> p4
-print(p4)
-rm(tmp)
-```
-```{r, fig.height=2, fig.width=2}
-(p1 + p2 + plot_layout(widths = c(0.8, 0.2)))  /
-(p3 + ((plot_spacer() / p4 / plot_spacer() + plot_layout(heights = c(0.1, 0.8, 0.1)))) + plot_layout(widths = c(0.8, 0.2))) + plot_layout(heights = c(0.6, 0.4))
+  # theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) +
+  theme(plot.title = element_text(vjust = -3, hjust = 0.5, size = 6)) +
+  facet_grid(run~.) -> p3
+# print(p3)
+
+(p1 | (p2 + p3)) + 
+  plot_layout(widths = c(0.5, 0.5)) 
 ```
