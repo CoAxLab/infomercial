@@ -5219,19 +5219,19 @@ exp348a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp348b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/SoftmaxActor/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/SoftmaxActor/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 
 exp348c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --------------------------------------------------------------------------
 # 7-14-2020
