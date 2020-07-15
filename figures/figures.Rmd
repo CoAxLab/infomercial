@@ -3,21 +3,18 @@ title: "Figures"
 output: html_notebook
 ---
 
-# Libraries
 ```{r, message=FALSE}
 library(ggplot2)
 library(patchwork)
 library(tidyr)
 library(dplyr)
-library(patchwork)
-library(ggthemes)
-library(ggpubr)
 library(gridExtra)
 library(grid)
 library(readr)
 library(latex2exp)
 library(MASS) 
 library(scales)
+library(tikzDevice)
 
 options(scipen=1000000)
 
@@ -99,7 +96,6 @@ rm(
   example_trace12
 )
 ```
-
 ```{r, message=FALSE}
 bandit_names <- c("BanditOneHigh10-v0", "DeceptiveBanditOneHigh10-v0", "BanditUniform121-v0",
                   "BanditHardAndSparse10-v0")
@@ -166,97 +162,66 @@ for(name in file_names[2:6]){
   result327[[name]] <- tmp[[name]]
 }
 result327$exp <- "Stocastic"
-
-# Truncate to Det samples
-result327 <- filter(result327, global_step < nrow(result326))
 ```
-
 ## Plot
-```{r, fig.width=2.4, fig.height=2.1}
+```{r, fig.width=2, fig.height=1.5}
 # ---
-result327 %>% 
-  ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.6, color="dodgerblue4") +
-  # geom_line(size=0.2, color="dodgerblue4") +
-  labs(x="Trial", y="Arm", tag="a.") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(plot.tag = element_text(size=10, face="bold")) +
-  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
-  theme(panel.spacing = unit(0.75, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.x = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) -> p1
-
-result326 %>% 
-  ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.6, color="darkorchid4") + 
-  # geom_line(size=0.2, color="darkorchid4") +
-  labs(x="Trial", y="Arm", tag="b.") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(plot.tag = element_text(size=10, face="bold")) +
-  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
-  theme(panel.spacing = unit(0.75, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.x = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) -> p2
-
-# --
 full_join(result326, result327) -> tmp
 tmp %>% 
   ggplot(aes(x=global_step, y=log10(value_E), color=exp)) +
   geom_point(size=0.6, alpha=.9, alpha=.9) +
-  geom_line(size=0.2) +
-  labs(x="Trial", y="Info value", tag="c.") + 
-  scale_color_manual("Mode", values=c("darkorchid4", "dodgerblue4")) +
+  labs(x="Trial", y="Info value") + 
+  scale_color_manual(values=c("darkorchid4", "dodgerblue4")) +
   theme_pubr(base_size = 8, legend = "right") +
   theme(strip.background = element_blank()) +
-  theme(plot.tag = element_text(size=10, face="bold")) -> p3
-# print(p1)
-
-full_join(result326, result327) -> tmp
-tmp %>% 
-  ggplot(aes(x=global_step, y=regret, color=exp)) +
-  geom_point(size=0.6, alpha=.9, alpha=.9) +
-  geom_line(size=0.2) +
-  labs(x="Trial", y="Regret", tag="d.") + 
-  scale_color_manual("Mode", values=c("darkorchid4", "dodgerblue4")) +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(plot.tag = element_text(size=10, face="bold")) -> p4
+  theme(plot.tag = element_text(size=14, face="bold")) -> p1
+print(p1)
 
 # ---
-full_join(result326, result327) %>% 
-  group_by(exp) %>% 
-  summarise(total_E = sum(score_E),
-            total_regret = sum(regret)) %>% 
-  ungroup() ->
-  tmp
-
-tmp %>% 
-  ggplot(aes(x=exp, y=total_E, fill=exp)) +
-  geom_bar(stat = "identity", width=0.8) +
-  scale_fill_manual("",  values=c("darkorchid4", "dodgerblue4")) +
+result326 %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6, color="darkorchid4") + 
+  labs(x="Episodes", y="Arm") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  labs(x="", y="Total value", tag="e.") +
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
   theme(strip.background = element_blank()) +
-  coord_flip() ->
-  p5
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) -> p2a
 
-tmp %>% 
-  ggplot(aes(x=exp, y=total_regret, fill=exp)) +
-  geom_bar(stat = "identity", width=0.8) +
-  scale_fill_manual("",  values=c("darkorchid4", "dodgerblue4")) +
+result326 %>% 
+  ggplot(aes(x=global_step, y=regret)) +
+  geom_point(size=0.6, alpha=.9, alpha=.9, color="darkorchid4") +
+  labs(x="Trial", y="Regret") + 
+  theme_pubr(base_size = 8, legend = "right") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=14, face="bold")) -> p2b
+
+# ---
+result327 %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.6, color="dodgerblue4") + 
+  labs(x="Episodes", y="Arm") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  labs(x="", y="Total regret", tag="f.") +
-  coord_flip() ->
-  p6
+  theme(plot.tag = element_text(size=10, face="bold")) +
+  theme(plot.title = element_text(vjust=3, hjust = 0.0, size=8)) +
+  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) -> p3a
 
-p5 + p6
-(p1 + p2) / p3 / p4 + plot_annotation(title="Deterministic versus stocastic curiosity", theme = theme_pubr(base_size = 8))
+result327 %>% 
+  ggplot(aes(x=global_step, y=regret)) +
+  geom_point(size=0.6, alpha=.9, alpha=.9, color="darkorchid4") +
+  labs(x="Trial", y="Regret") + 
+  theme_pubr(base_size = 8, legend = "right") +
+  theme(strip.background = element_blank()) +
+  theme(plot.tag = element_text(size=14, face="bold")) -> p3b
+
+p1 / (p2a + p2b) / (p3a + p3b)
 ```
 
 # Fig - Curiosity in a random world
