@@ -5485,7 +5485,7 @@ exp353b:
 
 # --------------------------------------------------------------------------
 # 7-17-2020
-# 7cc886c - # !! BIG but backwards compat API CHANGE !!
+# f7f2be7 - # !! BIG but backwards compat API CHANGE !!
 #
 # Animals as parameters, v3. 
 #
