@@ -10,7 +10,7 @@ exp1:
 	parallel -j 1 -v \
 			--joblog '$(DATA_PATH)/exp1.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
+			'meta_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --debug=True --master_seed={1}' ::: 1 2
 
 # As a first real exp, run several bandits with the same parameters 
 # drawn from some hand tuning. See where were at, overall.
@@ -29,7 +29,7 @@ exp2:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp2.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000  --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp2_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHot2-v0 BanditOneHot10-v0 BanditOneHot121-v0 BanditOneHot1000-v0 BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000  --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp2_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHot2-v0 BanditOneHot10-v0 BanditOneHot121-v0 BanditOneHot1000-v0 BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # ----------------------------------------------------------------------------
 # 3-29-2019
@@ -50,42 +50,42 @@ exp3:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp3.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000  --tie_break='next' --tie_threshold=1e-8 --lr=.01 --save=$(DATA_PATH)/exp3_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000  --tie_break='next' --tie_threshold=1e-8 --lr=.01 --save=$(DATA_PATH)/exp3_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = 0.001
 exp4:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp4.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.001 --save=$(DATA_PATH)/exp4_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.001 --save=$(DATA_PATH)/exp4_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = 0.000001
 exp5:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp5.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.000001 --save=$(DATA_PATH)/exp5_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.000001 --save=$(DATA_PATH)/exp5_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # tie_threshold = 1e-9
 exp6:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp6.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=.1 --save=$(DATA_PATH)/exp6_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=.1 --save=$(DATA_PATH)/exp6_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr=0.01, tie_threshold = 1e-9
 exp7:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp7.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=.01 --save=$(DATA_PATH)/exp7_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=.01 --save=$(DATA_PATH)/exp7_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr=0.000001, tie_threshold = 1e-9
 exp8:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp8.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.000001 --save=$(DATA_PATH)/exp8_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.000001 --save=$(DATA_PATH)/exp8_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # ----------------------------------------------------------------------------
 # 3-31-2019
@@ -98,7 +98,7 @@ exp9:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp9.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.1 --save=$(DATA_PATH)/exp9_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.1 --save=$(DATA_PATH)/exp9_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-10
 #
@@ -108,7 +108,7 @@ exp10:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp10.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-10 --lr=0.1 --save=$(DATA_PATH)/exp10_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-10 --lr=0.1 --save=$(DATA_PATH)/exp10_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 
 # lr = .2; tie_threshold = 1e-8
@@ -119,7 +119,7 @@ exp11:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp11.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.2 --save=$(DATA_PATH)/exp11_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-8 --lr=0.2 --save=$(DATA_PATH)/exp11_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .2; tie_threshold = 1e-9
 #
@@ -129,7 +129,7 @@ exp12:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp12.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.2 --save=$(DATA_PATH)/exp12_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-9 --lr=0.2 --save=$(DATA_PATH)/exp12_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .2; tie_threshold = 1e-10
 # 
@@ -140,7 +140,7 @@ exp13:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp13.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-10 --lr=0.2 --save=$(DATA_PATH)/exp13_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-10 --lr=0.2 --save=$(DATA_PATH)/exp13_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-6
 #
@@ -153,7 +153,7 @@ exp14:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp14.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-6 --lr=0.1 --save=$(DATA_PATH)/exp14_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-6 --lr=0.1 --save=$(DATA_PATH)/exp14_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .1; tie_threshold = 1e-4
 #
@@ -170,7 +170,7 @@ exp15:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp15.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-4 --lr=0.1 --save=$(DATA_PATH)/exp15_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-4 --lr=0.1 --save=$(DATA_PATH)/exp15_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # ----------------------------------------------------------------------------
 # 4-1-2019
@@ -184,7 +184,7 @@ exp16:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp16.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-3 --lr=0.1 --save=$(DATA_PATH)/exp16_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-3 --lr=0.1 --save=$(DATA_PATH)/exp16_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 
 # lr = .1; tie_threshold = 1e-5
@@ -197,7 +197,7 @@ exp17:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp17.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-5 --lr=0.1 --save=$(DATA_PATH)/exp17_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-5 --lr=0.1 --save=$(DATA_PATH)/exp17_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # lr = .000001; tie_threshold = 1e-5
 # 
@@ -216,7 +216,7 @@ exp18:
 	parallel -j 40 -v \
 			--joblog '$(DATA_PATH)/exp18.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-5 --lr=0.000001 --save=$(DATA_PATH)/exp18_{2}_{1}.pkl --interactive=False --seed_value={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
+			'meta_bandit.py --env_name {2} --num_episodes=10000 --tie_break='next' --tie_threshold=1e-5 --lr=0.000001 --save=$(DATA_PATH)/exp18_{2}_{1}.pkl --interactive=False --master_seed={1}' ::: {1..50} ::: BanditOneHigh2-v0 BanditOneHigh10-v0 BanditOneHigh121-v0 BanditOneHigh1000-v0 BanditHardAndSparse2-v0 BanditHardAndSparse10-v0 BanditHardAndSparse121-v0 BanditHardAndSparse1000-v0
 
 # ---------------------------------------------------------------------------
 # 4-2-2019
@@ -225,14 +225,14 @@ exp19:
 	parallel -j 1 -v \
 			--joblog '$(DATA_PATH)/exp19.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --epsilon=0.1 --epsilon_decay_tau=0.001 --lr=.1 --save=$(DATA_PATH)/exp19_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
+			'epsilon_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --epsilon=0.1 --epsilon_decay_tau=0.001 --lr=.1 --save=$(DATA_PATH)/exp19_{1}.pkl --interactive=False --debug=True --master_seed={1}' ::: 1 2
 
 # Testing the CL for beta_bandit.py
 exp20:
 	parallel -j 1 -v \
 			--joblog '$(DATA_PATH)/exp20.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --beta=1.0 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp20_{1}.pkl --interactive=False --debug=True --seed_value={1}' ::: 1 2
+			'beta_bandit.py --env_name BanditOneHigh2-v0 --num_episodes=10 --beta=1.0 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp20_{1}.pkl --interactive=False --debug=True --master_seed={1}' ::: 1 2
 
 # ---------------------------------------------------------------------------
 # 4-5-2019
@@ -2070,7 +2070,7 @@ exp128:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp128.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0041 --lr_R=0.31 --save=$(DATA_PATH)/exp128_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # beta: exp98 - learns a stable soln 
 #   + 'beta': 0.37, 'lr_R': 0.0095
@@ -2078,7 +2078,7 @@ exp129:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp129.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.31 --beta=0.37 --save=$(DATA_PATH)/exp129_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.31 --beta=0.37 --save=$(DATA_PATH)/exp129_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # softbeta: exp112 - learns a stable soln 
 #   + 'beta': 0.045, 'lr_R': 0.12, 'temp': 0.10
@@ -2086,7 +2086,7 @@ exp130:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp130.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp130_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp130_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # epsilon: exp97 - learns a stable soln 
 #   + 'epsilon': 0.078, 'lr_R': 0.12
@@ -2094,7 +2094,7 @@ exp131:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp131.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp131_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp131_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # BanditTwoHigh10
@@ -2104,7 +2104,7 @@ exp132:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp132.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0058 --lr_R=0.14 --save=$(DATA_PATH)/exp132_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0058 --lr_R=0.14 --save=$(DATA_PATH)/exp132_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # beta: exp102 - learns only one arm. Never sees best arm 2
 #   + 'beta': 0.025, 'lr_R': 0.073
@@ -2112,7 +2112,7 @@ exp133:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp133.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.073 --beta=0.025 --save=$(DATA_PATH)/exp133_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.073 --beta=0.025 --save=$(DATA_PATH)/exp133_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # softbeta: exp113 - sees both (probably?), learns a stable soln
 #   + 'beta': 0.010, 'lr_R': 0.17, 'temp': 0.24
@@ -2120,7 +2120,7 @@ exp134:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp134.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp134_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp134_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # epsilon: exp101 - learns solns, flip flops between them
 #   + 'epsilon': 0.078, 'lr_R': 0.12
@@ -2128,7 +2128,7 @@ exp135:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp135.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp135_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp135_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # BanditUniform121
@@ -2138,7 +2138,7 @@ exp136:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp136.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000 --tie_break='next' --tie_threshold=0.00031 --lr_R=0.14 --save=$(DATA_PATH)/exp136_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000 --tie_break='next' --tie_threshold=0.00031 --lr_R=0.14 --save=$(DATA_PATH)/exp136_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # beta: exp126 - found stable soln (very eff.)
 #   + 'beta': 0.090, 'lr_R': 0.061
@@ -2146,7 +2146,7 @@ exp137:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp137.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.061 --beta=0.090 --save=$(DATA_PATH)/exp137_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.061 --beta=0.090 --save=$(DATA_PATH)/exp137_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # softbeta: exp127 - no soln found. p_best low (temp too)
 #   + 'beta': 0.60, 'lr_R': 0.097, 'temp': 0.13
@@ -2154,7 +2154,7 @@ exp138:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp138.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp138_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp138_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # epsilon: exp125: found stable soln (low ep)
 #   + 'epsilon': 0.012, 'lr_R': 0.11
@@ -2162,7 +2162,7 @@ exp139:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp139.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp139_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp139_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # HardAndSparse10
@@ -2172,7 +2172,7 @@ exp140:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp140.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76e-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --tie_break='next' --tie_threshold=3.76e-09 --lr_R=0.00021 --save=$(DATA_PATH)/exp140_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # beta: exp110 - Close to soln. Not stable. Narrow range?
 #   + 'beta': 2.83, 'lr_R': 0.053
@@ -2180,7 +2180,7 @@ exp141:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp141.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name= -v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name= -v0 --num_episodes=100000  --lr_R=0.053 --beta=2.83 --save=$(DATA_PATH)/exp141_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # softbeta: exp122 - learns the value but needs to high a temp to ever stabilize
 #   + 'beta': 0.38, 'lr_R': 0.00971, 'temp': 5.9
@@ -2188,7 +2188,7 @@ exp142:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp142.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp142_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp142_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # epsilon: exp121 - learns the value, final performance limited by high epsilon
 #   + 'epsilon': 0.42, 'lr_R': 0.00043
@@ -2196,7 +2196,7 @@ exp143:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp143.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp143_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -------------------------------------
 # 7-1-2019
@@ -2283,7 +2283,7 @@ exp149:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp149.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp149_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp149_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 # {'epsilon': 0.838651023382445, 'epsilon_decay_tau': 0.07116057540412388, 'lr_R': 0.1885459873244454, 'total_R': 71.0}
@@ -2291,7 +2291,7 @@ exp150:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp150.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp150_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp150_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 # {'epsilon': 0.5743595655655118, 'epsilon_decay_tau': 0.03268667798766935, 'lr_R': 0.17235910245007333, 'total_R': 48586.0}
@@ -2299,7 +2299,7 @@ exp151:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp151.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp151_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp151_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 # {'epsilon': 0.7666645365811449, 'epsilon_decay_tau': 0.014058030361594634, 'lr_R': 7.504905974098415e-05, 'total_R': 1029.0}
@@ -2307,7 +2307,7 @@ exp152:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp152.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp152_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp152_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # ------------------------------------------
@@ -2319,28 +2319,28 @@ exp153:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp153.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp153_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp153_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp154:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp154.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp154_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp154_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp155:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp155.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp155_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp155_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 exp156:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp156.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp156_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp156_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # ------------------------------------------
 # Prior to
@@ -2356,14 +2356,14 @@ exp157:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp157.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp157_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --beta=0.045 --temp=0.01 --save=$(DATA_PATH)/exp157_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # replicates exp131
 exp158:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp158.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp158_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp158_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # BanditTwoHigh10
@@ -2373,7 +2373,7 @@ exp159:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp159.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp159_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.17 --beta=0.010 --temp=0.24 --save=$(DATA_PATH)/exp159_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # replicates exp135
@@ -2381,7 +2381,7 @@ exp160:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp160.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp160_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.12 --epsilon=0.078 --save=$(DATA_PATH)/exp160_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # BanditUniform121
@@ -2391,7 +2391,7 @@ exp161:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp161.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp161_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.097 --beta=0.60 --temp=0.13 --save=$(DATA_PATH)/exp161_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # replicates exp139
@@ -2399,7 +2399,7 @@ exp162:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp162.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp162_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.11 --epsilon=0.012 --save=$(DATA_PATH)/exp162_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # HardAndSparse
@@ -2409,14 +2409,14 @@ exp163:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp163.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp163_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00971 --beta=0.38 --temp=5.9 --save=$(DATA_PATH)/exp163_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # replicates exp143
 exp164:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp164.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp164_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000  --lr_R=0.00043 --epsilon=0.42 --save=$(DATA_PATH)/exp164_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # ep-decay experiments (all bandits)
@@ -2427,7 +2427,7 @@ exp165:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp165.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp165_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.11 --epsilon=0.16 --epsilon_decay_tau=0.080 --save=$(DATA_PATH)/exp165_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # BanditTwoHigh10
@@ -2436,7 +2436,7 @@ exp166:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp166.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp166_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.19 --epsilon=0.83 --epsilon_decay_tau=0.071 --save=$(DATA_PATH)/exp166_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 # replicates exp151
@@ -2444,7 +2444,7 @@ exp167:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp167.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp167_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.17 --epsilon=0.57 --epsilon_decay_tau=0.032 --save=$(DATA_PATH)/exp167_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 # replicates exp152
@@ -2452,7 +2452,7 @@ exp168:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp168.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp168_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=7.50e-05 --epsilon=0.76 --epsilon_decay_tau=0.014 --save=$(DATA_PATH)/exp168_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # Random
@@ -2463,7 +2463,7 @@ exp169:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp169.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp169_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp169_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 # replicates exp154
@@ -2471,7 +2471,7 @@ exp170:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp170.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp170_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp170_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 # replicates exp155
@@ -2479,7 +2479,7 @@ exp171:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp171.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp171_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=120000  --lr_R=0.1 --save=$(DATA_PATH)/exp171_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 # replicates exp156
@@ -2487,7 +2487,7 @@ exp172:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp172.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp17_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=100000 --lr_R=0.1 --save=$(DATA_PATH)/exp17_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 
@@ -2510,7 +2510,7 @@ exp172:
 	# perturbation=0.1,
 	# metric="total_R",
 	# verbose=False,
-	# seed_value=None,
+	# master_seed=None,
 	# **config_kwargs)
 
 # -
@@ -2841,28 +2841,28 @@ exp194:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp194.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp194_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp194_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp195:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp195.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0169 --lr_R=0.161 --save=$(DATA_PATH)/exp195_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.0169 --lr_R=0.161 --save=$(DATA_PATH)/exp195_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp196:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp196.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00355 --lr_R=0.147 --save=$(DATA_PATH)/exp196_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00355 --lr_R=0.147 --save=$(DATA_PATH)/exp196_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp197:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp197.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp197_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp197_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # beta:
@@ -2871,28 +2871,28 @@ exp198:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp198.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.22 --lr_R=0.18 --save=$(DATA_PATH)/exp198_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.22 --lr_R=0.18 --save=$(DATA_PATH)/exp198_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp199:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp199.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.188 --lr_R=0.129 --save=$(DATA_PATH)/exp199_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.188 --lr_R=0.129 --save=$(DATA_PATH)/exp199_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp200:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp200.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --beta=0.056 --lr_R=0.141 --save=$(DATA_PATH)/exp200_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --beta=0.056 --lr_R=0.141 --save=$(DATA_PATH)/exp200_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp201:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp201.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp201_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp201_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # softbeta
@@ -2901,28 +2901,28 @@ exp202:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp202.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp202_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp202_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp203:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp203.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --beta=0.133 --lr_R=0.030 --temp=0.098 --save=$(DATA_PATH)/exp203_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --beta=0.133 --lr_R=0.030 --temp=0.098 --save=$(DATA_PATH)/exp203_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp204:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp204.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0.125 --lr_R=0.174 --temp=0.0811 --save=$(DATA_PATH)/exp204_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0.125 --lr_R=0.174 --temp=0.0811 --save=$(DATA_PATH)/exp204_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp205:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp205.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp205_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp205_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # ep
@@ -2932,28 +2932,28 @@ exp206:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp206.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp206_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp206_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp207:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp207.log' \
 			--nice 19 --delay 2 --colsep ',' \
-		'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --epsilon=0.087 --lr_R=0.08583 --save=$(DATA_PATH)/exp207_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+		'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --epsilon=0.087 --lr_R=0.08583 --save=$(DATA_PATH)/exp207_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp208:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp208.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.0117 --lr_R=0.137 --save=$(DATA_PATH)/exp208_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.0117 --lr_R=0.137 --save=$(DATA_PATH)/exp208_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp209:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp209.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp209_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp209_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # anneal-ep
@@ -2963,28 +2963,28 @@ exp210:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp210.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp210_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp210_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditTwoHigh10
 exp211:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp211.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --epsilon=0.980 --epsilon_decay_tau=0.084 --lr_R=0.194  --save=$(DATA_PATH)/exp211_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditTwoHigh10-v0 --num_episodes=500 --epsilon=0.980 --epsilon_decay_tau=0.084 --lr_R=0.194  --save=$(DATA_PATH)/exp211_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp212:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp212.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.850 --lr_R=0.173 --epsilon_decay_tau=0.00777 --save=$(DATA_PATH)/exp212_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.850 --lr_R=0.173 --epsilon_decay_tau=0.00777 --save=$(DATA_PATH)/exp212_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp213:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp213.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp213_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp213_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 			
 
 # ----------------------------------------------------------------------------
@@ -2997,25 +2997,25 @@ exp214:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp214.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp214_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp214_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp215:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp215.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp215_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp215_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp216:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp216.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp216_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp216_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp217:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp217.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp217_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp217_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # ---------------------------------------------------------------------------
@@ -3039,25 +3039,25 @@ exp218:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp218.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp218_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp218_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp219:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp219.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp219_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp219_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp220:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp220.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp220_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp220_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp221:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp221.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp221_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=20 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp221_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # ---------------------------------------------------------------------------
@@ -3079,25 +3079,25 @@ exp222:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp222.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp222_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp222_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp223:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp223.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp223_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp223_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp224:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp224.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp224_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp224_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp225:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp225.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp225_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp225_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # ---------------------------------------------------------------------------
 # 2-14-2020
@@ -3110,25 +3110,25 @@ exp226:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp226.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp226_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp226_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp227:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp227.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp227_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp227_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp228:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp228.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp228_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp228_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 exp229:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp229.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp229_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp229_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # ----------------------------------------------------------------------------
 # 2-15-202
@@ -3266,21 +3266,21 @@ exp238:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp238.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp238_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --tie_threshold=0.053 --lr_R=0.34 --save=$(DATA_PATH)/exp238_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp239:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp239.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00355 --lr_R=0.147 --save=$(DATA_PATH)/exp239_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00355 --lr_R=0.147 --save=$(DATA_PATH)/exp239_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp240:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp240.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp240_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold=5.782e-09 --lr_R=0.00112 --save=$(DATA_PATH)/exp240_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # beta:
@@ -3289,21 +3289,21 @@ exp241:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp241.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.22 --lr_R=0.18 --save=$(DATA_PATH)/exp241_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --tie_break='next' --beta=0.22 --lr_R=0.18 --save=$(DATA_PATH)/exp241_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp242:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp242.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --beta=0.056 --lr_R=0.141 --save=$(DATA_PATH)/exp242_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --beta=0.056 --lr_R=0.141 --save=$(DATA_PATH)/exp242_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp243:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp243.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp243_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'beta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --beta=0.217 --lr_R=0.051 --save=$(DATA_PATH)/exp243_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # softbeta
@@ -3312,21 +3312,21 @@ exp244:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp244.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp244_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --beta=0.066 --lr_R=0.13 --temp=0.13 --save=$(DATA_PATH)/exp244_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp245:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp245.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0.125 --lr_R=0.174 --temp=0.0811 --save=$(DATA_PATH)/exp245_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0.125 --lr_R=0.174 --temp=0.0811 --save=$(DATA_PATH)/exp245_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp246:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp246.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp246_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta=2.140 --lr_R=0.128 --temp=5.045 --save=$(DATA_PATH)/exp246_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # ----------------------------------------------------------------------------
 # For the sake of having everything run from the same commit, I am also 
@@ -3340,21 +3340,21 @@ exp247:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp247.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp247_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.14 --lr_R=0.087 --save=$(DATA_PATH)/exp247_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp248:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp248.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.0117 --lr_R=0.137 --save=$(DATA_PATH)/exp248_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.0117 --lr_R=0.137 --save=$(DATA_PATH)/exp248_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp249:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp249.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp249_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.4057 --lr_R=0.000484 --save=$(DATA_PATH)/exp249_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # -
 # anneal-ep
@@ -3364,21 +3364,21 @@ exp250:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp250.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp250_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500 --epsilon=0.45 --epsilon_decay_tau=0.061 --lr_R=0.14 --save=$(DATA_PATH)/exp250_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp251:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp251.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.850 --lr_R=0.173 --epsilon_decay_tau=0.00777 --save=$(DATA_PATH)/exp251_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon=0.850 --lr_R=0.173 --epsilon_decay_tau=0.00777 --save=$(DATA_PATH)/exp251_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # HardAndSparse10
 exp252:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp252.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp252_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon=0.5148 --epsilon_decay_tau=0.0723 --lr_R=0.000271 --save=$(DATA_PATH)/exp252_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 			
 # -
 # Random
@@ -3387,21 +3387,21 @@ exp253:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp253.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp253_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=500  --lr_R=0.1 --save=$(DATA_PATH)/exp253_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditUniform121
 exp254:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp254.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500  --lr_R=0.1 --save=$(DATA_PATH)/exp254_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500  --lr_R=0.1 --save=$(DATA_PATH)/exp254_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # BanditHardAndSparse10
 exp255:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp255.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --lr_R=0.1 --save=$(DATA_PATH)/exp255_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # ---------------------------------------------------------------------------
@@ -3639,14 +3639,14 @@ exp269:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp269.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0014 --lr_R=0.35 --save=$(DATA_PATH)/exp269_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.0014 --lr_R=0.35 --save=$(DATA_PATH)/exp269_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # ep - sample results from exp266 best_params
 exp270:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp270.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.011 --lr_R=0.115 --save=$(DATA_PATH)/exp270_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.011 --lr_R=0.115 --save=$(DATA_PATH)/exp270_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 
 # anneal - sample results from exp267 best_params
@@ -3654,21 +3654,21 @@ exp271:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp271.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.080 --epsilon_decay_tau=0.039 --lr_R=0.10 --save=$(DATA_PATH)/exp271_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.080 --epsilon_decay_tau=0.039 --lr_R=0.10 --save=$(DATA_PATH)/exp271_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # softbeta - sample results from exp265 best_params
 exp272:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp272.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0.31 --lr_R=0.18 --temp=0.082 --save=$(DATA_PATH)/exp272_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0.31 --lr_R=0.18 --temp=0.082 --save=$(DATA_PATH)/exp272_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 
 # random - just run 100. (There is nothing to tune.)
 exp273:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp273.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --save=$(DATA_PATH)/exp273_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {1..100}
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --save=$(DATA_PATH)/exp273_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {1..100}
 		
 
 # -------------------------------------------------------------------------
@@ -4175,7 +4175,7 @@ exp310:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp310.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp310_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp310_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4187,7 +4187,7 @@ exp311:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp311.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp311_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp311_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4199,7 +4199,7 @@ exp312:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp312.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp312_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp312_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4211,7 +4211,7 @@ exp313:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp313.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp313_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp313_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4227,7 +4227,7 @@ exp314:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp314.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp314_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp314_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4239,7 +4239,7 @@ exp315:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp315.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp315_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp315_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4251,7 +4251,7 @@ exp316:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp316.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp316_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp316_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4263,7 +4263,7 @@ exp317:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp317.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp317_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --save=$(DATA_PATH)/exp317_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4279,7 +4279,7 @@ exp318:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp318.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp318_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp318_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4291,7 +4291,7 @@ exp319:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp319.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp319_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp319_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4303,7 +4303,7 @@ exp320:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp320.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp320_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp320_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4315,7 +4315,7 @@ exp321:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp321.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp321_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp321_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4331,7 +4331,7 @@ exp322:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp322.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp322_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --save=$(DATA_PATH)/exp322_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4343,7 +4343,7 @@ exp323:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp323.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp323_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --save=$(DATA_PATH)/exp323_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4355,7 +4355,7 @@ exp324:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp324.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp324_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --save=$(DATA_PATH)/exp324_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4367,7 +4367,7 @@ exp325:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp325.log' \
 			--nice 19 --delay 2 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp325_{index}_{1}.pkl --interactive=False --debug=False --seed_value={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --save=$(DATA_PATH)/exp325_{index}_{1}.pkl --interactive=False --debug=False --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -4385,7 +4385,7 @@ exp326:
         --tie_break='next' \
         --tie_threshold=1e-4 \
         --beta=None \
-        --seed_value=42 \
+        --master_seed=42 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp326
 
@@ -4398,7 +4398,7 @@ exp327:
         --tie_break='next' \
         --tie_threshold=1e-4 \
         --beta=1000 \
-        --seed_value=42 \
+        --master_seed=42 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp327
 
@@ -4416,7 +4416,7 @@ exp328:
         --tie_break='next' \
         --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=127 \
+        --master_seed=127 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run1/
 	curiosity_bandit.py \
@@ -4425,7 +4425,7 @@ exp328:
         --tie_break='next' \
         --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=23 \
+        --master_seed=23 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run2/
 	curiosity_bandit.py \
@@ -4434,7 +4434,7 @@ exp328:
         --tie_break='next' \
         --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=802 \
+        --master_seed=802 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run3/
 	curiosity_bandit.py \
@@ -4443,7 +4443,7 @@ exp328:
         --tie_break='next' \
         --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=42 \
+        --master_seed=42 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run4/
 	curiosity_bandit.py \
@@ -4452,7 +4452,7 @@ exp328:
         --tie_break='next' \
         --tie_threshold=1e-5 \
         --beta=None \
-        --seed_value=673 \
+        --master_seed=673 \
         --reward_mode=False \
         --log_dir=$(DATA_PATH)/exp328/run5/
 
@@ -4467,14 +4467,14 @@ exp329:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp329.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp329/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=None --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp329/run{1}' ::: {1..100}
 
 # Softmx mode
 exp330:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp330.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp330/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-4 --beta=1000 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp330/run{1}' ::: {1..100}
 
 
 # ----------------------------------------
@@ -4489,14 +4489,14 @@ exp331:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp331.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp331/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp331/run{1}' ::: {1..100}
 
 # Softmx mode
 exp332:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp332.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp332/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --num_episodes=80 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp332/run{1}' ::: {1..100}
 
 # ----------------------------------------
 # d44dd50c538994f2f8d62d5ec90e50903874884f
@@ -4510,14 +4510,14 @@ exp333:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp333.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp333/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=None --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp333/run{1}' ::: {1..100}
 
 # Softmx mode
 exp334:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp334.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp334/run{1}' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --num_episodes=320 --lr_E=1 --tie_break='next' --tie_threshold=1e-5 --beta=1000 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp334/run{1}' ::: {1..100}
 
 
 # TODO: the important of boredom
@@ -4541,7 +4541,7 @@ exp335:
 		--actor='DeterministicActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp335/DeterministicActor \
 		--tie_break='next' \
@@ -4551,7 +4551,7 @@ exp335:
 		--actor='SoftmaxActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp335/SoftmaxActor \
 		--beta=500 \
@@ -4561,7 +4561,7 @@ exp335:
 		--actor='ThresholdActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp335/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4570,7 +4570,7 @@ exp335:
 		--actor='RandomActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp335/RandomActor 
 
@@ -4581,7 +4581,7 @@ exp336:
 		--actor='DeterministicActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=693 \
+		--master_seed=693 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp336/DeterministicActor \
 		--tie_break='next' \
@@ -4591,7 +4591,7 @@ exp336:
 		--actor='SoftmaxActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=693 \
+		--master_seed=693 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp336/SoftmaxActor \
 		--beta=500 \
@@ -4601,7 +4601,7 @@ exp336:
 		--actor='ThresholdActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=693 \
+		--master_seed=693 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp336/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4610,7 +4610,7 @@ exp336:
 		--actor='RandomActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=693 \
+		--master_seed=693 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp336/RandomActor 
 
@@ -4621,7 +4621,7 @@ exp337:
 		--actor='DeterministicActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=12 \
+		--master_seed=12 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/DeterministicActor \
 		--tie_break='next' \
@@ -4631,7 +4631,7 @@ exp337:
 		--actor='SoftmaxActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=12 \
+		--master_seed=12 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/SoftmaxActor \
 		--beta=500 \
@@ -4641,7 +4641,7 @@ exp337:
 		--actor='ThresholdActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=12 \
+		--master_seed=12 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4650,7 +4650,7 @@ exp337:
 		--actor='RandomActor' \
 		--num_episodes=320 \
 		--lr_E=1 \
-		--seed_value=12 \
+		--master_seed=12 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp337/RandomActor 
 
@@ -4661,7 +4661,7 @@ exp338:
 		--actor='DeterministicActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp338/DeterministicActor \
 		--tie_break='next' \
@@ -4671,7 +4671,7 @@ exp338:
 		--actor='SoftmaxActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp338/SoftmaxActor \
 		--beta=500 \
@@ -4681,7 +4681,7 @@ exp338:
 		--actor='ThresholdActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp338/ThresholdActor \
 		--tie_threshold=1e-3 
@@ -4690,7 +4690,7 @@ exp338:
 		--actor='RandomActor' \
 		--num_episodes=80 \
 		--lr_E=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp338/RandomActor 
 
@@ -4707,7 +4707,7 @@ exp339:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/DeterministicActor \
 		--tie_break='next' \
@@ -4719,7 +4719,7 @@ exp339:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/SoftmaxActor \
 		--beta=500 \
@@ -4731,7 +4731,7 @@ exp339:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/ThresholdActor \
 		--tie_threshold=1e-3 
@@ -4742,7 +4742,7 @@ exp339:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp339/RandomActor \
 		--tie_threshold=1e-3 
@@ -4756,7 +4756,7 @@ exp340:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/DeterministicActor \
 		--tie_break='next' \
@@ -4768,7 +4768,7 @@ exp340:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/SoftmaxActor \
 		--beta=500 \
@@ -4780,7 +4780,7 @@ exp340:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4791,7 +4791,7 @@ exp340:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp340/RandomActor \
 		--tie_threshold=1e-4 
@@ -4806,7 +4806,7 @@ exp341:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/DeterministicActor \
 		--tie_break='next' \
@@ -4818,7 +4818,7 @@ exp341:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/SoftmaxActor \
 		--beta=500 \
@@ -4830,7 +4830,7 @@ exp341:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4841,7 +4841,7 @@ exp341:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp341/RandomActor \
 		--tie_threshold=1e-4 
@@ -4855,7 +4855,7 @@ exp342:
 		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_count=0 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp342/DeterministicActor \
 		--tie_break='next' \
@@ -4866,7 +4866,7 @@ exp342:
 		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_count=0 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp342/SoftmaxActor \
 		--beta=500 \
@@ -4877,7 +4877,7 @@ exp342:
 		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_count=0 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp342/ThresholdActor \
 		--tie_threshold=1e-4 
@@ -4887,7 +4887,7 @@ exp342:
 		--num_episodes=320 \
 		--lr_E=1 \
 		--initial_count=0 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp342/RandomActor \
 		--tie_threshold=1e-4 
@@ -4909,52 +4909,52 @@ exp343a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp343b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 # --- SoftmaxActor ---
 exp343c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 
 exp343d:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343d.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 		
 # --- ThresholdActor ---
 exp343e:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343e.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp343f:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --- RandomActor ---
 exp343g:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp343f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp343h:
 	parallel -j 39  \
 			--joblog '$(DATA_PATH)/exp343g.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp343/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --------------------------------------------------------------------------
 # 7-14-2020
@@ -4973,52 +4973,52 @@ exp344a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp344b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 # --- SoftmaxActor ---
 exp344c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 
 exp344d:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344d.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 		
 # --- ThresholdActor ---
 exp344e:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344e.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp344f:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --- RandomActor ---
 exp344g:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp344f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp344h:
 	parallel -j 39  \
 			--joblog '$(DATA_PATH)/exp344g.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp344/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --------------------------------------------------------------------------
 # 7-14-2020
@@ -5037,52 +5037,52 @@ exp345a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/with/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp345b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/DeterministicActor/without/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 # --- SoftmaxActor ---
 exp345c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/with/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 
 exp345d:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345d.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/SoftmaxActor/without/run{1} --beta=500 --tie_threshold=1e-4' ::: {1..100}
 
 # --- ThresholdActor ---
 exp345e:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345e.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp345f:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='ThresholdActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/ThresholdActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --- RandomActor ---
 exp345g:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp345f.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/with/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 exp345h:
 	parallel -j 39  \
 			--joblog '$(DATA_PATH)/exp345g.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4c-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=0 --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp345/RandomActor/without/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 
 # --------------------------------------------------------------------------
@@ -5098,7 +5098,7 @@ exp346:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp346/DeterministicActor \
 		--tie_break='next' \
@@ -5110,7 +5110,7 @@ exp346:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp346/SoftmaxActor \
 		--beta=10000 \
@@ -5122,7 +5122,7 @@ exp346:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp346/RandomActor \
 		--tie_threshold=1e-4 
@@ -5140,7 +5140,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=127 \
+		--master_seed=127 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run1/ \
 		--tie_break='next' \
@@ -5152,7 +5152,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=23 \
+		--master_seed=23 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run2/ \
 		--tie_break='next' \
@@ -5164,7 +5164,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=802 \
+		--master_seed=802 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run3/ \
 		--tie_break='next' \
@@ -5176,7 +5176,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run4/ \
 		--tie_break='next' \
@@ -5188,7 +5188,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=673 \
+		--master_seed=673 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run5/ \
 		--tie_break='next' \
@@ -5200,7 +5200,7 @@ exp347:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=592\
+		--master_seed=592\
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp347/run6/ \
 		--tie_break='next' \
@@ -5218,19 +5218,19 @@ exp348a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp348b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
 
 exp348c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp348c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp348/RandomActor/run{1} --tie_threshold=1e-4' ::: {1..100}
 
 # --------------------------------------------------------------------------
 # 7-14-2020
@@ -5243,19 +5243,19 @@ exp349a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/DeterministicActor/threshold{1}/run{2} --tie_break='next' --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/DeterministicActor/threshold{1}/run{2} --tie_break='next' --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 exp349b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/SoftmaxActor/threshold{1}/run{2} --beta=500 --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/SoftmaxActor/threshold{1}/run{2} --beta=500 --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 exp349c:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp349c.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/RandomActor/threshold{1}/run{2} --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4b-v0' --actor='RandomActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed={2} --reward_mode=False --log_dir=$(DATA_PATH)/exp349/RandomActor/threshold{1}/run{2} --tie_threshold={1}' ::: 1e-1 1e-2 1e-3 1e-4 1e-5 ::: {1..100}
 
 
 # ----------------------------------------
@@ -5274,7 +5274,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=127 \
+		--master_seed=127 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run1/ \
 		--beta=10000 \
@@ -5286,7 +5286,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=23 \
+		--master_seed=23 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run2/ \
 		--beta=10000 \
@@ -5298,7 +5298,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=802 \
+		--master_seed=802 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run3/ \
 		--beta=10000 \
@@ -5310,7 +5310,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run4/ \
 		--beta=10000 \
@@ -5322,7 +5322,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=673 \
+		--master_seed=673 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run5/ \
 		--beta=10000 \
@@ -5334,7 +5334,7 @@ exp350:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=592\
+		--master_seed=592\
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp350/run6/ \
 		--beta=10000 \
@@ -5349,7 +5349,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=127 \
+		--master_seed=127 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run1/ \
 		--beta=500 \
@@ -5361,7 +5361,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=23 \
+		--master_seed=23 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run2/ \
 		--beta=500 \
@@ -5373,7 +5373,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=802 \
+		--master_seed=802 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run3/ \
 		--beta=500 \
@@ -5385,7 +5385,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=42 \
+		--master_seed=42 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run4/ \
 		--beta=500 \
@@ -5397,7 +5397,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=673 \
+		--master_seed=673 \
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run5/ \
 		--beta=500 \
@@ -5409,7 +5409,7 @@ exp351:
 		--lr_E=1 \
 		--initial_bins='[1,2]' \
 		--initial_count=1 \
-		--seed_value=592\
+		--master_seed=592\
 		--reward_mode=False \
 		--log_dir=$(DATA_PATH)/exp351/run6/ \
 		--beta=500 \
@@ -5427,7 +5427,7 @@ exp351:
 exp352: exp352a exp352b
 
 exp352a:
-	paramsearch.py loguniform $(DATA_PATH)/exp352a.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)'
+	paramsearch.py loguniform $(DATA_PATH)/exp352a.csv --master_seed=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)'
 	parallel -j 40 \
 			--verbose \
 			--joblog '$(DATA_PATH)/exp352a.log' \
@@ -5435,10 +5435,10 @@ exp352a:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp352a.csv
+		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --master_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp352a.csv
 
 exp352b:
-	paramsearch.py loguniform $(DATA_PATH)/exp352b.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
+	paramsearch.py loguniform $(DATA_PATH)/exp352b.csv --master_seed=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
 	parallel -j 40 \
 			--verbose \
 			--joblog '$(DATA_PATH)/exp352b.log' \
@@ -5446,7 +5446,7 @@ exp352b:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp352b.csv
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --master_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp352b.csv
 
 # --------------------------------------------------------------------------
 # 7-17-2020
@@ -5461,7 +5461,7 @@ exp352b:
 exp353: exp353a exp353b
 
 exp353a:
-	paramsearch.py loguniform $(DATA_PATH)/exp353a.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)'
+	paramsearch.py loguniform $(DATA_PATH)/exp353a.csv --master_seed=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)'
 	parallel -j 40 \
 			--verbose \
 			--joblog '$(DATA_PATH)/exp353a.log' \
@@ -5469,10 +5469,10 @@ exp353a:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --initial_noise=0.05 --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp353/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp353a.csv
+		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --initial_noise=0.05 --master_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp353/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp353a.csv
 
 exp353b:
-	paramsearch.py loguniform $(DATA_PATH)/exp353b.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
+	paramsearch.py loguniform $(DATA_PATH)/exp353b.csv --master_seed=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
 	parallel -j 40 \
 			--verbose \
 			--joblog '$(DATA_PATH)/exp353b.log' \
@@ -5480,11 +5480,12 @@ exp353b:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp353/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp353b.csv
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --master_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp353/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp353b.csv
 
 
 # --------------------------------------------------------------------------
 # 7-17-2020
+# !! BREAKING API CHANGE !!
 # 3e37b16
 #
 # Animals as parameters, v3. 
@@ -5499,10 +5500,10 @@ exp354a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp354a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp354/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --master_seed=None --env_seed=502 --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp354b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp354b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --env_seed=502 --master_seed=None --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}

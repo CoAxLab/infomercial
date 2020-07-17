@@ -214,17 +214,25 @@ def run(env_name='InfoBlueYellow4b-v0',
         initial_count=1,
         initial_bins=None,
         initial_noise=0.0,
-        seed_value=42,
+        master_seed=None,
+        env_seed=None,
+        actor_seed=None,
+        critic_seed=None,
         reward_mode=False,
         log_dir=None,
         **actor_kwargs):
     """Play some slots!"""
 
     # --- Init ---
+    if master_seed is not None:
+        env_seed = master_seed
+        critic_seed = master_seed
+        actor_seed = master_seed
+
     writer = SummaryWriter(log_dir=log_dir)
 
     env = gym.make(env_name)
-    env.seed(seed_value)
+    env.seed(env_seed)
     num_actions = env.action_space.n
     best_action = env.best
     default_info_value = entropy(np.ones(num_actions) / num_actions)
@@ -236,17 +244,17 @@ def run(env_name='InfoBlueYellow4b-v0',
     critic_E = Critic(num_actions,
                       default_value=default_info_value,
                       default_noise_scale=initial_noise,
-                      seed_value=seed_value)
+                      seed_value=critic_seed)
 
     # Actor
     if actor == "DeterministicActor":
         actor_E = DeterministicActor(num_actions, **actor_kwargs)
     elif actor == "SoftmaxActor":
-        actor_E = SoftmaxActor(num_actions, **actor_kwargs, seed=seed_value)
+        actor_E = SoftmaxActor(num_actions, **actor_kwargs, seed=actor_seed)
     elif actor == "RandomActor":
-        actor_E = RandomActor(num_actions, **actor_kwargs, seed=seed_value)
+        actor_E = RandomActor(num_actions, **actor_kwargs, seed=actor_seed)
     elif actor == "ThresholdActor":
-        actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=None)
+        actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=actor_seed)
     else:
         raise ValueError("actor was not a valid choice")
 
