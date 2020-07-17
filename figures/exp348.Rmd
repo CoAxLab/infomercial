@@ -190,13 +190,13 @@ c1 <- (p1 + p2) / p3 / p4 +
 
 ## Dists (jitter)
 ```{r, fig.height=2, fig.width=0.8}
-# steps
+# average value
 summary348 %>% 
-  ggplot(aes(x=actor, y=num_steps, color=actor)) +
+  ggplot(aes(x=actor, y=value_E, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
-  labs(x="", y="Steps") +
+  labs(x="", y="Average value") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -205,13 +205,13 @@ summary348 %>%
   theme(axis.text.x = element_blank()) -> 
   p1
 
-# average value
+# steps
 summary348 %>% 
-  ggplot(aes(x=actor, y=value_E, color=actor)) +
+  ggplot(aes(x=actor, y=num_steps, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
-  labs(x="", y="Average value") +
+  labs(x="", y="Steps") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
