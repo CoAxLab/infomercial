@@ -5481,3 +5481,29 @@ exp353b:
 			--skip-first-line \
 			--colsep ',' \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp353/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp353b.csv
+
+
+# --------------------------------------------------------------------------
+# 7-17-2020
+# 3e37b16
+#
+# Animals as parameters, v3. 
+#
+# Figure data - 100 experiments with the same world but with 100 different
+#               parameters.
+#             - in v3 add a ONLY little noise to E_0 (--default_noise=0.05)
+#             - all other params are fixed
+exp354: exp354a exp354b 
+
+exp354a:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp354a.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+
+exp354b:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp354b.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
+		
