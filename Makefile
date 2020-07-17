@@ -5485,13 +5485,13 @@ exp353b:
 
 # --------------------------------------------------------------------------
 # 7-17-2020
-# f7f2be7 - # !! BIG but backwards compat API CHANGE !!
+# 6b8fe07 - # !! BIG but backwards compat API CHANGE !!
 #
 # Animals as parameters, v3. 
 #
 # Figure data - 100 experiments with the same world but with 100 different
 #               parameters.
-#             - in v3 add a ONLY little noise to E_0 (--default_noise=0.05)
+#             - in v3 add a ONLY little noise to E_0 (--default_noise=0.1)
 #             - all other params are fixed
 exp354: exp354a exp354b 
 
