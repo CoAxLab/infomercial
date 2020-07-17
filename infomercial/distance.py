@@ -73,9 +73,9 @@ def kl(memory_new, memory_old, default, base=None):
     p_old = [memory_old(k) for k in keys]
     p_new = [memory_new(k) for k in keys]
 
-    # if np.isclose(np.sum(p_old), 0):
-    #     return default
-    # if np.isclose(np.sum(p_new), 0):
-    #     return default
+    if np.isclose(np.sum(p_old), 0):
+        return default
+    if np.isclose(np.sum(p_new), 0):
+        return default
 
     return scientropy(p_old, qk=p_new, base=base)
