@@ -32,6 +32,7 @@ class Critic(object):
 
         # Init
         self.model = OrderedDict()
+        self.inital_values = OrderedDict()
         for n in range(self.num_inputs):
             # Def E0. Add noise? None by default.
             delta = 0.0
@@ -41,7 +42,8 @@ class Critic(object):
                                          self.default_noise_scale)
 
             # Set E0
-            self.model[n] = self.default_value + delta
+            self.inital_values[n] = self.default_value + delta
+            self.model[n] = self.inital_values[n]
 
     def __call__(self, state):
         return self.forward(state)
@@ -289,8 +291,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         old = deepcopy(memories[action])
         memories[action].update(state)
         new = deepcopy(memories[action])
-        E_t = kl(new, old, default_info_value)
-        # print(f"{action} - {E_t} - {old.values()}, {new.values()}")
+        E_t = kl(new, old, critic_E.inital_values[action])
 
         # --- Learn ---
         critic_E = update_E(action, E_t, critic_E, lr=lr_E)
