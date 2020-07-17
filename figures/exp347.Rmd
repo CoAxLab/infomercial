@@ -54,8 +54,8 @@ rm(runtmp, tmp)
 result347 %>% 
   filter(global_step < 40) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
-  geom_point(size=0.5, shape=15, color="mediumorchid4") + 
-  geom_line(size=.1, color="mediumorchid4") +
+  # geom_point(size=, shape=15, color="mediumorchid4") + 
+  geom_line(size=1, color="mediumorchid4") +
   labs(x="Time", y="Room choice") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol=1) +

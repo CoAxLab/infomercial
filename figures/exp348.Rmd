@@ -4,6 +4,7 @@ output: html_notebook
 ---
 
 ```{r, message=FALSE}
+library(zoo)
 library(ggplot2)
 library(ggpubr)
 library(patchwork)
@@ -35,13 +36,17 @@ data_path <- "~/Code/infomercial/data/"
 exp_name <- "exp348"
 
 actor_names <- c("DeterministicActor", "SoftmaxActor", "RandomActor")
+better_names <- c("Deterministic", "Stochastic", "Random")
+
 run_codes <- 1:100
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", 
                 "ties", "state", "total_E", "total_regret")
 
 # ---
 result348 <- NULL
-for (actor in actor_names){
+for (i in 1:length(actor_names)){
+  actor <- actor_names[i]
+  better <- better_names[i]
   for (run in run_codes) {
     runtmp <- read_csv(paste(data_path, 
                              exp_name, 
@@ -57,7 +62,7 @@ for (actor in actor_names){
       runtmp[[name]] <- tmp[[name]]
     }
     runtmp$run <- run
-    runtmp$actor <-actor
+    runtmp$actor <- better
     runtmp$num_trials <- nrow(tmp)
     result348 <- bind_rows(result348, runtmp)  
   }
@@ -78,7 +83,7 @@ result348 %>%
     total_E=max(total_E),
     total_regret=max(total_regret),
     value_E=mean(value_E),
-    regret=mean(regret),
+    regret=mean(regret[regret > 0]),
     num_steps=max(num_trials)
   ) %>% 
   ungroup() ->
@@ -86,183 +91,161 @@ summary348
 
 # --
 summary348$actor <- factor(summary348$actor, 
-                           levels=c("DeterministicActor", "SoftmaxActor", "RandomActor"))
+                           levels=c("Deterministic", "Stochastic", "Random"))
 ```
 
-# Plot
-# Total E examples
-```{r, fig.width=2, fig.height=7}
+# Figure
+## Examples
+```{r, fig.width=1.6, fig.height=2.2}
 result348 %>% 
-  filter(actor != "RandomActor") %>% 
-  filter(global_step > 10) %>%
-  # filter(run <= 50) %>% 
-  ggplot(aes(x=global_step, y=total_E, color=actor)) +
-  # geom_point(size=0.6) +
-  geom_line(size=.7) +
-  labs(x="Time", y="Cumulative value") +
-  facet_wrap(.~run, ncol=5) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("Search", values=c("mediumorchid4", "paleturquoise4")) +
-  theme(panel.spacing = unit(0.5, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "right") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  # theme(strip.text.x = element_blank()) +
-  theme(axis.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
-  theme(legend.key.size = unit(0.2, "cm"))
-```
-
-## Action examples
-```{r, fig.width=4, fig.height=2}
-result348 %>% 
-  filter(actor == "DeterministicActor") %>% 
-  filter(global_step < 40) %>%
-  filter(run <= 40) %>% 
+  filter(actor == "Deterministic") %>% 
+  # filter(global_step < 40) %>%
+  filter(run <= 12) %>% 
   ggplot(aes(x=global_step, y=action, color=actor)) +
-  # geom_point(size=0.2) +
-  geom_line(size=0.8) +
-  labs(x="Time", y="Choice") +
-  facet_wrap(.~run, ncol=5) +
-  theme_pubr(base_size = 6, legend = "none") +
+  lims(x=c(0, 320)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="", y="Choice", title="Deterministic") +
+  facet_wrap(.~run, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  scale_color_manual("Search", values=c("mediumorchid4", "paleturquoise4", "darkgrey")) +
-  theme(panel.spacing = unit(0.75, "lines")) +
+  scale_color_manual("Search", values=c("mediumorchid4")) +
+  theme(panel.spacing = unit(0.1, "lines")) +
   theme(strip.background = element_blank()) +
-  theme(legend.position = "right") +
+  theme(legend.position = "none") +
   theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.text.x = element_blank()) +
-  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
   theme(axis.ticks = element_blank()) + 
-  theme(legend.key.size = unit(0.2, "cm"))
-```
-```{r, fig.width=4, fig.height=2}
-result348 %>% 
-  filter(actor == "SoftmaxActor") %>% 
-  filter(global_step < 40) %>%
-  filter(run <= 40) %>% 
-  ggplot(aes(x=global_step, y=action, color=actor)) +
-  # geom_point(size=0.2) +
-  geom_line(size=0.8) +
-  labs(x="Time", y="Choice") +
-  facet_wrap(.~run, ncol=5) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("Search", values=c("paleturquoise4")) +
-  theme(panel.spacing = unit(0.75, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "right") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
-  theme(legend.key.size = unit(0.2, "cm"))
-```
-
-## dists - value and steps
-```{r,  fig.width=1.4, fig.height=2}
-# average value
-summary348 %>% 
-  ggplot(aes(x=value_E, fill=actor)) +
-  # geom_histogram(color=NA, alpha=0.8) +
-  geom_density(color=NA, alpha=0.8) +
-  scale_fill_manual("", values=c("mediumorchid4", "paleturquoise4", "grey")) +
-  labs(x="Average value") +
-  theme_classic() +
-  theme(legend.position = "none") + 
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) ->
+  theme(legend.key.size = unit(0.2, "cm")) -> 
   p1
 
-# step
-summary348 %>% 
-  ggplot(aes(x=num_steps, fill=actor)) +
-  # geom_histogram(color=NA, alpha=0.8) +
-  geom_density(color=NA, alpha=0.8) +
-  scale_fill_manual("", values=c("mediumorchid4", "paleturquoise4", "darkgray")) +
-  labs(x="Steps until bored") +
-  theme_classic() +
-  theme(legend.position = "none") + 
+result348 %>% 
+  filter(actor == "Stochastic") %>% 
+  filter(run <= 12) %>% 
+  ggplot(aes(x=global_step, y=action, color=actor)) +
+  lims(x=c(0, 320)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="", y="", title="Stochastic") +
+  facet_wrap(.~run, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(0.75, "lines")) +
-  theme(strip.text.y = element_text(angle = 0)) -> 
+  scale_color_manual("Search", values=c("dodgerblue4")) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(size = 6)) +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> 
   p2
 
-## total value dist
-summary348 %>% 
-  ggplot(aes(x=total_E, fill=actor)) +
-  # geom_histogram(color=NA, alpha=0.8) +
-  geom_density(color=NA, alpha=0.8) +
-  scale_fill_manual("", values=c("mediumorchid4", "paleturquoise4", "grey")) +
-  labs(x="Total value") +
-  theme_classic() +
-  theme(legend.position = "none") + 
+# ---
+result348 %>% 
+  filter(run == 20) %>% 
+  filter(global_step > 5) %>%
+  filter(actor != "Random") %>% 
+  ggplot(aes(x=global_step, y=value_E, color=actor)) +
+  geom_vline(aes(xintercept=min(num_trials)), 
+             color="black", linetype="dashed", alpha=0.9, size=0.2) +
+  geom_line(size=0.8, alpha=1) +
+  lims(x=c(0, 320)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  facet_wrap(.~actor) +
+  labs(x="", y="Value") + 
+  scale_color_manual("", values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) -> 
-  p3
+  theme(strip.text.x = element_blank()) -> p3
 
-p1 / p2 / p3
+result348 %>% 
+  filter(run == 20) %>% 
+  filter(global_step > 5) %>%
+  filter(actor != "Random") %>% 
+  ggplot(aes(x=global_step, y=regret, color=actor)) +
+  geom_line(size=0.8, alpha=1) +
+  lims(x=c(0, 320)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  facet_wrap(.~actor) +
+  labs(x="Time", y="Regret") + 
+  scale_color_manual("", values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.text.x = element_blank()) -> p4
+
+
+c1 <- (p1 + p2) / p3 / p4 + 
+  plot_layout(heights = c(0.7, 0.15, 0.15)) 
 ```
-## jitter = value and steps
-```{r, fig.height=2, fig.width=1.6}
-# average value
-summary348 %>% 
-  ggplot(aes(x=actor, y=value_E, color=actor)) +
-  geom_jitter(size=0.1, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
-  scale_colour_manual("", values=c("mediumorchid4", "paleturquoise4", "darkgray")) +
-  labs(x="", y="Average value") +
-  lims(y=c(0, 0.08)) +
-  theme_classic() +
-  theme(legend.position = "none") + 
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(1, "lines")) +
-  # theme(axis.text.y = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  coord_flip() ->
-  p1
 
+## Dists (jitter)
+```{r, fig.height=2, fig.width=0.8}
 # steps
 summary348 %>% 
   ggplot(aes(x=actor, y=num_steps, color=actor)) +
-  geom_jitter(size=0.1, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
-  scale_colour_manual("", values=c("mediumorchid4", "paleturquoise4", "darkgray")) +
-  labs(x="", y="Steps until bored") +
-  lims(y=c(0, 320)) +
-  theme_classic() +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Steps") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  coord_flip() -> p2
+  theme(axis.text.x = element_blank()) -> 
+  p1
 
-# total value
+# average value
 summary348 %>% 
-  ggplot(aes(x=actor, y=total_E - Ebias, color=actor)) +
-  geom_jitter(size=0.1, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=1, shape="|") +
-  scale_colour_manual("", values=c("mediumorchid4", "paleturquoise4", "darkgray")) +
-  labs(x="", y="Total value") +
-  lims(y=c(0, 0.5)) +
-  theme_classic() +
+  ggplot(aes(x=actor, y=value_E, color=actor)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Average value") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) +
-  # theme(axis.text.y = element_blank()) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  coord_flip() ->
+  theme(axis.text.x = element_blank()) -> 
+  p2
+
+# average regret
+summary348 %>% 
+  ggplot(aes(x=actor, y=total_regret, color=actor)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Total regret") +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(panel.spacing = unit(1, "lines")) ->
   p3
 
-p1 / p2 / p3
+# ---
+c2 <- p1 / p2 / p3 
 ```
 
+## Build
+```{r, fig.height=2.6, fig.width=2}
+(c1 | c2 + plot_spacer()) + 
+  plot_layout(widths = c(0.75, 0.25)) +
+    plot_annotation(
+      title="Deterministic versus stochastic curiosity in a random world", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
