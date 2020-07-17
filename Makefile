@@ -5499,10 +5499,10 @@ exp354a:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp354a.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --master_seed=None --env_seed=502 --critic_seed={1} --actor_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp354/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --master_seed=None --env_seed=502 --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..100}
 
 exp354b:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp354b.log' \
 			--nice 19 --delay 0 \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --env_seed=502 --master_seed=None --critic_seed={1} --actor_seed=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.05 --env_seed=502 --master_seed=None --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
