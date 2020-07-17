@@ -5416,8 +5416,13 @@ exp351:
 		--tie_threshold=1e-4
 
 # --------------------------------------------------------------------------
-# Animals as parameters
-# Figure data - 100 experiments, sto v det
+# 7-16-2020
+# b70bfef
+#
+# Animals as parameters, v1
+#
+# Figure data - 100 experiments with the same world but with 100 different
+#               parameters.
 
 exp352: exp352a exp352b
 
@@ -5430,7 +5435,7 @@ exp352a:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp352/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp352a.csv
+		"curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins='[1,2]' --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/DeterministicActor/run{1} --tie_break='next' --tie_threshold={2}" :::: $(DATA_PATH)/exp352a.csv
 
 exp352b:
 	paramsearch.py loguniform $(DATA_PATH)/exp352b.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
@@ -5441,4 +5446,4 @@ exp352b:
 			--delay 0 \
 			--skip-first-line \
 			--colsep ',' \
-		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp352/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp352b.csv
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --seed_value=502 --reward_mode=False --log_dir=$(DATA_PATH)/exp352/SoftmaxActor/run{1} --beta={2} --tie_threshold={3}' :::: $(DATA_PATH)/exp352b.csv
