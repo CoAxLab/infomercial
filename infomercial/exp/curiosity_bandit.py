@@ -246,7 +246,7 @@ def run(env_name='InfoBlueYellow4b-v0',
     elif actor == "RandomActor":
         actor_E = RandomActor(num_actions, **actor_kwargs, seed=seed_value)
     elif actor == "ThresholdActor":
-        actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=seed_value)
+        actor_E = ThresholdActor(num_actions, **actor_kwargs, seed=None)
     else:
         raise ValueError("actor was not a valid choice")
 
