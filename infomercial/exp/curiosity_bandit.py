@@ -19,13 +19,30 @@ from infomercial.utils import save_checkpoint
 
 
 class Critic(object):
-    def __init__(self, num_inputs, default_value):
+    def __init__(self,
+                 num_inputs,
+                 default_value,
+                 default_noise_scale=0,
+                 seed_value=None):
+
         self.num_inputs = num_inputs
         self.default_value = default_value
+        self.default_noise_scale = default_noise_scale
 
+        # Init
         self.model = OrderedDict()
         for n in range(self.num_inputs):
-            self.model[n] = self.default_value
+            # Def E0. Add noise? None by default.
+            delta = 0.0
+
+            if self.default_noise_scale > 0:
+                prng = np.random.RandomState(seed_value)
+                delta = prng.normal(0,
+                                    scale=default_value *
+                                    self.default_noise_scale)
+
+            # Set E0
+            self.model[n] = self.default_value + delta
 
     def __call__(self, state):
         return self.forward(state)
@@ -196,6 +213,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         actor='DeterministicActor',
         initial_count=1,
         initial_bins=None,
+        intial_noise=0.0,
         seed_value=42,
         reward_mode=False,
         log_dir=None,
@@ -213,8 +231,13 @@ def run(env_name='InfoBlueYellow4b-v0',
     E_t = default_info_value
 
     # --- Agents and memories ---
+    # Critic
     all_actions = list(range(num_actions))
-    critic_E = Critic(num_actions, default_value=default_info_value)
+    critic_E = Critic(num_actions,
+                      default_value=default_info_value,
+                      default_noise_scale=intial_noise)
+
+    # Actor
     if actor == "DeterministicActor":
         actor_E = DeterministicActor(num_actions, **actor_kwargs)
     elif actor == "SoftmaxActor":
@@ -226,7 +249,7 @@ def run(env_name='InfoBlueYellow4b-v0',
     else:
         raise ValueError("actor was not a valid choice")
 
-    # -
+    # Memory
     memories = [
         Count(intial_bins=initial_bins, initial_count=initial_count)
         for _ in range(num_actions)
