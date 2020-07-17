@@ -148,7 +148,7 @@ result348 %>%
 
 # ---
 result348 %>% 
-  filter(run == 20) %>% 
+  filter(run == 42) %>% 
   filter(global_step > 5) %>%
   filter(actor != "Random") %>% 
   ggplot(aes(x=global_step, y=value_E, color=actor)) +
@@ -167,7 +167,7 @@ result348 %>%
   theme(strip.text.x = element_blank()) -> p3
 
 result348 %>% 
-  filter(run == 20) %>% 
+  filter(run == 42) %>% 
   filter(global_step > 5) %>%
   filter(actor != "Random") %>% 
   ggplot(aes(x=global_step, y=regret, color=actor)) +
