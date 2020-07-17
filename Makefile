@@ -5439,7 +5439,7 @@ exp352a:
 
 exp352b:
 	paramsearch.py loguniform $(DATA_PATH)/exp352b.csv --seed_value=42 --num_sample=100 --tie_threshold='(1e-5, 1e-2)' --beta='(500, 50000)'
-	parallel -j 1 \
+	parallel -j 40 \
 			--verbose \
 			--joblog '$(DATA_PATH)/exp352b.log' \
 			--nice 19 \
