@@ -321,6 +321,7 @@ def run(env_name='InfoBlueYellow4b-v0',
 
     result = dict(best=best_action,
                   critic_E=critic_E.state_dict(),
+                  intial_E=list(critic_E.inital_values.values()),
                   total_E=total_E,
                   total_regret=total_regret,
                   env_name=env_name,
