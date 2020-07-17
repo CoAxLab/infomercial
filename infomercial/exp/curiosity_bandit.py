@@ -28,18 +28,17 @@ class Critic(object):
         self.num_inputs = num_inputs
         self.default_value = default_value
         self.default_noise_scale = default_noise_scale
+        self.prng = np.random.RandomState(seed_value)
 
         # Init
         self.model = OrderedDict()
         for n in range(self.num_inputs):
             # Def E0. Add noise? None by default.
             delta = 0.0
-
             if self.default_noise_scale > 0:
-                prng = np.random.RandomState(seed_value)
-                delta = prng.normal(0,
-                                    scale=default_value *
-                                    self.default_noise_scale)
+                delta = self.prng.normal(0,
+                                         scale=default_value *
+                                         self.default_noise_scale)
 
             # Set E0
             self.model[n] = self.default_value + delta
