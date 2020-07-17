@@ -213,7 +213,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         actor='DeterministicActor',
         initial_count=1,
         initial_bins=None,
-        intial_noise=0.0,
+        initial_noise=0.0,
         seed_value=42,
         reward_mode=False,
         log_dir=None,
@@ -235,7 +235,7 @@ def run(env_name='InfoBlueYellow4b-v0',
     all_actions = list(range(num_actions))
     critic_E = Critic(num_actions,
                       default_value=default_info_value,
-                      default_noise_scale=intial_noise)
+                      default_noise_scale=initial_noise)
 
     # Actor
     if actor == "DeterministicActor":
