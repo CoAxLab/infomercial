@@ -1,5 +1,5 @@
 ---
-title: "Exp353 - Animals as paramters - 100 experiments (noisy intial value)"
+title: "Exp354 - Animals as paramters - noisy intial value only"
 output: html_notebook
 ---
 
@@ -33,17 +33,17 @@ data_path <- "~/Code/infomercial/data/"
 ## Load
 ```{r message=FALSE, cache=TRUE}
 # ---
-exp_name <- "exp353"
+exp_name <- "exp354"
 
 actor_names <- c("DeterministicActor", "SoftmaxActor")
 better_names <- c("Deterministic", "Stochastic")
 
-run_codes <- 0:99
+run_codes <- 1:100
 file_names <- c("score_E", "action", "p_bests", "regret", "value_E", 
                 "ties", "state", "total_E", "total_regret")
 
 # ---
-result353 <- NULL
+result354 <- NULL
 for (i in 1:length(actor_names)){
   actor <- actor_names[i]
   better <- better_names[i]
@@ -64,7 +64,7 @@ for (i in 1:length(actor_names)){
     runtmp$run <- run
     runtmp$actor <- better
     runtmp$num_trials <- nrow(tmp)
-    result353 <- bind_rows(result353, runtmp)  
+    result354 <- bind_rows(result354, runtmp)  
   }
 }
 
@@ -77,7 +77,7 @@ rm(tmp, runtmp, run, name)
 # --
 Ebias <- 4*1.38
 
-result353 %>% 
+result354 %>% 
   group_by(actor, run) %>% 
   summarise(
     total_E=max(total_E),
@@ -87,19 +87,19 @@ result353 %>%
     num_steps=max(num_trials)
   ) %>% 
   ungroup() ->
-summary353
+summary354
 
 # --
-summary353$actor <- factor(summary353$actor, 
+summary354$actor <- factor(summary354$actor, 
                            levels=c("Deterministic", "Stochastic", "Random"))
 ```
 
 # Figure
 ## Examples
 ```{r, fig.width=1.6, fig.height=2.2}
-result353 %>% 
+result354 %>% 
   filter(actor == "Deterministic") %>% 
-  # filter(global_step < 40) %>%
+  # filter(global_step < 20) %>%
   filter(run <= 12) %>% 
   ggplot(aes(x=global_step, y=action, color=actor)) +
   lims(x=c(0, 320)) +
@@ -122,8 +122,9 @@ result353 %>%
   theme(legend.key.size = unit(0.2, "cm")) -> 
   p1
 
-result353 %>% 
+result354 %>% 
   filter(actor == "Stochastic") %>% 
+  # filter(global_step < 20) %>%
   filter(run <= 12) %>% 
   ggplot(aes(x=global_step, y=action, color=actor)) +
   lims(x=c(0, 320)) +
@@ -147,7 +148,7 @@ result353 %>%
   p2
 
 # ---
-result353 %>% 
+result354 %>% 
   filter(run == 42) %>% 
   filter(global_step > 5) %>%
   filter(actor != "Random") %>% 
@@ -166,7 +167,7 @@ result353 %>%
   theme(strip.background = element_blank()) +
   theme(strip.text.x = element_blank()) -> p3
 
-result353 %>% 
+result354 %>% 
   filter(run == 42) %>% 
   filter(global_step > 5) %>%
   filter(actor != "Random") %>% 
@@ -191,14 +192,14 @@ c1 <- (p1 + p2) / p3 / p4 +
 ## Dists (jitter)
 ```{r, fig.height=2, fig.width=0.8}
 # average value
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=value_E, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
   labs(x="", y="Average value") +
-  scale_y_log10() +
-  annotation_logticks(sides = "l") +
+  # scale_y_log10() +
+  # annotation_logticks(sides = "l") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -208,7 +209,7 @@ summary353 %>%
   p1
 
 # steps
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=num_steps, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
@@ -223,14 +224,14 @@ summary353 %>%
   p2
 
 # average regret
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=total_regret, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
   labs(x="", y="Total regret") +
-  scale_y_log10() +
-  annotation_logticks(sides = "l") +
+  # scale_y_log10() +
+  # annotation_logticks(sides = "l") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -248,14 +249,14 @@ c2 <- p1 / p2 / p3
 (c1 | c2 + plot_spacer()) + 
   plot_layout(widths = c(0.75, 0.25)) +
     plot_annotation(
-      title="Random parameters (animals) in a deterministic world", 
+      title="Initial values in a deterministic world", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 ```
-
+# Other analysis
 ## Boxplots
 ```{r, fig.height=2, fig.width=0.8}
 # average value
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=value_E, color=actor)) +
   # geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   # stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
@@ -273,7 +274,7 @@ summary353 %>%
   p1
 
 # steps
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=num_steps, color=actor)) +
   # geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   # stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
@@ -289,7 +290,7 @@ summary353 %>%
   p2
 
 # average regret
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=actor, y=total_regret, color=actor)) +
   # geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   # stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
@@ -314,7 +315,7 @@ p1 / p2 / p3
 ## Boxplots
 ```{r, fig.height=2, fig.width=0.8}
 # average value
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=value_E, fill=actor)) +
   geom_histogram() +
   scale_x_log10() +
@@ -328,7 +329,7 @@ summary353 %>%
   p1
 
 # steps
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=num_steps, fill=actor)) +
   geom_histogram() +
   scale_fill_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
@@ -341,7 +342,7 @@ summary353 %>%
   p2
 
 # average regret
-summary353 %>% 
+summary354 %>% 
   ggplot(aes(x=total_regret, fill=actor)) +
   geom_histogram() +
   scale_fill_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
@@ -357,4 +358,64 @@ summary353 %>%
 
 # ---
 p1 / p2 / p3 
+```
+
+## All actions
+```{r, fig.width=1.5, fig.height=2}
+result354 %>% 
+  filter(actor == "Deterministic") %>%
+  filter(global_step < 25) %>%
+  # filter(run <= 12) %>% 
+  ggplot(aes(x=global_step, y=action, color=actor)) +
+  geom_line(size=0.5, alpha=1) +
+  labs(x="Time", y="Choice", title="Deterministic") +
+  facet_wrap(.~run, ncol=10) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("Search", values=c("mediumorchid4", "dodgerblue4")) +
+  scale_x_continuous(breaks=c(1, 25), labels=c(1, 25)) +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.3, "cm")) -> 
+  p1
+p1 
+```
+
+## All actions
+```{r, fig.width=2, fig.height=0.5}
+result354 %>% 
+  # filter(actor == "Deterministic") %>% 
+  filter(global_step < 100) %>%
+  filter(run <= 100) %>%
+  ggplot(aes(x=global_step, y=action, color=actor)) +
+  # lims(x=c(0, 320)) +
+  geom_line(size=0.7, alpha=0.8) +
+  # geom_point(size=0.3, alpha=1) +
+  labs(x="Time", y="Choice", title="Deterministic + Stochastic") +
+  facet_wrap(.~actor, ncol=5) +
+  # scale_color_grey() +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("Search", values=c("mediumorchid4", "dodgerblue4")) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.5, "cm")) -> 
+  p1
+p1 
 ```
