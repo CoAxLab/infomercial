@@ -5506,3 +5506,15 @@ exp354b:
 			--joblog '$(DATA_PATH)/exp354b.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='SoftmaxActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.1 --env_seed=502 --master_seed=None --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp354/SoftmaxActor/run{1} --beta=10000 --tie_threshold=1e-4' ::: {1..100}
+
+
+# --------------------------------------------------------------------------
+# 7-17-2020
+# ddba159
+# A test of E0 delta. Not sure things are working right....
+# Seeding was setup wong. Fixed. Rerun exp354.
+exp355:
+	parallel -j 1 \
+			--joblog '$(DATA_PATH)/exp355.log' \
+			--nice 19 --delay 0 \
+		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.1 --master_seed=None --env_seed=502 --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp355/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..5}
