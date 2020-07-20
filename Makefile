@@ -5565,3 +5565,15 @@ exp359:
 		--lr_R=.1 \
 		--master_seed=802 \
 		--log_dir=$(DATA_PATH)/exp359/ 
+
+
+# Test beta
+exp360:
+	softbeta_bandit.py \
+		--env_name='BanditOneHigh10-v0' \
+		--num_episodes=1000 \
+		--lr_R=.1 \
+		--master_seed=802 \
+		--log_dir=$(DATA_PATH)/exp360/ \
+		--beta=1.0 \
+		--temp=100 
