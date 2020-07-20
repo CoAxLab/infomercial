@@ -151,6 +151,9 @@ def run(env_name='BanditOneHot2-v0',
         if epsilon_decay_tau > 0:
             actor.decay_epsilon()
 
+    # -- Build the final result, and save or return it ---
+    writer.close()
+
     result = dict(best=env.best,
                   env_name=env_name,
                   num_episodes=num_episodes,
