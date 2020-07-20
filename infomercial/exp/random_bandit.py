@@ -1,10 +1,15 @@
+import os
 import fire
 import gym
 import cloudpickle
 import numpy as np
 
+from noboard.csv import SummaryWriter
+
 from scipy.stats import entropy
 from infomercial.utils import estimate_regret
+from infomercial.utils import load_checkpoint
+from infomercial.utils import save_checkpoint
 
 from collections import OrderedDict
 
@@ -54,31 +59,19 @@ def Q_update(state, reward, critic, lr):
     return critic
 
 
-def save_checkpoint(state, filename='checkpoint.pkl'):
-    data = cloudpickle.dumps(state)
-    with open(filename, 'wb') as fi:
-        fi.write(data)
-
-
-def load_checkpoint(filename='checkpoint.pkl'):
-    with open(filename, 'rb') as fi:
-        return cloudpickle.load(fi)
-
-
 def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
-        seed_value=42,
         lr_R=.1,
-        save=None,
-        progress=False,
-        debug=False,
-        interactive=True):
-    """Play some slots!"""
+        master_seed=42,
+        log_dir=None):
+    """Bandit agent - random"""
 
-    # ------------------------------------------------------------------------
-    # Init
+    # --- Init ---
+    writer = SummaryWriter(log_dir=log_dir)
+
+    # -
     env = gym.make(env_name)
-    env.seed(seed_value)
+    env.seed(master_seed)
     num_actions = env.action_space.n
     best_action = env.best
 
@@ -87,86 +80,62 @@ def run(env_name='BanditOneHot2-v0',
     R_t = default_reward_value
     critic = Critic(env.observation_space.n,
                     default_value=default_reward_value)
-    actor = Actor(num_actions, seed_value=seed_value)
+    actor = Actor(num_actions, seed_value=master_seed)
+    all_actions = list(range(num_actions))
 
     # ------------------------------------------------------------------------
-    # Play
     num_best = 0
     total_R = 0.0
-    scores_R = []
-    values_R = []
-    actions = []
-    p_bests = []
-    regrets = []
-    visited_states = set()
-    states = list(range(num_actions))
+    total_regret = 0.0
 
     for n in range(num_episodes):
-        if debug:
-            print(f"\n>>> Episode {n}")
-
         # Every play is also an ep for bandit tasks.
         # Thus this reset() call
         state = int(env.reset()[0])
 
         # Choose an action; Choose a bandit
-        values = list(critic.model.values())
-        action = actor(values)
+        action = actor(list(critic.model.values()))
         if action in best_action:
             num_best += 1
 
         # Est. regret and save it
-        regrets.append(estimate_regret(states, action, critic))
+        regret = estimate_regret(all_actions, action, critic)
 
         # Pull a lever.
-        state, reward, _, _ = env.step(action)
+        state, R_t, _, _ = env.step(action)
         state = int(state[0])
-        R_t = reward  # Notation consistency
 
         # Critic learns
         critic = Q_update(action, R_t, critic, lr_R)
 
         # Log data
-        visited_states.add(action)  # Action is state here
-        actions.append(action)
+        writer.add_scalar("state", state, n)
+        writer.add_scalar("action", action, n)
+        writer.add_scalar("regret", regret, n)
+        writer.add_scalar("score_R", R_t, n)
+        writer.add_scalar("value_R", critic(action), n)
+
         total_R += R_t
-        scores_R.append(R_t)
-        values_R.append(critic(action))
-        p_bests.append(num_best / (n + 1))
+        total_regret += regret
+        writer.add_scalar("total_regret", total_regret, n)
+        writer.add_scalar("total_R", total_R, n)
+        writer.add_scalar("p_bests", num_best / (n + 1), n)
 
-        # -
-        if debug:
-            print(
-                f">>> State {state}, Action {action}, Rt {R_t}, Epsilon {actor.epsilon}"
-            )
-            print(f">>> critic_R: {critic.state_dict()}")
-        if progress:
-            print(f">>> Episode {n}.")
-        if progress or debug:
-            print(f">>> Total R: {total_R}")
-
-    # -
-    episodes = list(range(num_episodes))
+    # -- Build the final result, and save or return it ---
+    writer.close()
     result = dict(best=env.best,
-                  episodes=episodes,
+                  env_name=env_name,
                   num_episodes=num_episodes,
-                  actions=actions,
-                  p_bests=p_bests,
-                  regrets=regrets,
-                  visited_states=visited_states,
-                  critic_R=critic.state_dict(),
+                  lr_R=lr_R,
+                  critic=critic.state_dict(),
                   total_R=total_R,
-                  scores_R=scores_R,
-                  values_R=values_R)
+                  total_regret=total_regret,
+                  master_seed=master_seed)
 
-    # Save models to disk when done?
-    if save is not None:
-        save_checkpoint(result, filename=save)
+    save_checkpoint(result,
+                    filename=os.path.join(writer.log_dir, "result.pkl"))
 
-    if interactive:
-        return result
-    else:
-        return None
+    return result
 
 
 if __name__ == "__main__":

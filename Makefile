@@ -5556,3 +5556,12 @@ exp358:
 		--epsilon_decay_tau=0.0001 \
 		--master_seed=802 \
 		--log_dir=$(DATA_PATH)/exp358/ 
+
+# Test random
+exp359:
+	random_bandit.py \
+		--env_name='BanditOneHigh10-v0' \
+		--num_episodes=1000 \
+		--lr_R=.1 \
+		--master_seed=802 \
+		--log_dir=$(DATA_PATH)/exp359/ 
