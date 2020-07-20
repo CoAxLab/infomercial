@@ -93,6 +93,12 @@ target/
 celerybeat-schedule
 
 # SageMath parsed files
+# Data
+*.csv
+*.log
+tmp 
+
+# ?
 *.sage.py
 
 # Environments
