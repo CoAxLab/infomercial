@@ -106,7 +106,7 @@ def run(env_name='BanditOneHigh2-v0',
         lr_R=.1,
         master_seed=42,
         log_dir=None):
-    """Bandit agent - R + beta E"""
+    """Bandit agent - argmax(R + beta E)"""
 
     # --- Init ---
     writer = SummaryWriter(log_dir=log_dir)
