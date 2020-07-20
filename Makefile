@@ -5518,3 +5518,20 @@ exp355:
 			--joblog '$(DATA_PATH)/exp355.log' \
 			--nice 19 --delay 0 \
 		'curiosity_bandit.py --env_name='InfoBlueYellow4a-v0' --actor='DeterministicActor' --num_episodes=320 --lr_E=1 --initial_count=1 --initial_bins="[1,2]" --initial_noise=0.1 --master_seed=None --env_seed=502 --critic_seed={1} --actor_seed={1} --reward_mode=False --log_dir=$(DATA_PATH)/exp355/DeterministicActor/run{1} --tie_break='next' --tie_threshold=1e-4' ::: {1..5}
+
+
+# --------------------------------------------------------------------------
+# 7/20/2020
+# For consistenct and simpicity all models are getting ported to save
+# data w/ SummaryWriter.
+#
+# Test beta
+exp356:
+	beta_bandit.py \
+		--env_name='BanditOneHigh10-v0' \
+		--num_episodes=1000 \
+		--lr_R=.1 \
+		--master_seed=802 \
+		--log_dir=$(DATA_PATH)/exp356/ \
+		--beta=1.0 \
+		--tie_threshold=1e-4 
