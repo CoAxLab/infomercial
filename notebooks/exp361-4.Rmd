@@ -9,13 +9,13 @@ library(zoo)
 library(ggplot2)
 library(ggpubr)
 library(patchwork)
+# library(MASS) 
 library(tidyr)
 library(dplyr)
 library(gridExtra)
 library(grid)
 library(readr)
 library(latex2exp)
-library(MASS) 
 library(scales)
 library(patchwork)
 options(scipen=1000000)
@@ -80,10 +80,10 @@ result361 %>%
     total_E=max(total_E),
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_E=mean(value_E),
-    value_R=mean(value_R),
+    value_E=median(value_E),
+    value_R=median(value_R),
     p_bests=max(p_bests),
-    regret=mean(regret[regret > 0])
+    regret=median(regret[regret > 0])
   ) %>% 
   ungroup() ->
 summary361
@@ -180,9 +180,9 @@ result362 %>%
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_R=mean(value_R),
+    value_R=median(value_R),
     p_bests=max(p_bests),
-    regret=mean(regret[regret > 0])
+    regret=median(regret[regret > 0])
   ) %>% 
   ungroup() ->
 summary362
@@ -277,9 +277,9 @@ result363 %>%
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_R=mean(value_R),
+    value_R=median(value_R),
     p_bests=max(p_bests),
-    regret=mean(regret[regret > 0])
+    regret=median(regret[regret > 0])
   ) %>% 
   ungroup() ->
 summary363
@@ -378,15 +378,16 @@ result364 %>%
     total_R=max(total_R),
     total_E=max(total_E),
     total_regret=max(total_regret),
-    value_ER=mean(value_ER),
-    regret=mean(regret[regret > 0])
+    value_ER=median(value_ER),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
   ) %>% 
   ungroup() ->
 summary364
 ```
 
 ## values
-```{r, fig.height=1.5, fig.width=0.8}
+```{r, fig.height=2.0, fig.width=0.8}
 summary364 %>% 
   ggplot(aes(x=factor(param), y=total_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
@@ -426,7 +427,20 @@ summary364 %>%
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) -> p3
 
-p1 / p2 / p3
+summary364 %>% 
+  ggplot(aes(x=factor(param), y=p_bests)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p4
+
+p1 / p2 / p3 / p4
 ```
 
 ## actions
@@ -453,4 +467,71 @@ result364 %>%
   theme(axis.text.y = element_blank()) +
   theme(axis.ticks = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+# Join data
+## Join
+```{r}
+summary361 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
+summary362 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp2
+summary363 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp3
+summary364 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp4
+
+tmp1$agent <- "dual value"
+tmp2$agent <- "ep-greedy"
+tmp3$agent <- "anneal-ep"
+tmp4$agent <- "bayesian"
+
+summary361_4 <- tmp1
+summary361_4 <- bind_rows(summary361_4, tmp2)
+summary361_4 <- bind_rows(summary361_4, tmp3)
+summary361_4 <- bind_rows(summary361_4, tmp4)
+```
+
+## Values
+```{r, fig.height=1.5, fig.width=1.2}
+## Values
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(y="Total R") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Total regret") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=p_bests)) +
+  geom_jitter(size=0.05, alpha=0.4, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Best choice") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3 
 ```
