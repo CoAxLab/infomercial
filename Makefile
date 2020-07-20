@@ -5535,3 +5535,13 @@ exp356:
 		--log_dir=$(DATA_PATH)/exp356/ \
 		--beta=1.0 \
 		--tie_threshold=1e-4 
+
+# Test meta
+exp357:
+	meta_bandit.py \
+		--env_name='BanditOneHigh10-v0' \
+		--num_episodes=1000 \
+		--lr_R=.1 \
+		--master_seed=802 \
+		--log_dir=$(DATA_PATH)/exp357/ \
+		--tie_threshold=1e-4 

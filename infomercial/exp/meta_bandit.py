@@ -1,7 +1,10 @@
+import os
 import fire
 import gym
 
 import numpy as np
+
+from noboard.csv import SummaryWriter
 
 from copy import deepcopy
 from scipy.stats import entropy
@@ -120,22 +123,21 @@ def R_homeostasis(reward, total_reward, set_point):
     return reward_value
 
 
-def run(env_name='BanditOneHot2-v0',
-        num_episodes=1,
+def run(env_name='BanditOneHot10-v0',
+        num_episodes=1000,
         tie_break='next',
         tie_threshold=0.0,
         lr_R=.1,
-        seed_value=42,
-        save=None,
-        progress=False,
-        debug=False,
-        interactive=True):
-    """Play some slots!"""
+        master_seed=42,
+        log_dir=None):
+    """Bandit agent - argmax (E, R)"""
 
-    # ------------------------------------------------------------------------
-    # Init
+    # --- Init ---
+    writer = SummaryWriter(log_dir=log_dir)
+
+    # -
     env = gym.make(env_name)
-    env.seed(seed_value)
+    env.seed(master_seed)
     num_actions = env.action_space.n
     best_action = env.best
 
@@ -144,11 +146,7 @@ def run(env_name='BanditOneHot2-v0',
     E_t = default_info_value
     R_t = default_reward_value
 
-    visited_states = set()
-    states = list(range(num_actions))
-
     # -
-    # Agents and memories
     critic_R = Critic(env.observation_space.n,
                       default_value=default_reward_value)
     critic_E = Critic(env.observation_space.n,
@@ -160,67 +158,46 @@ def run(env_name='BanditOneHot2-v0',
                     tie_break=tie_break,
                     tie_threshold=tie_threshold)
     memories = [Count() for _ in range(num_actions)]
+    all_actions = list(range(num_actions))
 
     # -
-    # Init log
     num_best = 0
     total_R = 0.0
     total_E = 0.0
-    scores_E = []
-    scores_R = []
-    values_E = []
-    values_R = []
-    actions = []
-    regrets = []
-    p_bests = []
-    ties = []
-    policies = []
+    total_regret = 0.0
 
     # ------------------------------------------------------------------------
     for n in range(num_episodes):
-        if debug:
-            print(f"\n>>> Episode {n}")
-
         # Every play is also an ep for bandit tasks.
         # Thus this reset() call
         state = int(env.reset()[0])
 
-        # Update reward value assuming homeostatsis, but
-        # also greedyness. The set_point is perfect play,
-        # which is the same as the num_episodes.
-        R_t = R_homeostasis(R_t, total_R, num_episodes)
-
-        # Use the the meta-greedy policy to
-        # pick an actor, critic pair.
+        # Meta-greed policy selection
         if (E_t - tie_threshold) > R_t:
             critic = critic_E
             actor = actor_E
-            policies.append(0)
-            if debug: print(f">>> E in control!")
+            policy = 0
         else:
             critic = critic_R
             actor = actor_R
-            policies.append(1)
-            if debug: print(f">>> R in control!")
+            policy = 1
 
         # Choose an action; Choose a bandit
-        values = list(critic.model.values())
-        action = actor(values)
+        action = actor(list(critic.model.values()))
         if action in best_action:
             num_best += 1
 
         # Est. regret and save it
-        regrets.append(estimate_regret(states, action, critic))
+        regret = estimate_regret(all_actions, action, critic)
 
         # Pull a lever.
-        state, reward, _, _ = env.step(action)
+        state, R_t, _, _ = env.step(action)
+        R_t = R_homeostasis(R_t, total_R, num_episodes)
         state = int(state[0])
-        R_t = reward  # Notation consistency
-        visited_states.add(action)  # Action is state here
 
         # Estimate E
         old = deepcopy(memories[action])
-        memories[action].update(reward)
+        memories[action].update(R_t)
         new = deepcopy(memories[action])
         E_t = kl(new, old, default_info_value)
 
@@ -229,59 +206,48 @@ def run(env_name='BanditOneHot2-v0',
         critic_E = E_update(action, E_t, critic_E, lr=1)
 
         # Log data
-        actions.append(action)
-        total_R += R_t
-        total_E += E_t
-        scores_E.append(E_t - tie_threshold)
-        scores_R.append(R_t)
-        values_E.append(critic_E(action))
-        values_R.append(critic_R(action))
-        p_bests.append(num_best / (n + 1))
-        if actor.tied:
-            ties.append(1)
-        else:
-            ties.append(0)
-        if debug:
-            print(f">>> State {state}, Action {action}, Rt {R_t}, Et {E_t}")
-            print(f">>> critic_R: {critic_R.state_dict()}")
-            print(f">>> critic_E: {critic_E.state_dict()}")
-        if progress:
-            print(f">>> Episode {n}.")
-        if progress or debug:
-            print(f">>> Total R: {total_R}; Total E: {total_E}\n")
+        writer.add_scalar("policy", policy, n)
+        writer.add_scalar("state", state, n)
+        writer.add_scalar("action", action, n)
+        writer.add_scalar("regret", regret, n)
+        writer.add_scalar("score_E", E_t, n)
+        writer.add_scalar("score_R", R_t, n)
+        writer.add_scalar("value_E", critic_E(action), n)
+        writer.add_scalar("value_R", critic_R(action), n)
 
-    # -
-    episodes = list(range(num_episodes))
-    result = dict(best=best_action,
-                  episodes=episodes,
-                  policies=policies,
-                  actions=actions,
-                  p_bests=p_bests,
-                  ties=ties,
+        total_E += E_t
+        total_R += R_t
+        total_regret += regret
+        writer.add_scalar("total_regret", total_regret, n)
+        writer.add_scalar("total_E", total_E, n)
+        writer.add_scalar("total_R", total_R, n)
+        writer.add_scalar("p_bests", num_best / (n + 1), n)
+
+        tie = 0
+        if actor.tied:
+            tie = 1
+        writer.add_scalar("ties", tie, n)
+
+    # -- Build the final result, and save or return it ---
+    writer.close()
+
+    result = dict(best=env.best,
+                  num_episodes=num_episodes,
+                  tie_break=tie_break,
+                  tie_threshold=tie_threshold,
                   critic_E=critic_E.state_dict(),
                   critic_R=critic_R.state_dict(),
                   total_E=total_E,
                   total_R=total_R,
-                  total_E_R=total_E + total_R,
-                  scores_E=scores_E,
-                  scores_R=scores_R,
-                  values_E=values_E,
-                  values_R=values_R,
-                  regrets=regrets,
+                  total_regret=total_regret,
                   env_name=env_name,
-                  num_episodes=num_episodes,
-                  tie_break=tie_break,
-                  tie_threshold=tie_threshold,
-                  lr_R=lr_R)
+                  lr_R=lr_R,
+                  master_seed=master_seed)
 
-    # Save models to disk when done?
-    if save is not None:
-        save_checkpoint(result, filename=save)
+    save_checkpoint(result,
+                    filename=os.path.join(writer.log_dir, "result.pkl"))
 
-    if interactive:
-        return result
-    else:
-        return None
+    return result
 
 
 if __name__ == "__main__":
