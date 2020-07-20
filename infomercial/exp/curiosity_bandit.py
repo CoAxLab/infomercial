@@ -225,13 +225,15 @@ def run(env_name='InfoBlueYellow4b-v0',
     """Play some slots!"""
 
     # --- Init ---
+    writer = SummaryWriter(log_dir=log_dir)
+
+    # -
     if master_seed is not None:
         env_seed = master_seed
         critic_seed = master_seed
         actor_seed = master_seed
 
-    writer = SummaryWriter(log_dir=log_dir)
-
+    # -
     env = gym.make(env_name)
     env.seed(env_seed)
     num_actions = env.action_space.n
@@ -318,6 +320,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         writer.add_scalar("ties", tie, n)
 
     # -- Build the final result, and save or return it ---
+    writer.close()
 
     result = dict(best=best_action,
                   critic_E=critic_E.state_dict(),
@@ -337,12 +340,9 @@ def run(env_name='InfoBlueYellow4b-v0',
                   actor_kwargs=actor_kwargs,
                   num_stop=num_stop + 1)
 
-    # Save the result and flush, and close the writer
     save_checkpoint(result,
                     filename=os.path.join(writer.log_dir, "result.pkl"))
-    writer.close()
 
-    # -
     return result
 
 
