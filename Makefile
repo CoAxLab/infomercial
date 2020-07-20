@@ -5626,7 +5626,7 @@ exp363:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp363.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp363/param/{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp363/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -5638,7 +5638,7 @@ exp364:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp364.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp364/param/{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp364/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -5797,3 +5797,16 @@ exp376:
 			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp376/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# Rerun paramsweep for ep
+exp377:
+	tune_bandit.py random $(DATA_PATH)/exp377 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=10000 \
+        --num_episodes=100 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.000000001, 0.4)' 
