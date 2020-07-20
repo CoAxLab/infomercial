@@ -71,13 +71,13 @@ def save_csv(trials, filename=None):
 def train(exp_func=None,
           env_name=None,
           num_episodes=None,
-          seed_value=None,
+          master_seed=None,
           config=None):
 
     # Run
     trial = exp_func(env_name=env_name,
                      num_episodes=num_episodes,
-                     seed_value=seed_value,
+                     master_seed=master_seed,
                      **config)
 
     # Save metadata
@@ -85,7 +85,7 @@ def train(exp_func=None,
         "config": config,
         "env_name": env_name,
         "num_episodes": num_episodes,
-        "seed_value": seed_value
+        "master_seed": master_seed
     })
 
     return trial
@@ -100,10 +100,10 @@ def tune_random(name,
                 metric="total_R",
                 log_space=False,
                 verbose=False,
-                seed_value=None,
+                master_seed=None,
                 **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
-    prng = np.random.RandomState(seed_value)
+    prng = np.random.RandomState(master_seed)
 
     # ------------------------------------------------------------------------
     # Init:
@@ -129,7 +129,7 @@ def tune_random(name,
     params = dict(exp_func=exp_func,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  seed_value=seed_value,
+                  master_seed=master_seed,
                   config={})
 
     # ------------------------------------------------------------------------
@@ -194,10 +194,10 @@ def tune_pbt(name,
              extend_episodes=False,
              verbose=False,
              metric='total_R',
-             seed_value=None,
+             master_seed=None,
              **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
-    prng = np.random.RandomState(seed_value)
+    prng = np.random.RandomState(master_seed)
     top_threshold = 0.5  # Fix to hold pop size const, as per PBT.
 
     # ------------------------------------------------------------------------
@@ -218,7 +218,7 @@ def tune_pbt(name,
     params = dict(exp_func=exp_func,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  seed_value=seed_value,
+                  master_seed=master_seed,
                   config={})
 
     # ------------------------------------------------------------------------
@@ -337,10 +337,10 @@ def tune_replicator(name,
                     perturbation=0.1,
                     metric="total_R",
                     verbose=False,
-                    seed_value=None,
+                    master_seed=None,
                     **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
-    prng = np.random.RandomState(seed_value)
+    prng = np.random.RandomState(master_seed)
 
     # ------------------------------------------------------------------------
     # Init:
@@ -372,7 +372,7 @@ def tune_replicator(name,
     params = dict(exp_func=exp_func,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  seed_value=seed_value,
+                  master_seed=master_seed,
                   config={})
 
     # ------------------------------------------------------------------------
