@@ -15,7 +15,6 @@ setup(name='infomercial',
           'infomercial/exp/softbeta_bandit.py',
           'infomercial/exp/random_bandit.py',
           'infomercial/exp/tune_bandit.py',
-          'infomercial/exp/novelty_bandit.py',
           'infomercial/exp/curiosity_bandit.py',
       ],
       zip_safe=False)
