@@ -5522,6 +5522,7 @@ exp355:
 
 # --------------------------------------------------------------------------
 # 7/20/2020
+# fdf65d1
 # For consistenct and simpicity all models are getting ported to save
 # data w/ SummaryWriter.
 #
@@ -5577,3 +5578,222 @@ exp360:
 		--log_dir=$(DATA_PATH)/exp360/ \
 		--beta=1.0 \
 		--temp=100 
+
+# --------------------------------------------------------------------------
+# 7/20/2020
+# fdf65d1
+# Rerun top 10 models, for all bandits. Converting data to SW format.
+# ------------------------------------------------------------------------
+# 4-20-2020
+# 09f45f65e482f0e8ab593cffacc0c58b4daefcf0
+# 
+# Top 10 hyper-parameters (from last random search exps abour)
+# each repeated 10 time, with the different random seed.
+
+# ---------------
+# BanditOneHigh10
+# ---------------
+
+# meta - use HP from exp294
+exp361:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp294_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp361.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp361/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use HP from exp295
+exp362:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp295_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp362.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp362/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use HP from exp296
+exp363:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp296_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp363.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp363/param/{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use HP from exp297
+exp364:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp297_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp364.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp364/param/{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ---------------------
+# BanditHardAndSparse10
+# ---------------------
+
+# meta - use HP from exp298
+exp365:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp298_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp365.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp365/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use HP from exp299
+exp366:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp299_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp366.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp366/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use HP from exp300
+exp367:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp300_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp367.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp367/patam{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use HP from exp301
+exp368:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp301_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp368.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp368/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# ----------------
+# BanditUniform121
+# ----------------
+# meta - use HP from exp302
+exp369:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp302_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp369.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp369/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use HP from exp303
+exp370:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp303_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp370.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp370/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep-anneal - use HP from exp304
+exp371:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp304_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp371.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp371/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use HP from exp305
+exp372:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp305_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp372.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --temp={temp} --beta={beta} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp372/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ------------------------
+# DeceptiveBanditOneHigh10
+# ------------------------
+
+# meta - use HP from exp306
+exp373:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp306_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp373.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp373/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use HP from exp307
+exp374:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp307_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp374.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp374/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use HP from exp308
+exp375:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp308_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp375.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp375/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use HP from exp309
+exp376:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp309_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp376.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --temp={temp} --beta={beta} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp376/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
