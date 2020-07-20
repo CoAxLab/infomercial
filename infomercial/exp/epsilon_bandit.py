@@ -41,12 +41,12 @@ class Actor(object):
                  num_actions,
                  epsilon=0.1,
                  decay_tau=0.001,
-                 master_seed=42):
+                 seed_value=42):
         self.epsilon = epsilon
         self.decay_tau = decay_tau
         self.num_actions = num_actions
-        self.master_seed = master_seed
-        self.prng = np.random.RandomState(self.master_seed)
+        self.seed_value = seed_value
+        self.prng = np.random.RandomState(self.seed_value)
 
     def __call__(self, values):
         return self.forward(values)
@@ -55,13 +55,13 @@ class Actor(object):
         self.epsilon -= (self.decay_tau * self.epsilon)
 
     def forward(self, values):
-        # If you know nothing about value, be random. Greedy is ill defined.
+        # If values are zero, be random.
         if np.isclose(np.sum(values), 0):
             action = self.prng.randint(0, self.num_actions, size=1)[0]
 
             return action
 
-        # Ep greedy
+        # Otherwise, do Ep greedy
         if self.prng.rand() < self.epsilon:
             action = self.prng.randint(0, self.num_actions, size=1)[0]
         else:
@@ -84,11 +84,12 @@ def run(env_name='BanditOneHot2-v0',
         epsilon_decay_tau=0,
         lr_R=.1,
         master_seed=42,
+        write_to_disk=True,
         log_dir=None):
     """Play some slots!"""
 
     # --- Init ---
-    writer = SummaryWriter(log_dir=log_dir)
+    writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
 
     # -
     env = gym.make(env_name)
@@ -104,7 +105,7 @@ def run(env_name='BanditOneHot2-v0',
     actor = Actor(num_actions,
                   epsilon=epsilon,
                   decay_tau=epsilon_decay_tau,
-                  master_seed=master_seed)
+                  seed_value=master_seed)
     all_actions = list(range(num_actions))
 
     # -
@@ -165,8 +166,9 @@ def run(env_name='BanditOneHot2-v0',
                   total_regret=total_regret,
                   master_seed=master_seed)
 
-    save_checkpoint(result,
-                    filename=os.path.join(writer.log_dir, "result.pkl"))
+    if write_to_disk:
+        save_checkpoint(result,
+                        filename=os.path.join(writer.log_dir, "result.pkl"))
 
     return result
 

@@ -221,11 +221,12 @@ def run(env_name='InfoBlueYellow4b-v0',
         critic_seed=None,
         reward_mode=False,
         log_dir=None,
+        write_to_disk=True,
         **actor_kwargs):
     """Play some slots!"""
 
     # --- Init ---
-    writer = SummaryWriter(log_dir=log_dir)
+    writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
 
     # -
     if master_seed is not None:
@@ -340,8 +341,9 @@ def run(env_name='InfoBlueYellow4b-v0',
                   actor_kwargs=actor_kwargs,
                   num_stop=num_stop + 1)
 
-    save_checkpoint(result,
-                    filename=os.path.join(writer.log_dir, "result.pkl"))
+    if write_to_disk:
+        save_checkpoint(result,
+                        filename=os.path.join(writer.log_dir, "result.pkl"))
 
     return result
 

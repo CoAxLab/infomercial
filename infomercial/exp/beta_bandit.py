@@ -105,11 +105,12 @@ def run(env_name='BanditOneHigh2-v0',
         beta=1.0,
         lr_R=.1,
         master_seed=42,
-        log_dir=None):
+        log_dir=None,
+        write_to_disk=True):
     """Bandit agent - argmax(R + beta E)"""
 
     # --- Init ---
-    writer = SummaryWriter(log_dir=log_dir)
+    writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
 
     # -
     env = gym.make(env_name)
@@ -204,8 +205,9 @@ def run(env_name='BanditOneHigh2-v0',
                   total_regret=total_regret,
                   master_seed=master_seed)
 
-    save_checkpoint(result,
-                    filename=os.path.join(writer.log_dir, "result.pkl"))
+    if write_to_disk:
+        save_checkpoint(result,
+                        filename=os.path.join(writer.log_dir, "result.pkl"))
 
     return result
 

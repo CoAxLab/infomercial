@@ -63,11 +63,12 @@ def run(env_name='BanditOneHot2-v0',
         num_episodes=1,
         lr_R=.1,
         master_seed=42,
+        write_to_disk=True,
         log_dir=None):
     """Bandit agent - random"""
 
     # --- Init ---
-    writer = SummaryWriter(log_dir=log_dir)
+    writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
 
     # -
     env = gym.make(env_name)
@@ -132,8 +133,9 @@ def run(env_name='BanditOneHot2-v0',
                   total_regret=total_regret,
                   master_seed=master_seed)
 
-    save_checkpoint(result,
-                    filename=os.path.join(writer.log_dir, "result.pkl"))
+    if write_to_disk:
+        save_checkpoint(result,
+                        filename=os.path.join(writer.log_dir, "result.pkl"))
 
     return result
 
