@@ -5798,15 +5798,72 @@ exp376:
 	# Clean up
 	rm tmp
 
-# Rerun paramsweep for ep
+# ---------------------------------------------------------------------------
+# 7-21-2020 
+# e3dcf4f -- !! API CHANGE !!
+#
+# Fix bandit tuning. Several sub-experiments.
+#
+# - The tune_bandit.py was running 1 repeat / parameter. This lead to 
+# significant random seed effects in the final results. 
+# - All bandit results need to be re-tuned. 
+# - Below is a first test for BanditOneHigh10 env
+
+# --- BanditOneHigh10 ---
+# ep
 exp377:
 	tune_bandit.py random $(DATA_PATH)/exp377 \
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh10-v0 \
-		--num_samples=10000 \
-        --num_episodes=100 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
 		--num_processes=4 \
 		--log_space=True \
 		--metric="total_R" \
 		--epsilon='(0.01, 0.99)' \
-		--lr_R='(0.000000001, 0.4)' 
+		--lr_R='(0.001, 0.5)' 
+
+# ep-decay
+exp378:
+	tune_bandit.py random $(DATA_PATH)/exp378 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# eta/dual value
+exp379:
+	tune_bandit.py random $(DATA_PATH)/exp379 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# beta
+exp380:
+	tune_bandit.py random $(DATA_PATH)/exp380 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.1, 3)'
