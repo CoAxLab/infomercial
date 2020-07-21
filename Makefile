@@ -5593,8 +5593,8 @@ exp360:
 # ---------------
 # BanditOneHigh10
 # ---------------
-
-# meta - use HP from exp294
+ 
+ # meta - use HP from exp294
 exp361:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp294_sorted.csv > tmp 
@@ -5609,12 +5609,12 @@ exp361:
 # ep - use HP from exp295
 exp362:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp295_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp362.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp362/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=100 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp362/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 

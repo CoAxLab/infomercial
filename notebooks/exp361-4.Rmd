@@ -501,6 +501,7 @@ summary361_4 %>%
   stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(y="Total R") +
+  lims(y=c(0,100)) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
