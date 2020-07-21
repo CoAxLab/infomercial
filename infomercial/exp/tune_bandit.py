@@ -70,22 +70,37 @@ def save_csv(trials, filename=None):
 
 def train(exp_func=None,
           env_name=None,
+          metric=None,
           num_episodes=None,
+          num_repeats=None,
           master_seed=None,
           config=None):
 
     # Run
-    trial = exp_func(env_name=env_name,
-                     num_episodes=num_episodes,
-                     master_seed=master_seed,
-                     **config)
+    scores = []
+    for n in range(num_repeats):
+        seed = None
+        if master_seed is not None:
+            seed = master_seed + n
+
+        trial = exp_func(
+            env_name=env_name,
+            num_episodes=num_episodes,
+            master_seed=seed,  # override
+            **config)
+        scores.append(trial[metric])
+
+    # Override metric, with num_repeat average
+    trial[metric] = np.mean(scores)
 
     # Save metadata
     trial.update({
         "config": config,
         "env_name": env_name,
         "num_episodes": num_episodes,
-        "master_seed": master_seed
+        "num_repeats": num_repeats,
+        "metric": metric,
+        "master_seed": master_seed,
     })
 
     return trial
@@ -95,6 +110,7 @@ def tune_random(name,
                 exp_name='beta_bandit',
                 env_name='BanditOneHigh10-v0',
                 num_episodes=1000,
+                num_repeats=10,
                 num_samples=10,
                 num_processes=1,
                 metric="total_R",
@@ -128,6 +144,8 @@ def tune_random(name,
     params = dict(exp_func=exp_func,
                   env_name=env_name,
                   num_episodes=num_episodes,
+                  num_repeats=num_repeats,
+                  metric=metric,
                   master_seed=master_seed,
                   config={})
 
@@ -160,6 +178,10 @@ def tune_random(name,
         worker.get()
     pool.close()
     pool.join()
+
+    # Cleanup - dump write_to_disk arg
+    for trial in trials:
+        del trial["config"]["write_to_disk"]
 
     # ------------------------------------------------------------------------
     # Sort and save the configs of all trials
