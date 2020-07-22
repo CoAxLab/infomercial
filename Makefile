@@ -5875,7 +5875,7 @@ exp381:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh121-v0 \
 		--num_samples=1000 \
-		--num_episodes=60500 \
+		--num_episodes=12100 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5889,7 +5889,7 @@ exp382:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh121-v0 \
 		--num_samples=1000 \
-		--num_episodes=60500 \
+		--num_episodes=12100 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5904,7 +5904,7 @@ exp383:
 		--exp_name='meta_bandit' \
 		--env_name=BanditOneHigh121-v0 \
 		--num_samples=1000 \
-		--num_episodes=60500 \
+		--num_episodes=12100 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5918,7 +5918,7 @@ exp384:
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditOneHigh121-v0 \
 		--num_samples=1000 \
-		--num_episodes=60500 \
+		--num_episodes=12100 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5935,7 +5935,7 @@ exp385:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_samples=1000 \
-		--num_episodes=50000 \
+		--num_episodes=10000 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5949,7 +5949,7 @@ exp386:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_samples=1000 \
-		--num_episodes=50000 \
+		--num_episodes=10000 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5964,7 +5964,7 @@ exp387:
 		--exp_name='meta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_samples=1000 \
-		--num_episodes=50000 \
+		--num_episodes=10000 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -5978,7 +5978,7 @@ exp388:
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_samples=1000 \
-		--num_episodes=50000 \
+		--num_episodes=10000 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
