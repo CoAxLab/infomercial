@@ -6045,3 +6045,62 @@ exp392:
 		--beta='(0.001, 10)' \
 		--lr_R='(0.001, 0.5)' \
 		--temp='(0.1, 3)'
+
+
+# --------------------------------------------------------------------------
+# 7-23-2020
+# c87210d
+
+# Test runs for tune exp377-90. 
+
+# ---------------
+# BanditOneHigh10
+# ---------------
+ 
+ # meta - use exp379_sorted
+exp393:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp393.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp393/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use exp377_sorted
+exp394:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp394.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp394/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use exp378_sorted
+exp395:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp395.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp395/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use exp380_sorted
+exp396:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp396.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp396/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
