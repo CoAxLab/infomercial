@@ -7,6 +7,7 @@ from infomercial.local_gym.bandit import BanditOneHot121
 from infomercial.local_gym.bandit import BanditOneHot1000
 from infomercial.local_gym.bandit import BanditEvenOdds2
 from infomercial.local_gym.bandit import BanditOneHigh2
+from infomercial.local_gym.bandit import BanditOneHigh4
 from infomercial.local_gym.bandit import BanditOneHigh10
 from infomercial.local_gym.bandit import BanditOneHigh121
 from infomercial.local_gym.bandit import BanditTwoHigh10
@@ -42,6 +43,7 @@ environments = [
     ['BanditOneHot1000', 'v0', 1],
     ['BanditEvenOdds2', 'v0', 1],
     ['BanditOneHigh2', 'v0', 1],
+    ['BanditOneHigh4', 'v0', 1],
     ['BanditOneHigh10', 'v0', 1],
     ['BanditOneHigh121', 'v0', 1],
     ['BanditTwoHigh121', 'v0', 1],
