@@ -155,7 +155,7 @@ def tune_random(name,
     # Setup the parallel workers
     workers = []
     pool = Pool(processes=num_processes)
-    for n in tqdm(range(num_samples)):
+    for n in range(num_samples):
 
         # Reset param sample for safety
         params["config"] = {}
@@ -175,7 +175,7 @@ def tune_random(name,
                              callback=append_to_results))
 
     # Get the worker's result (blocks until complete)
-    for worker in workers:
+    for worker in tqdm(workers):
         worker.get()
     pool.close()
     pool.join()
