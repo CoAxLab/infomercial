@@ -7,6 +7,7 @@ import numpy as np
 
 from functools import partial
 from multiprocessing import Pool
+from tqdm import tqdm
 from scipy.stats import loguniform
 
 from infomercial import exp
@@ -154,7 +155,7 @@ def tune_random(name,
     # Setup the parallel workers
     workers = []
     pool = Pool(processes=num_processes)
-    for n in range(num_samples):
+    for n in tdqm(range(num_samples)):
 
         # Reset param sample for safety
         params["config"] = {}
