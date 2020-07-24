@@ -448,39 +448,76 @@ result396 %>%
 summary396
 
 # ---
+exp_name <- "exp397"
+param_codes <- c(0)
+run_codes <- 1:100
+file_names <- c("score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "total_R",
+                "total_regret")
+
+result397 <- load.result(exp_name, param_codes, run_codes, file_names)
+result397 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=max(total_R),
+    total_regret=max(total_regret),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary397
+
+# ---
 # Join all the data
 result393 %>% 
   dplyr::select(
     global_step, param, run, action, total_R, 
-    value_R, total_regret, p_bests) -> tmp1
+    total_regret, p_bests) -> tmp1
 result396 %>% 
   dplyr::select(
     global_step, param, run, action, total_R, 
-    value_ER, total_regret, p_bests) -> tmp2
+    total_regret, p_bests) -> tmp2
+result397 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    total_regret, p_bests) -> tmp3
 
 tmp1$agent <- "Deterministic"
 tmp2$agent <- "Stochastic"
+tmp3$agent <- "Random"
 
-result393_6 <- tmp1
-result393_6 <- bind_rows(result393_6, tmp2)
-
+result393_7 <- tmp1
+result393_7 <- bind_rows(result393_7, tmp2)
+rm(tmp1, tmp2, tmp3)
 
 # ---
 summary393 %>% 
   dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
 summary396 %>% 
   dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp2
+summary397 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp3
 
 tmp1$agent <- "Deterministic"
 tmp2$agent <- "Stochastic"
+tmp3$agent <- "Random"
 
-summary393_6 <- tmp1
-summary393_6 <- bind_rows(summary393_6, tmp2)
+summary393_7 <- tmp1
+summary393_7 <- bind_rows(summary393_7, tmp2)
+summary393_7 <- bind_rows(summary393_7, tmp3)
+
+summary393_7$agent <- factor(summary393_7$agent, 
+                           levels=c("Deterministic", "Stochastic", "Random"))
+
+rm(tmp1, tmp2, tmp3)
 ```
 
 ## Sub 1 - examples
 ```{r, fig.height=1.5, fig.width=1}
-result393_6 %>% 
+result393_7 %>% 
 filter(agent == "Deterministic") %>% 
   # filter(global_step < 40) %>%
   filter(run == 1, param <= 10) %>% 
@@ -502,7 +539,7 @@ filter(agent == "Deterministic") %>%
   theme(axis.ticks = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) -> p1
 
-result393_6 %>% 
+result393_7 %>% 
 filter(agent == "Stochastic") %>% 
   # filter(global_step < 40) %>%
   filter(run == 1, param <= 10) %>% 
@@ -533,14 +570,14 @@ c1 <- p1 + p2
 max_R <- 200
 
 # average value
-summary393_6 %>% 
-  filter(agent %in% c("Deterministic", "Stochastic")) %>% 
+summary393_7 %>% 
+  # filter(agent %in% c("Deterministic", "Stochastic")) %>% 
   ggplot(aes(x=agent, y=total_R, color=agent)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", 
                       values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
-  lims(y=c(100, max_R)) +
+  # lims(y=c(100, max_R)) +
   labs(x="", y="Total reward") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -551,8 +588,8 @@ summary393_6 %>%
   p1
 
 # average regret
-summary393_6 %>% 
-  filter(agent %in% c("Deterministic", "Stochastic")) %>% 
+summary393_7 %>% 
+  # filter(agent %in% c("Deterministic", "Stochastic")) %>% 
   ggplot(aes(x=agent, y=total_regret, color=agent)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
@@ -586,5 +623,5 @@ name <- "img/reward_collection"
 ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.2*2, width = 1.5*2)
 
 # -
-rm(c1, c2)
+# rm(c1, c2)
 ```
