@@ -6104,3 +6104,70 @@ exp396:
 			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp396/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# random
+exp397:
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp397.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp397/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# ---------------
+# BanditOneHigh4
+# **Useful for a cartoon/example figure. Same size as the InfoBandit.**
+# ---------------
+#
+# meta - use exp379_sorted
+exp398:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp398.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp398/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use exp377_sorted
+exp399:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp399.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp399/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use exp378_sorted
+exp400:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp400.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp400/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use exp380_sorted
+exp401:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp401.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp401/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp402:
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp402.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp402/param0/run{1} --master_seed={1}' ::: {1..100}
