@@ -6052,6 +6052,14 @@ exp392:
 # c87210d
 
 # Test runs for tune exp377-90. 
+exp393_exp397: exp393 exp394 exp395 exp396 exp397 
+
+exp393_exp397_clean:
+	-rm -rf $(DATA_PATH)/exp393/*
+	-rm -rf $(DATA_PATH)/exp394/*
+	-rm -rf $(DATA_PATH)/exp395/*
+	-rm -rf $(DATA_PATH)/exp396/*
+	-rm -rf $(DATA_PATH)/exp397/*
 
 # ---------------
 # BanditOneHigh10
@@ -6112,11 +6120,22 @@ exp397:
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp397/param0/run{1} --master_seed={1}' ::: {1..100}
 
-# ---------------
-# BanditOneHigh4
-# **Useful for a cartoon/example figure. Same size as the InfoBandit.**
-# ---------------
-#
+# ---------------------------------------------------------------------------
+# 7-23-2020
+# 
+# BanditOneHigh4 -- for a cartoon/example figure. 
+# - It is the same size as the InfoBandit.
+# - Recycle the HPs for BanditOneHigh10; close enough.
+
+exp398_402: exp398 exp399 exp400 exp401 exp402 
+
+exp398_402_clean:
+	-rm -rf $(DATA_PATH)/exp398/*
+	-rm -rf $(DATA_PATH)/exp399/*
+	-rm -rf $(DATA_PATH)/exp400/*
+	-rm -rf $(DATA_PATH)/exp401/*
+	-rm -rf $(DATA_PATH)/exp402/*
+	
 # meta - use exp379_sorted
 exp398:
 	# Get top 10
@@ -6171,3 +6190,9 @@ exp402:
 			--joblog '$(DATA_PATH)/exp402.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=320  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp402/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# TODO:
+# test runs for (org as above)
+# - BanditHardAndSparse10
+# - BanditUniform121
+# - DeceptiveBanditOneHigh10
