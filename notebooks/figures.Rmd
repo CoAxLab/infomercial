@@ -609,8 +609,8 @@ c2 <- p1 / p2
 ```
 
 ## Build figure
-```{r, fig.height=2.2, fig.width=1.5}
-fig <- (c1 | c2 + plot_spacer() + plot_spacer()) + 
+```{r, fig.height=1.7, fig.width=1.5}
+fig <- (c1 | c2 + plot_spacer()) + 
   plot_layout(widths = c(0.75, 0.25)) +
     plot_annotation(
       title="Deterministic versus stochastic reward collection", 
