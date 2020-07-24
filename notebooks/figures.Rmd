@@ -90,7 +90,7 @@ summary348$actor <- factor(summary348$actor,
 rm(tmp, runtmp, run, name, better, i)
 ```
 
-## Sub - examples
+## Sub 1 - examples
 ```{r, fig.width=1.6, fig.height=2.2}
 result348 %>% 
   filter(actor == "Deterministic") %>% 
@@ -183,7 +183,7 @@ c1 <- (p1 + p2) / p3 / p4 +
   plot_layout(heights = c(0.7, 0.15, 0.15)) 
 ```
 
-## Sub - dists (jitter)
+## Sub 2 - dists (jitter)
 ```{r, fig.height=2, fig.width=0.8}
 # average value
 summary348 %>% 
@@ -249,11 +249,116 @@ print(fig)
 # -- Save a to pdf --=
 name <- "img/determinisitic_curiosity"
 ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.6*2, width = 2*2)
+
+rm(c1, c2)
 ```
-# Figure - Reward collection in simple bandit world
-## Load data for BanditOneHigh10 experiments
-- Top 10 models, 10 trials
+# Figure - Dual value learning
+- Explore/exploit as indepdendent objectives
+
+## Load data
 ```{r message=FALSE, cache=TRUE}
+exp_name <- "exp393"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_E", 
+                "score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "value_R", 
+                "ties", 
+                "policy",
+                "total_E", 
+                "total_R",
+                "total_regret")
+
+result393 <- load.result(exp_name, param_codes, run_codes, file_names)
+result393 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_E=max(total_E),
+    total_R=max(total_R),
+    total_regret=max(total_regret),
+    value_E=median(value_E),
+    value_R=median(value_R),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary393
+```
+
+## Build figure
+```{r, fig.height=2.25, fig.width=1.2}
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  # filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=factor(policy), color=factor(policy))) +
+  geom_point(size=0.8, alpha=0.5) +
+  labs(x="", y="Policy") +
+  scale_y_discrete(
+    breaks=c(0, 1), 
+    labels=c("Explore", "Exploit")) +
+  lims(x=c(0, 200)) +
+  scale_color_manual("", values=c("darkorchid4", "darkgrey")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p0
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=value_E)) +
+  geom_line(size=0.8, alpha=1, color="darkorchid4") +
+  lims(x=c(0, 200)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  labs(x="", y="Information value") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=value_R)) +
+  geom_line(size=0.8, alpha=1, color="darkgrey") +
+  lims(x=c(0, 200)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  labs(x="", y="Reward value") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=regret)) +
+  geom_line(size=0.8, alpha=1, color="azure4") +
+  lims(x=c(0, 200), y=c(0, 1)) +
+  labs(x="Time", y="Regret") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p0 / p1 / p2 / p3 + 
+  plot_annotation(
+      title="Dual value learning", 
+      subtitle = "Explore/exploit with independent policies",
+      theme = theme_pubr(base_size = 8, legend = "none"))
+
+rm(p0, p1, p2, p3)
+```
+
+# Figure - Reward collection in a random world
+## Load data for BanditOneHigh4 experiments
+- *NOTE*: result393_4 uses BanditOneHigh10, change to BanditOneHigh4 when that data is available. 
+- *NOTE*: need random data (ep=1)
+
+### Custom loader
+```{r}
 load.result <- function(exp_name, param_codes, run_codes, file_names){
   num_files <- length(file_names)
   result <- NULL
@@ -279,9 +384,11 @@ load.result <- function(exp_name, param_codes, run_codes, file_names){
   }
   result
 }
+```
 
-# ---
-exp_name <- "exp361"
+### Load
+```{r, message=FALSE}
+exp_name <- "exp393"
 param_codes <- 0:9
 run_codes <- 1:10
 file_names <- c("score_E", 
@@ -297,72 +404,187 @@ file_names <- c("score_E",
                 "total_R",
                 "total_regret")
 
-result361 <- load.result(exp_name, param_codes, run_codes, file_names)
-result361 %>% 
+result393 <- load.result(exp_name, param_codes, run_codes, file_names)
+result393 %>% 
   group_by(param, run) %>% 
   summarise(
     total_E=max(total_E),
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_E=mean(value_E),
-    value_R=mean(value_R),
-    regret=mean(regret[regret > 0])
+    value_E=median(value_E),
+    value_R=median(value_R),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
   ) %>% 
   ungroup() ->
-summary361
+summary393
+
+# ---
+exp_name <- "exp396"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_R", 
+                "score_E", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_ER",
+                "total_R",
+                "total_E",
+                "total_regret")
+
+result396 <- load.result(exp_name, param_codes, run_codes, file_names)
+result396 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=max(total_R),
+    total_E=max(total_E),
+    total_regret=max(total_regret),
+    value_ER=median(value_ER),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary396
+
+# ---
+# Join all the data
+result393 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_R, total_regret, p_bests) -> tmp1
+result396 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_ER, total_regret, p_bests) -> tmp2
+
+tmp1$agent <- "Deterministic"
+tmp2$agent <- "Stochastic"
+
+result393_6 <- tmp1
+result393_6 <- bind_rows(result393_6, tmp2)
+
+
+# ---
+summary393 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
+summary396 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp2
+
+tmp1$agent <- "Deterministic"
+tmp2$agent <- "Stochastic"
+
+summary393_6 <- tmp1
+summary393_6 <- bind_rows(summary393_6, tmp2)
 ```
 
-### test plots
-```{r, fig.height=1, fig.width=0.8}
-summary361 %>% 
-  ggplot(aes(x=factor(param), y=total_E)) +
-  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
-  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
-  scale_colour_manual("", values=c("mediumorchid4")) +
-  labs(x="Parameter set") +
+## Sub 1 - examples
+```{r, fig.height=1.5, fig.width=1}
+result393_6 %>% 
+filter(agent == "Deterministic") %>% 
+  # filter(global_step < 40) %>%
+  filter(run == 1, param <= 10) %>% 
+  ggplot(aes(x=global_step, y=action)) +
+  geom_line(size=0.5, alpha=1, color="darkorchid4") +
+  scale_x_continuous(breaks=c(0, 100, 200)) +
+  labs(x="Time", y="Choice", title="Deterministic\n(Dual value)") +
+  facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(legend.position = "none") + 
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(1, "lines")) -> p1
-
-summary361 %>% 
-  ggplot(aes(x=factor(param), y=total_R)) +
-  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
-  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
-  scale_colour_manual("", values=c("mediumorchid4")) +
-  labs(x="Parameter set") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") + 
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(1, "lines")) -> p2
-
-p1 / p2
-```
-```{r, fig.height=1.5, fig.width=4}
-result361 %>% 
-  filter(global_step <= 50) %>%
-  ggplot(aes(x=global_step, y=action, color=factor(param))) +
-  lims(x=c(0, 50)) +
-  geom_line(size=0.3, alpha=1) +
-  labs(x="", y="Choice") +
-  facet_grid(run~param) +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  # scale_color_grey() +
-  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(panel.spacing = unit(0.1, "lines")) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") +
   theme(legend.box.background = element_rect(colour = "black", size=1)) +
   theme(plot.title = element_text(size = 6)) +
   theme(strip.text.y = element_text(angle = 0)) +
-  # theme(strip.text.x = element_blank()) +
-  # theme(strip.text.x = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> p1
+
+result393_6 %>% 
+filter(agent == "Stochastic") %>% 
+  # filter(global_step < 40) %>%
+  filter(run == 1, param <= 10) %>% 
+  ggplot(aes(x=global_step, y=action)) +
+  geom_line(size=0.5, alpha=1, color="dodgerblue4") +
+  labs(x="Time", y="", title="Stochastic\n(Intrinsic reward)") +
+  scale_x_continuous(breaks=c(0, 100, 200)) +
+  facet_wrap(.~param, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
   # theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
   theme(axis.ticks = element_blank()) + 
-  theme(legend.key.size = unit(0.2, "cm")) 
+  theme(legend.key.size = unit(0.2, "cm")) -> p2
+
+c1 <- p1 + p2
+```
+
+## Sub 2 - dists
+```{r, fig.height=1.5, fig.width=0.8}
+max_R <- 200
+
+# average value
+summary393_6 %>% 
+  filter(agent %in% c("Deterministic", "Stochastic")) %>% 
+  ggplot(aes(x=agent, y=total_R, color=agent)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  lims(y=c(100, max_R)) +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(axis.text.x = element_blank()) -> 
+  p1
+
+# average regret
+summary393_6 %>% 
+  filter(agent %in% c("Deterministic", "Stochastic")) %>% 
+  ggplot(aes(x=agent, y=total_regret, color=agent)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Total regret") +
+  # scale_y_log10() +
+  # annotation_logticks(sides = "l") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(panel.spacing = unit(1, "lines")) ->
+  p2
+
+c2 <- p1 / p2
+```
+
+## Build figure
+```{r, fig.height=2.2, fig.width=1.5}
+fig <- (c1 | c2 + plot_spacer() + plot_spacer()) + 
+  plot_layout(widths = c(0.75, 0.25)) +
+    plot_annotation(
+      title="Deterministic versus stochastic reward collection", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+
+print(fig)
+
+# -- Save a to pdf ---
+name <- "img/reward_collection"
+ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.2*2, width = 1.5*2)
+
+# -
+rm(c1, c2)
 ```
