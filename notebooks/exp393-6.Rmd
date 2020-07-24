@@ -91,6 +91,66 @@ summary393
 ```
 
 ## values
+### example dual value
+```{r, fig.height=2, fig.width=1.2}
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  # filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=factor(policy), color=factor(policy))) +
+  geom_point(size=0.8, alpha=0.5) +
+  labs(x="", y="Policy") +
+  scale_y_discrete(
+    breaks=c(0, 1), 
+    labels=c("Explore", "Exploit")) +
+  lims(x=c(0, 200)) +
+  scale_color_manual("", values=c("darkorchid4", "firebrick3")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p0
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=value_E)) +
+  geom_line(size=0.8, alpha=1, color="darkorchid4") +
+  lims(x=c(0, 200)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  labs(x="", y="Information value") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=value_R)) +
+  geom_line(size=0.8, alpha=1, color="firebrick3") +
+  lims(x=c(0, 200)) +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  labs(x="", y="Reward value") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+result393 %>% 
+  filter(run == 1, param == 1) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=regret)) +
+  geom_line(size=0.8, alpha=1, color="azure4") +
+  lims(x=c(0, 200), y=c(0, 1)) +
+  # scale_y_log10() +
+  # annotation_logticks(sides = "l") +
+  labs(x="Time", y="Regret") + 
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p0 / p1 / p2 / p3
+```
+
+### jitter
 ```{r, fig.height=1.5, fig.width=0.8}
 summary393 %>% 
   ggplot(aes(x=factor(param), y=total_E)) +
@@ -192,6 +252,7 @@ summary394
 ```
 
 ## values
+### jitter
 ```{r, fig.height=1.5, fig.width=0.8}
 summary394 %>% 
   ggplot(aes(x=factor(param), y=total_R)) +
@@ -291,6 +352,7 @@ summary395
 ```
 
 ## values
+### jitter
 ```{r, fig.height=1.5, fig.width=0.8}
 summary395 %>% 
   ggplot(aes(x=factor(param), y=total_R)) +
@@ -394,6 +456,7 @@ summary396
 ```
 
 ## values
+### jitter
 ```{r, fig.height=2.0, fig.width=0.8}
 summary396 %>% 
   ggplot(aes(x=factor(param), y=total_R)) +
@@ -478,9 +541,37 @@ result396 %>%
   theme(legend.key.size = unit(0.2, "cm")) 
 ```
 
-# Join data
+# Joint analysis
 ## Join
 ```{r}
+result393 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_R, total_regret, p_bests) -> tmp1
+result394 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_R, total_regret, p_bests) -> tmp2
+result395 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_R, total_regret, p_bests) -> tmp3
+result396 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, 
+    value_ER, total_regret, p_bests) -> tmp4
+
+tmp1$agent <- "dual value"
+tmp2$agent <- "ep-greedy"
+tmp3$agent <- "anneal-ep"
+tmp4$agent <- "bayesian"
+
+result393_4 <- tmp1
+result393_4 <- bind_rows(result393_4, tmp2)
+result393_4 <- bind_rows(result393_4, tmp3)
+result393_4 <- bind_rows(result393_4, tmp4)
+
+# ---
 summary393 %>% 
   dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
 summary394 %>% 
@@ -501,7 +592,7 @@ summary393_4 <- bind_rows(summary393_4, tmp3)
 summary393_4 <- bind_rows(summary393_4, tmp4)
 ```
 
-## Values
+## values
 ```{r, fig.height=1.5, fig.width=1.2}
 ## Values
 summary393_4 %>% 
@@ -509,7 +600,130 @@ summary393_4 %>%
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
   stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
   scale_colour_manual("", values=c("mediumorchid4")) +
-  labs(y="Total R", x="") +
+  labs(y="Total reward", x="") +
+  lims(y=c(0, max_R)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary393_4 %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Total regret", x="") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary393_4 %>% 
+  ggplot(aes(x=agent, y=p_bests)) +
+  geom_jitter(size=0.05, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Best choice", x="") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3 
+```
+## actions
+```{r, fig.height=1.5, fig.width=1.2}
+result393_4 %>% 
+  filter(agent != "ep-greedy") %>% 
+  filter(run == 1, param <= 10) %>% 
+  # filter(global_step > 10) %>%
+  # filter(global_step <= 50) %>%
+  ggplot(aes(x=global_step, y=action, color=agent)) +
+  geom_line(size=0.3, alpha=1) +
+  # geom_hline(yintercept = 7, color="grey") +
+  labs(x="Time", y="Choice") +
+  scale_color_manual("", 
+                     values=c("darkorchid4", "dodgerblue4", "goldenrod4")) +
+  facet_grid(param~agent) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+## actions - det v sto
+```{r, fig.height=1.5, fig.width=1}
+result393_4 %>% 
+filter(agent == "dual value") %>% 
+  # filter(global_step < 40) %>%
+  filter(run == 1, param <= 10) %>% 
+  ggplot(aes(x=global_step, y=action)) +
+  geom_line(size=0.3, alpha=1, color="darkorchid4") +
+  scale_x_continuous(breaks=c(0, 100, 200)) +
+  labs(x="", y="Choice", title="Deterministic\n(Dual value)") +
+  facet_wrap(.~param, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> p1
+
+result393_4 %>% 
+filter(agent == "bayesian") %>% 
+  # filter(global_step < 40) %>%
+  filter(run == 1, param <= 10) %>% 
+  ggplot(aes(x=global_step, y=action)) +
+  geom_line(size=0.3, alpha=1, color="dodgerblue4") +
+  labs(x="", y="", title="Stochastic\n(Intrinsic reward)") +
+  scale_x_continuous(breaks=c(0, 100, 200)) +
+  facet_wrap(.~param, ncol=1) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> p2
+
+p1 + p2
+```
+
+## values - det v sto
+```{r, fig.height=1.5, fig.width=1.2}
+## Values
+summary393_4 %>% 
+  
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(y="Total reward", x="") +
   lims(y=c(0, max_R)) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
