@@ -317,8 +317,8 @@ class DeceptiveBanditEnv(gym.Env):
 
     def step(self, action):
         # Sanity
-        # if self.steps > self.max_steps:
-        # raise EnvironmentError("Number of steps exceeded max.")
+        if self.steps > self.max_steps:
+            raise EnvironmentError("Number of steps exceeded max.")
 
         # Action is in the space?
         action = int(action)
