@@ -6488,7 +6488,7 @@ exp422_exp426_clean:
 # meta 
 exp422:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp418_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp420_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp422.log' \
@@ -6500,7 +6500,7 @@ exp422:
 # ep 
 exp423:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp419_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp418_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp423.log' \
@@ -6512,7 +6512,7 @@ exp423:
 # anneal-ep 
 exp424:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp420_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp419_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp424.log' \
