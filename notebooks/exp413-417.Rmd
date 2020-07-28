@@ -77,7 +77,7 @@ file_names <- c("score_E",
 result413 <- load.result(exp_name, param_codes, run_codes, file_names)
 result413 %>% 
   group_by(param, run) %>% 
-  filter(global_step <= 40) %>% 
+  filter(global_step <= 100) %>% 
   summarise(
     total_E=max(total_E),
     total_R=max(total_R),
@@ -238,7 +238,7 @@ file_names <- c("score_R",
 result414 <- load.result(exp_name, param_codes, run_codes, file_names)
 result414 %>% 
   group_by(param, run) %>% 
-  filter(global_step <= 40) %>% 
+  filter(global_step <= 100) %>% 
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
@@ -339,7 +339,7 @@ file_names <- c("score_R",
 result415 <- load.result(exp_name, param_codes, run_codes, file_names)
 result415 %>% 
   group_by(param, run) %>% 
-  filter(global_step <= 40) %>% 
+  filter(global_step <= 100) %>% 
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
@@ -443,7 +443,7 @@ file_names <- c("score_R",
 result416 <- load.result(exp_name, param_codes, run_codes, file_names)
 result416 %>% 
   group_by(param, run) %>% 
-  filter(global_step <= 40) %>% 
+  filter(global_step <= 100) %>% 
   summarise(
     total_R=max(total_R),
     total_E=max(total_E),
@@ -559,7 +559,7 @@ file_names <- c("score_R",
 result417 <- load.result(exp_name, param_codes, run_codes, file_names)
 result417 %>% 
   group_by(param, run) %>% 
-  filter(global_step <= 40) %>% 
+  filter(global_step <= 100) %>% 
   summarise(
     total_R=max(total_R),
     total_R=max(value_R),
