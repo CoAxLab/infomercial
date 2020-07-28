@@ -6200,7 +6200,7 @@ exp402:
 
 exp403_407: exp403 exp404 exp405 exp405 exp406 exp407
 
-exp398_402_clean:
+exp403_407_clean:
 	-rm -rf $(DATA_PATH)/exp403/*
 	-rm -rf $(DATA_PATH)/exp404/*
 	-rm -rf $(DATA_PATH)/exp405/*
@@ -6271,7 +6271,7 @@ exp407:
 
 exp408_412: exp408 exp409 exp410 exp411 exp412
 
-exp398_402_clean:
+exp408_412_clean:
 	-rm -rf $(DATA_PATH)/exp408/*
 	-rm -rf $(DATA_PATH)/exp409/*
 	-rm -rf $(DATA_PATH)/exp410/*
@@ -6343,7 +6343,7 @@ exp412:
 
 exp413_417: exp413 exp414 exp415 exp416 exp417
 
-exp398_402_clean:
+exp413_417_clean:
 	-rm -rf $(DATA_PATH)/exp413/*
 	-rm -rf $(DATA_PATH)/exp414/*
 	-rm -rf $(DATA_PATH)/exp415/*
@@ -6404,3 +6404,138 @@ exp417:
 			--joblog '$(DATA_PATH)/exp417.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp417/param0/run{1} --master_seed={1}' ::: {1..100}
+
+
+# ---------------------------------------------------------------------------
+# 7-28-2020
+# 
+# Tune for DeceptiveBanditOneHigh10, then run test for the top10
+# 
+# The previous tuning run (exp389-exp392) had far too many trials making the 
+# the task easy. The env should have prevented that, but the safety
+# was commented out. 
+
+exp418_exp421: exp418 exp419 exp420 exp421
+
+exp418:
+	tune_bandit.py random $(DATA_PATH)/exp418 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+# ep-decay
+exp419:
+	tune_bandit.py random $(DATA_PATH)/exp419 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# eta/dual value
+exp420:
+	tune_bandit.py random $(DATA_PATH)/exp420 \
+		--exp_name='meta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# beta
+exp421:
+	tune_bandit.py random $(DATA_PATH)/exp421 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.1, 3)'
+
+ 
+# --- Run tuned top10 for DeceptiveBanditOneHigh10 ---
+exp422_exp426: exp422 exp423 exp424 exp425 exp426
+
+exp422_exp426_clean:
+	-rm -rf $(DATA_PATH)/exp422/*
+	-rm -rf $(DATA_PATH)/exp423/*
+	-rm -rf $(DATA_PATH)/exp424/*
+	-rm -rf $(DATA_PATH)/exp425/*
+	-rm -rf $(DATA_PATH)/exp426/*
+	
+# meta 
+exp422:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp418_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp422.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp422/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp423:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp419_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp423.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp423/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp424:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp420_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp424.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp424/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp425:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp421_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp425.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp425/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp426:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp426.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp426/param0/run{1} --master_seed={1}' ::: {1..100}
