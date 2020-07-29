@@ -6670,7 +6670,7 @@ exp433:
 # - Rerun exp393_397 (BanditOneHigh10) with more epsiodes
 # - Increase num_episodes=400 from num_episodes=200
 #
-exp434_438: exp434 exp435 exp436 exp437 exp348
+exp434_438: exp434 exp435 exp436 exp437 exp438
 
 # meta - use exp379_sorted
 exp434:
