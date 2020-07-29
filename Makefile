@@ -6539,3 +6539,33 @@ exp426:
 			--joblog '$(DATA_PATH)/exp426.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp426/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# --------------------------------------------------------------------------
+# tie_threshold for meta was perhaps at the bottom of the range in 
+# BanditHardAndSparse10. 
+# - Rerun that tune and test, expanding the range
+# eta/dual value
+exp427:
+	tune_bandit.py random $(DATA_PATH)/exp427 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-11, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# meta 
+exp428:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp427_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp428.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=20000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp428/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
