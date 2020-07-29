@@ -6541,10 +6541,18 @@ exp426:
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=30  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp426/param0/run{1} --master_seed={1}' ::: {1..100}
 
 # --------------------------------------------------------------------------
+# 7-28-2020
+# 49118c4
+#
 # tie_threshold for meta was perhaps at the bottom of the range in 
 # BanditHardAndSparse10. 
 # - Rerun that tune and test, expanding the range
 # eta/dual value
+#
+# RESULT: Comparing tables between exp427 and exp387 with a smaller therhsold 
+#         range show identical performance. exp387 may even be better. No
+#         futher analysis of this line is needed.
+
 exp427:
 	tune_bandit.py random $(DATA_PATH)/exp427 \
 		--exp_name='meta_bandit' \
