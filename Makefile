@@ -6577,3 +6577,82 @@ exp428:
 			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=20000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp428/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+
+# ----------------------------------------------------------------------------
+# 7-29-2020
+# 
+# The advatage dual value had over other algs was diminished some when I moved
+# to what should be robust HP tuning. As part of the new HP tuning I adjusted
+# down the number of episodes to make room for more repeats. Could the change 
+# performance I see at test be due to undersampling. As time grows so to does
+# the advatage of my model? 
+#
+# - Rerun exp408_412 (BanditHardAndSparse10) with more epsiodes
+# - Increase num_episodes=40000 from num_episodes=10000
+#
+exp429_433: exp429 exp430 exp431 exp432 exp433
+
+exp408_433_clean:
+	-rm -rf $(DATA_PATH)/exp429/*
+	-rm -rf $(DATA_PATH)/exp430/*
+	-rm -rf $(DATA_PATH)/exp431/*
+	-rm -rf $(DATA_PATH)/exp432/*
+	-rm -rf $(DATA_PATH)/exp433/*
+	
+# meta 
+exp429:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp429.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp429/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp430:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp385_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp430.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp430/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp431:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp386_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp431.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp431/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp432:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp388_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp432.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp432/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp433:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp433.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp433/param0/run{1} --master_seed={1}' ::: {1..100}
+
+
