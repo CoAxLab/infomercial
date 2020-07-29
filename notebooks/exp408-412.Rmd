@@ -81,10 +81,7 @@ result408 %>%
     total_E=max(total_E),
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    p_bests=max(p_bests)
   ) %>% 
   ungroup() ->
 summary408
@@ -240,9 +237,7 @@ result409 %>%
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    p_bests=max(p_bests)
   ) %>% 
   ungroup() ->
 summary409
@@ -340,9 +335,7 @@ result410 %>%
   summarise(
     total_R=max(total_R),
     total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    p_bests=max(p_bests)
   ) %>% 
   ungroup() ->
 summary410
@@ -444,9 +437,7 @@ result411 %>%
     total_R=max(total_R),
     total_E=max(total_E),
     total_regret=max(total_regret),
-    value_ER=median(value_ER),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    p_bests=max(p_bests)
   ) %>% 
   ungroup() ->
 summary411
@@ -559,24 +550,21 @@ result412 %>%
     total_R=max(total_R),
     total_R=max(value_R),
     total_regret=max(total_regret),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    p_bests=max(p_bests)
   ) %>% 
   ungroup() ->
 summary412
 ```
 
-## values
 ### jitter
 ```{r, fig.height=2.0, fig.width=0.8}
 summary412 %>% 
-  ggplot(aes(x=factor(param), y=total_R)) +
+  ggplot(aes(x=factor(param), y=total_R/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(x="Parameter set") +
-  lims(y=c(0, max_R)) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -584,9 +572,9 @@ summary412 %>%
   theme(panel.spacing = unit(1, "lines")) -> p1
 
 summary412 %>% 
-  ggplot(aes(x=factor(param), y=total_E)) +
+  ggplot(aes(x=factor(param), y=total_regret/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(x="Parameter set") +
@@ -597,22 +585,9 @@ summary412 %>%
   theme(panel.spacing = unit(1, "lines")) -> p2
 
 summary412 %>% 
-  ggplot(aes(x=factor(param), y=total_regret)) +
-  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
-  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
-  scale_colour_manual("", values=c("mediumorchid4")) +
-  labs(x="Parameter set") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") + 
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(1, "lines")) -> p3
-
-summary412 %>% 
   ggplot(aes(x=factor(param), y=p_bests)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(x="Parameter set") +
   lims(y=c(0,1)) +
@@ -620,21 +595,20 @@ summary412 %>%
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(1, "lines")) -> p4
+  theme(panel.spacing = unit(1, "lines")) -> p3
 
-p1 / p2 / p3 / p4
+p1 / p2 / p3 
 ```
 
 ## actions
 ```{r, fig.height=1.5, fig.width=4}
 result412 %>% 
-  filter(global_step <= 50) %>%
-  ggplot(aes(x=global_step, y=action, color=factor(param))) +
+  ggplot(aes(x=global_step, y=action, color=factor(run))) +
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
   labs(x="Time", y="Choice") +
-  facet_grid(run~param) +
+  facet_wrap(.~run, nrow=5) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   # scale_color_grey() +
@@ -653,7 +627,7 @@ result412 %>%
 ```
 
 # Joint analysis
-## Join
+## Join data
 ```{r}
 result408 %>% 
   dplyr::select(
@@ -719,7 +693,7 @@ summary408_412 <- bind_rows(summary408_412, tmp5)
 summary408_412 %>% 
   ggplot(aes(x=agent, y=total_R/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(y="Average reward", x="") +
   # lims(y=c(0, 1)) +
@@ -733,7 +707,7 @@ summary408_412 %>%
 summary408_412 %>% 
   ggplot(aes(x=agent, y=total_regret/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
   labs(y="Average regret", x="") +
   # lims(y=c(0, 1)) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -746,7 +720,7 @@ summary408_412 %>%
 summary408_412 %>% 
   ggplot(aes(x=agent, y=p_bests)) +
   geom_jitter(size=0.05, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
   labs(y="Best choice", x="") +
   lims(y=c(0, 1)) +
   theme_pubr(base_size = 8, legend = "none") +
