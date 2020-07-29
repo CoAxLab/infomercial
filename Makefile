@@ -6581,7 +6581,8 @@ exp428:
 
 # ----------------------------------------------------------------------------
 # 7-29-2020
-# 
+# d736a50
+#
 # The advatage dual value had over other algs was diminished some when I moved
 # to what should be robust HP tuning. As part of the new HP tuning I adjusted
 # down the number of episodes to make room for more repeats. Could the change 
@@ -6591,6 +6592,12 @@ exp428:
 # - Rerun exp408_412 (BanditHardAndSparse10) with more epsiodes
 # - Increase num_episodes=40000 from num_episodes=10000
 #
+# RESULT: - eta does do better as num_episodes increases. This hold marginally
+#         for ep-decay which should can a very similiar fixed exploitation 
+#         policy very late in learning.
+#         - Not sure whay is best and fair to show readers.
+#         - Try increasing episodes for all the others (sans Deception)
+
 exp429_433: exp429 exp430 exp431 exp432 exp433
 
 exp408_433_clean:
@@ -6655,4 +6662,132 @@ exp433:
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp433/param0/run{1} --master_seed={1}' ::: {1..100}
 
+
+# --------------------------------------------------------------------------
+# 7-29-2020
+# d736a50
+#
+# - Rerun exp393_397 (BanditOneHigh10) with more epsiodes
+# - Increase num_episodes=400 from num_episodes=200
+#
+exp434_438: exp434 exp435 exp436 exp437 exp348
+
+# meta - use exp379_sorted
+exp434:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp434.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=400 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp434/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use exp377_sorted
+exp435:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp435.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=400 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp435/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use exp378_sorted
+exp436:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp436.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=400 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp436/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use exp380_sorted
+exp437:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp437.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=400 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp437/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp438:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp438.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=400  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp438/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# --------------------------------------------------------------------------
+# 7-29-2020
+# d736a50
+#
+# - Rerun exp403_407 (BanditOneHigh121) with more epsiodes
+# - Increase num_episodes=400 from num_episodes=200
+
+exp439_443: exp439 exp440 exp441 exp442 exp443 
+	
+# meta - use exp379_sorted
+exp439:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp383_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp439.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp439/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep - use exp377_sorted
+exp440:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp381_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp440.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp440/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep - use exp378_sorted
+exp441:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp382_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp441.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp441/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta - use exp380_sorted
+exp442:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp384_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp442.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp442/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp443:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp443.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp443/param0/run{1} --master_seed={1}' ::: {1..100}
 
