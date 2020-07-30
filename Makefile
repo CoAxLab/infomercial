@@ -6800,8 +6800,10 @@ exp443:
 # - Run deception bandits tuned for 100 episodes, on 50 episodes. 
 # - Does our advantage lessen or widen. 
 #
-# RESULT: Only ours is finding the best arm, but low trial numbers make 
-#         reward the lowest. Shwoing the progression here is tricky. 
+# RESULT: - Only ours is finding the best arm, but low trial numbers make 
+#         reward the lowest as well. Showing the progression here is tricky.
+#         - Try some average timecourse plots. Also....
+#         - Run it out a bit past 100. Check that out. 
 
 exp444_448: exp444 exp445 exp446 exp447 exp448
 	
@@ -6859,3 +6861,70 @@ exp448:
 			--joblog '$(DATA_PATH)/exp448.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp448/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# ---------------------------------------------------------------------------
+# 7-29-2020
+# 6ab8e01
+# 
+# More DeceptiveBanditOneHigh10 tests:
+# - Run deception bandits tuned for 100 episodes, on 200 episodes. 
+# - Does our advantage lessen or widen. 
+#
+# RESULT:  
+
+exp449_453: exp449 exp450 exp451 exp452 exp453
+
+# meta 
+exp449:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp449.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp449/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp450:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp389_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp450.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp450/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp451:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp390_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp451.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp451/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp452:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp392_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp452.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp452/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp453:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp453.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp453/param0/run{1} --master_seed={1}' ::: {1..100}
