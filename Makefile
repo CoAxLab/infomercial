@@ -6794,7 +6794,7 @@ exp443:
 
 # ---------------------------------------------------------------------------
 # 7-29-2020
-# 4a84be0
+# 6ab8e01
 # 
 # More DeceptiveBanditOneHigh10 tests:
 # - Run deception bandits tuned for 100 episodes, on 50 episodes. 
