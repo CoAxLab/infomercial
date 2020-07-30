@@ -6798,7 +6798,7 @@ exp443:
 # 
 # More DeceptiveBanditOneHigh10 tests:
 # - Run deception bandits tuned for 100 episodes, on 50 episodes. 
-# - Does our advantage lessen or widen. It is marginal but there at 100.
+# - Does our advantage lessen or widen. 
 
 exp444_448: exp444 exp445 exp446 exp447 exp448
 	
