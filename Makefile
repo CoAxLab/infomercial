@@ -6054,13 +6054,6 @@ exp392:
 # Test runs for tune exp377-90. 
 exp393_exp397: exp393 exp394 exp395 exp396 exp397 
 
-exp393_exp397_clean:
-	-rm -rf $(DATA_PATH)/exp393/*
-	-rm -rf $(DATA_PATH)/exp394/*
-	-rm -rf $(DATA_PATH)/exp395/*
-	-rm -rf $(DATA_PATH)/exp396/*
-	-rm -rf $(DATA_PATH)/exp397/*
-
 # ---------------
 # BanditOneHigh10
 # ---------------
@@ -6414,6 +6407,9 @@ exp417:
 # The previous tuning run (exp389-exp392) had far too many trials making the 
 # the task easy. The env should have prevented that, but the safety
 # was commented out. 
+#
+# RESULT: - turns out 30 is **unlearnable**. 
+#         - ....Which is no doubt why its was commented out.
 
 exp418_exp421: exp418 exp419 exp420 exp421
 
@@ -6590,7 +6586,7 @@ exp428:
 # the advatage of my model? 
 #
 # - Rerun exp408_412 (BanditHardAndSparse10) with more epsiodes
-# - Increase num_episodes=40000 from num_episodes=10000
+# - Increase num_episodes=40000 from num_episodes=20000
 #
 # RESULT: - eta does do better as num_episodes increases. This hold marginally
 #         for ep-decay which should can a very similiar fixed exploitation 
@@ -6599,13 +6595,6 @@ exp428:
 #         - Try increasing episodes for all the others (sans Deception)
 
 exp429_433: exp429 exp430 exp431 exp432 exp433
-
-exp408_433_clean:
-	-rm -rf $(DATA_PATH)/exp429/*
-	-rm -rf $(DATA_PATH)/exp430/*
-	-rm -rf $(DATA_PATH)/exp431/*
-	-rm -rf $(DATA_PATH)/exp432/*
-	-rm -rf $(DATA_PATH)/exp433/*
 	
 # meta 
 exp429:
