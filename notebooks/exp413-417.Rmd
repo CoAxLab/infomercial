@@ -722,12 +722,11 @@ summary413_417 <- bind_rows(summary413_417, tmp5)
 ```{r, fig.height=1.5, fig.width=1.2}
 ## Values
 summary413_417 %>% 
-  ggplot(aes(x=agent, y=total_R/max_R)) +
+  ggplot(aes(x=agent, y=total_R/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
-  scale_colour_manual("", values=c("mediumorchid4")) +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   labs(y="Average reward", x="") +
-  # lims(y=c(0, 1)) +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -736,11 +735,11 @@ summary413_417 %>%
   theme(panel.spacing = unit(1, "lines")) -> p1
 
 summary413_417 %>% 
-  ggplot(aes(x=agent, y=total_regret/max_R)) +
+  ggplot(aes(x=agent, y=total_regret/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   labs(y="Average regret", x="") +
-  # lims(y=c(0, 1)) +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -749,11 +748,12 @@ summary413_417 %>%
   theme(panel.spacing = unit(1, "lines")) -> p2
 
 summary413_417 %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
+  ggplot(aes(x=agent, y=p_bests, color=agent)) +
   geom_jitter(size=0.05, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   labs(y="Best choice", x="") +
   lims(y=c(0, 1)) +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
