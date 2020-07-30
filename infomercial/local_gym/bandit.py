@@ -370,7 +370,7 @@ class DeceptiveBanditOneHigh10(DeceptiveBanditEnv):
                                     p_dist=p_dist,
                                     r_dist=r_dist,
                                     steps_away=10,
-                                    max_steps=100)
+                                    max_steps=500)
 
 
 class BanditOneHot2(BanditEnv):
