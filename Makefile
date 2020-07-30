@@ -6791,3 +6791,68 @@ exp443:
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=48400  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp443/param0/run{1} --master_seed={1}' ::: {1..100}
 
+
+# ---------------------------------------------------------------------------
+# 7-29-2020
+# 4a84be0
+# 
+# More DeceptiveBanditOneHigh10 tests:
+# - Run deception bandits tuned for 100 episodes, on 50 episodes. 
+# - Does our advantage lessen or widen. It is marginal but there at 100.
+
+exp444_448: exp444 exp445 exp446 exp447 exp448
+	
+# meta 
+exp444:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp444.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp444/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp445:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp389_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp445.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp445/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp446:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp390_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp446.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp446/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp447:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp392_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp447.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp447/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp448:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp448.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=50  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp448/param0/run{1} --master_seed={1}' ::: {1..100}
