@@ -78,13 +78,12 @@ result434 <- load.result(exp_name, param_codes, run_codes, file_names)
 result434 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_E=max(total_E),
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary434
@@ -237,11 +236,10 @@ result435 <- load.result(exp_name, param_codes, run_codes, file_names)
 result435 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary435
@@ -336,11 +334,10 @@ result436 <- load.result(exp_name, param_codes, run_codes, file_names)
 result436 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary436
@@ -438,12 +435,11 @@ result437 <- load.result(exp_name, param_codes, run_codes, file_names)
 result437 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_E=max(total_E),
-    total_regret=max(total_regret),
-    value_ER=median(value_ER),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_E=last(total_E),
+    total_regret=last(total_regret),
+    value_ER=last(value_ER),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary437
@@ -553,11 +549,10 @@ result438 <- load.result(exp_name, param_codes, run_codes, file_names)
 result438 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    value_R=max(value_R),
-    total_regret=max(total_regret),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    value_R=last(value_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary438

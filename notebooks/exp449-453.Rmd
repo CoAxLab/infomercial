@@ -53,6 +53,7 @@ load.result <- function(exp_name, param_codes, run_codes, file_names){
 # --- Main path to all data ---
 data_path <- "~/Code/infomercial/data/"
 max_R <- 200
+num_episodes <- 200
 ```
 
 # exp449 - meta
@@ -79,13 +80,12 @@ result449 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_E=max(total_E),
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary449
@@ -240,11 +240,10 @@ result450 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary450
@@ -341,11 +340,10 @@ result451 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary451
@@ -445,12 +443,11 @@ result452 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_E=max(total_E),
-    total_regret=max(total_regret),
-    value_ER=median(value_ER),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_E=last(total_E),
+    total_regret=last(total_regret),
+    value_ER=last(value_ER),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary452
@@ -561,11 +558,10 @@ result453 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_R=max(value_R),
-    total_regret=max(total_regret),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_R=last(value_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary453
@@ -639,7 +635,7 @@ summary449_453 <- bind_rows(summary449_453, tmp5)
 summary449_453 %>% 
   ggplot(aes(x=agent, y=total_R/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   labs(y="Average reward", x="") +
   # lims(y=c(0, 1)) +
@@ -653,7 +649,7 @@ summary449_453 %>%
 summary449_453 %>% 
   ggplot(aes(x=agent, y=total_regret/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   labs(y="Average regret", x="") +
   scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -666,7 +662,7 @@ summary449_453 %>%
 summary449_453 %>% 
   ggplot(aes(x=agent, y=p_bests, color=agent)) +
   geom_jitter(size=0.05, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=1, size=1, shape="|") +
   labs(y="Best choice", x="") +
   lims(y=c(0, 1)) +
   scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
@@ -679,7 +675,7 @@ summary449_453 %>%
 
 p1 / p2 / p3 
 ```
-## toital_R (by run)
+## total_R (by run)
 ```{r, fig.height=1.5, fig.width=1.6}
 result449_453 %>% 
   filter(run <= 10, param == 0) %>% 

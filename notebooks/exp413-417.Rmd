@@ -79,13 +79,12 @@ result413 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_E=max(total_E),
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary413
@@ -240,11 +239,10 @@ result414 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary414
@@ -341,11 +339,10 @@ result415 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary415
@@ -445,12 +442,11 @@ result416 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_E=max(total_E),
-    total_regret=max(total_regret),
-    value_ER=median(value_ER),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_E=last(total_E),
+    total_regret=last(total_regret),
+    value_ER=last(value_ER),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary416
@@ -561,11 +557,10 @@ result417 %>%
   group_by(param, run) %>% 
   filter(global_step <= 100) %>% 
   summarise(
-    total_R=max(total_R),
-    total_R=max(value_R),
-    total_regret=max(total_regret),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_R=last(value_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary417

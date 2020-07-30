@@ -78,13 +78,12 @@ result429 <- load.result(exp_name, param_codes, run_codes, file_names)
 result429 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_E=max(total_E),
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary429
@@ -237,11 +236,10 @@ result430 <- load.result(exp_name, param_codes, run_codes, file_names)
 result430 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary430
@@ -336,11 +334,10 @@ result431 <- load.result(exp_name, param_codes, run_codes, file_names)
 result431 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary431
@@ -438,12 +435,11 @@ result432 <- load.result(exp_name, param_codes, run_codes, file_names)
 result432 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    total_E=max(total_E),
-    total_regret=max(total_regret),
-    value_ER=median(value_ER),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    total_E=last(total_E),
+    total_regret=last(total_regret),
+    value_ER=last(value_ER),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary432
@@ -553,11 +549,10 @@ result433 <- load.result(exp_name, param_codes, run_codes, file_names)
 result433 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_R=max(total_R),
-    value_R=max(value_R),
-    total_regret=max(total_regret),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_R=last(total_R),
+    value_R=last(value_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary433
@@ -637,38 +632,39 @@ result433 %>%
 # Joint analysis
 ## Join data
 ```{r}
-result429 %>% 
-  dplyr::select(
-    global_step, param, run, action, total_R, 
-    value_R, total_regret, p_bests) -> tmp1
-result430 %>% 
-  dplyr::select(
-    global_step, param, run, action, total_R, 
-    value_R, total_regret, p_bests) -> tmp2
-result431 %>% 
-  dplyr::select(
-    global_step, param, run, action, total_R, 
-    value_R, total_regret, p_bests) -> tmp3
-result432 %>% 
-  dplyr::select(
-    global_step, param, run, action, total_R, 
-    value_ER, total_regret, p_bests) -> tmp4
-result433 %>% 
-  dplyr::select(
-    global_step, param, run, action, total_R, 
-    value_R, total_regret, p_bests) -> tmp5
-
-tmp1$agent <- "dual value"
-tmp2$agent <- "ep-greedy"
-tmp3$agent <- "anneal-ep"
-tmp4$agent <- "bayesian"
-tmp5$agent <- "random"
-
-result429_433 <- tmp1
-result429_433 <- bind_rows(result429_433, tmp2)
-result429_433 <- bind_rows(result429_433, tmp3)
-result429_433 <- bind_rows(result429_433, tmp4)
-result429_433 <- bind_rows(result429_433, tmp5)
+# result429 %>% 
+#   dplyr::select(
+#     global_step, param, run, action, total_R, 
+#     value_R, total_regret, p_bests) -> tmp1
+# result430 %>% 
+#   dplyr::select(
+#     global_step, param, run, action, total_R, 
+#     value_R, total_regret, p_bests) -> tmp2
+# result431 %>% 
+#   dplyr::select(
+#     global_step, param, run, action, total_R, 
+#     value_R, total_regret, p_bests) -> tmp3
+# result432 %>% 
+#   dplyr::select(
+#     global_step, param, run, action, total_R, 
+#     value_ER, total_regret, p_bests) -> tmp4
+# result433 %>% 
+#   dplyr::select(
+#     global_step, param, run, action, total_R, 
+#     value_R, total_regret, p_bests) -> tmp5
+# 
+# tmp1$agent <- "dual value"
+# tmp2$agent <- "ep-greedy"
+# tmp3$agent <- "anneal-ep"
+# tmp4$agent <- "bayesian"
+# tmp5$agent <- "random"
+# 
+# result429_433 <- tmp1
+# result429_433 <- bind_rows(result429_433, tmp2)
+# result429_433 <- bind_rows(result429_433, tmp3)
+# result429_433 <- bind_rows(result429_433, tmp4)
+# result429_433 <- bind_rows(result429_433, tmp5)
+# rm(tmp1, tmp2, tmp3, tmp4, tmp5)
 
 # ---
 summary429 %>% 
@@ -693,16 +689,17 @@ summary429_433 <- bind_rows(summary429_433, tmp2)
 summary429_433 <- bind_rows(summary429_433, tmp3)
 summary429_433 <- bind_rows(summary429_433, tmp4)
 summary429_433 <- bind_rows(summary429_433, tmp5)
+rm(tmp1, tmp2, tmp3, tmp4, tmp5)
 ```
 
 ## values
 ```{r, fig.height=1.5, fig.width=1.2}
 ## Values
 summary429_433 %>% 
-  ggplot(aes(x=agent, y=total_R/max_R)) +
+  ggplot(aes(x=agent, y=total_R/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
-  scale_colour_manual("", values=c("mediumorchid4")) +
+  stat_summary(fun=median, alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   labs(y="Average reward", x="") +
   # lims(y=c(0, .1)) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -713,9 +710,10 @@ summary429_433 %>%
   theme(panel.spacing = unit(1, "lines")) -> p1
 
 summary429_433 %>% 
-  ggplot(aes(x=agent, y=total_regret/max_R)) +
+  ggplot(aes(x=agent, y=total_regret/max_R, color=agent)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
+  stat_summary(fun=median, alpha=0.6, size=1, shape="|") +
   labs(y="Average regret", x="") +
   # lims(y=c(0, .1)) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -726,9 +724,10 @@ summary429_433 %>%
   theme(panel.spacing = unit(1, "lines")) -> p2
 
 summary429_433 %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
+  ggplot(aes(x=agent, y=p_bests, color=agent)) +
   geom_jitter(size=0.05, alpha=0.9, width=0.2) +
-  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   labs(y="Best choice", x="") +
   lims(y=c(0, 1)) +
   theme_pubr(base_size = 8, legend = "none") +
