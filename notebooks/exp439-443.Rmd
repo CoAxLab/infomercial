@@ -701,7 +701,7 @@ summary439_443 <- bind_rows(summary439_443, tmp5)
 summary439_443 %>% 
   ggplot(aes(x=agent, y=total_R/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
   scale_colour_manual("", values=c("mediumorchid4")) +
   labs(y="Average reward", x="") +
   # lims(y=c(0, .1)) +
@@ -715,7 +715,7 @@ summary439_443 %>%
 summary439_443 %>% 
   ggplot(aes(x=agent, y=total_regret/max_R)) +
   geom_jitter(size=0.01, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
   labs(y="Average regret", x="") +
   # lims(y=c(0, .1)) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -728,7 +728,7 @@ summary439_443 %>%
 summary439_443 %>% 
   ggplot(aes(x=agent, y=p_bests)) +
   geom_jitter(size=0.05, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="red", alpha=0.6, size=1, shape="|") +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
   labs(y="Best choice", x="") +
   lims(y=c(0, 1)) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -772,7 +772,7 @@ filter(agent == "dual value") %>%
   filter(run == 1, param <= 10) %>% 
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.3, alpha=1, color="darkorchid4") +
-  scale_x_continuous(breaks=c(0, 100, 200, 300)) +
+  # scale_x_continuous(breaks=c(0, 100, 200, 300)) +
   labs(x="", y="Choice", title="Deterministic\n(Dual value)") +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -785,6 +785,7 @@ filter(agent == "dual value") %>%
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
+  theme(axis.text.x = element_blank()) +
   theme(axis.ticks = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) -> p1
 
@@ -795,7 +796,7 @@ filter(agent == "bayesian") %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.3, alpha=1, color="dodgerblue4") +
   labs(x="", y="", title="Stochastic\n(Intrinsic reward)") +
-  scale_x_continuous(breaks=c(0, 100, 200, 300)) +
+  # scale_x_continuous(breaks=c(0, 100, 200, 300)) +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
