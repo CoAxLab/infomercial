@@ -6972,7 +6972,7 @@ exp456:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp456.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp456/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --temp={temp} --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp456/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -6983,6 +6983,6 @@ exp457:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp457.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp457/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp457/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
