@@ -333,7 +333,7 @@ result456_457 %>%
   theme(strip.text = element_blank()) +
   theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
+  theme(axis.ticks = element_blank()) +
   theme(legend.key.size = unit(0.2, "cm")) -> p2
 
 p1 / p2
@@ -345,7 +345,7 @@ result456_457 %>%
   filter(agent != "Random") %>% 
   ggplot(aes(x=global_step, y=total_R/num_episodes, color=agent)) +
   geom_point(size=0.05, alpha=0.8, shape=".") +
-  labs(x="Time", y="Reward") +
+  labs(x="Time", y="Total reward") +
   facet_wrap(run~., nrow=2) +
   scale_colour_manual("Policy", values=c("darkorchid4", "mediumpurple3")) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -361,26 +361,27 @@ result456_457 %>%
   theme(axis.ticks = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) 
 ```
+
 # Plot regrets
-```{r, fig.height=0.9, fig.width=1.8}
+```{r, fig.height=1.7, fig.width=0.6}
 result456_457 %>% 
   filter(agent != "Random") %>% 
   ggplot(aes(x=global_step, y=total_regret/num_episodes, color=agent)) +
   geom_point(size=0.05, alpha=0.9, shape=".") +
-  labs(x="Time", y="Regret") +
-  facet_wrap(run~., nrow=2) +
+  labs(x="Time", y="Total regret") +
+  facet_wrap(run~., ncol=1) +
   scale_colour_manual("Policy", values=c("darkorchid4", "mediumpurple3")) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(panel.spacing = unit(0.4, "lines")) +
   theme(strip.background = element_blank()) +
-  theme(legend.position = "right") +
+  theme(legend.position = "none") +
   theme(legend.box.background = element_rect(colour = "black", size=1)) +
   theme(plot.title = element_text(size = 6)) +
   theme(strip.text = element_blank()) +
-  theme(axis.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
+  # theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  # theme(axis.ticks = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) 
 ```
 
