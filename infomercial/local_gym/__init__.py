@@ -24,6 +24,7 @@ from infomercial.local_gym.bandit import BanditUniform10
 from infomercial.local_gym.bandit import BanditUniform121
 
 from infomercial.local_gym.bandit import DeceptiveBanditOneHigh10
+from infomercial.local_gym.bandit import DistractionOneHigh10
 
 from infomercial.local_gym.bandit import InfoBanditEnv
 from infomercial.local_gym.bandit import InfoBlueYellow2a
