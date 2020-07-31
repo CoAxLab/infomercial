@@ -95,6 +95,9 @@ class Count(Memory):
     def values(self):
         return list(self.count.values())
 
+    def state_dict(self):
+        return self.count
+
     def __len__(self):
         return len(self.count)
 
