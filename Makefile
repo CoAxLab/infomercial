@@ -7011,6 +7011,13 @@ test_distraction:
 # df0338f
 #
 # --- Tune **DistractionOneHigh10** (first attempt) ---
+#
+# RESULTS: - To my frank surprise both meta and beta can be tuned to out
+#          perform the reward only models (ep) even in the face of a 
+#          high/max entropy distraction signal.
+#          - That is really neat!
+#          - What happens in I use the top 10 from a BanditOneHot tuning?
+
 exp458_exp461: exp458 exp459 exp460 exp461 
 
 # ep
@@ -7128,4 +7135,73 @@ exp466:
 			--joblog '$(DATA_PATH)/exp466.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp466/param0/run{1} --master_seed={1}' ::: {1..100}
+
+# ---------------------------------------------------------------------------
+# 7-31-2020
+# ef819ca
+#
+# CONTROL EXP:
+# - How robust are the model to distraction when thet were tuned for no
+# distraction?
+#
+# Use some 'wrong' parameters from a top10 tune set for 
+# - BanditOneHigh10 on 
+# -DistractionOneHigh10 
+
+exp467_471: exp467 exp468 exp469 exp470 exp471
+
+# meta 
+exp467:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp467.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp467/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp468:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp468.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp468/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp469:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp469.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp469/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp470:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp470.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp470/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp471:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp471.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp471/param0/run{1} --master_seed={1}' ::: {1..100}
 
