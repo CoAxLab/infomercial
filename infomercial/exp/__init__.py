@@ -1,4 +1,5 @@
 from infomercial.exp.meta_bandit import run as meta_bandit
+from infomercial.exp.softmeta_bandit import run as softmeta_bandit
 from infomercial.exp.random_bandit import run as random_bandit
 from infomercial.exp.beta_bandit import run as beta_bandit
 from infomercial.exp.softbeta_bandit import run as softbeta_bandit

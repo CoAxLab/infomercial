@@ -10,6 +10,7 @@ setup(name='infomercial',
       packages=['infomercial'],
       scripts=[
           'infomercial/exp/meta_bandit.py',
+          'infomercial/exp/softmeta_bandit.py',
           'infomercial/exp/epsilon_bandit.py',
           'infomercial/exp/beta_bandit.py',
           'infomercial/exp/softbeta_bandit.py',
