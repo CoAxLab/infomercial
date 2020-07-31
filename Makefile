@@ -6917,3 +6917,72 @@ exp453:
 			--joblog '$(DATA_PATH)/exp453.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp453/param0/run{1} --master_seed={1}' ::: {1..100}
+
+
+# ----------------------------------------------------------------------------
+# 7-31-2020
+# b976f10
+#
+# Tune **softmeta** (first time) and run one some tests.
+# Also tune meta, for comparison. Past runs with
+# - BanditOneHigh4
+# used params stolen from
+# - BanditOneHigh10
+# which should work but might not be ideal.
+
+softmeta_test:
+	-rm -rf $(DATA_PATH)/test # clean up
+	softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=1e-3 --temp=1 --lr_R=0.1 --log_dir=$(DATA_PATH)/test/ --master_seed=42
+
+exp454_exp457: exp454 exp455 exp456 exp457 
+
+# -- Tune ---
+exp454:
+	tune_bandit.py random $(DATA_PATH)/exp454 \
+		--exp_name='softmeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-11, 1e-2)' \
+		--temp='(0.00001, 10000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp455:
+	tune_bandit.py random $(DATA_PATH)/exp455 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=4 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-11, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# --- Test ---
+exp456:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp456.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp456/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+exp457:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp457.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp457/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
