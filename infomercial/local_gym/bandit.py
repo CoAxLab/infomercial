@@ -39,8 +39,8 @@ class DistractionBanditEnv(gym.Env):
             if not np.isclose(np.sum(r_dist), 1):
                 raise ValueError(f"Entry {i} in r_dists does not sum to 1")
 
-        self.n_stim = len(stim)
         self.stim = stim
+        self.n_stim = len(self.stim)
         self.s_dists = s_dists
 
         self.rewards = rewards
@@ -86,11 +86,11 @@ class DistractionOneHigh10(DistractionBanditEnv):
 
         # Stim/state
         stim = [1, 2]
-        s_dists = [0.5, 0.5] * self.num_arms
+        s_dists = [(0.5, 0.5)] * self.num_arms
 
         # Reward
         rewards = [0, 1]
-        r_dists = [0.8, 0.2] * self.num_arms
+        r_dists = [(0.8, 0.2)] * self.num_arms
         r_dists[self.best[0]] = (0.2, 0.8)
 
         DistractionBanditEnv.__init__(self,
