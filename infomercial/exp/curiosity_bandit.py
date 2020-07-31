@@ -287,12 +287,10 @@ def run(env_name='InfoBlueYellow4b-v0',
 
         # Pull a lever.
         state, reward, _, _ = env.step(action)
-        if reward_mode:
-            state = reward
 
         # Estimate E, save regret
         old = deepcopy(memories[action])
-        memories[action].update(state)
+        memories[action].update((int(state), int(reward)))
         new = deepcopy(memories[action])
         E_t = kl(new, old, critic_E.inital_values[action])
 
@@ -301,7 +299,7 @@ def run(env_name='InfoBlueYellow4b-v0',
 
         # --- Log data ---
         num_stop = n
-        writer.add_scalar("state", state, n)
+        writer.add_scalar("state", int(state), n)
         writer.add_scalar("regret", regret, n)
         writer.add_scalar("score_E", E_t, n)
         writer.add_scalar("value_E", critic_E(action), n)

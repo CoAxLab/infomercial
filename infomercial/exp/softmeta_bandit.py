@@ -145,9 +145,7 @@ def run(env_name='BanditOneHot10-v0',
 
     # ------------------------------------------------------------------------
     for n in range(num_episodes):
-        # Every play is also an ep for bandit tasks.
-        # Thus this reset() call
-        state = int(env.reset()[0])
+        env.reset()
 
         # Meta-greed policy selection
         if (E_t - tie_threshold) > R_t:
@@ -170,11 +168,10 @@ def run(env_name='BanditOneHot10-v0',
         # Pull a lever.
         state, R_t, _, _ = env.step(action)
         R_t = R_homeostasis(R_t, total_R, num_episodes)
-        state = int(state[0])
 
         # Estimate E
         old = deepcopy(memories[action])
-        memories[action].update(R_t)
+        memories[action].update((int(state), int(R_t)))
         new = deepcopy(memories[action])
         E_t = kl(new, old, default_info_value)
 
@@ -184,7 +181,7 @@ def run(env_name='BanditOneHot10-v0',
 
         # Log data
         writer.add_scalar("policy", policy, n)
-        writer.add_scalar("state", state, n)
+        writer.add_scalar("state", int(state), n)
         writer.add_scalar("action", action, n)
         writer.add_scalar("regret", regret, n)
         writer.add_scalar("score_E", E_t, n)
