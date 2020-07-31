@@ -28,7 +28,7 @@ kl_divergence <- function(p, q) {
 data_path <- "~/Code/infomercial/data/"
 ```
 
-# Figure - Curiosity in a random world
+# Figure 1 - Curiosity in a random world
 ## Load data
 ```{r message=FALSE, cache=TRUE}
 # ---
@@ -73,11 +73,9 @@ Ebias <- 4*1.38
 result348 %>% 
   group_by(actor, run) %>% 
   summarise(
-    total_E=max(total_E),
-    total_regret=max(total_regret),
-    value_E=mean(value_E),
-    regret=mean(regret[regret > 0]),
-    num_steps=max(num_trials)
+    total_E=last(total_E)/last(num_trials),
+    total_regret=last(total_regret)/last(num_trials),
+    num_steps=last(num_trials)
   ) %>% 
   ungroup() ->
 summary348
@@ -90,7 +88,7 @@ summary348$actor <- factor(summary348$actor,
 rm(tmp, runtmp, run, name, better, i)
 ```
 
-## Sub 1 - examples
+## Sub 1 - action examples
 ```{r, fig.width=1.6, fig.height=2.2}
 result348 %>% 
   filter(actor == "Deterministic") %>% 
@@ -103,7 +101,7 @@ result348 %>%
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  scale_color_manual("Search", values=c("mediumorchid4")) +
+  scale_color_manual("Search", values=c("darkorchid4")) +
   theme(panel.spacing = unit(0.1, "lines")) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") +
@@ -179,19 +177,20 @@ result348 %>%
   theme(strip.text.x = element_blank()) -> p4
 
 
-c1 <- (p1 + p2) / p3 / p4 + 
+sub1 <- (p1 + p2) / p3 / p4 + 
   plot_layout(heights = c(0.7, 0.15, 0.15)) 
 ```
 
-## Sub 2 - dists (jitter)
+## Sub 2 - value jitter
 ```{r, fig.height=2, fig.width=0.8}
 # average value
 summary348 %>% 
-  ggplot(aes(x=actor, y=value_E, color=actor)) +
+  ggplot(aes(x=actor, y=total_E, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
-  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
-  labs(x="", y="Average value") +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Total value") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -204,8 +203,9 @@ summary348 %>%
 summary348 %>% 
   ggplot(aes(x=actor, y=num_steps, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
-  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
   labs(x="", y="Steps") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -215,12 +215,13 @@ summary348 %>%
   theme(axis.text.x = element_blank()) -> 
   p2
 
-# average regret
+# Total regret
 summary348 %>% 
   ggplot(aes(x=actor, y=total_regret, color=actor)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
-  stat_summary(fun=mean, color="black", alpha=0.9, size=2, shape="-") +
-  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
   labs(x="", y="Total regret") +
   scale_y_log10() +
   annotation_logticks(sides = "l") +
@@ -233,12 +234,12 @@ summary348 %>%
   p3
 
 # ---
-c2 <- p1 / p2 / p3 
+sub2 <- p1 / p2 / p3 
 ```
 
 ## Build figure
 ```{r, fig.height=2.6, fig.width=2}
-fig <- (c1 | c2 + plot_spacer()) + 
+fig <- (sub1 | sub2 + plot_spacer()) + 
   plot_layout(widths = c(0.75, 0.25)) +
     plot_annotation(
       title="Deterministic versus stochastic curiosity in a random world", 
@@ -249,10 +250,8 @@ print(fig)
 # -- Save a to pdf --=
 name <- "img/determinisitic_curiosity"
 ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.6*2, width = 2*2)
-
-rm(c1, c2)
 ```
-# Figure - Dual value learning
+# Figure 2 - Dual value learning
 - Explore/exploit as indepdendent objectives
 
 ## Load data
@@ -277,13 +276,12 @@ result393 <- load.result(exp_name, param_codes, run_codes, file_names)
 result393 %>% 
   group_by(param, run) %>% 
   summarise(
-    total_E=max(total_E),
-    total_R=max(total_R),
-    total_regret=max(total_regret),
-    value_E=median(value_E),
-    value_R=median(value_R),
-    p_bests=max(p_bests),
-    regret=median(regret[regret > 0])
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
   ) %>% 
   ungroup() ->
 summary393
@@ -301,7 +299,7 @@ result393 %>%
     breaks=c(0, 1), 
     labels=c("Explore", "Exploit")) +
   lims(x=c(0, 200)) +
-  scale_color_manual("", values=c("darkorchid4", "darkgrey")) +
+  scale_color_manual("", values=c("darkorchid4", "black")) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) -> p0
@@ -310,7 +308,7 @@ result393 %>%
   filter(run == 1, param == 1) %>% 
   filter(global_step > 10) %>% 
   ggplot(aes(x=global_step, y=value_E)) +
-  geom_line(size=0.8, alpha=1, color="darkorchid4") +
+  geom_line(size=0.6, alpha=1, color="darkorchid4") +
   lims(x=c(0, 200)) +
   scale_y_log10() +
   annotation_logticks(sides = "l") +
@@ -323,7 +321,7 @@ result393 %>%
   filter(run == 1, param == 1) %>% 
   filter(global_step > 10) %>% 
   ggplot(aes(x=global_step, y=value_R)) +
-  geom_line(size=0.8, alpha=1, color="darkgrey") +
+  geom_line(size=0.6, alpha=0.9, color="black") +
   lims(x=c(0, 200)) +
   scale_y_log10() +
   annotation_logticks(sides = "l") +
@@ -336,7 +334,7 @@ result393 %>%
   filter(run == 1, param == 1) %>% 
   filter(global_step > 10) %>% 
   ggplot(aes(x=global_step, y=regret)) +
-  geom_line(size=0.8, alpha=1, color="azure4") +
+  geom_line(size=0.6, alpha=0.9, color="black") +
   lims(x=c(0, 200), y=c(0, 1)) +
   labs(x="Time", y="Regret") + 
   theme_pubr(base_size = 8, legend = "none") +
@@ -352,7 +350,7 @@ p0 / p1 / p2 / p3 +
 rm(p0, p1, p2, p3)
 ```
 
-# Figure - Reward collection in a random world
+# Figure 3 - Curiosity and reward collection
 ## Load data for BanditOneHigh4 experiments
 - *NOTE*: result393_4 uses BanditOneHigh10, change to BanditOneHigh4 when that data is available. 
 - *NOTE*: need random data (ep=1)
@@ -524,7 +522,7 @@ filter(agent == "Deterministic") %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.5, alpha=1, color="darkorchid4") +
   scale_x_continuous(breaks=c(0, 100, 200)) +
-  labs(x="Time", y="Choice", title="Deterministic\n(Dual value)") +
+  labs(x="Time", y="Choice", title="Deterministic") +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -545,7 +543,7 @@ filter(agent == "Stochastic") %>%
   filter(run == 1, param <= 10) %>% 
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.5, alpha=1, color="dodgerblue4") +
-  labs(x="Time", y="", title="Stochastic\n(Intrinsic reward)") +
+  labs(x="Time", y="", title="Stochastic") +
   scale_x_continuous(breaks=c(0, 100, 200)) +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -567,17 +565,16 @@ c1 <- p1 + p2
 
 ## Sub 2 - dists
 ```{r, fig.height=1.5, fig.width=0.8}
-max_R <- 200
+num_episodes <- 200
 
 # average value
 summary393_7 %>% 
-  # filter(agent %in% c("Deterministic", "Stochastic")) %>% 
-  ggplot(aes(x=agent, y=total_R, color=agent)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=agent)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
   scale_colour_manual("", 
-                      values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
-  # lims(y=c(100, max_R)) +
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
+  lims(y=c(0,1)) +
   labs(x="", y="Total reward") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -587,16 +584,15 @@ summary393_7 %>%
   theme(axis.text.x = element_blank()) -> 
   p1
 
-# average regret
+# Total regret
 summary393_7 %>% 
-  # filter(agent %in% c("Deterministic", "Stochastic")) %>% 
-  ggplot(aes(x=agent, y=total_regret, color=agent)) +
+
+  ggplot(aes(x=agent, y=total_regret/num_episodes, color=agent)) +
   geom_jitter(size=0.3, alpha=0.9, width=0.2) +
   stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
-  scale_colour_manual("", values=c("mediumorchid4", "dodgerblue4", "darkgray")) +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
   labs(x="", y="Total regret") +
-  # scale_y_log10() +
-  # annotation_logticks(sides = "l") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") + 
@@ -613,8 +609,8 @@ c2 <- p1 / p2
 fig <- (c1 | c2 + plot_spacer()) + 
   plot_layout(widths = c(0.75, 0.25)) +
     plot_annotation(
-      title="Deterministic versus stochastic reward collection", 
-                  theme = theme_pubr(base_size = 8, legend = "none"))
+      title="Cusiosity and reward collection in a random world", 
+      theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(fig)
 
@@ -624,4 +620,215 @@ ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.2*2, width = 1.5*2)
 
 # -
 # rm(c1, c2)
+```
+
+# Bandit figures:
+The data is:
+- BanditOneHigh4: exp398_402 (use for example above)
+- BanditOneHigh10: exp393_exp397
+- DeceptiveBanditOneHigh10: exp449_453
+- BanditHardAndSparse10: exp408_412
+- BanditOneHigh121: exp403_407
+To do:
+1. Load results for each.
+2. Add to bandit_summary
+3. Filter results to keep a few examples (saving memory)
+Figure: 
+- Examples: for each? of what? total_R? regret? p_best?
+- Summary: jitter w/ median
+- Consistent color coding
+
+# Figure - BanditOneHigh10
+## Load data
+### Custom loader
+```{r}
+load.result <- function(exp_name, param_codes, run_codes, file_names){
+  num_files <- length(file_names)
+  result <- NULL
+  for (param in param_codes){
+    for (run in run_codes) {
+      runtmp <- read_csv(paste(data_path, 
+                               exp_name, 
+                               paste("param", param, sep=""), 
+                               paste("run", run, sep=""), 
+                               paste(file_names[1], "csv", sep="."), sep="/"))    
+      for (name in file_names[2:num_files]){
+        tmp <- read_csv(paste(data_path, 
+                              exp_name, 
+                              paste("param", param, sep=""), 
+                              paste("run", run, sep=""), 
+                              paste(name, "csv", sep="."), sep="/"))  
+        runtmp[[name]] <- tmp[[name]]
+      }
+      runtmp$run <- run
+      runtmp$param <- param
+      result <- bind_rows(result, runtmp)  
+    }
+  }
+  result
+}
+```
+
+### Load
+```{r, message=FALSE}
+# --- Init files ---
+
+# The exps are:
+exp_names <- c("exp393", 
+               "exp394", 
+               "exp395", 
+               "exp396", 
+               "exp397")
+agent_names <- c("Curiosity", 
+                 "del-Random", 
+                 "tau-Random", 
+                 "Intrinsic", 
+                 "Random")
+
+# These are shared in all models, but Random.
+param_codes <- 0:9
+run_codes <- 1:10
+
+# Load only data every model has:
+file_names <- c("action", 
+                "p_bests", 
+                "regret", 
+                "total_R",
+                "total_regret")
+
+# -- Load ---
+bandit_results <- NULL
+
+# 1. Load random first (diff file structure)
+bandit_results <- load.result(exp_names[5], c(0), 1:100, file_names)
+bandit_results$exp <- exp_names[5]
+bandit_results$agent <- agent_names[5]
+
+# 2. then load the rest
+for(i in 1:length(exp_names[1:4])){
+  result <- load.result(exp_names[i], param_codes, run_codes, file_names)
+  result$exp <- exp_names[i]
+  result$agent <- agent_names[i]
+  bandit_results <- bind_rows(bandit_results, result)
+  rm(result)
+}
+
+# 3. summarize 
+bandit_results %>% 
+  group_by(agent, param, run) %>% 
+  summarise(
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
+  ) %>% 
+  ungroup() ->
+bandit_summary
+
+# Reorder names
+ordered_names <- c("Curiosity",
+                   "Intrinsic", 
+                   "tau-Random", 
+                   "del-Random", 
+                   "Random")
+ordered_colors <- c("darkorchid4", 
+                    "dodgerblue4", 
+                    "goldenrod4", 
+                    "darkgoldenrod3", 
+                    "darkgrey")
+bandit_results$agent <- factor(bandit_results$agent, levels = ordered_names)
+bandit_summary$agent <- factor(bandit_summary$agent, levels = ordered_names)
+
+# 5. Cleanup
+rm(file_names, agent_names, exp_names, param_codes, run_codes, i)
+```
+
+### Sub 1 - actions examples
+```{r, fig.width=1.8, fig.height=1.6}
+bandit_results %>% 
+  filter(agent != "Random") %>% 
+  filter(run <= 10, param == 0) %>% 
+  ggplot(aes(x=global_step, y=action, color=agent)) +
+  geom_line(size=0.6, alpha=1) +
+  labs(x="Time", y="Choice") +
+  facet_grid(run~agent) +
+  scale_colour_manual("", values=ordered_colors) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.24, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> sub1
+```
+
+### Sub 2 - value summary
+```{r, fig.width=1.2, fig.height=1.6}
+num_episodes <- 200
+
+## Values
+bandit_summary %>% 
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=agent)) +
+  geom_jitter(size=0.01, alpha=0.5, width=0.3) +
+  stat_summary(fun=median, alpha=1, color="black", size=2, shape="-") +
+  scale_colour_manual("", values=ordered_colors) +
+  labs(y="Total reward", x="") +
+  lims(y=c(0, 1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+bandit_summary %>% 
+  ggplot(aes(x=agent, y=total_regret/num_episodes, color=agent)) +
+  geom_jitter(size=0.01, alpha=0.5, width=0.3) +
+  stat_summary(fun=median, alpha=1, color="black", size=2, shape="-") +
+  scale_colour_manual("", values=ordered_colors) +
+  labs(y="Total regret", x="") +
+  lims(y=c(0, 1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+bandit_summary %>% 
+  ggplot(aes(x=agent, y=p_bests, color=agent)) +
+  geom_jitter(size=0.05, alpha=0.5, width=0.3) +
+  stat_summary(fun=median, alpha=1, color="black", size=2, shape="-") +
+  scale_colour_manual("", values=ordered_colors) +
+  labs(y="Best choice", x="") +
+  lims(y=c(0, 1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+sub2 <- p1 / p2 
+```
+
+### Build
+```{r, fig.width=2.6, fig.height=2.4}
+sub1 + (sub2 + plot_spacer()) + 
+  plot_layout(widths = c(0.8, 0.2)) + 
+  plot_annotation(
+      title="Task 1 - reward collection with a high payout", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
+
+# Figure - Fast Bandits
+
+Efficiency when time is low....
+- Replot jitter w/ global_step at 2x? 
+```{r}
+
 ```
