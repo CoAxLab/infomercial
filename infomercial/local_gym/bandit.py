@@ -142,6 +142,7 @@ class InfoBanditEnv(gym.Env):
 
         reward = 0
         self.done = True
+
         p_dist = self.p_dists[action]
         state = self.np_random.choice(self.stim, p=p_dist)
 
@@ -274,10 +275,12 @@ class BanditEnv(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        state = 0
+        if self.done:
+            raise ValueError("Cannot step, env is done.")
 
+        state = 0
         reward = 0
-        done = True
+        self.done = True
 
         if self.np_random.uniform() < self.p_dist[action]:
             if not isinstance(self.r_dist[action], list):
@@ -286,9 +289,10 @@ class BanditEnv(gym.Env):
                 reward = self.np_random.normal(self.r_dist[action][0],
                                                self.r_dist[action][1])
 
-        return state, reward, done, {}
+        return state, reward, self.done, {}
 
     def reset(self):
+        self.done = False
         return [0]
 
     def render(self, mode='human', close=False):
@@ -337,10 +341,12 @@ class UnstableBanditEnv(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        state = action
+        if self.done:
+            raise ValueError("Cannot step, env is done.")
 
+        state = 0
         reward = 0
-        done = True
+        self.done = True
 
         if self.np_random.uniform() < self.p_dist[action]:
             if not isinstance(self.r_dist[action], list):
@@ -353,9 +359,10 @@ class UnstableBanditEnv(gym.Env):
         if self.np_random.poisson(self.unstable_rate) > 0:
             self._random_bandit()
 
-        return [0], reward, done, {}
+        return state, reward, self.done, {}
 
     def reset(self):
+        self.done = False
         return [0]
 
     def render(self, mode='human', close=False):
@@ -391,6 +398,7 @@ class DeceptiveBanditEnv(gym.Env):
         self.p_dist = p_dist
         self.r_dist = r_dist
         self.steps = 0
+        self.best = None
         self.max_steps = max_steps
         self.steps_away = steps_away
         self.scale = np.concatenate(
@@ -412,12 +420,13 @@ class DeceptiveBanditEnv(gym.Env):
             raise EnvironmentError("Number of steps exceeded max.")
 
         # Action is in the space?
+
         action = int(action)
         assert self.action_space.contains(action)
 
         # Get the reward....
         reward = 0
-        done = True
+        self.done = True
         if self.np_random.uniform() < self.p_dist[action]:
             if not isinstance(self.r_dist[action], list):
                 reward = self.r_dist[action]
@@ -434,10 +443,10 @@ class DeceptiveBanditEnv(gym.Env):
 
             self.steps += 1
 
-        return [0], float(reward), done, {}
+        return [0], float(reward), self.done, {}
 
     def reset(self):
-        # self.steps = 0
+        self.done = False
         return [0]
 
     def render(self, mode='human', close=False):
