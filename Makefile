@@ -7070,3 +7070,62 @@ exp461:
 		--beta='(0.001, 10)' \
 		--lr_R='(0.001, 0.5)' \
 		--temp='(0.1, 3)'
+
+## --- test top 10 ---
+exp462_466: exp462 exp463 exp464 exp465 exp466
+
+# meta 
+exp462:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp460_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp462.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp462/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ep 
+exp463:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp458_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp463.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp463/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# anneal-ep 
+exp464:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp459_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp464.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp464/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# beta 
+exp465:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp461_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp465.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp465/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# random
+exp466:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp466.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp466/param0/run{1} --master_seed={1}' ::: {1..100}
+
