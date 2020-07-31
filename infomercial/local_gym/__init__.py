@@ -64,6 +64,7 @@ environments = [
     ['InfoBlueYellow4a', 'v0', 1],
     ['InfoBlueYellow4b', 'v0', 1],
     ['InfoBlueYellow4c', 'v0', 1],
+    ['DistractionOneHigh10', 'v0', 1],
 ]
 
 for environment in environments:
