@@ -9,6 +9,97 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+class DistractionBanditEnv(gym.Env):
+    """
+    n-armed info bandit environment. Rewards are independent of
+    states, whose information is a distraction.
+
+    Params
+    ------
+    stim : list 
+        A list of possible return states    
+    s_dists : list of tuples 
+        A list of prob of a stim, for each arm
+    r_dists : list of tuples 
+        A list of prob of reward (0,1), for each arm
+    """
+    def __init__(self, stim, rewards, s_dists, r_dists):
+
+        # check for sizes and p_norm
+        for i, s_dist in enumerate(s_dists):
+            if len(s_dist) != len(stim):
+                raise ValueError(f"Entry {i} in s_dists is the wrong len")
+            if not np.isclose(np.sum(s_dist), 1):
+                raise ValueError(f"Entry {i} in s_dists does not sum to 1")
+
+        # check for sizes and p_norm
+        for i, r_dist in enumerate(r_dists):
+            if len(r_dist) != len(rewards):
+                raise ValueError(f"Entry {i} in r_dists is the wrong len")
+            if not np.isclose(np.sum(r_dist), 1):
+                raise ValueError(f"Entry {i} in r_dists does not sum to 1")
+
+        self.n_stim = len(stim)
+        self.stim = stim
+        self.s_dists = s_dists
+
+        self.rewards = rewards
+        self.r_dists = r_dists
+        self.n_bandits = len(s_dists)
+
+        self.action_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(self.n_stim)
+        self.seed()
+        self.reset()
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+
+    def step(self, action):
+        assert self.action_space.contains(action)
+        if self.done:
+            raise ValueError("Cannot step, env is done.")
+
+        self.done = True
+        p_dist = self.s_dists[action]
+        state = self.np_random.choice(self.stim, p=p_dist)
+
+        r_dist = self.r_dists[action]
+        reward = self.np_random.choice(self.rewards, p=r_dist)
+
+        return state, reward, self.done, {}
+
+    def reset(self):
+        self.done = False
+        return [0]
+
+    def render(self, mode='human', close=False):
+        pass
+
+
+class DistractionOneHigh10(DistractionBanditEnv):
+    """A (0.8, 0.2, 0.2, ...) bandit, with distracting stim/states."""
+    def __init__(self):
+        self.num_arms = 10
+        self.best = [7]  # for reward
+
+        # Stim/state
+        stim = [1, 2]
+        s_dists = [0.5, 0.5] * self.num_arms
+
+        # Reward
+        rewards = [0, 1]
+        r_dists = [0.8, 0.2] * self.num_arms
+        r_dists[self.best[0]] = (0.2, 0.8)
+
+        DistractionBanditEnv.__init__(self,
+                                      stim=stim,
+                                      rewards=rewards,
+                                      s_dists=s_dists,
+                                      r_dists=r_dists)
+
+
 class InfoBanditEnv(gym.Env):
     """
     n-armed info bandit environment. Rewards are alwats zero, but the return
@@ -183,7 +274,7 @@ class BanditEnv(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        state = action
+        state = 0
 
         reward = 0
         done = True
@@ -195,7 +286,7 @@ class BanditEnv(gym.Env):
                 reward = self.np_random.normal(self.r_dist[action][0],
                                                self.r_dist[action][1])
 
-        return [0], reward, done, {}
+        return state, reward, done, {}
 
     def reset(self):
         return [0]
