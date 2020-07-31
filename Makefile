@@ -6986,3 +6986,67 @@ exp457:
 			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp457/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# --------------------------------------------------------------------------
+# 7-31-202
+# b53ecfc
+#
+# --- Tune **DistractionOneHigh10** (first attempt) ---
+
+# ep
+exp458:
+	tune_bandit.py random $(DATA_PATH)/exp458 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DistractionOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+# ep-decay
+exp459:
+	tune_bandit.py random $(DATA_PATH)/exp459 \
+		--exp_name='epsilon_bandit' \
+		--env_name=DistractionOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# eta/dual value
+exp460:
+	tune_bandit.py random $(DATA_PATH)/exp460 \
+		--exp_name='meta_bandit' \
+		--env_name=DistractionOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# beta
+exp461:
+	tune_bandit.py random $(DATA_PATH)/exp461 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DistractionOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.1, 3)'
