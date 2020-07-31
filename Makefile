@@ -7144,9 +7144,9 @@ exp466:
 # - How robust are the model to distraction when thet were tuned for no
 # distraction?
 #
-# Use some 'wrong' parameters from a top10 tune set for 
-# - BanditOneHigh10 on 
-# -DistractionOneHigh10 
+# Use some 'wrong' parameters from a top10 tune set.
+# - they were tuned for BanditOneHigh10 
+# - but use them on DistractionOneHigh10 
 
 exp467_471: exp467 exp468 exp469 exp470 exp471
 
