@@ -60,7 +60,7 @@ def linf(memory_new, memory_old, default):
 
 
 def kl(memory_new, memory_old, default, base=None):
-    """Calculate KL, assuming prob. memoroes."""
+    """Calculate KL, assuming prob. memories."""
     if len(memory_old) == 0:
         return default
     if len(memory_new) == 0:
