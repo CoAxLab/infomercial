@@ -7140,7 +7140,7 @@ exp466:
 # 7-31-2020
 # ef819ca
 #
-# CONTROL EXP:
+# *** CONTROL EXP ***
 # - How robust are the model to distraction when thet were tuned for no
 # distraction?
 #
