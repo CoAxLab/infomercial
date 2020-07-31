@@ -6987,10 +6987,28 @@ exp457:
 	# Clean up
 	rm tmp
 
+# --------------------------------------------------------------------------
+# 7-31-2020
+# Test runs for basic function -- DistractionOneHigh10
+# 
+# I defined DistractionOneHigh10 which is the same as BanditOneHigh10, except
+# it also returns states/stim that match the InfoBandits. That state/stim
+# in no way (statistically) predict rewards. They are a distraction. 
+#
+# - This recipe is just for debugging. I had to change ALL the agent_bandit
+#   implementations to handle this kinds of task
+
+test_distraction:
+	-rm -rf $(DATA_PATH)/test
+	meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/meta_bandit
+	softmeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --temp=.1 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/softmeta_bandit
+	softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --beta=1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/beta_bandit
+	epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --epsilon=0.5 --epsilon_decay_tau=000.1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/epsilon_bandit
+	random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/random_bandit
 
 # --------------------------------------------------------------------------
 # 7-31-202
-# b53ecfc
+# df0338f
 #
 # --- Tune **DistractionOneHigh10** (first attempt) ---
 exp458_exp461: exp458 exp459 exp460 exp461 

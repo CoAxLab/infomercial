@@ -150,10 +150,8 @@ def run(env_name='BanditOneHot10-v0',
     R_t = default_reward_value
 
     # -
-    critic_R = Critic(num_actions,
-                      default_value=default_reward_value)
-    critic_E = Critic(num_actions,
-                      default_value=default_info_value)
+    critic_R = Critic(num_actions, default_value=default_reward_value)
+    critic_E = Critic(num_actions, default_value=default_info_value)
     actor_R = Actor(num_actions,
                     tie_break='first',
                     tie_threshold=tie_threshold)
@@ -232,12 +230,12 @@ def run(env_name='BanditOneHot10-v0',
     writer.close()
 
     result = dict(best=env.best,
-                  memories=[m.state_dict() for m in memories],
                   num_episodes=num_episodes,
                   tie_break=tie_break,
                   tie_threshold=tie_threshold,
                   critic_E=critic_E.state_dict(),
                   critic_R=critic_R.state_dict(),
+                  memories=[m.state_dict() for m in memories],
                   total_E=total_E,
                   total_R=total_R,
                   total_regret=total_regret,

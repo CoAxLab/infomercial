@@ -336,6 +336,7 @@ def run(env_name='InfoBlueYellow4b-v0',
                   initial_bins=initial_bins,
                   initial_count=initial_count,
                   actor=actor,
+                  memories=[m.state_dict() for m in memories],
                   actor_kwargs=actor_kwargs,
                   num_stop=num_stop + 1)
 
