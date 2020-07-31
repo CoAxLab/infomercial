@@ -61,9 +61,9 @@ class SoftmaxActor(object):
         # Threshold
         values = np.asarray(values) - self.tie_threshold
 
-        # Move the the default policy?
-        if np.sum(values < 0) == len(values):
-            return None
+        # # Move the the default policy?
+        # if np.sum(values < 0) == len(values):
+        #     return None
 
         # Make a soft choice
         probs = softmax(values * self.beta)
@@ -161,6 +161,7 @@ def run(env_name='BanditOneHot10-v0',
 
         # Choose an action; Choose a bandit
         action = actor(list(critic.model.values()))
+        print(action)
         if action in best_action:
             num_best += 1
 
