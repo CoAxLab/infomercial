@@ -139,6 +139,8 @@ def run(env_name='BanditOneHot10-v0',
     # -
     env = gym.make(env_name)
     env.seed(master_seed)
+    env.reset()
+
     num_actions = env.action_space.n
     best_action = env.best
 
@@ -148,9 +150,9 @@ def run(env_name='BanditOneHot10-v0',
     R_t = default_reward_value
 
     # -
-    critic_R = Critic(env.observation_space.n,
+    critic_R = Critic(num_actions,
                       default_value=default_reward_value)
-    critic_E = Critic(env.observation_space.n,
+    critic_E = Critic(num_actions,
                       default_value=default_info_value)
     actor_R = Actor(num_actions,
                     tie_break='first',

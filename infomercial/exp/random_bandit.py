@@ -79,8 +79,7 @@ def run(env_name='BanditOneHot2-v0',
     # -
     default_reward_value = 0  # Null R
     R_t = default_reward_value
-    critic = Critic(env.observation_space.n,
-                    default_value=default_reward_value)
+    critic = Critic(num_actions, default_value=default_reward_value)
     actor = Actor(num_actions, seed_value=master_seed)
     all_actions = list(range(num_actions))
 

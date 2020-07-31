@@ -126,10 +126,8 @@ def run(env_name='BanditOneHot10-v0',
     R_t = default_reward_value
 
     # -
-    critic_R = Critic(env.observation_space.n,
-                      default_value=default_reward_value)
-    critic_E = Critic(env.observation_space.n,
-                      default_value=default_info_value)
+    critic_R = Critic(num_actions, default_value=default_reward_value)
+    critic_E = Critic(num_actions, default_value=default_info_value)
 
     actor_R = SoftmaxActor(num_actions, beta=temp, tie_threshold=tie_threshold)
     actor_E = SoftmaxActor(num_actions, beta=temp, tie_threshold=tie_threshold)
