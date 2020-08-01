@@ -7152,9 +7152,9 @@ exp466:
 #           and best choice. 
 #         - when you don't know ditraction is coming, curiosity can be a   
 #           liability	
-#         - It is still in the mix for best model, so here is is not that
-#           bad a liablity.
-#         - What would it take to 'BREAK' E-explore? I should find out.
+#         - It is still in the mix for best model, so here it is not that
+#           terrible a liablity.
+#         - WHAT WOULD IT TAKE TO BREAK E-explore? I should find out.
 
 exp467_471: exp467 exp468 exp469 exp470 exp471
 
