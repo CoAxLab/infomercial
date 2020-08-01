@@ -1,5 +1,5 @@
 # Hold off to do for reviewers?
-Some ideas I like and want to add below. Hopefully the reviewers will ask some of the questions I expect.
+Here are ideas I like and want to add. Hopefully the reviewers will ask some of the questions I expect.
 
 # Other agents
 1. Max entopy exploration
