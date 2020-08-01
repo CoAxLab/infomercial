@@ -7147,6 +7147,14 @@ exp466:
 # Use some 'wrong' parameters from a top10 tune set.
 # - they were tuned for BanditOneHigh10 
 # - but use them on DistractionOneHigh10 
+# 
+# RESULT: - with not the ideal parameters, meta DOES degrade for total reward
+#           and best choice. 
+#         - when you don't know ditraction is coming, curiosity can be a   
+#           liability	
+#         - It is still in the mix for best model, so here is is not that
+#           bad a liablity.
+#         - What would it take to 'BREAK' E-explore? I should find out.
 
 exp467_471: exp467 exp468 exp469 exp470 exp471
 
