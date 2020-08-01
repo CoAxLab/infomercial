@@ -7154,7 +7154,7 @@ exp466:
 #           liability	
 #         - It is still in the mix for best model, so here it is not that
 #           terrible a liablity.
-#         - WHAT WOULD IT TAKE TO BREAK E-explore? I should find out.
+#         - WHAT WOULD IT TAKE TO BREAK E-explore? 
 
 exp467_471: exp467 exp468 exp469 exp470 exp471
 
