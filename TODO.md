@@ -8,7 +8,7 @@ Some ideas I like and want to add below. Hopefully the reviewers will ask some o
 
 # Curiosity cat?
 1. Train a VAE->MLP classifier with 
-    - random batchs
+    - random batches
     - softmax E batches
     - argmax E batches
 2. Finetune a pretained-SOA model using determined curiosity? 
