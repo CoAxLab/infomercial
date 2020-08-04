@@ -7622,6 +7622,56 @@ exp495:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
-# --------------------------------------------------------------------------
-# --- Test for 2x episodes ---
+# -------------------------------------------------------------------
+# 8-4-2020
+# 42c9acf
+#
+# Tune softbeta, and the ep-greedys on BanditOneHigh4. I was stealing
+# HP from BanditOneHigh10 on prior runs.
+#
+# NOTE: The meta tune version and tests for BanditOneHigh4 are found in 
+# recipes:
+# - exp454-exp457
 
+exp496_exp498: exp496 exp497 exp498
+
+exp496:
+	tune_bandit.py random $(DATA_PATH)/exp496 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.1, 3)'
+
+exp497:
+	tune_bandit.py random $(DATA_PATH)/exp497 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp498:
+	tune_bandit.py random $(DATA_PATH)/exp498 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)'
