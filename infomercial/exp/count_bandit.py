@@ -11,7 +11,6 @@ from scipy.stats import entropy
 
 from collections import OrderedDict
 
-from infomercial.memory import Count
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
 from infomercial.utils import load_checkpoint
@@ -64,22 +63,27 @@ class SoftmaxActor:
         return action
 
 
-class NoveltyMemory:
-    def __init__(self, bonus=0):
-        self.bonus = bonus
-        self.memory = []
+class CountMemory:
+    """A simple state counter."""
+    def __init__(self):
+        self.memory = dict()
 
     def __call__(self, state):
         return self.forward(state)
 
     def forward(self, state):
-        if state in self.memory:
-            bonus = 0
-        else:
-            self.memory.append(state)
-            bonus = self.bonus
+        # Init?
+        if state not in self.memory:
+            self.memory[state] = 0
 
-        return bonus
+        # Update count in memory
+        # and then return it
+        self.memory[state] += 1
+
+        return self.memory[state]
+
+    def state_dict(self):
+        return self.memory
 
 
 def Q_update(state, reward, critic, lr):
@@ -92,16 +96,14 @@ def Q_update(state, reward, critic, lr):
 
 def run(env_name='BanditOneHigh2-v0',
         num_episodes=1,
-        tie_break='next',
         tie_threshold=0.0,
         temp=1.0,
         beta=1.0,
-        bonus=0,
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
         log_dir=None):
-    """Bandit agent - sample(R + beta E)"""
+    """Bandit agent - sample(R + beta count^(-1/2))"""
 
     # --- Init ---
     writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
@@ -125,12 +127,10 @@ def run(env_name='BanditOneHigh2-v0',
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
     all_actions = list(range(num_actions))
 
-    novelty = NoveltyMemory(bonus=bonus)
-    memories = [Count() for _ in range(num_actions)]
+    count = CountMemory()
 
     # -
     total_R = 0.0
-    total_E = 0.0
     total_regret = 0.0
     num_best = 0
 
@@ -149,33 +149,24 @@ def run(env_name='BanditOneHigh2-v0',
         # Pull a lever.
         state, R_t, _, _ = env.step(action)
 
-        # Estimate E
-        old = deepcopy(memories[action])
-        memories[action].update((int(state), int(R_t)))
-        new = deepcopy(memories[action])
-        E_t = kl(new, old, default_info_value)
-
-        # Apply bonus?
-        novelty_bonus = novelty(state)
-        R_t += novelty_bonus
+        # Apply count bonus
+        count_bonus = count(state)**(-0.5)
+        R_t += beta * count_bonus
 
         # Critic learns
-        critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
+        critic = Q_update(action, R_t, critic, lr_R)
 
         # Log data
         writer.add_scalar("state", int(state), n)
         writer.add_scalar("action", action, n)
         writer.add_scalar("regret", regret, n)
-        writer.add_scalar("bonus", novelty_bonus, n)
-        writer.add_scalar("score_E", E_t, n)
+        writer.add_scalar("bonus", count_bonus, n)
         writer.add_scalar("score_R", R_t, n)
-        writer.add_scalar("value_ER", critic(action), n)
+        writer.add_scalar("value_R", critic(action), n)
 
-        total_E += E_t
         total_R += R_t
         total_regret += regret
         writer.add_scalar("total_regret", total_regret, n)
-        writer.add_scalar("total_E", total_E, n)
         writer.add_scalar("total_R", total_R, n)
         writer.add_scalar("p_bests", num_best / (n + 1), n)
 
@@ -187,11 +178,9 @@ def run(env_name='BanditOneHigh2-v0',
                   temp=temp,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  tie_break=tie_break,
                   tie_threshold=tie_threshold,
                   critic=critic.state_dict(),
-                  memories=[m.state_dict() for m in memories],
-                  total_E=total_E,
+                  count=count.state_dict(),
                   total_R=total_R,
                   total_regret=total_regret,
                   master_seed=master_seed)

@@ -7213,3 +7213,17 @@ exp471:
 			--nice 19 --delay 0 --bar --colsep ',' \
 			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp471/param0/run{1} --master_seed={1}' ::: {1..100}
 
+
+# ------------------------------------------------------------------------
+# Test several new agents
+test_agents1:
+	-rm -rf $(DATA_PATH)/test
+	# Novelty
+	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --beta=0 --temp=1 --bonus=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_novelty
+	# Extrinsic only 
+	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --beta=0 --temp=1 --bonus=0 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_extrinsic
+	# Count
+	count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=.1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_count
+	# Entropy
+	entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=10 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_entropy
+

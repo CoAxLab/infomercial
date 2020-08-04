@@ -7,11 +7,10 @@ import numpy as np
 from noboard.csv import SummaryWriter
 
 from copy import deepcopy
-from scipy.stats import entropy
+from scipy.stats import entropy as scientropy
 
 from collections import OrderedDict
 
-from infomercial.memory import Count
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
 from infomercial.utils import load_checkpoint
@@ -64,22 +63,42 @@ class SoftmaxActor:
         return action
 
 
-class NoveltyMemory:
-    def __init__(self, bonus=0):
-        self.bonus = bonus
-        self.memory = []
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        if state in self.memory:
-            bonus = 0
+class EntropyMemory:
+    """Estimate policy entropy."""
+    def __init__(self, intial_bins=None, initial_count=1, base=None):
+        # Init the count model
+        if intial_bins is None:
+            self.N = 1
         else:
-            self.memory.append(state)
-            bonus = self.bonus
+            self.N = len(intial_bins)
 
-        return bonus
+        self.base = base
+        self.initial_count = initial_count
+        self.memory = dict()
+
+        # Preinit its values?
+        if intial_bins is not None:
+            for x in intial_bins:
+                self.memory[x] = self.initial_count
+
+    def __call__(self, action):
+        return self.forward(action)
+
+    def forward(self, action):
+        # Init?
+        if action not in self.memory:
+            self.memory[action] = self.initial_count
+
+        # Update count in memory
+        self.N += 1
+        self.memory[action] += 1
+
+        # Estimate H
+        self.probs = [(n / self.N) for n in self.memory.values()]
+        return scientropy(np.asarray(self.probs), base=self.base)
+
+    def state_dict(self):
+        return self.memory
 
 
 def Q_update(state, reward, critic, lr):
@@ -92,16 +111,14 @@ def Q_update(state, reward, critic, lr):
 
 def run(env_name='BanditOneHigh2-v0',
         num_episodes=1,
-        tie_break='next',
         tie_threshold=0.0,
         temp=1.0,
         beta=1.0,
-        bonus=0,
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
         log_dir=None):
-    """Bandit agent - sample(R + beta E)"""
+    """Bandit agent - sample(R + beta H(actions)"""
 
     # --- Init ---
     writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
@@ -113,24 +130,17 @@ def run(env_name='BanditOneHigh2-v0',
     best_action = env.best
 
     default_reward_value = 0  # Null R
-    default_info_value = entropy(np.ones(num_actions) /
-                                 num_actions)  # Uniform p(a)
-    E_t = default_info_value
     R_t = default_reward_value
 
     # Agents and memories
-    critic = Critic(num_actions,
-                    default_value=default_reward_value +
-                    (beta * default_info_value))
+    critic = Critic(num_actions, default_value=default_reward_value)
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
     all_actions = list(range(num_actions))
 
-    novelty = NoveltyMemory(bonus=bonus)
-    memories = [Count() for _ in range(num_actions)]
+    entropy = EntropyMemory(intial_bins=all_actions, initial_count=1, base=2)
 
     # -
     total_R = 0.0
-    total_E = 0.0
     total_regret = 0.0
     num_best = 0
 
@@ -149,33 +159,25 @@ def run(env_name='BanditOneHigh2-v0',
         # Pull a lever.
         state, R_t, _, _ = env.step(action)
 
-        # Estimate E
-        old = deepcopy(memories[action])
-        memories[action].update((int(state), int(R_t)))
-        new = deepcopy(memories[action])
-        E_t = kl(new, old, default_info_value)
-
-        # Apply bonus?
-        novelty_bonus = novelty(state)
-        R_t += novelty_bonus
+        # Apply count bonus
+        entropy_bonus = entropy(action)
+        print(entropy.probs)
+        R_t += beta * entropy_bonus
 
         # Critic learns
-        critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
+        critic = Q_update(action, R_t, critic, lr_R)
 
         # Log data
         writer.add_scalar("state", int(state), n)
         writer.add_scalar("action", action, n)
         writer.add_scalar("regret", regret, n)
-        writer.add_scalar("bonus", novelty_bonus, n)
-        writer.add_scalar("score_E", E_t, n)
+        writer.add_scalar("bonus", entropy_bonus, n)
         writer.add_scalar("score_R", R_t, n)
-        writer.add_scalar("value_ER", critic(action), n)
+        writer.add_scalar("value_R", critic(action), n)
 
-        total_E += E_t
         total_R += R_t
         total_regret += regret
         writer.add_scalar("total_regret", total_regret, n)
-        writer.add_scalar("total_E", total_E, n)
         writer.add_scalar("total_R", total_R, n)
         writer.add_scalar("p_bests", num_best / (n + 1), n)
 
@@ -187,11 +189,9 @@ def run(env_name='BanditOneHigh2-v0',
                   temp=temp,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  tie_break=tie_break,
                   tie_threshold=tie_threshold,
                   critic=critic.state_dict(),
-                  memories=[m.state_dict() for m in memories],
-                  total_E=total_E,
+                  entropy=entropy.state_dict(),
                   total_R=total_R,
                   total_regret=total_regret,
                   master_seed=master_seed)
