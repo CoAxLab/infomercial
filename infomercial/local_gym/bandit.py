@@ -78,7 +78,7 @@ class DistractionBanditEnv(gym.Env):
         pass
 
 
-class DistractionOneHigh10(DistractionBanditEnv):
+class DistractionBanditOneHigh10(DistractionBanditEnv):
     """A (0.8, 0.2, 0.2, ...) bandit, with distracting stim/states."""
     def __init__(self):
         self.num_arms = 10

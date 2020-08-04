@@ -6989,9 +6989,9 @@ exp457:
 
 # --------------------------------------------------------------------------
 # 7-31-2020
-# Test runs for basic function -- DistractionOneHigh10
+# Test runs for basic function -- DistractionBanditOneHigh10
 # 
-# I defined DistractionOneHigh10 which is the same as BanditOneHigh10, except
+# I defined DistractionBanditOneHigh10 which is the same as BanditOneHigh10, except
 # it also returns states/stim that match the InfoBandits. That state/stim
 # in no way (statistically) predict rewards. They are a distraction. 
 #
@@ -7000,17 +7000,17 @@ exp457:
 
 test_distraction:
 	-rm -rf $(DATA_PATH)/test
-	meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/meta_bandit
-	softmeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --temp=.1 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/softmeta_bandit
-	softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --beta=1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/beta_bandit
-	epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --epsilon=0.5 --epsilon_decay_tau=000.1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/epsilon_bandit
-	random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=100 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/random_bandit
+	meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/meta_bandit
+	softmeta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=100 --temp=.1 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/softmeta_bandit
+	softbeta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=100 --beta=1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/beta_bandit
+	epsilon_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=100 --epsilon=0.5 --epsilon_decay_tau=000.1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/epsilon_bandit
+	random_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=100 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/random_bandit
 
 # --------------------------------------------------------------------------
 # 7-31-202
 # df0338f
 #
-# --- Tune **DistractionOneHigh10** (first attempt) ---
+# --- Tune **DistractionBanditOneHigh10** (first attempt) ---
 #
 # RESULTS: - To my frank surprise both meta and beta can be tuned to out
 #          perform the reward only models (ep) even in the face of a 
@@ -7024,7 +7024,7 @@ exp458_exp461: exp458 exp459 exp460 exp461
 exp458:
 	tune_bandit.py random $(DATA_PATH)/exp458 \
 		--exp_name='epsilon_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7038,7 +7038,7 @@ exp458:
 exp459:
 	tune_bandit.py random $(DATA_PATH)/exp459 \
 		--exp_name='epsilon_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7053,7 +7053,7 @@ exp459:
 exp460:
 	tune_bandit.py random $(DATA_PATH)/exp460 \
 		--exp_name='meta_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7067,7 +7067,7 @@ exp460:
 exp461:
 	tune_bandit.py random $(DATA_PATH)/exp461 \
 		--exp_name='softbeta_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7089,7 +7089,7 @@ exp462:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp462.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp462/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp462/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7101,7 +7101,7 @@ exp463:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp463.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp463/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp463/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7113,7 +7113,7 @@ exp464:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp464.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp464/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp464/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7125,7 +7125,7 @@ exp465:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp465.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp465/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp465/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7134,7 +7134,7 @@ exp466:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp466.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp466/param0/run{1} --master_seed={1}' ::: {1..100}
+			'random_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp466/param0/run{1} --master_seed={1}' ::: {1..100}
 
 # ---------------------------------------------------------------------------
 # 7-31-2020
@@ -7146,7 +7146,7 @@ exp466:
 #
 # Use some 'wrong' parameters from a top10 tune set.
 # - they were tuned for BanditOneHigh10 
-# - but use them on DistractionOneHigh10 
+# - but use them on DistractionBanditOneHigh10 
 # 
 # RESULT: - with not the ideal parameters, meta DOES degrade for total reward
 #           and best choice. 
@@ -7166,7 +7166,7 @@ exp467:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp467.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'meta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp467/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp467/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7178,7 +7178,7 @@ exp468:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp468.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp468/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp468/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7190,7 +7190,7 @@ exp469:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp469.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp469/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp469/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7202,7 +7202,7 @@ exp470:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp470.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp470/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp470/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7211,7 +7211,7 @@ exp471:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp471.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=DistractionOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp471/param0/run{1} --master_seed={1}' ::: {1..100}
+			'random_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp471/param0/run{1} --master_seed={1}' ::: {1..100}
 
 
 # ------------------------------------------------------------------------
@@ -7560,14 +7560,14 @@ exp491:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
-# - DistractionOneHigh10
+# - DistractionBanditOneHigh10
 exp492_exp495: exp492 exp493 exp494 exp495
 
 
 exp492:
 	tune_bandit.py random $(DATA_PATH)/exp492 \
 		--exp_name='softbeta_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7582,7 +7582,7 @@ exp492:
 exp493:
 	tune_bandit.py random $(DATA_PATH)/exp493 \
 		--exp_name='softbeta_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7597,7 +7597,7 @@ exp493:
 exp494:
 	tune_bandit.py random $(DATA_PATH)/exp494 \
 		--exp_name='count_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7611,7 +7611,7 @@ exp494:
 exp495:
 	tune_bandit.py random $(DATA_PATH)/exp495 \
 		--exp_name='entropy_bandit' \
-		--env_name=DistractionOneHigh10-v0 \
+		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \

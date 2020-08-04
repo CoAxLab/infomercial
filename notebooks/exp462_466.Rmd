@@ -1,5 +1,5 @@
 ---
-title: "exp462 - 466 : DistractionOneHigh10 - top10 param runs"
+title: "exp462 - 466 : DistractionBanditOneHigh10 - top10 param runs"
 output: html_notebook
 ---
 

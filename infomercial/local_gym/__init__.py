@@ -24,7 +24,7 @@ from infomercial.local_gym.bandit import BanditUniform10
 from infomercial.local_gym.bandit import BanditUniform121
 
 from infomercial.local_gym.bandit import DeceptiveBanditOneHigh10
-from infomercial.local_gym.bandit import DistractionOneHigh10
+from infomercial.local_gym.bandit import DistractionBanditOneHigh10
 
 from infomercial.local_gym.bandit import InfoBanditEnv
 from infomercial.local_gym.bandit import InfoBlueYellow2a
@@ -65,7 +65,7 @@ environments = [
     ['InfoBlueYellow4a', 'v0', 1],
     ['InfoBlueYellow4b', 'v0', 1],
     ['InfoBlueYellow4c', 'v0', 1],
-    ['DistractionOneHigh10', 'v0', 1],
+    ['DistractionBanditOneHigh10', 'v0', 1],
 ]
 
 for environment in environments:
