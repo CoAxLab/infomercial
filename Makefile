@@ -7259,8 +7259,8 @@ exp472:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
@@ -7323,8 +7323,8 @@ exp476:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
@@ -7387,8 +7387,8 @@ exp480:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
@@ -7450,8 +7450,8 @@ exp484:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
@@ -7512,8 +7512,8 @@ exp488:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
@@ -7574,8 +7574,8 @@ exp492:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--bonus=1 \
 		--beta=0 \
+		--bonus='(1, 100)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
