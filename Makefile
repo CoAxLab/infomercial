@@ -7246,14 +7246,17 @@ test_agents1:
 
 # Tasks:
 # - BanditOneHigh4
+exp472_exp475: exp472 exp473 exp474 exp475 
+
+
 exp472:
 	tune_bandit.py random $(DATA_PATH)/exp472 \
 		--exp_name='softbeta_bandit' \
 		--env_name=BanditOneHigh4-v0 \
-		--num_samples=100 \
+		--num_samples=1000 \
 		--num_episodes=40 \
 		--num_repeats=50 \
-		--num_processes=1 \
+		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
 		--bonus=1 \
@@ -7305,11 +7308,320 @@ exp475:
 		--lr_R='(0.001, 0.5)' 
 
 
-# - BanditOneHot10
-# - BanditOneHot121
-# - BanditHardAndSparse10
-# - DeceptiveBanditOneHigh10
-# - DistractionOneHigh10
 
+# --- BanditOneHigh10 ---
+exp476_exp479: exp476 exp477 exp478 exp479 
+
+
+exp476:
+	tune_bandit.py random $(DATA_PATH)/exp476 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp477:
+	tune_bandit.py random $(DATA_PATH)/exp477 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp478:
+	tune_bandit.py random $(DATA_PATH)/exp478 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp479:
+	tune_bandit.py random $(DATA_PATH)/exp479 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+
+
+# --- BanditOneHot121 --- 
+exp480_exp483: exp480 exp481 exp482 exp483
+
+
+exp480:
+	tune_bandit.py random $(DATA_PATH)/exp480 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp481:
+	tune_bandit.py random $(DATA_PATH)/exp481 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp482:
+	tune_bandit.py random $(DATA_PATH)/exp482 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp483:
+	tune_bandit.py random $(DATA_PATH)/exp483 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+
+# --- BanditHardAndSparse10 ---
+exp484_exp487: exp484 exp485 exp486 exp487
+
+
+exp484:
+	tune_bandit.py random $(DATA_PATH)/exp484 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp485:
+	tune_bandit.py random $(DATA_PATH)/exp485 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp486:
+	tune_bandit.py random $(DATA_PATH)/exp486 \
+		--exp_name='count_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp487:
+	tune_bandit.py random $(DATA_PATH)/exp487 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# - DeceptiveBanditOneHigh10
+exp488_exp491: exp488 exp489 exp490 exp491
+
+
+exp488:
+	tune_bandit.py random $(DATA_PATH)/exp488 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp489:
+	tune_bandit.py random $(DATA_PATH)/exp489 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp490:
+	tune_bandit.py random $(DATA_PATH)/exp490 \
+		--exp_name='count_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp491:
+	tune_bandit.py random $(DATA_PATH)/exp491 \
+		--exp_name='entropy_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# - DistractionOneHigh10
+exp492_exp495: exp492 exp493 exp494 exp495
+
+
+exp492:
+	tune_bandit.py random $(DATA_PATH)/exp492 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp493:
+	tune_bandit.py random $(DATA_PATH)/exp493 \
+		--exp_name='softbeta_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp494:
+	tune_bandit.py random $(DATA_PATH)/exp494 \
+		--exp_name='count_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp495:
+	tune_bandit.py random $(DATA_PATH)/exp495 \
+		--exp_name='entropy_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# --------------------------------------------------------------------------
 # --- Test for 2x episodes ---
-# TODO
+
