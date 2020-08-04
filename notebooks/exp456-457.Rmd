@@ -300,8 +300,7 @@ result456_457 %>%
   scale_colour_manual("", 
                       values=c("darkorchid4")) +
   labs(x="Time", y="Choice", title="Deterministic") +
-  scale_y_continuous(limits=c(1,4), breaks=c(1,2,3, 4), labels=c(1,"","",4)) +
-  scale_x_continuous(breaks=c(1, 80), labels=c(1,80)) +
+  lims(x=c(0, 80)) +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -313,7 +312,7 @@ result456_457 %>%
   theme(strip.text = element_blank()) +
   # theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
-  # theme(axis.ticks = element_blank()) + 
+  theme(axis.ticks.y = element_blank()) +
   theme(legend.key.size = unit(0.2, "cm")) -> p1
 
 result456_457 %>% 
