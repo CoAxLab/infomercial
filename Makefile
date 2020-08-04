@@ -7647,7 +7647,7 @@ exp496:
 		--metric="total_R" \
 		--beta='(0.001, 10)' \
 		--lr_R='(0.001, 0.5)' \
-		--temp='(0.1, 3)'
+		--temp='(0.001, 1000)' \
 
 exp497:
 	tune_bandit.py random $(DATA_PATH)/exp497 \
