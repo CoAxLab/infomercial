@@ -7654,7 +7654,7 @@ exp497:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh4-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=40 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7667,7 +7667,7 @@ exp498:
 		--exp_name='epsilon_bandit' \
 		--env_name=BanditOneHigh4-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=40 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
