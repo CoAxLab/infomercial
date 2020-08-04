@@ -7567,7 +7567,7 @@ exp492_exp495: exp492 exp493 exp494 exp495
 exp492:
 	tune_bandit.py random $(DATA_PATH)/exp492 \
 		--exp_name='softbeta_bandit' \
-		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--env_name=DistractionOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7582,7 +7582,7 @@ exp492:
 exp493:
 	tune_bandit.py random $(DATA_PATH)/exp493 \
 		--exp_name='softbeta_bandit' \
-		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--env_name=DistractionOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7597,7 +7597,7 @@ exp493:
 exp494:
 	tune_bandit.py random $(DATA_PATH)/exp494 \
 		--exp_name='count_bandit' \
-		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--env_name=DistractionOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
@@ -7611,7 +7611,7 @@ exp494:
 exp495:
 	tune_bandit.py random $(DATA_PATH)/exp495 \
 		--exp_name='entropy_bandit' \
-		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--env_name=DistractionOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
