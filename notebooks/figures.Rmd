@@ -111,7 +111,7 @@ result348 %>%
   theme(strip.text.x = element_blank()) +
   # theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
+  theme(axis.ticks.y = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) -> 
   p1
 
@@ -135,7 +135,7 @@ result348 %>%
   theme(strip.text.x = element_blank()) +
   # theme(axis.text.x = element_blank()) +
   theme(axis.text.y = element_blank()) +
-  theme(axis.ticks = element_blank()) + 
+  theme(axis.ticks.y = element_blank()) + 
   theme(legend.key.size = unit(0.2, "cm")) -> 
   p2
 
@@ -181,7 +181,7 @@ sub1 <- (p1 + p2) / p3 / p4 +
   plot_layout(heights = c(0.7, 0.15, 0.15)) 
 ```
 
-## Sub 2 - value jitter
+## Sub 2 - summary value (jitter)
 ```{r, fig.height=2, fig.width=0.8}
 # average value
 summary348 %>% 
@@ -343,20 +343,15 @@ result393 %>%
 
 p0 / p1 / p2 / p3 + 
   plot_annotation(
-      title="Dual value learning", 
-      subtitle = "Explore/exploit with independent policies",
+      title="Explore/exploit with independent\ndeterministic policies", 
       theme = theme_pubr(base_size = 8, legend = "none"))
 
 rm(p0, p1, p2, p3)
 ```
-
-# Figure 3 - Curiosity and reward collection
-## Load data for BanditOneHigh4 experiments
-- *NOTE*: result393_4 uses BanditOneHigh10, change to BanditOneHigh4 when that data is available. 
-- *NOTE*: need random data (ep=1)
-
-### Custom loader
-```{r}
+# Figure 4 - Indep explore/exploit: det versus sto
+## Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
 load.result <- function(exp_name, param_codes, run_codes, file_names){
   num_files <- length(file_names)
   result <- NULL
@@ -382,10 +377,313 @@ load.result <- function(exp_name, param_codes, run_codes, file_names){
   }
   result
 }
+
+# --------------------------------------------------------------------
+exp_name <- "exp456"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_E", 
+                "score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "value_R", 
+                "policy",
+                "total_E", 
+                "total_R",
+                "total_regret")
+
+result456 <- load.result(exp_name, param_codes, run_codes, file_names)
+result456 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
+  ) %>% 
+  ungroup() ->
+summary456
+
+# --------------------------------------------------------------------
+exp_name <- "exp457"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_E", 
+                "score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "value_R", 
+                "policy",
+                "total_E", 
+                "total_R",
+                "total_regret")
+
+result457 <- load.result(exp_name, param_codes, run_codes, file_names)
+result457 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_E=last(total_E),
+    total_R=last(total_R),
+    total_regret=last(total_regret),
+    value_E=last(value_E),
+    value_R=last(value_R),
+    p_bests=last(p_bests)
+  ) %>% 
+  ungroup() ->
+summary457
+
+# --------------------------------------------------------------------
+exp_name <- "exp402"
+param_codes <- c(0)
+run_codes <- 1:100
+file_names <- c("score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "total_R",
+                "value_R",
+                "total_regret")
+
+result402 <- load.result(exp_name, param_codes, run_codes, file_names)
+result402 <- filter(result402, global_step <= 80) 
+result402 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=last(total_R),
+    value_R=last(value_R),
+    total_regret=last(total_regret),
+    p_bests=last(p_bests)
+  ) %>% 
+  ungroup() ->
+summary402
+
+# ---------------------------------------------------------------------
+result456 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, score_R, value_R,
+    total_regret, p_bests) -> tmp1
+result457 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, score_R, value_R,
+    total_regret, p_bests) -> tmp2
+result402 %>% 
+  dplyr::select(
+    global_step, param, run, action, total_R, score_R, value_R,
+    total_regret, p_bests) -> tmp3
+
+tmp1$agent <- "Stochastic"
+tmp2$agent <- "Deterministic"
+tmp3$agent <- "Random"
+
+result456_457 <- tmp1
+result456_457 <- bind_rows(result456_457, tmp2)
+result456_457 <- bind_rows(result456_457, tmp3)
+
+
+# -----------------------------------------------------------------------
+summary456 %>% 
+  dplyr::select(param, run, total_R, value_R, total_regret, p_bests) -> tmp1
+summary457 %>% 
+  dplyr::select(param, run, total_R, value_R, total_regret, p_bests) -> tmp2
+summary402 %>% 
+  dplyr::select(param, run, total_R, value_R, total_regret, p_bests) -> tmp3
+
+tmp1$agent <- "Stochastic"
+tmp2$agent <- "Deterministic"
+tmp3$agent <- "Random"
+
+summary456_457 <- tmp1
+summary456_457 <- bind_rows(summary456_457, tmp2)
+summary456_457 <- bind_rows(summary456_457, tmp3)
+
+summary456_457$agent <- factor(summary456_457$agent,
+                               levels=c(
+                                 "Deterministic", "Stochastic", "Random"))
 ```
 
-### Load
+## Sub 1a - action example
+```{r, fig.width=1.6, fig.height=2}
+result456_457 %>% 
+  filter(agent == "Deterministic") %>% 
+  # filter(global_step < 40) %>%
+  filter(run <= 10, param == 1) %>%
+  ggplot(aes(x=global_step, y=action, color=actor)) +
+  geom_line(size=0.6, alpha=1) +
+  labs(x="", y="Choice", title="Deterministic") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  scale_x_continuous(limits=c(-6, 86), breaks=c(0, 40, 80)) +
+  scale_color_manual("Search", values=c("darkorchid4")) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> 
+  p1
+
+result456_457 %>% 
+  filter(agent == "Stochastic") %>% 
+  filter(run <= 10, param == 1) %>%
+  ggplot(aes(x=global_step, y=action, color=actor)) +
+  geom_line(size=0.6, alpha=1) +
+  labs(x="Time", y="", title="Stochastic") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("Search", values=c("dodgerblue4")) +
+  scale_x_continuous(limits=c(-6, 86), breaks=c(0, 40, 80)) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(size = 6)) +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(strip.text = element_blank()) +
+  theme(axis.title.x = element_text(hjust = -.25)) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) -> 
+  p2
+```
+
+## Sub 1b - reward value (timecourse)
+```{r, fig.width=1.6, fig.height=0.6}
+result456_457 %>% 
+  filter(run <= 10, param == 1) %>%
+  filter(agent != "Random") %>%
+  ggplot(aes(x=global_step, y=value_R,
+             color=agent, group=agent)) +
+  geom_point(size=0.8, alpha=0.9, shape=".") +
+  # approx median smooth
+  geom_quantile(size=1, quantiles = 0.5, method = "rqss", color="black") + 
+  labs(x="Time", y="Reward value") +
+  facet_wrap(agent~., ncol=2) +
+  scale_x_continuous(limits=c(-6, 86), breaks=c(0, 40, 80)) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits=c(-.1, 1.1)) +
+  
+  scale_colour_manual("Policy", values=c("darkorchid4", "dodgerblue4")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  # theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) ->
+  p3
+
+
+sub1 <- (p1 + p2) / p3 + plot_layout(heights = c(0.85, 0.15))
+```
+
+## Sub 2 - summary value (jitter)
+```{r, fig.height=0.9, fig.width=0.6}
+# average value
+summary456_457 %>% 
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=agent)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
+  scale_y_continuous(breaks=c(0, 0.5, 1), limits=c(-.1, 1.1)) +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(axis.text.x = element_blank()) -> 
+  p1
+
+# Total regret
+summary456_457 %>% 
+  ggplot(aes(x=agent, y=total_regret/num_episodes, color=agent)) +
+  geom_jitter(size=0.3, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", 
+                      values=c("darkorchid4", "dodgerblue4", "darkgray")) +
+  labs(x="", y="Total regret") +
+  scale_y_log10() +
+  annotation_logticks(sides = "l") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  theme(panel.spacing = unit(1, "lines")) ->
+  p2
+
+# ---
+sub2 <- p1 / p2 
+print(sub3)
+```
+## Build figure
+```{r, fig.height=2.2, fig.width=1.7}
+fig <- (sub1 | (sub2  + plot_spacer())) + 
+  plot_layout(widths = c(0.8, 0.2)) +
+    plot_annotation(
+      title="Reward collection with independent policies:",
+      subtitle = "deterministic versus stochastic",
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+
+print(fig)
+
+# -- Save a to pdf --=
+# name <- "img/independent_sto_v_det"
+# ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.6*2, width = 2*2)
+```
+
+
+# Figure 5 - Independent versus joint value (aka intrinsic reward)
+## Load data for BanditOneHigh4 experiments
+- *NOTE*: result393_4 uses BanditOneHigh10, change to BanditOneHigh4 when that data is available. 
+- *NOTE*: need random data (ep=1)
+
+## Load data
 ```{r, message=FALSE}
+# -------------------------------------------------------------
+load.result <- function(exp_name, param_codes, run_codes, file_names){
+  num_files <- length(file_names)
+  result <- NULL
+  for (param in param_codes){
+    for (run in run_codes) {
+      runtmp <- read_csv(paste(data_path, 
+                               exp_name, 
+                               paste("param", param, sep=""), 
+                               paste("run", run, sep=""), 
+                               paste(file_names[1], "csv", sep="."), sep="/"))    
+      for (name in file_names[2:num_files]){
+        tmp <- read_csv(paste(data_path, 
+                              exp_name, 
+                              paste("param", param, sep=""), 
+                              paste("run", run, sep=""), 
+                              paste(name, "csv", sep="."), sep="/"))  
+        runtmp[[name]] <- tmp[[name]]
+      }
+      runtmp$run <- run
+      runtmp$param <- param
+      result <- bind_rows(result, runtmp)  
+    }
+  }
+  result
+}
+
+# -------------------------------------------------------------
 exp_name <- "exp393"
 param_codes <- 0:9
 run_codes <- 1:10
@@ -417,7 +715,7 @@ result393 %>%
   ungroup() ->
 summary393
 
-# ---
+# -------------------------------------------------------------
 exp_name <- "exp396"
 param_codes <- 0:9
 run_codes <- 1:10
@@ -445,7 +743,7 @@ result396 %>%
   ungroup() ->
 summary396
 
-# ---
+# -------------------------------------------------------------
 exp_name <- "exp397"
 param_codes <- c(0)
 run_codes <- 1:100
@@ -468,7 +766,7 @@ result397 %>%
   ungroup() ->
 summary397
 
-# ---
+# -------------------------------------------------------------
 # Join all the data
 result393 %>% 
   dplyr::select(
@@ -491,7 +789,7 @@ result393_7 <- tmp1
 result393_7 <- bind_rows(result393_7, tmp2)
 rm(tmp1, tmp2, tmp3)
 
-# ---
+# -------------------------------------------------------------
 summary393 %>% 
   dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
 summary396 %>% 
