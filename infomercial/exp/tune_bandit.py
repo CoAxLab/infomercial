@@ -161,12 +161,16 @@ def tune_random(name,
         params["config"] = {}
         params["config"]["write_to_disk"] = False
         # Make a new sample
-        for k, (low, high) in config_kwargs.items():
-            if log_space:
-                params["config"][k] = loguniform(low,
-                                                 high).rvs(random_state=prng)
-            else:
-                params["config"][k] = prng.uniform(low=low, high=high)
+        for k, par in config_kwargs.items():
+            try:
+                low, high = par
+                if log_space:
+                    params["config"][k] = loguniform(
+                        low, high).rvs(random_state=prng)
+                else:
+                    params["config"][k] = prng.uniform(low=low, high=high)
+            except TypeError:
+                params["config"][k] = float(par)
 
         # A worker gets the new sample
         workers.append(
