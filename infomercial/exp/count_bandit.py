@@ -54,7 +54,7 @@ class SoftmaxActor:
         # Convert to ps
         values = np.asarray(values)
         z = values * (1 / self.temp)
-        x = np.exp(z)
+        x = np.nan_to_num(np.exp(z))
         ps = x / np.sum(x)
 
         # Sample actions by ps
@@ -150,7 +150,7 @@ def run(env_name='BanditOneHigh2-v0',
         state, R_t, _, _ = env.step(action)
 
         # Apply count bonus
-        count_bonus = count(state)**(-0.5)
+        count_bonus = count(action)**(-0.5)
         R_t += beta * count_bonus
 
         # Critic learns

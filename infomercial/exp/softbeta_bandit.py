@@ -55,8 +55,16 @@ class SoftmaxActor:
         # Convert to ps
         values = np.asarray(values)
         z = values * (1 / self.temp)
-        x = np.exp(z)
+        x = np.nan_to_num(np.exp(z))
         ps = x / np.sum(x)
+
+        # print("-")
+        # print(self.temp)
+        # print(values)
+        # print(z)
+        # print(x)
+        # print(ps)
+        # print(self.actions)
 
         # Sample actions by ps
         action = self.prng.choice(self.actions, p=ps)
@@ -92,8 +100,6 @@ def Q_update(state, reward, critic, lr):
 
 def run(env_name='BanditOneHigh2-v0',
         num_episodes=1,
-        tie_break='next',
-        tie_threshold=0.0,
         temp=1.0,
         beta=1.0,
         bonus=0,
@@ -156,7 +162,8 @@ def run(env_name='BanditOneHigh2-v0',
         E_t = kl(new, old, default_info_value)
 
         # Apply bonus?
-        novelty_bonus = novelty(state)
+        novelty_bonus = novelty(action)
+
         R_t += novelty_bonus
 
         # Critic learns
@@ -187,8 +194,6 @@ def run(env_name='BanditOneHigh2-v0',
                   temp=temp,
                   env_name=env_name,
                   num_episodes=num_episodes,
-                  tie_break=tie_break,
-                  tie_threshold=tie_threshold,
                   critic=critic.state_dict(),
                   memories=[m.state_dict() for m in memories],
                   total_E=total_E,

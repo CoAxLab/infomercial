@@ -54,7 +54,7 @@ class SoftmaxActor:
         # Convert to ps
         values = np.asarray(values)
         z = values * (1 / self.temp)
-        x = np.exp(z)
+        x = np.nan_to_num(np.exp(z))
         ps = x / np.sum(x)
 
         # Sample actions by ps
