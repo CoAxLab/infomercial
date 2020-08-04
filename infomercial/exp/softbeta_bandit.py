@@ -164,10 +164,9 @@ def run(env_name='BanditOneHigh2-v0',
         # Apply bonus?
         novelty_bonus = novelty(action)
 
-        R_t += novelty_bonus
-
         # Critic learns
-        critic = Q_update(action, R_t + (beta * E_t), critic, lr_R)
+        payout = R_t + novelty_bonus + (beta * E_t)
+        critic = Q_update(action, payout, critic, lr_R)
 
         # Log data
         writer.add_scalar("state", int(state), n)
