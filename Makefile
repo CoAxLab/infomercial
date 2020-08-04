@@ -7215,15 +7215,101 @@ exp471:
 
 
 # ------------------------------------------------------------------------
-# Test several new agents
+# 8-4-2020
+# 869ee49
+#
+# Test several new agents.
+#
+# RESULT: - Output looks sane. Bonuses behave as expected. Move on to 
+#         - Move onto tune
+
 test_agents1:
 	-rm -rf $(DATA_PATH)/test
 	# Novelty
-	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --beta=0 --temp=1 --bonus=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_novelty
+	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=0 --temp=1 --bonus=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_novelty
 	# Extrinsic only 
-	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --beta=0 --temp=1 --bonus=0 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_extrinsic
+	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=0 --temp=1 --bonus=0 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_extrinsic
 	# Count
 	count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=.1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_count
 	# Entropy
 	entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=10 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_entropy
 
+# ------------------------------------------------------------------------
+# 8-4-2020
+# 869ee49
+#
+# Tune params for:
+# - softbeta_bandit in novelty mode
+# - softbeta_bandit in extrinsic reward only mode
+# - count_bandit 
+# - entropy bandit
+
+# Tasks:
+# - BanditOneHigh4
+exp472:
+	tune_bandit.py random $(DATA_PATH)/exp472 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=1 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=1 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp473:
+	tune_bandit.py random $(DATA_PATH)/exp473 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp474:
+	tune_bandit.py random $(DATA_PATH)/exp474 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp475:
+	tune_bandit.py random $(DATA_PATH)/exp475 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+
+# - BanditOneHot10
+# - BanditOneHot121
+# - BanditHardAndSparse10
+# - DeceptiveBanditOneHigh10
+# - DistractionOneHigh10
+
+# --- Test for 2x episodes ---
+# TODO
