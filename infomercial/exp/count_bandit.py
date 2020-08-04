@@ -118,9 +118,7 @@ def run(env_name='BanditOneHigh2-v0',
     R_t = default_reward_value
 
     # Agents and memories
-    critic = Critic(num_actions,
-                    default_value=default_reward_value +
-                    (beta * default_info_value))
+    critic = Critic(num_actions, default_value=default_reward_value)
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
     all_actions = list(range(num_actions))
 
