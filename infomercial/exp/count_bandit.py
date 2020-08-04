@@ -115,9 +115,6 @@ def run(env_name='BanditOneHigh2-v0',
     best_action = env.best
 
     default_reward_value = 0  # Null R
-    default_info_value = entropy(np.ones(num_actions) /
-                                 num_actions)  # Uniform p(a)
-    E_t = default_info_value
     R_t = default_reward_value
 
     # Agents and memories
