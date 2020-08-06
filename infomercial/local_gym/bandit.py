@@ -398,7 +398,6 @@ class DeceptiveBanditEnv(gym.Env):
         self.p_dist = p_dist
         self.r_dist = r_dist
         self.steps = 0
-        self.best = None
         self.max_steps = max_steps
         self.steps_away = steps_away
         self.scale = np.concatenate(
