@@ -42,10 +42,10 @@ class DistractionBanditEnv(gym.Env):
         self.stim = stim
         self.n_stim = len(self.stim)
         self.s_dists = s_dists
+        self.n_bandits = len(s_dists)
 
         self.rewards = rewards
         self.r_dists = r_dists
-        self.n_bandits = len(s_dists)
 
         self.action_space = spaces.Discrete(self.n_bandits)
         self.observation_space = spaces.Discrete(self.n_stim)
@@ -424,14 +424,11 @@ class DeceptiveBanditEnv(gym.Env):
         assert self.action_space.contains(action)
 
         # Get the reward....
-        reward = 0
         self.done = True
+
+        reward = 0
         if self.np_random.uniform() < self.p_dist[action]:
-            if not isinstance(self.r_dist[action], list):
-                reward = self.r_dist[action]
-            else:
-                reward = self.np_random.normal(self.r_dist[action][0],
-                                               self.r_dist[action][1])
+            reward = self.r_dist[action]
 
         # Add deceptiveness. Only the best arms are deceptive.
         if (action in self.best) and (reward != 0):
@@ -442,7 +439,7 @@ class DeceptiveBanditEnv(gym.Env):
 
             self.steps += 1
 
-        return [0], float(reward), self.done, {}
+        return 0, float(reward), self.done, {}
 
     def reset(self):
         self.done = False
