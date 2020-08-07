@@ -8136,3 +8136,105 @@ exp527:
 			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp527/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+
+# --------------------------------------------------------------------------
+# --- Tune a new count mode on all the tasks ---
+#
+# In optimizing the count_model I used a EB form for the count bonus
+# - count(action)**(-0.5)
+# Another standard and even more common form is the UCB:
+# - ((2 * np.log(n + 1)) / count(action))**(0.5)
+
+exp528_exp533: exp528 exp529 exp530 exp531 exp532 exp533 
+
+
+exp528:
+	tune_bandit.py random $(DATA_PATH)/exp528 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=40 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)'
+
+exp529:
+	tune_bandit.py random $(DATA_PATH)/exp529 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp530:
+	tune_bandit.py random $(DATA_PATH)/exp530 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)'
+
+exp531:
+	tune_bandit.py random $(DATA_PATH)/exp531 \
+		--exp_name='count_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp532:
+	tune_bandit.py random $(DATA_PATH)/exp532 \
+		--exp_name='count_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)'
+
+exp533:
+	tune_bandit.py random $(DATA_PATH)/exp533 \
+		--exp_name='count_bandit' \
+		--env_name=DistractionBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
