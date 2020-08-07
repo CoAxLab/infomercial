@@ -7225,6 +7225,20 @@ exp471:
 
 test_agents1:
 	-rm -rf $(DATA_PATH)/test
+	# curiosity
+	curiosity_bandit.py --env_name=InfoBlueYellow4b-v0 --num_episodes=80 --actor='DeterministicActor' --lr_E=1 --log_dir=$(DATA_PATH)/test/ --tie_threshold=0.001
+	# random
+	random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_random
+	# meta
+	meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_meta
+	# softmeta
+	softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_threshold=0.001 --temp=1.0 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_softmeta
+	# softbeta
+	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=1 --bonus=0 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_softbeta
+	# ep
+	epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon=0.1  --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_epsilon
+	# ep-decay
+	epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon=0.1 --epsilon_decay_tau=0.0001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_decay
 	# Novelty
 	softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=0 --temp=1 --bonus=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_novelty
 	# Extrinsic only 
@@ -7233,6 +7247,8 @@ test_agents1:
 	count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=.1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_count
 	# Entropy
 	entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=10 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_entropy
+
+
 
 # ------------------------------------------------------------------------
 # 8-4-2020
@@ -7693,7 +7709,7 @@ exp499:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp499.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=0.001 --lr_R=0.1 --log_dir=$(DATA_PATH)/exp499/param0/run{1} --master_seed={1}' ::: {0..100}
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=0.0001 --lr_R=0.1 --log_dir=$(DATA_PATH)/exp499/param0/run{1} --master_seed={1}' ::: {0..100}
 
 # good params
 exp500:
