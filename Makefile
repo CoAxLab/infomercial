@@ -8242,6 +8242,15 @@ exp533:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# --------------------------------------------------------------------------
+# 8-7-2020
+# 9b02a60
+#
+# To make illustrating model dynamics easier, I created some
+# hand-desgined bandits. ExampleBandits.
+#
+# Here is a quick recipe to test if they run right.
+
 test_example_bandits:
 	-rm -rf $(DATA_PATH)/test
 	# curiosity
@@ -8252,3 +8261,6 @@ test_example_bandits:
 	curiosity_bandit.py --env_name=ExampleInfoBandit1c-v0 --num_episodes=40 --actor='DeterministicActor' --lr_E=1 --log_dir=$(DATA_PATH)/test/ExampleInfoBandit1c --tie_threshold=0.001
 	# meta
 	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=80 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_meta
+
+
+# TODO: example bandit recipes
