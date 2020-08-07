@@ -7755,5 +7755,89 @@ exp500:
 # -------------------------------------------------------------------------
 # 8-7-2020
 # 97e0495
+#
 # --- Top10 test runs (v1) for tuning exps: exp472-exp498 ---
+# Test the 'new' agents on all the tasks
 
+
+# -
+# BanditOneHigh4
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+# -
+# BanditOneHigh4
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+# -
+# BanditOneHot121
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+# -
+# BanditHardAndSparse10
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+# -
+# DeceptiveBanditOneHigh10
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+# -
+# DistractionBanditOneHigh10
+
+# novelty
+
+# extrinsic
+
+# count
+
+# entropy
+
+
+# -------------------------------------------------------------------------
+# 8-7-2020
+# 97e0495
+#
+# --- Top10 test runs (v1) for tuning exps: exp496_exp498 ---
+# (This was a tune for the east bandit. I was param stealing before.)
+
+# BanditOneHigh4
+
+# softbeta
+
+# epsilone
+
+# anneal
