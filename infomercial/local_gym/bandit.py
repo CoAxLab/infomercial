@@ -9,6 +9,105 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+class ExampleInfoBandit1(gym.Env):
+    def __init__(self):
+        self.num_arms = 1
+        self.stim = (1, 2)
+        self.action_space = spaces.Discrete(1)
+        self.observation_space = spaces.Discrete(2)
+        self.reset()
+        self.states = [1, 2] * 20 + [2] * 20
+        self.max_steps = len(self.states)
+        self.count = 0
+
+    def step(self, action):
+        if self.count > self.max_steps:
+            raise ValueError(f"env exceeded max_steps ({self.count})")
+
+        state = self.states[self.count]
+        reward = 0
+
+        self.count += 1
+
+        return state, reward, self.done, {}
+
+    def reset(self):
+        self.done = False
+        return 0
+
+    def render(self, mode='human', close=False):
+        pass
+
+
+class ExampleBandit4(gym.Env):
+    def __init__(self):
+        self.num_arms = 4
+        self.best = [1]
+
+        self.action_space = spaces.Discrete(4)
+        self.observation_space = spaces.Discrete(1)
+        self.reset()
+        self.count = 0
+        self.max_steps = 80
+
+        # Build pre-defined rewards.
+        self.rewards = {}
+
+        # --------------------------------------------------------------------
+        # NOTE: All the sequences below were generated using np.random.binomial
+        # and only arm 1 was modified to have an 'unnatural' run of zeros
+        # in the middle. This make a nice example dataset for explore/
+        # exploit policies to fight it out.
+        # --------------------------------------------------------------------
+
+        # Worst arms
+        # arm: 0, 2, 3 p(reward) ~= 0.2
+        self.rewards[0] = [
+            0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1,
+            0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0
+        ]
+        self.rewards[2] = [
+            0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        ]
+        self.rewards[3] = [
+            0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+            1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0
+        ]
+
+        # Best arm
+        # arm: 1 p(reward) ~= 0.8 ...BUT it is modified to have 'doubts'
+        self.rewards[1] = [
+            1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+            1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0
+        ]
+
+    def step(self, action):
+        if not self.action_space.contains(action):
+            raise ValueError("action not known")
+
+        reward = 0
+
+        self.count += 1
+
+        return state, reward, self.done, {}
+
+    def reset(self):
+        self.done = False
+        return 0
+
+    def render(self, mode='human', close=False):
+        pass
+
+
 class DistractionBanditEnv(gym.Env):
     """
     n-armed info bandit environment. Rewards are independent of

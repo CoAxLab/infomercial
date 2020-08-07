@@ -1,5 +1,8 @@
 from gym.envs.registration import register
 
+from infomercial.local_gym.bandit import ExampleInfoBandit1
+from infomercial.local_gym.bandit import ExampleBandit4
+
 from infomercial.local_gym.bandit import BanditEnv
 from infomercial.local_gym.bandit import BanditOneHot2
 from infomercial.local_gym.bandit import BanditOneHot10
@@ -38,6 +41,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 environments = [
+    ['ExampleInfoBandit1', 'v0', 1],
+    ['ExampleBandit4', 'v0', 1],
     ['BanditOneHot2', 'v0', 1],
     ['BanditOneHot10', 'v0', 1],
     ['BanditOneHot121', 'v0', 1],
