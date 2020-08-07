@@ -11,72 +11,21 @@ from copy import deepcopy
 from scipy.stats import entropy
 from collections import OrderedDict
 
-from infomercial.memory import Count
 from infomercial.distance import kl
+from infomercial.memory import DiscreteDistribution
+from infomercial.models import Critic
+from infomercial.models import SoftmaxActor
+
 from infomercial.utils import estimate_regret
 from infomercial.utils import load_checkpoint
 from infomercial.utils import save_checkpoint
-
-
-class Critic(object):
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update, replace=False):
-        if replace:
-            self.model[state] = update
-        else:
-            self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class SoftmaxActor(object):
-    def __init__(self, num_actions, beta=1.0, tie_threshold=0.0, seed=None):
-        self.prng = np.random.RandomState(seed)
-        self.beta = beta
-        self.tie_threshold = tie_threshold
-        self.num_actions = num_actions
-        self.actions = list(range(self.num_actions))
-
-        # Undef for softmax. Set to False: API consistency.
-        self.tied = False
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Threshold
-        values = np.asarray(values) - self.tie_threshold
-
-        # # Move the the default policy?
-        # if np.sum(values < 0) == len(values):
-        #     return None
-
-        # Make a soft choice
-        probs = softmax(values * self.beta)
-        action = self.prng.choice(self.actions, p=probs)
-
-        return action
 
 
 def R_update(state, reward, critic, lr):
     """Really simple TD learning"""
 
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 
@@ -84,7 +33,7 @@ def R_update(state, reward, critic, lr):
 def E_update(state, value, critic, lr):
     """Bellman update"""
     update = lr * value
-    critic.update_(state, update, replace=True)
+    critic.replace(state, update)
 
     return critic
 
@@ -118,6 +67,7 @@ def run(env_name='BanditOneHot10-v0',
     env = gym.make(env_name)
     env.seed(master_seed)
     num_actions = env.action_space.n
+    all_actions = list(range(num_actions))
     best_action = env.best
 
     default_reward_value = 0
@@ -125,15 +75,12 @@ def run(env_name='BanditOneHot10-v0',
     E_t = default_info_value
     R_t = default_reward_value
 
-    # -
+    # --- Agents and memories ---
     critic_R = Critic(num_actions, default_value=default_reward_value)
     critic_E = Critic(num_actions, default_value=default_info_value)
-
-    actor_R = SoftmaxActor(num_actions, beta=temp, tie_threshold=tie_threshold)
-    actor_E = SoftmaxActor(num_actions, beta=temp, tie_threshold=tie_threshold)
-
-    memories = [Count() for _ in range(num_actions)]
-    all_actions = list(range(num_actions))
+    actor_R = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
+    actor_E = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
+    memories = [DiscreteDistribution() for _ in range(num_actions)]
 
     # -
     num_best = 0

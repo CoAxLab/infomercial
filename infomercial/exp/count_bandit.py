@@ -11,85 +11,19 @@ from scipy.stats import entropy
 
 from collections import OrderedDict
 
+from infomercial.memory import CountMemory
+from infomercial.models import Critic
+from infomercial.models import SoftmaxActor
+
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
 from infomercial.utils import load_checkpoint
-from infomercial.distance import kl
-
-
-class Critic:
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class SoftmaxActor:
-    def __init__(self, num_actions, temp=1, seed_value=42):
-        self.temp = temp
-        self.num_actions = num_actions
-        self.seed_value = seed_value
-        self.prng = np.random.RandomState(self.seed_value)
-        self.actions = list(range(self.num_actions))
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Convert to ps
-        values = np.asarray(values)
-        z = values * (1 / self.temp)
-        x = np.nan_to_num(np.exp(z))
-        ps = x / np.sum(x)
-
-        # Sample actions by ps
-        action = self.prng.choice(self.actions, p=ps)
-
-        return action
-
-
-class CountMemory:
-    """A simple state counter."""
-    def __init__(self):
-        self.memory = dict()
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        # Init?
-        if state not in self.memory:
-            self.memory[state] = 0
-
-        # Update count in memory
-        # and then return it
-        self.memory[state] += 1
-
-        return self.memory[state]
-
-    def state_dict(self):
-        return self.memory
 
 
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 
@@ -112,6 +46,7 @@ def run(env_name='BanditOneHigh2-v0',
     env = gym.make(env_name)
     env.seed(master_seed)
     num_actions = env.action_space.n
+    all_actions = list(range(num_actions))
     best_action = env.best
 
     default_reward_value = 0  # Null R
@@ -120,8 +55,6 @@ def run(env_name='BanditOneHigh2-v0',
     # Agents and memories
     critic = Critic(num_actions, default_value=default_reward_value)
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
-    all_actions = list(range(num_actions))
-
     count = CountMemory()
 
     # -

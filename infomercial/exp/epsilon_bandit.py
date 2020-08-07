@@ -7,6 +7,10 @@ import numpy as np
 from noboard.csv import SummaryWriter
 
 from scipy.stats import entropy
+
+from infomercial.models import Critic
+from infomercial.models import EpsilonActor
+
 from infomercial.utils import estimate_regret
 from infomercial.utils import load_checkpoint
 from infomercial.utils import save_checkpoint
@@ -14,66 +18,10 @@ from infomercial.utils import save_checkpoint
 from collections import OrderedDict
 
 
-class Critic(object):
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class Actor(object):
-    def __init__(self,
-                 num_actions,
-                 epsilon=0.1,
-                 decay_tau=0.001,
-                 seed_value=42):
-        self.epsilon = epsilon
-        self.decay_tau = decay_tau
-        self.num_actions = num_actions
-        self.seed_value = seed_value
-        self.prng = np.random.RandomState(self.seed_value)
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def decay_epsilon(self):
-        self.epsilon -= (self.decay_tau * self.epsilon)
-
-    def forward(self, values):
-        # If values are zero, be random.
-        if np.isclose(np.sum(values), 0):
-            action = self.prng.randint(0, self.num_actions, size=1)[0]
-
-            return action
-
-        # Otherwise, do Ep greedy
-        if self.prng.rand() < self.epsilon:
-            action = self.prng.randint(0, self.num_actions, size=1)[0]
-        else:
-            action = np.argmax(values)
-
-        return action
-
-
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 
@@ -101,10 +49,10 @@ def run(env_name='BanditOneHot2-v0',
     default_reward_value = 0.0
     R_t = default_reward_value
     critic = Critic(num_actions, default_value=default_reward_value)
-    actor = Actor(num_actions,
-                  epsilon=epsilon,
-                  decay_tau=epsilon_decay_tau,
-                  seed_value=master_seed)
+    actor = EpsilonActor(num_actions,
+                         epsilon=epsilon,
+                         decay_tau=epsilon_decay_tau,
+                         seed_value=master_seed)
     all_actions = list(range(num_actions))
 
     # -

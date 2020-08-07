@@ -6,10 +6,9 @@ import numpy as np
 
 from noboard.csv import SummaryWriter
 
-from copy import deepcopy
-from scipy.stats import entropy as scientropy
-
-from collections import OrderedDict
+from infomercial.models import Critic
+from infomercial.models import SoftmaxActor
+from infomercial.memory import EntropyMemory
 
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
@@ -17,94 +16,10 @@ from infomercial.utils import load_checkpoint
 from infomercial.distance import kl
 
 
-class Critic:
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class SoftmaxActor:
-    def __init__(self, num_actions, temp=1, seed_value=42):
-        self.temp = temp
-        self.num_actions = num_actions
-        self.seed_value = seed_value
-        self.prng = np.random.RandomState(self.seed_value)
-        self.actions = list(range(self.num_actions))
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Convert to ps
-        values = np.asarray(values)
-        z = values * (1 / self.temp)
-        x = np.nan_to_num(np.exp(z))
-        ps = x / np.sum(x)
-
-        # Sample actions by ps
-        action = self.prng.choice(self.actions, p=ps)
-
-        return action
-
-
-class EntropyMemory:
-    """Estimate policy entropy."""
-    def __init__(self, intial_bins=None, initial_count=1, base=None):
-        # Init the count model
-        if intial_bins is None:
-            self.N = 1
-        else:
-            self.N = len(intial_bins)
-
-        self.base = base
-        self.initial_count = initial_count
-        self.memory = dict()
-
-        # Preinit its values?
-        if intial_bins is not None:
-            for x in intial_bins:
-                self.memory[x] = self.initial_count
-
-    def __call__(self, action):
-        return self.forward(action)
-
-    def forward(self, action):
-        # Init?
-        if action not in self.memory:
-            self.memory[action] = self.initial_count
-
-        # Update count in memory
-        self.N += 1
-        self.memory[action] += 1
-
-        # Estimate H
-        self.probs = [(n / self.N) for n in self.memory.values()]
-        return scientropy(np.asarray(self.probs), base=self.base)
-
-    def state_dict(self):
-        return self.memory
-
-
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 

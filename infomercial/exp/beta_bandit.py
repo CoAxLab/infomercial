@@ -11,89 +11,16 @@ from scipy.stats import entropy
 from copy import deepcopy
 
 from infomercial.distance import kl
-from infomercial.memory import Count
+from infomercial.memory import DiscreteDistribution
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
 from infomercial.utils import load_checkpoint
 
 
-class Critic(object):
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class Actor(object):
-    def __init__(self, num_actions, tie_break='next', tie_threshold=0.0):
-        self.num_actions = num_actions
-        self.tie_break = tie_break
-        self.tie_threshold = tie_threshold
-        self.action_count = 0
-
-    def _is_tied(self, values):
-        # One element can't be a tie
-        if len(values) < 1:
-            return False
-
-        # Apply the threshold, rectifying values less than 0
-        t_values = [max(0, v - self.tie_threshold) for v in values]
-
-        # Check for any difference, if there's a difference then
-        # there can be no tie.
-        tied = True  # Assume tie
-        v0 = t_values[0]
-        for v in t_values[1:]:
-            if np.isclose(v0, v):
-                continue
-            else:
-                tied = False
-
-        return tied
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Pick the best as the base case, ....
-        action = np.argmax(values)
-
-        # then check for ties.
-        #
-        # Using the first element is argmax's tie breaking strategy
-        if self.tie_break == 'first':
-            pass
-        # Round robin through the options for each new tie.
-        elif self.tie_break == 'next':
-            self.tied = self._is_tied(values)
-            if self.tied:
-                self.action_count += 1
-                action = self.action_count % self.num_actions
-        else:
-            raise ValueError("tie_break must be 'first' or 'next'")
-
-        return action
-
-
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 
@@ -133,7 +60,7 @@ def run(env_name='BanditOneHigh2-v0',
                   tie_break=tie_break,
                   tie_threshold=tie_threshold)
 
-    memories = [Count() for _ in range(num_actions)]
+    memories = [DiscreteDistribution() for _ in range(num_actions)]
     all_actions = list(range(num_actions))
 
     # -

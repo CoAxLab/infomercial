@@ -11,89 +11,22 @@ from scipy.stats import entropy
 
 from collections import OrderedDict
 
-from infomercial.memory import Count
+from infomercial.distance import kl
+from infomercial.memory import DiscreteDistribution
+from infomercial.memory import NoveltyMemory
+
+from infomercial.models import Critic
+from infomercial.models import SoftmaxActor
+
 from infomercial.utils import estimate_regret
 from infomercial.utils import save_checkpoint
 from infomercial.utils import load_checkpoint
-from infomercial.distance import kl
-
-
-class Critic:
-    def __init__(self, num_inputs, default_value):
-        self.num_inputs = num_inputs
-        self.default_value = default_value
-
-        self.model = OrderedDict()
-        for n in range(self.num_inputs):
-            self.model[n] = self.default_value
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        return self.model[state]
-
-    def update_(self, state, update):
-        self.model[state] += update
-
-    def state_dict(self):
-        return self.model
-
-
-class SoftmaxActor:
-    def __init__(self, num_actions, temp=1, seed_value=42):
-        self.temp = temp
-        self.num_actions = num_actions
-        self.seed_value = seed_value
-        self.prng = np.random.RandomState(self.seed_value)
-        self.actions = list(range(self.num_actions))
-
-    def __call__(self, values):
-        return self.forward(values)
-
-    def forward(self, values):
-        # Convert to ps
-        values = np.asarray(values)
-        z = values * (1 / self.temp)
-        x = np.nan_to_num(np.exp(z))
-        ps = x / np.sum(x)
-
-        # print("-")
-        # print(self.temp)
-        # print(values)
-        # print(z)
-        # print(x)
-        # print(ps)
-        # print(self.actions)
-
-        # Sample actions by ps
-        action = self.prng.choice(self.actions, p=ps)
-
-        return action
-
-
-class NoveltyMemory:
-    def __init__(self, bonus=0):
-        self.bonus = bonus
-        self.memory = []
-
-    def __call__(self, state):
-        return self.forward(state)
-
-    def forward(self, state):
-        if state in self.memory:
-            bonus = 0
-        else:
-            self.memory.append(state)
-            bonus = self.bonus
-
-        return bonus
 
 
 def Q_update(state, reward, critic, lr):
     """Really simple Q learning"""
     update = lr * (reward - critic(state))
-    critic.update_(state, update)
+    critic.update(state, update)
 
     return critic
 
@@ -132,7 +65,7 @@ def run(env_name='BanditOneHigh2-v0',
     all_actions = list(range(num_actions))
 
     novelty = NoveltyMemory(bonus=bonus)
-    memories = [Count() for _ in range(num_actions)]
+    memories = [DiscreteDistribution() for _ in range(num_actions)]
 
     # -
     total_R = 0.0
