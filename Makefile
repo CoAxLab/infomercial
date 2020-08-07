@@ -8340,7 +8340,7 @@ exp538:
 # Tuned UCB count mode on all the tasks in exp528_exp533.
 # 
 # In this recipe set we run tests using the top10 models.
-exp539_exp544: exp539 exp540 exp541 exp542 exp543 exp539_exp544
+exp539_exp544: exp539 exp540 exp541 exp542 exp543 exp544
 
 # -
 # BanditOneHigh4 - param: exp528
