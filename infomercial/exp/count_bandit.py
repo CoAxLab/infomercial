@@ -33,6 +33,7 @@ def run(env_name='BanditOneHigh2-v0',
         temp=1.0,
         beta=1.0,
         lr_R=.1,
+        mode='EB',
         master_seed=42,
         write_to_disk=True,
         log_dir=None):
@@ -77,7 +78,12 @@ def run(env_name='BanditOneHigh2-v0',
         state, R_t, _, _ = env.step(action)
 
         # Apply count bonus
-        count_bonus = count(action)**(-0.5)
+        if mode == "EB":
+            count_bonus = count(action)**(-0.5)
+        elif mode == "UCB":
+            count_bonus = ((2 * np.log(n + 1)) / count(action))**(0.5)
+        else:
+            raise ValueError("mode must be EB or UCB")
 
         # Critic learns
         payout = R_t + (beta * count_bonus)
