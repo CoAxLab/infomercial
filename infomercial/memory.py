@@ -56,20 +56,20 @@ class CountMemory:
 
 class EntropyMemory:
     """Estimate policy entropy."""
-    def __init__(self, intial_bins=None, initial_count=1, base=None):
+    def __init__(self, initial_bins=None, initial_count=1, base=None):
         # Init the count model
-        if intial_bins is None:
+        if initial_bins is None:
             self.N = 1
         else:
-            self.N = len(intial_bins)
+            self.N = len(initial_bins)
 
         self.base = base
         self.initial_count = initial_count
         self.memory = dict()
 
         # Preinit its values?
-        if intial_bins is not None:
-            for x in intial_bins:
+        if initial_bins is not None:
+            for x in initial_bins:
                 self.memory[x] = self.initial_count
 
     def __call__(self, action):
@@ -119,15 +119,15 @@ class ModulusMemory:
 
 class DiscreteDistribution:
     """A discrete distribution."""
-    def __init__(self, intial_bins=None, initial_count=1):
+    def __init__(self, initial_bins=None, initial_count=1):
         # Init the count model
         self.N = 0
         self.initial_count = initial_count
         self.count = OrderedDict()
 
         # Preinit its values?
-        if intial_bins is not None:
-            for x in intial_bins:
+        if initial_bins is not None:
+            for x in initial_bins:
                 self.count[x] = self.initial_count
 
     def __len__(self):

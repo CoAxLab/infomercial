@@ -94,7 +94,7 @@ def run(env_name='InfoBlueYellow4b-v0',
 
     # Memory
     memories = [
-        DiscreteDistribution(intial_bins=initial_bins,
+        DiscreteDistribution(initial_bins=initial_bins,
                              initial_count=initial_count)
         for _ in range(num_actions)
     ]

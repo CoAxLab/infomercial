@@ -8263,4 +8263,24 @@ test_example_bandits:
 	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=80 --tie_threshold=0.001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_meta
 
 
+# --------------------------------------------------------------------------
+# 8-7-2020
+# 9b02a60
+# Rerun meta on several tasks BUT! 
+# - give it knowledge of the tasks state-space ahead of time.
+
+# BanditOneHigh4
+exp534:
+	# Get top 10
+	head -n 2 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp534.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..100} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# ---------------------------------------------------------------------------
 # TODO: example bandit recipes

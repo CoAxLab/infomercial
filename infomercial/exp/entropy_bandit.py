@@ -52,7 +52,7 @@ def run(env_name='BanditOneHigh2-v0',
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
     all_actions = list(range(num_actions))
 
-    entropy = EntropyMemory(intial_bins=all_actions, initial_count=1, base=2)
+    entropy = EntropyMemory(initial_bins=all_actions, initial_count=1, base=2)
 
     # -
     total_R = 0.0
