@@ -14,6 +14,7 @@ class ExampleInfoBandit1a(gym.Env):
     """Illustration of info regularity (y,y,y,...,b,b,b)"""
     def __init__(self):
         self.num_arms = 1
+        self.best = [0]
         self.stim = (1, 2)
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Discrete(2)
@@ -45,6 +46,7 @@ class ExampleInfoBandit1b(gym.Env):
     """Example of changes in regularity (y,b,y,b,...,b,b,b)"""
     def __init__(self):
         self.num_arms = 1
+        self.best = [0]
         self.stim = (1, 2)
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Discrete(2)
@@ -76,6 +78,7 @@ class ExampleInfoBandit1c(gym.Env):
     """Example of changes in regularity (binomal(y,b),...,b,b,b)"""
     def __init__(self):
         self.num_arms = 1
+        self.best = [0]
         self.stim = (1, 2)
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Discrete(2)
@@ -131,39 +134,42 @@ class ExampleBandit4(gym.Env):
 
         # - Worst arms
         # arm: 0, 2, 3 p(reward) ~= 0.2
-        self.rewards[0] = cycle([
-            0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+        self.rewards[0] = [
+            0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1,
             0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0
-        ])
-        self.rewards[2] = cycle([
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        ]
+        self.rewards[2] = [
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0
-        ])
-        self.rewards[3] = cycle([
-            0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        ]
+        self.rewards[3] = [
+            0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
             0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
             1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0
-        ])
+        ]
 
         # - Best arm
         # arm: 1 p(reward) ~= 0.8 ...BUT it is modified to have 'doubts'
-        self.rewards[1] = cycle([
+        self.rewards[1] = [
             1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
             1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0,
             0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0
-        ])
+        ]
+        self.max_steps = len(self.rewards[1])
 
     def step(self, action):
         if not self.action_space.contains(action):
             raise ValueError("action not known")
 
-        reward = self.rewards[action][self.count]
+        state = 0
+        reward = self.rewards[action][self.count % self.max_steps]
+
         self.count += 1
 
         return state, reward, self.done, {}
