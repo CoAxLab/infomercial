@@ -55,6 +55,7 @@ def run(env_name='BanditOneHot10-v0',
         tie_threshold=0.0,
         lr_R=.1,
         master_seed=42,
+        intial_bins=None,
         write_to_disk=True,
         log_dir=None):
     """Bandit agent - argmax (E, R)"""
@@ -86,7 +87,10 @@ def run(env_name='BanditOneHot10-v0',
                                  tie_break=tie_break,
                                  tie_threshold=tie_threshold)
 
-    memories = [DiscreteDistribution() for _ in range(num_actions)]
+    memories = [
+        DiscreteDistribution(intial_bins=intial_bins)
+        for _ in range(num_actions)
+    ]
 
     # -
     num_best = 0
