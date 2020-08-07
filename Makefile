@@ -8267,7 +8267,12 @@ test_example_bandits:
 # 8-7-2020
 # 9b02a60
 # Rerun meta on several tasks BUT! 
-# - give it knowledge of the tasks state-space ahead of time.
+# ...Give it knowledge of the tasks state-space ahead of time:
+#
+# --initial_bins='[(0, 0), (0, 1)]'
+
+exp534_exp538: exp534 exp535 exp536 exp537 exp538
+
 
 # BanditOneHigh4
 exp534:
@@ -8277,7 +8282,56 @@ exp534:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp534.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..100} :::: tmp
+			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..100} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# BanditHardAndSparse10 
+exp535:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp535.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=10000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp535/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# BanditOneHigh121
+exp536:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp383_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp536.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=24200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp536/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# DeceptiveBanditOneHigh10
+exp537:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp537.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp537/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# DistractionBanditOneHigh10
+exp538:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp460_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp538.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp538/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
