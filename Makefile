@@ -7260,11 +7260,11 @@ test_agents1:
 # - count_bandit 
 # - entropy bandit
 
-# Tasks:
-# - BanditOneHigh4
+# -
+# BanditOneHigh4
 exp472_exp475: exp472 exp473 exp474 exp475 
 
-
+# novelty
 exp472:
 	tune_bandit.py random $(DATA_PATH)/exp472 \
 		--exp_name='softbeta_bandit' \
@@ -7280,6 +7280,7 @@ exp472:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp473:
 	tune_bandit.py random $(DATA_PATH)/exp473 \
 		--exp_name='softbeta_bandit' \
@@ -7295,6 +7296,7 @@ exp473:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp474:
 	tune_bandit.py random $(DATA_PATH)/exp474 \
 		--exp_name='count_bandit' \
@@ -7309,6 +7311,7 @@ exp474:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp475:
 	tune_bandit.py random $(DATA_PATH)/exp475 \
 		--exp_name='entropy_bandit' \
@@ -7324,11 +7327,11 @@ exp475:
 		--lr_R='(0.001, 0.5)' 
 
 
-
-# --- BanditOneHigh10 ---
+# -
+# BanditOneHigh10
 exp476_exp479: exp476 exp477 exp478 exp479 
 
-
+# novelty
 exp476:
 	tune_bandit.py random $(DATA_PATH)/exp476 \
 		--exp_name='softbeta_bandit' \
@@ -7344,6 +7347,7 @@ exp476:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp477:
 	tune_bandit.py random $(DATA_PATH)/exp477 \
 		--exp_name='softbeta_bandit' \
@@ -7359,6 +7363,7 @@ exp477:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp478:
 	tune_bandit.py random $(DATA_PATH)/exp478 \
 		--exp_name='count_bandit' \
@@ -7373,6 +7378,7 @@ exp478:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp479:
 	tune_bandit.py random $(DATA_PATH)/exp479 \
 		--exp_name='entropy_bandit' \
@@ -7388,11 +7394,12 @@ exp479:
 		--lr_R='(0.001, 0.5)' 
 
 
-
-# --- BanditOneHot121 --- 
+# -
+# BanditOneHot121 
 exp480_exp483: exp480 exp481 exp482 exp483
 
 
+# novelty
 exp480:
 	tune_bandit.py random $(DATA_PATH)/exp480 \
 		--exp_name='softbeta_bandit' \
@@ -7408,6 +7415,7 @@ exp480:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp481:
 	tune_bandit.py random $(DATA_PATH)/exp481 \
 		--exp_name='softbeta_bandit' \
@@ -7423,6 +7431,7 @@ exp481:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp482:
 	tune_bandit.py random $(DATA_PATH)/exp482 \
 		--exp_name='count_bandit' \
@@ -7437,6 +7446,7 @@ exp482:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp483:
 	tune_bandit.py random $(DATA_PATH)/exp483 \
 		--exp_name='entropy_bandit' \
@@ -7452,10 +7462,12 @@ exp483:
 		--lr_R='(0.001, 0.5)' 
 
 
-# --- BanditHardAndSparse10 ---
+# -
+# BanditHardAndSparse10
 exp484_exp487: exp484 exp485 exp486 exp487
 
 
+# novelty
 exp484:
 	tune_bandit.py random $(DATA_PATH)/exp484 \
 		--exp_name='softbeta_bandit' \
@@ -7471,6 +7483,7 @@ exp484:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp485:
 	tune_bandit.py random $(DATA_PATH)/exp485 \
 		--exp_name='softbeta_bandit' \
@@ -7486,6 +7499,7 @@ exp485:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp486:
 	tune_bandit.py random $(DATA_PATH)/exp486 \
 		--exp_name='count_bandit' \
@@ -7500,6 +7514,7 @@ exp486:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp487:
 	tune_bandit.py random $(DATA_PATH)/exp487 \
 		--exp_name='entropy_bandit' \
@@ -7514,10 +7529,13 @@ exp487:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
-# - DeceptiveBanditOneHigh10
+
+# -
+# DeceptiveBanditOneHigh10
 exp488_exp491: exp488 exp489 exp490 exp491
 
 
+# novelty
 exp488:
 	tune_bandit.py random $(DATA_PATH)/exp488 \
 		--exp_name='softbeta_bandit' \
@@ -7533,6 +7551,7 @@ exp488:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp489:
 	tune_bandit.py random $(DATA_PATH)/exp489 \
 		--exp_name='softbeta_bandit' \
@@ -7548,6 +7567,7 @@ exp489:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp490:
 	tune_bandit.py random $(DATA_PATH)/exp490 \
 		--exp_name='count_bandit' \
@@ -7562,6 +7582,7 @@ exp490:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp491:
 	tune_bandit.py random $(DATA_PATH)/exp491 \
 		--exp_name='entropy_bandit' \
@@ -7576,10 +7597,11 @@ exp491:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
-# - DistractionBanditOneHigh10
+# - 
+# DistractionBanditOneHigh10
 exp492_exp495: exp492 exp493 exp494 exp495
 
-
+# novelty
 exp492:
 	tune_bandit.py random $(DATA_PATH)/exp492 \
 		--exp_name='softbeta_bandit' \
@@ -7595,6 +7617,7 @@ exp492:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# extrinsic
 exp493:
 	tune_bandit.py random $(DATA_PATH)/exp493 \
 		--exp_name='softbeta_bandit' \
@@ -7610,6 +7633,7 @@ exp493:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# count
 exp494:
 	tune_bandit.py random $(DATA_PATH)/exp494 \
 		--exp_name='count_bandit' \
@@ -7624,6 +7648,7 @@ exp494:
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
 
+# entropy
 exp495:
 	tune_bandit.py random $(DATA_PATH)/exp495 \
 		--exp_name='entropy_bandit' \
@@ -7651,6 +7676,7 @@ exp495:
 
 exp496_exp498: exp496 exp497 exp498
 
+# softbeta
 exp496:
 	tune_bandit.py random $(DATA_PATH)/exp496 \
 		--exp_name='softbeta_bandit' \
@@ -7665,6 +7691,7 @@ exp496:
 		--lr_R='(0.001, 0.5)' \
 		--temp='(0.001, 1000)' \
 
+# epsilon
 exp497:
 	tune_bandit.py random $(DATA_PATH)/exp497 \
 		--exp_name='epsilon_bandit' \
@@ -7678,6 +7705,7 @@ exp497:
 		--epsilon='(0.01, 0.99)' \
 		--lr_R='(0.001, 0.5)' 
 
+# anneal
 exp498:
 	tune_bandit.py random $(DATA_PATH)/exp498 \
 		--exp_name='epsilon_bandit' \
@@ -7722,3 +7750,10 @@ exp500:
 			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp500/param{index}/run{1} --master_seed={1}' ::: {0..100} :::: tmp
 	# Clean up
 	rm tmp
+
+
+# -------------------------------------------------------------------------
+# 8-7-2020
+# 97e0495
+# --- Top10 test runs (v1) for tuning exps: exp472-exp498 ---
+
