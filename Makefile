@@ -7675,3 +7675,34 @@ exp498:
 		--epsilon='(0.01, 0.99)' \
 		--epsilon_decay_tau='(0.0001, 0.1)' \
 		--lr_R='(0.001, 0.5)'
+
+# -------------------------------------------------------------------------
+# 8-6-2020
+# 
+# I need an example of meta for the intro figure. Run first an example
+# with not the best HP, but that has interesting dynamics. That is,
+# it shows off when *can* happen.
+# 
+# Then run 100 trials of a top-1 HP, for comparison, perhaps, in 
+# another figure
+
+# -- meta example, N = 100 ---
+
+# example runs
+exp499:
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp499.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=0.001 --lr_R=0.1 --log_dir=$(DATA_PATH)/exp499/param0/run{1} --master_seed={1}' ::: {0..100}
+
+# good params
+exp500:
+	# Get top 10
+	head -n 2 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp500.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp500/param{index}/run{1} --master_seed={1}' ::: {0..100} :::: tmp
+	# Clean up
+	rm tmp
