@@ -266,7 +266,7 @@ class BanditEnv(gym.Env):
 
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
-        self.observation_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(1)
         self.seed()
 
     def seed(self, seed=None):
@@ -327,7 +327,7 @@ class UnstableBanditEnv(gym.Env):
         # Setup the space
         self.n_bandits = len(self.p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
-        self.observation_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(1)
         self.seed()
 
     def seed(self, seed=None):
@@ -405,7 +405,7 @@ class DeceptiveBanditEnv(gym.Env):
 
         self.n_bandits = len(p_dist)
         self.action_space = spaces.Discrete(self.n_bandits)
-        self.observation_space = spaces.Discrete(self.n_bandits)
+        self.observation_space = spaces.Discrete(1)
 
         self.seed()
 
