@@ -8143,8 +8143,11 @@ exp527:
 #
 # In optimizing the count_model I used a EB form for the count bonus
 # - count(action)**(-0.5)
+#
 # Another standard and even more common form is the UCB:
 # - ((2 * np.log(n + 1)) / count(action))**(0.5)
+#
+# Reference: https://arxiv.org/abs/1611.04717
 
 exp528_exp533: exp528 exp529 exp530 exp531 exp532 exp533 
 
