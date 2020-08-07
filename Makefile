@@ -8097,42 +8097,42 @@ exp524:
 # (This was a tune for the east bandit. I was param stealing before.)
 
 # BanditOneHigh4
-exp524_exp526: exp524 exp525 exp526 
+exp525_exp527: exp525 exp526 exp527 
 
 
 # softbeta - param: exp496
-exp524:
+exp525:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp496_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
-			--joblog '$(DATA_PATH)/exp524.log' \
+			--joblog '$(DATA_PATH)/exp525.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp524/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp525/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
 
 # epsilon - param: exp497
-exp525:
+exp526:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp497_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
-			--joblog '$(DATA_PATH)/exp525.log' \
+			--joblog '$(DATA_PATH)/exp526.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp525/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon=0.1 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp526/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
 # anneal - param: exp498
-exp526:
+exp527:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp498_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
-			--joblog '$(DATA_PATH)/exp526.log' \
+			--joblog '$(DATA_PATH)/exp527.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp526/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp527/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
