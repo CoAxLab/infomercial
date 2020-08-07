@@ -8307,7 +8307,7 @@ exp536:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp536.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=24200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp536/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp536/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8319,7 +8319,7 @@ exp537:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp537.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp537/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp537/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8334,6 +8334,95 @@ exp538:
 			"meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp538/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# ---------------------------------------------------------------------------
+# --- Top10 test ---
+# Tuned UCB count mode on all the tasks in exp528_exp533.
+# 
+# In this recipe set we run tests using the top10 models.
+exp539_exp544: exp539 exp540 exp541 exp542 exp543 exp539_exp544
+
+# -
+# BanditOneHigh4 - param: exp528
+exp539:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp528_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp539.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp539/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# BanditOneHigh10 - param: exp529
+exp540:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp529_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp540.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp540/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# BanditOneHigh121 - param: exp530
+exp541:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp530_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp541.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp541/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# BanditHardAndSparse10 - param: exp531
+exp542:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp531_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp542.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=10000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp542/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# DeceptiveBanditOneHigh10 - param: exp532
+exp543:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp532_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp543.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp543/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# DistractionBanditOneHigh10 - param: exp533
+exp544:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp533_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp544.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp544/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
+
+
+
+
+
+
 
 
 # ---------------------------------------------------------------------------
