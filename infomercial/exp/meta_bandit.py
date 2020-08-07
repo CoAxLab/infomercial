@@ -142,6 +142,7 @@ def run(env_name='BanditOneHot10-v0',
     env.reset()
 
     num_actions = env.action_space.n
+    all_actions = list(range(num_actions))
     best_action = env.best
 
     default_reward_value = 0
@@ -158,8 +159,8 @@ def run(env_name='BanditOneHot10-v0',
     actor_E = Actor(num_actions,
                     tie_break=tie_break,
                     tie_threshold=tie_threshold)
+
     memories = [Count() for _ in range(num_actions)]
-    all_actions = list(range(num_actions))
 
     # -
     num_best = 0
