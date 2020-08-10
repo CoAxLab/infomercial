@@ -8438,6 +8438,17 @@ exp544:
 # - Run exp535 out to 40000. The last version with 10000 is misleading 
 # and too short?
 
+# RESULTS: comparing several exps, meta does outperform or is near the top
+#          for most HP BUT you must run it long enough. anneal-ep and 
+#          other methods can gues right faster, sometimes. They also guess
+#          wrong. In the long-term then, and over "enough: trials meta 
+#          consistenyly wins.
+#
+#          ALSO note the p_base metric is more a measure of speed to final
+#          outcome the p(best) at the end. Nature of how I est it in the 
+#          main code. Should calc a better final p_best in the Rmd, and
+#          report that.
+
 exp545:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
