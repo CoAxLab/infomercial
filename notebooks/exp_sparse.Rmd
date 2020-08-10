@@ -84,12 +84,7 @@ data_path <- "~/Code/infomercial/data/"
 - Meta is instead middle of the pack. Which is unexpected.
 - In this notebook I explore a range of past simulations and HPs to try and understand.
 
-# Load data
-- Load a range of sparse data
-- Load a 'good' anneal-ep
-- Load a random exp
-
-## Data bibliography
+# Data bibliography
 Meta
 - exp535 (exp387_sorted, initial_bins) **
 - exp429 (exp387_sorted, num_episodes=40000) **
@@ -101,23 +96,23 @@ Other
 - exp431: anneal-ep (exp386_sorted)
 - exp433: random example
 
-## Load
+# Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditHardAndSparse10"
 task_code <- 2
 
 exp_names <- c(
-  "exp535", "exp429", "exp428", "exp408", "exp365",
-  "exp431", "exp433")
+  "exp535", "exp546", "exp429", "exp428", "exp408", 
+  "exp365","exp431", "exp433")
 
 num_episodes <- c(
-  10000, 40000, 20000, 20000, 50000,
-  40000, 40000)
+  10000, 60000, 40000, 20000, 20000, 
+  50000, 40000, 40000)
 
 agent_names <- c(
-  "Curiosity535", "Curiosity429", "Curiosity428", "Curiosity408", "Curiosity365", 
-  "tau-random431", "Random")
+  "Curiosity535", "Curiosity546", "Curiosity429", "Curiosity428", "Curiosity408",
+  "Curiosity365", "tau-random431", "Random")
 
 file_names <- c("score_R", 
                 "action", 
@@ -162,9 +157,9 @@ for(i in 1:length(exp_names)){
   
   # -
   # drop to 10000
-  max_episodes <- 10000
+  short_episodes <- 10000
   tmp1 %>% 
-    filter(global_step <= max_episodes) -> tmp1
+    filter(global_step <= short_episodes) -> tmp1
   tmp2 <- summarise_reward(tmp1)
   tmp2$exp <- exp_name
   tmp2$agent <- agent_name
@@ -179,10 +174,10 @@ rm(tmp1, tmp2, agent_name, agent_names, exp_name, exp_names, file_names,
 ```
 
 
-# Fig - summary (all episodes)
+# Fig. summary (all episodes)
 ```{r, fig.width=2.4, fig.height=1.6}
 # -------------------------------------------------------------------
-# Boxs
+# Boxes
 summary_task2 %>% 
   ggplot(aes(x=agent, y=total_R/num_episodes)) +
   geom_boxplot(size=0.4, outlier.size = .1) +
@@ -254,13 +249,13 @@ summary_task2 %>%
                   theme = theme_pubr(base_size = 8, legend = "none"))
 ```
 
-# Fig - summary (10000)
+# Fig. summary (short)
 ```{r, fig.width=2.4, fig.height=1.6}
 
 # -------------------------------------------------------------------
 # Boxs
 summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_R/max_episodes)) +
+  ggplot(aes(x=agent, y=total_R/short_episodes)) +
   geom_boxplot(size=0.4, outlier.size = .1) +
   scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
   labs(x="", y="Total reward") +
@@ -269,7 +264,7 @@ summary_task2_short %>%
   coord_flip() -> p1
 
 summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_regret/max_episodes)) +
+  ggplot(aes(x=agent, y=total_regret/short_episodes)) +
   geom_boxplot(size=0.4, outlier.size = .1) +
   # scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
   labs(x="", y="Total regret") +
@@ -293,7 +288,7 @@ summary_task2_short %>%
 # -------------------------------------------------------------------
 # Jitters
 summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_R/max_episodes)) +
+  ggplot(aes(x=agent, y=total_R/short_episodes)) +
   geom_jitter(width=0.1, alpha=0.6, shape=".") +
   stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
   scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
@@ -303,7 +298,7 @@ summary_task2_short %>%
   coord_flip() -> p4
 
 summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_regret/max_episodes)) +
+  ggplot(aes(x=agent, y=total_regret/short_episodes)) +
   geom_jitter(width=0.1, alpha=0.6, shape=".") +
   stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
   scale_y_continuous(limits=c(-.001, 0.061), breaks = c(0, 0.03, 0.06)) +
@@ -329,64 +324,59 @@ summary_task2_short %>%
   plot_annotation(title = "Task 2 (n=10000)", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 ```
-
-# Fig total reward
-```{r, fig.width=2.4, fig.height=1.2}
+# Fig. actions
+```{r, fig.width=3.2, fig.height=1.2}
 result_task2 %>% 
-  filter(param <= 5, run <= 2) %>% 
+  filter(param <= 10, run == 7) %>% 
+  filter(global_step > 10) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  # geom_point(size=0.1, alpha=0.6, shape=".") +
+  geom_line(size=0.1, alpha=0.6) +
+  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  # theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm"))
+```
+
+# Fig. total reward
+```{r, fig.width=2.8, fig.height=1.2}
+result_task2 %>% 
+  filter(param <= 10, run <= 2) %>% 
   filter(global_step > 10) %>% 
   ggplot(aes(x=global_step, y=total_R/num_episodes)) +
   geom_point(size=0.1, alpha=0.6, shape=".") +
+  geom_vline(xintercept = short_episodes, color="black", alpha=1, size=.1) +
   geom_hline(aes(yintercept = max(total_R/num_episodes)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 50000), breaks = c(0, 50000)) +
+  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
   facet_wrap(agent~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) 
 ```
-# Fig total reward (10000)
-```{r, fig.width=2.4, fig.height=1.2}
+# Fig. p_bests
+```{r, fig.width=2.8, fig.height=1.2}
 result_task2 %>% 
-  filter(param <= 5, run <= 2) %>% 
+  filter(param <= 10, run <= 2) %>% 
   filter(global_step > 10) %>% 
-  filter(global_step <= max_episodes) %>% 
-  ggplot(aes(x=global_step, y=total_R/max_episodes)) +
+  ggplot(aes(x=global_step, y=p_bests)) +
   geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_hline(aes(yintercept = max(total_R/max_episodes)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 50000), breaks = c(0, 50000)) +
+  geom_vline(xintercept = short_episodes, color="black", alpha=1, size=.1) +
+  geom_hline(aes(yintercept = max(p_bests)), color="red", alpha=0.5, size=2) +
+  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
   facet_wrap(agent~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) 
 ```
 
-# Fig p_bests
-```{r, fig.width=2.4, fig.height=1.2}
-result_task2 %>% 
-  filter(param <= 5, run <= 2) %>% 
-  filter(global_step > 10) %>% 
-  ggplot(aes(x=global_step, y=p_bests)) +
-  geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_hline(aes(yintercept = max(p_bests)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 50000), breaks = c(0, 50000)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-# Fig p_bests (10000)
-```{r, fig.width=2.4, fig.height=1.2}
-result_task2 %>% 
-  filter(param <= 5, run <= 2) %>% 
-  filter(global_step <= 10000) %>% 
-  filter(global_step > 10) %>% 
-  ggplot(aes(x=global_step, y=p_bests)) +
-  geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_hline(aes(yintercept = max(p_bests)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 50000), breaks = c(0, 50000)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
