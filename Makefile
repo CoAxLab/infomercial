@@ -8445,6 +8445,6 @@ exp545:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp545.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp545/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=40000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp545/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
