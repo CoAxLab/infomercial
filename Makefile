@@ -8277,12 +8277,12 @@ exp534_exp538: exp534 exp535 exp536 exp537 exp538
 # BanditOneHigh4
 exp534:
 	# Get top 10
-	head -n 2 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp454_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp534.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..100} :::: tmp
+			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8426,4 +8426,25 @@ exp544:
 
 
 # ---------------------------------------------------------------------------
-# TODO: example bandit recipes
+# 8-10-2020
+# b2047e6
+#
+# In an analysis notebook names `exp_sparse.Rmd` I compared several variations
+# of meta on the BanditHardAndSparse10 task (2)
+# 
+# From the it seems that exp535 is potentially the best, but 10000 trials
+# is not enough?
+
+# - Run exp535 out to 40000. The last version with 10000 is misleading 
+# and too short?
+
+exp545:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp545.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp545/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
