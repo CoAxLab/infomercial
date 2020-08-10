@@ -8449,6 +8449,7 @@ exp544:
 #          main code. Should calc a better final p_best in the Rmd, and
 #          report that.
 
+# num_episodes=40000
 exp545:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
@@ -8460,6 +8461,7 @@ exp545:
 	# Clean up
 	rm tmp
 
+# num_episodes=60000
 exp546:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
