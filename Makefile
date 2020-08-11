@@ -8313,6 +8313,12 @@ test_example_bandits:
 
 exp534_exp538: exp534 exp535 exp536 exp537 exp538
 
+exp534_exp538_clean: 
+	-rm -rf $(DATA_PATH)/exp534 
+	-rm -rf $(DATA_PATH)/exp535 
+	-rm -rf $(DATA_PATH)/exp536 
+	-rm -rf $(DATA_PATH)/exp537 
+	-rm -rf $(DATA_PATH)/exp538
 
 # BanditOneHigh4
 exp534:
