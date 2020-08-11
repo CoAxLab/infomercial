@@ -6936,6 +6936,12 @@ softmeta_test:
 
 exp454_exp457: exp454 exp455 exp456 exp457 
 
+exp454_exp457_clean: 
+	-rm -rf $(DATA_PATH)/exp454 
+	-rm -rf $(DATA_PATH)/exp455
+	-rm -rf $(DATA_PATH)/exp456
+	-rm -rf $(DATA_PATH)/exp457 
+
 # -- Tune ---
 exp454:
 	tune_bandit.py random $(DATA_PATH)/exp454 \
@@ -7080,6 +7086,13 @@ exp461:
 
 ## --- test top 10 ---
 exp462_466: exp462 exp463 exp464 exp465 exp466
+
+exp462_466_clean:
+	-rm -rf $(DATA_PATH)/exp462
+	-rm -rf $(DATA_PATH)/exp463
+	-rm -rf $(DATA_PATH)/exp464
+	-rm -rf $(DATA_PATH)/exp465
+	-rm -rf $(DATA_PATH)/exp466
 
 # meta 
 exp462:
@@ -7764,6 +7777,11 @@ exp500:
 # BanditOneHigh4
 exp501_exp504: exp501 exp502 exp503 exp504 
 
+exp501_exp504_clean:
+	-rm -rf $(DATA_PATH)/exp501
+	-rm -rf $(DATA_PATH)/exp502
+	-rm -rf $(DATA_PATH)/exp503
+	-rm -rf $(DATA_PATH)/exp504
 
 # novelty - params: exp472
 # beta 
@@ -7873,6 +7891,11 @@ exp508:
 # BanditOneHigh121
 exp509_exp512: exp509 exp510 exp511 exp512
 
+exp509_exp512_clean:
+	-rm -rf $(DATA_PATH)/exp509
+	-rm -rf $(DATA_PATH)/exp510
+	-rm -rf $(DATA_PATH)/exp511
+	-rm -rf $(DATA_PATH)/exp512
 
 # novelty - params: exp480
 # beta 
@@ -7927,6 +7950,12 @@ exp512:
 # -
 # BanditHardAndSparse10
 exp513_exp516: exp513 exp514 exp515 exp516 
+
+exp513_exp516_clean:
+	-rm -rf $(DATA_PATH)/exp513
+	-rm -rf $(DATA_PATH)/exp514
+	-rm -rf $(DATA_PATH)/exp515
+	-rm -rf $(DATA_PATH)/exp516
 
 
 # novelty - params: exp484
@@ -8037,6 +8066,12 @@ exp520:
 # DistractionBanditOneHigh10
 exp521_exp524: exp521 exp522 exp523 exp524 
 
+exp521_exp524_clean:
+	-rm -rf $(DATA_PATH)/exp521
+	-rm -rf $(DATA_PATH)/exp522
+	-rm -rf $(DATA_PATH)/exp523
+	-rm -rf $(DATA_PATH)/exp524
+
 
 # novelty - params: exp492
 # beta 
@@ -8099,6 +8134,10 @@ exp524:
 # BanditOneHigh4
 exp525_exp527: exp525 exp526 exp527 
 
+exp525_exp527_clean:
+	-rm -rf $(DATA_PATH)/exp525 
+	-rm -rf $(DATA_PATH)/exp526 
+	-rm -rf $(DATA_PATH)/exp527 
 
 # softbeta - param: exp496
 exp525:
@@ -8341,6 +8380,14 @@ exp538:
 # 
 # In this recipe set we run tests using the top10 models.
 exp539_exp544: exp539 exp540 exp541 exp542 exp543 exp544
+
+exp539_exp544_clean:
+	-rm -rf $(DATA_PATH)/exp539
+	-rm -rf $(DATA_PATH)/exp540
+	-rm -rf $(DATA_PATH)/exp541
+	-rm -rf $(DATA_PATH)/exp542
+	-rm -rf $(DATA_PATH)/exp543
+	-rm -rf $(DATA_PATH)/exp544
 
 # -
 # BanditOneHigh4 - param: exp528
