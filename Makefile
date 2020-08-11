@@ -8304,7 +8304,8 @@ test_example_bandits:
 
 # --------------------------------------------------------------------------
 # 8-7-2020
-# 9b02a60
+# 14ca683
+#
 # Rerun meta on several tasks BUT! 
 # ...Give it knowledge of the tasks state-space ahead of time:
 #
