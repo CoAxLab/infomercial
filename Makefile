@@ -8321,7 +8321,7 @@ exp534:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp534.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp534/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8334,7 +8334,7 @@ exp535:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp535.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=10000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp535/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp535/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8346,7 +8346,7 @@ exp536:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp536.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp536/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp536/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8358,7 +8358,7 @@ exp537:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp537.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp537/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp537/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8370,7 +8370,7 @@ exp538:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp538.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			"meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp538/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
+			"meta_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=5000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --initial_bins='[(0, 0), (0, 1)]' --log_dir=$(DATA_PATH)/exp538/param{index}/run{1} --master_seed={1}" ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
