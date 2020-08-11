@@ -8323,7 +8323,7 @@ exp534_exp538_clean:
 # BanditOneHigh4
 exp534:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp534.log' \
