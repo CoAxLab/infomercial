@@ -103,7 +103,7 @@ def run(env_name='BanditOneHigh2-v0',
         writer.add_scalar("total_R", total_R, n)
         writer.add_scalar("p_bests", num_best / (n + 1), n)
 
-    # -- Build the final result, and save or return it ---
+    # --- Build the final result, and save or return it ---
     writer.close()
 
     result = dict(best=env.best,
