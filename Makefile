@@ -1,5 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/Volumes/slick/infomercial/data
 # DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
@@ -7745,14 +7746,19 @@ exp498:
 
 # -- meta example, N = 100 ---
 
-# example runs
+# bad tie_threshold
 exp499:
+	# Get top 10
+	head -n 2 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp499.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=0.0001 --lr_R=0.1 --log_dir=$(DATA_PATH)/exp499/param0/run{1} --master_seed={1}' ::: {0..100}
+			'meta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=0.0001 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp499/param{index}/run{1} --master_seed={1}' ::: {0..100} :::: tmp
+	# Clean up
+	rm tmp
 
-# good params
+# good tie_threshold
 exp500:
 	# Get top 10
 	head -n 2 $(DATA_PATH)/exp454_sorted.csv > tmp 
