@@ -8019,10 +8019,10 @@ exp517:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp488_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 40 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp517.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp517/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp517/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8031,10 +8031,10 @@ exp518:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp489_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 40 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp518.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp518/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp518/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8043,10 +8043,10 @@ exp519:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp490_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 40 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp519.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'count_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp519/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'count_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp519/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8055,10 +8055,10 @@ exp520:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp491_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 40 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp520.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'entropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8150,7 +8150,6 @@ exp525:
 			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp525/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
-
 
 # epsilon - param: exp497
 exp526:
