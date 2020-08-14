@@ -8257,7 +8257,7 @@ exp532:
 		--num_samples=1000 \
 		--num_episodes=100 \
 		--num_repeats=50 \
-		--num_processes=39 \
+		--num_processes=4 \
 		--log_space=True \
 		--metric="total_R" \
 		--mode="UCB" \
@@ -8453,7 +8453,7 @@ exp543:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp543.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'count_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp543/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'count_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp543/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
