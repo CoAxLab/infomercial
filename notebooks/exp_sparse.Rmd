@@ -20,59 +20,8 @@ library(scales)
 library(patchwork)
 options(scipen=1000000)
 
-kl_divergence <- function(p, q) {
-  sum(p * log(p/q))
-}
-
-load_result <- function(exp_name, param_codes, run_codes, file_names){
-  num_files <- length(file_names)
-  result <- NULL
-  for (param in param_codes){
-    for (run in run_codes) {
-      runtmp <- read_csv(paste(data_path, 
-                               exp_name, 
-                               paste("param", param, sep=""), 
-                               paste("run", run, sep=""), 
-                               paste(file_names[1], "csv", sep="."), sep="/"))    
-      for (name in file_names[2:num_files]){
-        tmp <- read_csv(paste(data_path, 
-                              exp_name, 
-                              paste("param", param, sep=""), 
-                              paste("run", run, sep=""), 
-                              paste(name, "csv", sep="."), sep="/"))  
-        runtmp[[name]] <- tmp[[name]]
-      }
-      runtmp$run <- run
-      runtmp$param <- param
-      result <- bind_rows(result, runtmp)  
-    }
-  }
-  result
-}
-
-summarise_curiosity <- function(result){
-  result %>% 
-  group_by(param, run) %>% 
-  summarise(
-    total_E=last(total_E),
-    total_regret=last(total_regret),
-    p_bests=last(p_bests)
-  ) %>% 
-  ungroup() -> summary
-  summary
-}
-
-summarise_reward <- function(result){
-  result %>% 
-  group_by(param, run) %>% 
-  summarise(
-    total_R=last(total_R),
-    total_regret=last(total_regret),
-    p_bests=last(p_bests)
-  ) %>% 
-  ungroup() -> summary
-  summary
-}
+# Load load_result and other helpful functions
+source("utils.R")
 
 # --- Main path to all data ---
 data_path <- "~/Code/infomercial/data/"
@@ -88,10 +37,10 @@ data_path <- "~/Code/infomercial/data/"
 Meta
 - exp535 (exp387_sorted, initial_bins) **
 - exp429 (exp387_sorted, num_episodes=40000) **
+- exp546 (exp387_sorted, num_episodes=60000) **
 - exp428 (exp427_sorted, tie_threshold='(1e-11, 1e-2))
 - exp408 (exp387_sorted, num_episodes=20000)
-- exp365 (exp298_sorted, num_episodes=50000)
-- exp314 (exp298_sorted, num_episodes=50000)
+
 Other
 - exp431: anneal-ep (exp386_sorted)
 - exp433: random example
@@ -103,22 +52,37 @@ task_name <- "BanditHardAndSparse10"
 task_code <- 2
 
 exp_names <- c(
-  "exp535", "exp546", "exp429", "exp428", "exp408", 
-  "exp365","exp431", "exp433")
+  "exp535", 
+  "exp546", 
+  "exp429", 
+  "exp428", 
+  "exp408", 
+  "exp431", 
+  "exp433")
 
-num_episodes <- c(
-  10000, 60000, 40000, 20000, 20000, 
-  50000, 40000, 40000)
+num_episodes <- c(50000, 
+                  60000, 
+                  40000, 
+                  20000, 
+                  20000, 
+                  40000, 
+                  40000)
 
 agent_names <- c(
-  "Curiosity535", "Curiosity546", "Curiosity429", "Curiosity428", "Curiosity408",
-  "Curiosity365", "tau-random431", "Random")
+  "Curiosity535", 
+  "Curiosity546", 
+  "Curiosity429", 
+  "Curiosity428", 
+  "Curiosity408",
+  "tau-random431", 
+  "Random")
 
 file_names <- c("score_R", 
                 "action", 
                 "p_bests", 
                 "regret", 
                 "total_R",
+                "total_E",
                 "total_regret")
 
 result_task2<- NULL
@@ -127,7 +91,7 @@ summary_task2_short <- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
-  num_episode <- num_episodes[i]
+  num_episode <- num_episodes[i] / 1
   
   if (agent_name == "Random"){
     param_codes <- c(0)
@@ -137,8 +101,9 @@ for(i in 1:length(exp_names)){
     run_codes <- 1:10
   }
   
-  # -
-  tmp1 <- load_result(exp_name, param_codes, run_codes, file_names)
+  tmp1 <- load_result(exp_name, param_codes, run_codes, file_names, 
+                      n_max = num_episode)
+  
   tmp1$exp <- exp_name
   tmp1$agent <- agent_name
   tmp1$task <- task_name
@@ -146,237 +111,133 @@ for(i in 1:length(exp_names)){
   tmp1$num_episodes <- num_episode
   result_task2 <- bind_rows(result_task2, tmp1)
   
-  # -
-  tmp2 <- summarise_reward(tmp1)
-  tmp2$exp <- exp_name
-  tmp2$agent <- agent_name
-  tmp2$task <- task_name
-  tmp2$task_code <- task_code
-  tmp2$num_episodes <- num_episode
-  summary_task2 <- bind_rows(summary_task2, tmp2)
-  
-  # -
-  # drop to 10000
-  short_episodes <- 10000
-  tmp1 %>% 
-    filter(global_step <= short_episodes) -> tmp1
-  tmp2 <- summarise_reward(tmp1)
-  tmp2$exp <- exp_name
-  tmp2$agent <- agent_name
-  tmp2$task <- task_name
-  tmp2$task_code <- task_code
-  tmp2$num_episodes <- num_episode
-  summary_task2_short <- bind_rows(summary_task2_short, tmp2)
 }
 
-rm(tmp1, tmp2, agent_name, agent_names, exp_name, exp_names, file_names, 
+# Final episodes results (all params/runs)
+result_task2 %>% 
+  group_by(agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> final_task2
+
+# Summary stats for final values
+final_task2 %>% 
+  group_by(agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = median(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> 
+  summary_task2
+
+rm(tmp1, agent_name, agent_names, exp_name, exp_names, file_names, 
    i, param_codes, run_codes, task_name)
 ```
 
-
-# Fig. summary (all episodes)
-```{r, fig.width=2.4, fig.height=1.6}
-# -------------------------------------------------------------------
-# Boxes
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=total_R/num_episodes)) +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> p1
-
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=total_regret/num_episodes)) +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  # scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="Total regret") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p2
-
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
-  # geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  # stat_summary(fun=median, alpha=1, color="black", size=0.4, shape="|") +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="P(best)") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p3
-
-# -------------------------------------------------------------------
-# Jitters
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=total_R/num_episodes)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> p4
-
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=total_regret/num_episodes)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.001, 0.061), breaks = c(0, 0.03, 0.06)) +
-  labs(x="", y="Total regret") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p5
-
-summary_task2 %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="P(best)") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p6
-
-# -------------------------------------------------------------------
-((p1 + p2 + p3) / (p4 + p5 + p6)) +
-  plot_annotation(title = "Task 2", 
-                  theme = theme_pubr(base_size = 8, legend = "none"))
-```
-
-# Fig. summary (short)
-```{r, fig.width=2.4, fig.height=1.6}
-
-# -------------------------------------------------------------------
-# Boxs
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_R/short_episodes)) +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> p1
-
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_regret/short_episodes)) +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  # scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="Total regret") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p2
-
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
-  # geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  # stat_summary(fun=median, alpha=1, color="black", size=0.4, shape="|") +
-  geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="P(best)") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p3
-
-# -------------------------------------------------------------------
-# Jitters
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_R/short_episodes)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.001, 0.02), breaks = c(0, 0.01, 0.02)) +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> p4
-
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=total_regret/short_episodes)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.001, 0.061), breaks = c(0, 0.03, 0.06)) +
-  labs(x="", y="Total regret") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p5
-
-summary_task2_short %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=mean, alpha=1, color="red", size=0.4, shape="|") +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="P(best)") +
-  theme_pubr(base_size = 8, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p6
-
-# -------------------------------------------------------------------
-((p1 + p2 + p3) / (p4 + p5 + p6)) +
-  plot_annotation(title = "Task 2 (n=10000)", 
-                  theme = theme_pubr(base_size = 8, legend = "none"))
-```
 # Fig. actions
-```{r, fig.width=3.2, fig.height=1.2}
+```{r, fig.width=3, fig.height=1.4}
+p <- 10
+r <- 3
+
+num_arm <- max(result_task2$action) + 1
+
 result_task2 %>% 
-  filter(param <= 10, run == 7) %>% 
-  filter(global_step > 10) %>% 
+  filter(param <= p, run == r) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
-  # geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_line(size=0.1, alpha=0.6) +
-  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
+  geom_point(size=0.2, alpha=0.9, color="black") +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episode+(num_episode*.1)), 
+    breaks = c(0, num_episode)) +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  labs(x="Time", y="Action") +
   facet_grid(agent~param) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(panel.spacing = unit(.1, "lines")) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "none") +
   theme(legend.box.background = element_rect(colour = "black", size=1)) +
   theme(plot.title = element_text(size = 6)) +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.text.x = element_blank()) +
-  # theme(axis.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  theme(axis.ticks.y = element_blank()) + 
-  theme(legend.key.size = unit(0.2, "cm"))
+  theme(axis.text.y = element_blank()) 
+```
+# Fig. Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task2 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 0.022),
+                     breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
 ```
 
-# Fig. total reward
-```{r, fig.width=2.8, fig.height=1.2}
-result_task2 %>% 
-  filter(param <= 10, run <= 2) %>% 
-  filter(global_step > 10) %>% 
-  ggplot(aes(x=global_step, y=total_R/num_episodes)) +
-  geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_vline(xintercept = short_episodes, color="black", alpha=1, size=.1) +
-  geom_hline(aes(yintercept = max(total_R/num_episodes)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-# Fig. p_bests
-```{r, fig.width=2.8, fig.height=1.2}
-result_task2 %>% 
-  filter(param <= 10, run <= 2) %>% 
-  filter(global_step > 10) %>% 
-  ggplot(aes(x=global_step, y=p_bests)) +
-  geom_point(size=0.1, alpha=0.6, shape=".") +
-  geom_vline(xintercept = short_episodes, color="black", alpha=1, size=.1) +
-  geom_hline(aes(yintercept = max(p_bests)), color="red", alpha=0.5, size=2) +
-  scale_x_continuous(limits=c(0, 60000), breaks = c(0, 60000)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
+# Fig. summary
+```{r, fig.width=2.4, fig.height=0.8}
+final_task2 %>% 
+  ggplot(aes(x=agent, y=total_R/num_episode)) +
+  geom_jitter(width=0.1, alpha=0.6, shape=".") +
+  stat_summary(fun=median, alpha=1, color="black", size=0.6, shape="|") +
+  scale_y_continuous(limits=c(-.001, 0.03), breaks = c(0, 0.01, 0.02)) +
+  labs(x="", y="Average reward") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+final_task2 %>% 
+  ggplot(aes(x=agent, y=total_value/num_episode)) +
+  geom_jitter(width=0.1, alpha=0.6, shape=".") +
+  stat_summary(fun=median, alpha=1, color="black", size=0.6, shape="|") +
+  scale_y_continuous(limits=c(-.001, 0.03), breaks = c(0, 0.015, 0.03)) +
+  labs(x="", y="Average value") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(axis.text.y = element_blank()) +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p2
+
+final_task2 %>% 
+  ggplot(aes(x=agent, y=total_regret/num_episode)) +
+  geom_jitter(width=0.1, alpha=0.6, shape=".") +
+  stat_summary(fun=median, alpha=1, color="black", size=0.5, shape="|") +
+  labs(x="", y="Average regret") +
+  scale_y_continuous(limits=c(-.001, 0.06), breaks = c(0, 0.025, 0.05)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+final_task2 %>% 
+  ggplot(aes(x=agent, y=p_bests)) +
+  geom_jitter(width=0.1, alpha=0.6, shape=".") +
+  stat_summary(fun=median, alpha=1, color="black", size=0.6, shape="|") +
+  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
+  labs(x="", y="P(best)") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+p1 + p2 + p3 + p4 + plot_layout(nrow=1)
 ```
 
