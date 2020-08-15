@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
 # DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/Volumes/slick/infomercial/data
+DATA_PATH=/Volumes/Data/infomercial/data
 # DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
