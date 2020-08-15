@@ -295,7 +295,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=fig, height = 2.6*2, width = 2*2)
 rm(sub1, sub2, c1a, c1b, c1c, c1d, c2a, c2b, c2c)
 ```
 
-# Figure 2 - Dual value learning
+# Fig. Dual value learning
 - Explore/exploit as independent objectives
 - Need math cartoon for the left hand side
 
@@ -474,121 +474,233 @@ sub2 <- (c2a / (c2b)) + plot_layout(heights = c(0.2, 0.8))
 rm(sub1, sub2, c1a, c1b, c1c, c1d, c2a, c2b, c2c)
 ```
 
-# Figure 3 - Extrinsic rewards, intrinsic rewards, and independent policies.
-## Load data (task 1)
-```{r, message=FALSE}
-# -------------------------------------------------------------
-task_name <- "BanditOneHigh4"
-task_code <- 1
-num_episodes <- 2000
-num_sum <- c(4, 8, 16, 32, 96, 400, 2000)
-# num_sum <- c(2000)
 
-# Common neuro models
-exp_names <- c("exp534", "exp502","exp525", "exp501", "exp539")
-agent_names <- c("Curiosity", "Extrinsic", "Info/Extrin.", "Novelty", "Count (UCB)")
+# Fig. Boredom and reward
+## Load data
+```{r message=FALSE, cache=FALSE}
+num_episodes <- 200
 
-# All models
-# exp_names <- c("exp534", "exp526", "exp527", "exp547", "exp502",
-#                "exp525", "exp501", "exp504", "exp503", "exp539")
-# agent_names <- c("Curiosity", "del-random", "tau-random", "Random", "Extrinsic",
-#                  "Info", "Novelty", "Entropy", "Count (EB)", "Count (UCB)")
-
-file_names <- c("score_R", 
+# -----------------------------------------------------------------------
+exp_name <- "exp499"
+param_codes <- c(0)
+run_codes <- 1:100
+file_names <- c("score_E", 
+                "score_R", 
                 "action", 
                 "p_bests", 
                 "regret", 
+                "value_E", 
+                "value_R", 
+                "ties", 
+                "policy",
+                "total_E", 
                 "total_R",
                 "total_regret")
 
-result_part1<- NULL
-summary_part1 <- NULL
-for(i in 1:length(exp_names)){
-  exp_name <- exp_names[i]
-  agent_name <- agent_names[i]
-  if (agent_name == "Random"){
-    param_codes <- c(0)
-    run_codes <- 1:100
-  } else{
-    param_codes <- 0:9
-    run_codes <- 1:10
-  }
-  tmp1 <- load_result(exp_name, param_codes, run_codes, file_names)
-  tmp1 %>% 
-    filter(global_step <= num_episodes) -> tmp1
-  tmp1$exp <- exp_name
-  tmp1$agent <- agent_name
-  tmp1$task <- task_name
-  tmp1$task_code <- task_code
-  tmp1$num_episodes <- num_episodes
-  result_part1 <- bind_rows(result_part1, tmp1)
-  
-  for (n in num_sum){
-    tmp1 %>% 
-      filter(global_step <= n) %>% 
-      summarise_reward() -> tmp2  
-    tmp2$exp <- exp_name
-    tmp2$agent <- agent_name
-    tmp2$task <- task_name
-    tmp2$task_code <- task_code
-    tmp2$num_episodes <- num_episodes
-    tmp2$n <- n
-    summary_part1 <- bind_rows(summary_part1, tmp2)
-  }
-}
+result499 <- load_result(exp_name, param_codes, run_codes, file_names)
 
-rm(tmp1, tmp2, agent_name, agent_names, exp_name, exp_names, file_names, 
-   i, param_codes, run_codes, task_name)
+# -----------------------------------------------------------------------
+exp_name <- "exp500"
+param_codes <- c(0)
+run_codes <- 1:100
+file_names <- c("score_E", 
+                "score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "value_R", 
+                "ties", 
+                "policy",
+                "total_E", 
+                "total_R",
+                "total_regret")
+
+result500 <- load_result(exp_name, param_codes, run_codes, file_names)
 ```
 
-## Fig. 
-### totals - task 1 totals
-```{r, fig.width=2.1, fig.height=0.9}
-num <- 2000
-summary_part1 %>% 
-  filter(n == num) %>% 
-  ggplot(aes(x=agent, y=total_R/n)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=median, alpha=1, color="red", size=0.4, shape="|") +
-  # geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
+## Fig. Actions (all)
+```{r, fig.width=1.2, fig.height=2.8}
+result500 %>% 
+  filter(global_step <= num_episodes) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  geom_point(size=0.1, alpha=0.9, shape=".") +
+  geom_line(size=0.1, alpha=1) +
+  labs(x="Time", y="Choice", title="Optimized") +
+  lims(x=c(0, num_episodes)) +
+  facet_wrap(run~.) +
+  scale_color_manual("", values=c("mediumpurple4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.text = element_text(size=3)) +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(axis.ticks = element_blank()) + 
+  theme(axis.text = element_blank()) -> a1
+
+result499 %>% 
+  filter(global_step <= num_episodes) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  geom_point(size=0.1, alpha=0.9, shape=".") +
+  geom_line(size=0.1, alpha=1) +
+  labs(x="Time", y="Choice", title="Non-optimal") +
+  lims(x=c(0, num_episodes)) +
+  facet_wrap(run~.) +
+  scale_color_manual("", values=c("mediumpurple4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  # theme(strip.text = element_blank()) +
+  theme(strip.text = element_text(size=3)) +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(axis.ticks = element_blank()) + 
+  theme(axis.text = element_blank()) -> a2
+
+a1 / a2 + plot_annotation(
+      title="Optimizing boredom for reward collection", 
+      subtitle = "100 simulated experiments",
+      theme = theme_pubr(base_size = 8, legend = "none"))
+```
+
+## Fig. Values (one example)
+```{r, fig.width=1.8, fig.height=2.3}
+example <- 42
+
+
+### non-optimal ----------------------------------------------------------------
+eta <- 0.0001
+result499 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=factor(1-policy), color=factor(policy))) +
+  geom_point(size=0.8, alpha=0.9) +
+  labs(x="", y="", title="Non-optimal") +
+  scale_y_discrete(
+    breaks=c(0, 1), 
+    labels=c("Exploit", "Explore")) +
+  scale_color_manual("", values=c("darkorchid4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.3, "lines")) -> p1
+
+result499 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
+  geom_point(size=0.6, alpha=0.9) +
+  geom_line(size=0.1) +
+  labs(x="", y="") +
+  facet_wrap(policy~., ncol=1) +
+  scale_color_manual("", values=c("darkorchid4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(panel.spacing = unit(0.5, "lines")) -> p2
+
+result499 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=score_R)) +
+  geom_point(size=0.1, alpha=1, color="black") +
+  geom_ribbon(aes(ymin=0, ymax=score_R), 
+              size=0.6, alpha=0.1, fill="black", color=NA) +
+  labs(x="", y="") +
+  theme(strip.background = element_blank()) +
+  theme_pubr(base_size = 6, legend = "none") -> p3
+
+result499 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step)) +
+  geom_line(size=0.6, alpha=1, color="black") +
+  labs(x="", y="") +
+  lims(y=c(0, 1)) +
+  theme(strip.background = element_blank()) +
+  theme_pubr(base_size = 6, legend = "none") -> p4
+
+result499 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=value_E)) +
+  geom_line(size=0.6, color="darkorchid4") +
+  geom_hline(yintercept = eta, color="darkorchid4", alpha=0.5, size=1) +
+  scale_y_log10(limits=c(0.00001, 4)) +
+  annotation_logticks(side="l", size=.1) + 
+  labs(x="Time", y="") +
+  theme(strip.background = element_blank()) +
+  theme_pubr(base_size = 6, legend = "none") -> p5
+
+c1 <- (p1 / p2 / p3 / p4 / p5) +
+  plot_layout(
+    heights=c(0.1, 0.3, 0.2, 0.2, 0.2), 
+    ncol=)
+
+
+### optimal ----------------------------------------------------------------------
+eta <- 0.005 # taken from file
+
+result500 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=factor(1-policy), color=factor(policy))) +
+  geom_point(size=0.8, alpha=0.9) +
+  labs(x="", y="Policy", title="Optimized") +
+  scale_y_discrete(
+    breaks=c(0, 1), 
+    labels=c("Exploit", "Explore")) +
+  scale_color_manual("", values=c("darkorchid4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.3, "lines")) -> p6
+
+result500 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
+  geom_point(size=0.6, alpha=0.9) +
+  geom_line(size=0.1) +
+  labs(x="", y="Choice") +
+  facet_wrap(policy~., ncol=1) +
+  scale_color_manual("", values=c("darkorchid4", "black")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(panel.spacing = unit(0.5, "lines")) -> p7
+
+result500 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=score_R)) +
+  geom_point(size=0.1, alpha=1, color="black") +
+  geom_ribbon(aes(ymin=0, ymax=score_R), 
+              size=0.6, alpha=0.1, fill="black", color=NA) +
+  labs(x="", y="Reward") +
+  theme(strip.background = element_blank()) +
+  theme_pubr(base_size = 6, legend = "none") -> p8
+
+result500 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step)) +
+  geom_line(size=0.6, alpha=1, color="black") +
   labs(x="", y="Total reward") +
-  theme_pubr(base_size = 6, legend = "none") +
+  lims(y=c(0, 1)) +
   theme(strip.background = element_blank()) +
-  coord_flip() -> p1
+  theme_pubr(base_size = 6, legend = "none") -> p9
 
-summary_part1 %>% 
-  filter(n == num) %>% 
-  ggplot(aes(x=agent, y=total_regret/n)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=median, alpha=1, color="red", size=0.4, shape="|") +
-  # geom_boxplot(size=0.4, outlier.size = .1) +
-  # scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="Total regret") +
-  theme_pubr(base_size = 6, legend = "none") +
+result500 %>% 
+  filter(run == example) %>% 
+  ggplot(aes(x=global_step, y=value_E)) +
+  geom_line(size=0.6, color="darkorchid4") +
+  geom_hline(yintercept = eta, color="darkorchid4", alpha=0.5, size=1) +
+  scale_y_log10(limits=c(0.00001, 4)) +
+  annotation_logticks(side="l", size=.1) +
+  labs(x="Time", y="Info. value") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p2
+  theme_pubr(base_size = 6, legend = "none") -> p10
 
-summary_part1 %>% 
-  filter(n == num) %>% 
-  ggplot(aes(x=agent, y=p_bests)) +
-  geom_jitter(width=0.1, alpha=0.6, shape=".") +
-  stat_summary(fun=median, alpha=1, color="red", size=0.4, shape="|") +
-  # geom_boxplot(size=0.4, outlier.size = .1) +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 0.5, 1)) +
-  labs(x="", y="P(best)") +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  coord_flip() -> p3
+c2 <- (p6 / p7 / p8 / p9 / p10) +
+  plot_layout(
+    heights=c(0.1, 0.3, 0.2, 0.2, 0.2), 
+    ncol=1)
 
-# -------------------------------------------------------------------
-p1 + p2 + p3 + 
-  plot_annotation(title = "Task 1", 
-                  theme = theme_pubr(base_size = 8, legend = "none"))
+# --------------------------------------------------
+c2 | c1 | plot_annotation(
+      title="Optimizing boredom for reward collection", 
+      subtitle = "Single example experiment",
+      theme = theme_pubr(base_size = 8, legend = "none"))
 ```
 
+# Fig. Bandits
 ## Fig. Task 1
 ### Load data
 ```{r, message=FALSE}
