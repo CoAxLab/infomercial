@@ -71,7 +71,7 @@ result500 <- load_result(exp_name, param_codes, run_codes, file_names)
 ```
 
 # Plot
-## Actions
+## Actions (all)
 ```{r, fig.width=1.2, fig.height=2.5}
 num_episodes <- 200
 
@@ -89,7 +89,7 @@ result500 %>%
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(0.1, "lines")) +
   theme(axis.ticks = element_blank()) + 
-  theme(axis.text = element_blank()) -> p1
+  theme(axis.text = element_blank()) -> a1
 
 result499 %>% 
   filter(global_step <= num_episodes) %>%
@@ -106,20 +106,19 @@ result499 %>%
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(0.1, "lines")) +
   theme(axis.ticks = element_blank()) + 
-  theme(axis.text = element_blank()) -> p2
+  theme(axis.text = element_blank()) -> a2
 
-(p1 / p2) + plot_annotation(
+a1 / a2 + plot_annotation(
       title="Optimizing boredom for reward collection", 
-      subtitle = "Model behavior (100 experiments)",
+      subtitle = "100 simulated experiments",
       theme = theme_pubr(base_size = 8, legend = "none"))
 ```
 ## One example (up close)
-```{r}
+```{r, fig.width=1.8, fig.height=2.3}
 example <- 42
-```
 
-### non-optimal
-```{r, fig.width=0.8, fig.height=1.6}
+
+### non-optimal ----------------------------------------------------------------
 eta <- 0.0001
 result499 %>% 
   filter(run == example) %>% 
@@ -136,7 +135,7 @@ result499 %>%
 
 result499 %>% 
   filter(run == example) %>% 
-  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
   geom_line(size=0.1) +
   labs(x="", y="") +
@@ -177,12 +176,13 @@ result499 %>%
   theme(strip.background = element_blank()) +
   theme_pubr(base_size = 6, legend = "none") -> p5
 
-sub1 <- (p1 / p2 / p3 / p4 / p5) 
-print(sub1)
-```
+c1 <- (p1 / p2 / p3 / p4 / p5) +
+  plot_layout(
+    heights=c(0.1, 0.3, 0.2, 0.2, 0.2), 
+    ncol=)
 
-### optimal
-```{r, fig.width=0.8, fig.height=1.6}
+
+### optimal ----------------------------------------------------------------------
 eta <- 0.005 # taken from file
 
 result500 %>% 
@@ -196,11 +196,11 @@ result500 %>%
   scale_color_manual("", values=c("darkorchid4", "black")) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(0.3, "lines")) -> p1
+  theme(panel.spacing = unit(0.3, "lines")) -> p6
 
 result500 %>% 
   filter(run == example) %>% 
-  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
   geom_line(size=0.1) +
   labs(x="", y="Choice") +
@@ -209,7 +209,7 @@ result500 %>%
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(strip.text = element_blank()) +
-  theme(panel.spacing = unit(0.5, "lines")) -> p2
+  theme(panel.spacing = unit(0.5, "lines")) -> p7
 
 result500 %>% 
   filter(run == example) %>% 
@@ -219,7 +219,7 @@ result500 %>%
               size=0.6, alpha=0.1, fill="black", color=NA) +
   labs(x="", y="Reward") +
   theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> p3
+  theme_pubr(base_size = 6, legend = "none") -> p8
 
 result500 %>% 
   filter(run == example) %>% 
@@ -228,7 +228,7 @@ result500 %>%
   labs(x="", y="Total reward") +
   lims(y=c(0, 1)) +
   theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> p4
+  theme_pubr(base_size = 6, legend = "none") -> p9
 
 result500 %>% 
   filter(run == example) %>% 
@@ -239,17 +239,19 @@ result500 %>%
   annotation_logticks(side="l", size=.1) +
   labs(x="Time", y="Info. value") +
   theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> p5
+  theme_pubr(base_size = 6, legend = "none") -> p10
 
-sub2 <- (p1 / p2 / p3 / p4 / p5) 
-print(sub2)
+c2 <- (p6 / p7 / p8 / p9 / p10) +
+  plot_layout(
+    heights=c(0.1, 0.3, 0.2, 0.2, 0.2), 
+    ncol=1)
+
+# --------------------------------------------------
+c2 | c1 | plot_annotation(
+      title="Optimizing boredom for reward collection", 
+      subtitle = "Single example experiment",
+      theme = theme_pubr(base_size = 8, legend = "none"))
 ```
-
-### Build
-```{r, fig.width=1.7, fig.height=2}
-sub2 | sub1  
-```
-
 
 # Average value (all)
 ```{r, fig.width=1.2, fig.height=1}
