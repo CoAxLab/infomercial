@@ -24,7 +24,7 @@ options(scipen=1000000)
 source("utils.R")
 
 # --- Main path to all data ---
-data_path <- "~/Code/infomercial/data/"
+data_path <- "/Volumes/Data/infomercial/data"
 ```
 
 # Fig. Curiosity in a random world
@@ -403,7 +403,7 @@ result393 %>%
   geom_point(size=0.6, alpha=0.9) +
   geom_line(size=0.1) +
   labs(x="Time", y="Choice") +
-  facet_wrap(policy~., ncol=2) +
+  facet_wrap(policy~., ncol=1) +
   scale_x_continuous(limits=c(-1, n+1), breaks = c(0, n/2, n)) +
   scale_y_continuous(breaks=c(0,9), limits=c(-1, 10)) +
   scale_color_manual("", values=c("mediumpurple4", "black")) +
@@ -412,44 +412,61 @@ result393 %>%
   theme(strip.text = element_blank()) +
   theme(panel.spacing = unit(0.5, "lines")) -> c2a
 
-result393 %>% 
-  filter(run == r, param == p) %>% 
-  filter(global_step <= n) %>%
-  filter(value_E >= eta) %>% 
+result393 %>%
+  filter(run == r, param == p) %>%
   ggplot(aes(x=global_step, y=value_E)) +
-  geom_point(size=0.6, color="mediumpurple4") +
-  geom_line(size=0.1, color="mediumpurple4") +
+  geom_line(size=0.6, color="darkorchid4") +
+  geom_ribbon(aes(ymin=0, ymax=score_R), 
+              size=0.6, alpha=0.1, fill="black", color=NA) +
+  geom_point(aes(global_step, score_R+0.00001), 
+              size=0.1, alpha=1, color="black") +
   geom_hline(yintercept = eta, color="mediumpurple4", alpha=0.5, size=1) +
-  scale_x_continuous(limits=c(-1, n+1), breaks = c(0, n/2, n)) +
-  scale_y_log10(limits=c(0.0001, 4)) +
-  annotation_logticks(side="l", size=.1) +
-  labs(x="", y="Information", title="Explore") + 
   facet_grid(action~.) +
+  scale_y_log10(limits=c(0.00001, 4)) +
+  annotation_logticks(side="l", size=.1) + 
   theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.text = element_blank()) +
-  theme(strip.background = element_blank()) -> c2b
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) -> c2b
 
-result393 %>% 
-  filter(run == r, param == p) %>% 
-  filter(global_step <= n) %>%
-  ggplot(aes(x=global_step, y=score_R)) +
-  geom_point(size=0.6, color="black") +
-  geom_line(size=0.1, color="black") +
-  scale_x_continuous(limits=c(-1, n+1), breaks = c(0, n/2, n)) +
-  scale_y_continuous(limits=c(-.1, 1.1), breaks=c(0, 0.5, 1)) +
-  labs(x="Time", y="Reward", title="Exploit") + 
-  facet_grid(action~.) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.text = element_blank()) +
-  theme(strip.background = element_blank()) -> c2c
+# result393 %>% 
+#   filter(run == r, param == p) %>% 
+#   filter(global_step <= n) %>%
+#   filter(value_E >= eta) %>% 
+#   ggplot(aes(x=global_step, y=value_E)) +
+#   geom_point(size=0.6, color="mediumpurple4") +
+#   geom_line(size=0.1, color="mediumpurple4") +
+#   geom_hline(yintercept = eta, color="mediumpurple4", alpha=0.5, size=1) +
+#   scale_x_continuous(limits=c(-1, n+1), breaks = c(0, n/2, n)) +
+#   scale_y_log10(limits=c(0.0001, 4)) +
+#   annotation_logticks(side="l", size=.1) +
+#   labs(x="", y="Information", title="Explore") + 
+#   facet_grid(action~.) +
+#   theme_pubr(base_size = 6, legend = "none") +
+#   theme(strip.text = element_blank()) +
+#   theme(strip.background = element_blank()) -> c2b
+# 
+# result393 %>% 
+#   filter(run == r, param == p) %>% 
+#   filter(global_step <= n) %>%
+#   ggplot(aes(x=global_step, y=score_R)) +
+#   geom_point(size=0.6, color="black") +
+#   geom_line(size=0.1, color="black") +
+#   scale_x_continuous(limits=c(-1, n+1), breaks = c(0, n/2, n)) +
+#   scale_y_continuous(limits=c(-.1, 1.1), breaks=c(0, 0.5, 1)) +
+#   labs(x="Time", y="Reward", title="Exploit") + 
+#   facet_grid(action~.) +
+#   theme_pubr(base_size = 6, legend = "none") +
+#   theme(strip.text = element_blank()) +
+#   theme(strip.background = element_blank()) -> c2c
 
-sub2 <- (c2a / (c2b + c2c)) + plot_layout(heights = c(0.1, 0.9))
+sub2 <- (c2a / (c2b)) + plot_layout(heights = c(0.2, 0.8))
 
 # -----------------------------------------------------------------------
 ## Build figure
 (sub1 + plot_spacer() + plot_spacer() | sub2) +
   plot_annotation(
       title="Explore-exploit with independent deterministic policies", 
+      subtitle = "An illustration",
       theme = theme_pubr(base_size = 8, legend = "none"))
 
 # -----------------------------------------------------------------------
