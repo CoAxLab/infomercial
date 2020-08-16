@@ -1,0 +1,142 @@
+---
+title: "Tasks - illustration"
+output: html_notebook
+---
+
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "/Volumes/Data/infomercial/data"
+```
+
+# Shared art
+```{r}
+# arrow 
+arrow <- data.frame(x=0, xend=2, y=0.5, yend=0.5)
+arrow %>% 
+ggplot(aes(x=x, y=y, xend=xend, yend = yend)) +
+  geom_segment(
+    lineend = "butt", linejoin = "mitre",
+    size = 1, arrow = arrow(length = unit(0.2, "inches"))
+  ) +
+  labs(x="", y="") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text = element_blank()) +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) -> a1
+```
+
+# Task - info forced choice
+```{r, fig.width=1, fig.height=1}
+info <- data.frame(
+  choice=c(1,2,3,4,1,2,3,4),
+  color=c(1,1,1,1,2,2,2,2),
+  prob=c(0.99, 0.5, 0.99, 0.01, 0.01, 0.5, 0.01, 0.99))
+
+# ------------------------------------------------------------------------
+# Choice
+info %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result
+info %>% 
+  ggplot(aes(x=factor(color), y=prob, fill=factor(color))) + 
+  geom_bar(stat="identity") +
+  scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("yellow", "blue")) +
+  labs(x="", y="", title="Stimulus") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
+
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + 
+  plot_layout(widths=c(0.3, 0.3, 0.3))
+```
+
+# Task - classic forced choice
+```{r, fig.width=0.9, fig.height=2}
+classic <- data.frame(
+  choice=1:10,
+  payout=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.2, 0.2, 0.2))
+
+# ------------------------------------------------------------------------
+# Choice
+classic %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result
+classic %>% 
+  ggplot(aes(x=1, y=payout, label=payout)) + 
+  geom_bar(width=0.5, fill="black", alpha=1, stat="identity") +
+  # geom_text(size=2, position = position_stack(vjust = 1.5)) +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("yellow", "blue")) +
+  labs(x="", y="", title="Payout") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
+
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + 
+  plot_layout(widths=c(0.3, 0.3, 0.3))
+```
