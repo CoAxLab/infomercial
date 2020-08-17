@@ -71,7 +71,7 @@ info %>%
 # Result
 info %>% 
   ggplot(aes(x=factor(color), y=prob, fill=factor(color))) + 
-  geom_bar(stat="identity") +
+  geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
   labs(x="", y="", title="Stimulus") +
@@ -94,10 +94,15 @@ p1 + a1 + p2 +
 ```
 
 # Task - classic forced choice
-```{r, fig.width=0.9, fig.height=2}
+```{r, fig.width=0.9, fig.height=1.2}
+best <- 2
+best_choice = rep(0, 4)
+best_choice[best] <- 1
+
 classic <- data.frame(
-  choice=1:10,
-  payout=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.2, 0.2, 0.2))
+  best=best_choice,
+  choice=1:4,
+  payout=c(0.2, 0.8, 0.2, 0.2))
 
 # ------------------------------------------------------------------------
 # Choice
@@ -116,13 +121,12 @@ classic %>%
 
 # Result
 classic %>% 
-  ggplot(aes(x=1, y=payout, label=payout)) + 
-  geom_bar(width=0.5, fill="black", alpha=1, stat="identity") +
-  # geom_text(size=2, position = position_stack(vjust = 1.5)) +
+  ggplot(aes(x=1, y=payout, fill=factor(best))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
-  scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="", y="", title="Payout") +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Average\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -138,5 +142,115 @@ classic %>%
 
 # ------------------------------------------------------------------------
 p1 + a1 + p2 + 
-  plot_layout(widths=c(0.3, 0.3, 0.3))
+  plot_layout(widths=c(0.3, 0.3, 0.3)) +
+  plot_annotation(title = "Task 1 - Classic")
+```
+
+# Task - sparse forced choice
+```{r, fig.width=0.9, fig.height=2}
+best <- 8
+best_choice = rep(0, 10)
+best_choice[best] <- 1
+
+sparse <- data.frame(
+  choice=1:10,
+  best=best_choice,
+  payout=c(0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.01, 0.01))
+
+# ------------------------------------------------------------------------
+# Choice
+sparse %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result
+sparse %>% 
+  ggplot(aes(x=1, y=payout, label=payout, color=factor(best))) + 
+  geom_bar(width=0.5, fill="black", alpha=1, stat="identity") +
+  geom_text(size=2, position = position_stack(vjust = 20)) +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_color_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Average\npayout") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
+
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + 
+  plot_layout(widths=c(0.3, 0.3, 0.3)) + 
+  plot_annotation(title = "Task 2 - Sparse")
+```
+# Task - large forced choice
+```{r, fig.width=4.4, fig.height=2.2}
+best <- 55
+payout = runif(121, 0.2, 0.6)
+payout[best] <- 0.8
+
+best_choice = rep(0, 121)
+best_choice[best] <- 1
+
+large <- data.frame(
+  choice=1:121,
+  best=best_choice,
+  payout=payout)
+
+# ------------------------------------------------------------------------
+# Choice
+large %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=11) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result
+large %>% 
+  ggplot(aes(x=1, y=payout, fill=factor(best_choice))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Payout") +
+  facet_wrap(choice~., ncol=11) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  plot_annotation(title="Task 3 - Large", subtitle = "Average payout") -> p2
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + 
+  plot_layout(widths=c(0.45, 0.1, 0.45)) + 
+  plot_annotation(title = "Task 3 - Large")
 ```
