@@ -1,6 +1,6 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/Volumes/Data/infomercial/data
+DATA_PATH=/Users/qualia/Code/infomercial/data
+# DATA_PATH=/Volumes/Data/infomercial/data
 # DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
@@ -8764,6 +8764,11 @@ exp562:
 			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp562/param0/run{1} --master_seed={1}' ::: {1..100}
 
 
+
+# test Uniform
+test_uniform:
+	-rm -rf $(DATA_PATH)/test
+	meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold=0.00000001 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_uniform
 
 # ------------------------------------------------------------------------
 # TODO
