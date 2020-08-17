@@ -1,0 +1,1788 @@
+---
+title: "Fig. Summary - all agents and reward tasks"
+output: html_notebook
+---
+
+# Fig. Summary
+
+# Fig. Task 1
+## Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditOneHigh4"
+task_code <- 1
+num_episodes <- 4*50
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c(
+  "exp457", 
+  "exp526", 
+  "exp527", 
+  "exp547", 
+  "exp502",
+  "exp525", 
+  "exp501", 
+  "exp504", 
+  "exp503", 
+  "exp539")
+
+agent_names <- c(
+  "Curiosity",
+  "del-random", 
+  "tau-random", 
+  "Random", 
+  "Extrinsic", 
+  "Info", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)", 
+  "Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task1<- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
+                     n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task1 <- bind_rows(result_task1, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task1$agent <- factor(result_task1$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task1$total_E <- result_task1$total_E - E_bias
+result_task1$total_E[result_task1$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task1$agent == a_name
+  result_task1[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task1 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task1 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task1 <- tmp
+```
+
+### Cleanup
+```{r}
+# ----------------------------------------------------------------------------
+
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_nam, num_arms, E_bias, task_code)
+```
+
+### Actions
+```{r, fig.width=3, fig.height=1.4}
+p <- 10
+r <- 3
+
+num_arm <- max(result_task1$action) + 1
+
+result_task1 %>% 
+  filter(param <= p, run == r) %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=global_step, y=action+1, color=color)) +
+  geom_point(size=0.2, alpha=0.9) +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_identity() +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) 
+```
+
+### Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task1 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, 200),
+                     breaks = c(0, 200)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Info value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task1 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_E/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1) +
+  labs(x="Time", y="Info value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 1),
+                     # breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task1 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  group_by(agent, param, run) %>% 
+  mutate(total_value = total_R + total_E) %>% 
+  ggplot(aes(x=global_step, y=total_value/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Regret (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task1 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_regret/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Regret") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+  #                    breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+result_task1 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+(p1 / (p2 + p3 + p4)) + 
+  plot_annotation(title = "Task 1 - Classic", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
+
+## Fig. Task 2 
+### Load data 
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditHardAndSparse10"
+task_code <- 2
+num_episodes <- 50000
+
+# The overestimate due to E0
+num_arms <- 10
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp546",
+               "exp409", 
+               "exp410", 
+               "exp412", 
+               "exp514",
+               "exp411", 
+               "exp513", 
+               "exp516", 
+               "exp515", 
+               "exp542")
+
+agent_names <- c("Curiosity", 
+                 "del-random", 
+                 "tau-random", 
+                 "Random",
+                 "Extrinsic", 
+                 "Info", 
+                 "Novelty", 
+                 "Entropy", 
+                 "Count (EB)",
+                 "Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task2 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task2 <- bind_rows(result_task2, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task2$agent <- factor(result_task2$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task2$total_E <- result_task2$total_E - E_bias
+result_task2$total_E[result_task2$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task2$agent == a_name
+  result_task2[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task2 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task2 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task2 <- tmp
+
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+### Actions
+```{r, fig.width=3, fig.height=1.4}
+p <- 10
+r <- 3
+
+num_arm <- max(result_task2$action) + 1
+
+result_task2 %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  filter(param <= p, run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=color)) +
+  geom_point(size=0.2, alpha=0.9) +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_identity() +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  labs(x="Time", y="Action") +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) 
+```
+
+### Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task2 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 0.022),
+                     breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Info value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task2 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_E/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Info value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 1),
+                     # breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task2 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  group_by(agent, param, run) %>% 
+  mutate(total_value = total_R + total_E) %>% 
+  ggplot(aes(x=global_step, y=total_value/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 0.022),
+                     breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+### Regret (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task2 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_regret/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Regret") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 0.022),
+                     breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+result_task2 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+(p1 / (p2 + p3 + p4)) + 
+  plot_annotation(title = "Task 2 - Sparse", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
+
+## Fig. Task 3
+### Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditOneHigh121"
+task_code <- 3
+num_episodes <- 121 * 50
+
+# The overestimate due to E0
+num_arms <- 121
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp403", 
+               "exp404", 
+               "exp405", 
+               "exp407", 
+               "exp510",
+               "exp406",
+               "exp509", 
+               "exp512", 
+               "exp511", 
+               "exp541")
+
+agent_names <- c("Curiosity", 
+                 "del-random", 
+                 "tau-random", 
+                 "Random",
+                 "Extrinsic", 
+                 "Info", 
+                 "Novelty", 
+                 "Entropy", 
+                 "Count (EB)",
+                 "Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task3 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task3 <- bind_rows(result_task3, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task3$agent <- factor(result_task3$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task3$total_E <- result_task3$total_E - E_bias
+result_task3$total_E[result_task3$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task3$agent == a_name
+  result_task3[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task3 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task3 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task3 <- tmp
+
+# ----------------------------------------------------------------------------
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+### Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task3 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+### Info value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task3 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_E/num_episodes, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Info value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 1),
+                     # breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task3 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  group_by(agent, param, run) %>% 
+  mutate(total_value = total_R + total_E) %>% 
+  ggplot(aes(x=global_step, y=total_value/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 1),
+                     breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Regret (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task3 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_regret/num_episodes, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Regret") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+
+### Actions
+```{r, fig.width=3, fig.height=2.4}
+p <- 10
+r <- 7
+num_arm <- max(result_task3$action) + 1
+
+result_task3 %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  filter(param <= p, run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=color)) +
+  geom_point(size=0.2, alpha=0.9) +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_identity() +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  labs(x="Time", y="Action") +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) 
+```
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+result_task3 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+(p1 / (p2 + p3 + p4)) + 
+  plot_annotation(title = "Task 3 - Large", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+# print(sub3)
+```
+
+## Fig. Task 4
+### Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "DeceptiveBanditOneHigh10"
+task_code <- 4
+num_episodes <- 200
+
+# The overestimate due to E0
+num_arms <- 10
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp449", 
+               "exp450", 
+               "exp451", 
+               "exp453", 
+               "exp518",
+               "exp452", 
+               "exp517", 
+               "exp520", 
+               "exp519", 
+               "exp543")
+
+agent_names <- c("Curiosity", 
+                 "del-random", 
+                 "tau-random", 
+                 "Random",
+                 "Extrinsic", 
+                 "Info", 
+                 "Novelty", 
+                 "Entropy", 
+                 "Count (EB)",
+                 "Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task4 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task4 <- bind_rows(result_task4, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task4$agent <- factor(result_task4$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task4$total_E <- result_task4$total_E - E_bias
+result_task4$total_E[result_task4$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task4$agent == a_name
+  result_task4[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task4 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task4 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task4 <- tmp
+
+# ----------------------------------------------------------------------------
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+### Actions
+```{r, fig.width=3, fig.height=1.4}
+p <- 10
+r <- 3
+num_arm <- max(result_task4$action) + 1
+
+result_task4 %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  filter(param <= p, run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=color)) +
+  geom_point(size=0.2, alpha=0.9) +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_identity() +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  labs(x="Time", y="Action") +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) 
+```
+
+### Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task4 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+### Info value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task4 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_E/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Info value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 1),
+                     # breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task4 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  group_by(agent, param, run) %>% 
+  mutate(total_value = total_R + total_E) %>% 
+  ggplot(aes(x=global_step, y=total_value/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(0, 1),
+                     breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+result_task4 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+(p1 / (p2 + p3 + p4)) + 
+  plot_annotation(title = "Task 4 - Deception", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+# print(sub4)
+```
+
+## Fig. Task 5
+### Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "DistractionBanditOneHigh10"
+task_code <- 5
+num_episodes <- 10 * 50
+
+# The overestimate due to E0
+num_arms <- 10
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp462", 
+               "exp463", 
+               "exp464", 
+               "exp466", 
+               "exp522",
+               "exp465", 
+               "exp521", 
+               "exp524", 
+               "exp523", 
+               "exp544")
+
+agent_names <- c("Curiosity", 
+                 "del-random", 
+                 "tau-random", 
+                 "Random",
+                 "Extrinsic", 
+                 "Info", 
+                 "Novelty", 
+                 "Entropy", 
+                 "Count (EB)",
+                 "Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task5 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task5 <- bind_rows(result_task5, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task5$agent <- factor(result_task5$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task5$total_E <- result_task5$total_E - E_bias
+result_task5$total_E[result_task5$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task5$agent == a_name
+  result_task5[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task5 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task5 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task5 <- tmp
+
+# ----------------------------------------------------------------------------
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+### Actions
+```{r, fig.width=3, fig.height=1.4}
+p <- 10
+r <- 3
+num_arm <- max(result_task5$action) + 1
+
+result_task5 %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  filter(param <= p, run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=color)) +
+  geom_point(size=0.2, alpha=0.9) +
+  geom_line(size=0.1) +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_identity() +
+  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
+  labs(x="Time", y="Action") +
+  facet_grid(agent~param) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) 
+```
+
+### Reward (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task5 %>% 
+  filter(global_step > 20) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_R/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+### Info value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task5 %>% 
+  filter(global_step > 10) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_E/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Info value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 1),
+                     # breaks = c(0, 0.5, 1)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Value (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task5 %>% 
+  filter(global_step > 20) %>% 
+  filter(param <= p, run <= r) %>% 
+  group_by(agent, param, run) %>% 
+  mutate(total_value = total_R + total_E) %>% 
+  ggplot(aes(x=global_step, y=total_value/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Value") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # scale_y_continuous(limits=c(0, 0.022),
+                     # breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+### Regret (time)
+```{r, fig.width=3.2, fig.height=0.7}
+p <- 2
+r <- 10
+
+result_task5 %>% 
+  filter(global_step > 20) %>% 
+  filter(param <= p, run <= r) %>% 
+  ggplot(aes(x=global_step, y=total_regret/global_step, 
+             group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=1, shape=".") +
+  labs(x="Time", y="Regret") +
+  scale_x_continuous(limits=c(0, num_episodes),
+                     breaks = c(0, num_episodes)) +
+  # # scale_y_continuous(limits=c(0, 0.022),
+  #                    breaks = c(0, 0.01, 0.02)) +
+  facet_wrap(agent~., nrow=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) 
+```
+
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+result_task5 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+(p1 / (p2 + p3 + p4)) + 
+  plot_annotation(title = "Task 5 - Deception", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+# print(sub5)
+```
+
+
+## Fig. Task1-5
+```{r, fig.width=2.1, fig.height=4.5}
+# sub1 / sub2 / sub3 / sub4 / sub5
+```
