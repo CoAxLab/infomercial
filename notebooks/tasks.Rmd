@@ -90,7 +90,8 @@ info %>%
 
 # ------------------------------------------------------------------------
 p1 + a1 + p2 + 
-  plot_layout(widths=c(0.3, 0.3, 0.3))
+  plot_layout(widths=c(0.3, 0.3, 0.3)) +
+  plot_annotation(title = "Task 0 - Information")
 ```
 
 # Task - classic forced choice
@@ -253,4 +254,139 @@ large %>%
 p1 + a1 + p2 + 
   plot_layout(widths=c(0.45, 0.1, 0.45)) + 
   plot_annotation(title = "Task 3 - Large")
+```
+
+# Task - Deception
+```{r, fig.width=0.9, fig.height=2}
+best <- 8
+best_choice = rep(0, 10)
+best_choice[best] <- 1
+
+deception_prob <- data.frame(
+  choice=1:10,
+  best=best_choice,
+  prob=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.2, 0.2))
+
+
+deception_value <- c()
+
+deception_payout <- c()
+
+# ------------------------------------------------------------------------
+# Choice
+sparse %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result
+sparse %>% 
+  ggplot(aes(x=1, y=payout, label=payout, color=factor(best))) + 
+  geom_bar(width=0.5, fill="black", alpha=1, stat="identity") +
+  geom_text(size=2, position = position_stack(vjust = 20)) +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_color_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Average\npayout") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
+
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + 
+  plot_layout(widths=c(0.3, 0.3, 0.3)) + 
+  plot_annotation(title = "Task 2 - Sparse")
+```
+
+# Task - Distraction forced choise
+```{r, fig.width=1.2, fig.height=2.1}
+distraction_stim <- data.frame(
+  choice=c(1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10),
+  color=c(1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2),
+  prob=rep(0.5, 20))
+
+best <- 8
+best_choice = rep(0, 10)
+best_choice[best] <- 1
+
+distraction_payout <- data.frame(
+  choice=1:10,
+  best=best_choice,
+  payout=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.2, 0.2))
+
+# ------------------------------------------------------------------------
+# Choice
+distraction_stim %>% 
+  ggplot(aes(label=choice)) + 
+  geom_text(x=0.5, y=0.5) +
+  labs(x="", y="", title="Choose?") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank())+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# Result stim
+distraction_stim %>% 
+  ggplot(aes(x=factor(color), y=prob, fill=factor(color))) + 
+  geom_bar(width=0.5, stat="identity") +
+  scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("yellow", "blue")) +
+  labs(x="", y="", title="Stimulus") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
+
+# Result reward
+distraction_payout %>% 
+  ggplot(aes(x=1, y=payout, label=payout, fill=factor(best))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Average\npayout") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p3
+
+# ------------------------------------------------------------------------
+p1 + a1 + p2 + p3 +
+  plot_layout(widths=c(0.25, 0.25, 0.25, 0.25)) + 
+  plot_annotation(title = "Task 5 - Distraction")
 ```
