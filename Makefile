@@ -8534,6 +8534,8 @@ exp546:
 
 # ------------------------------------------------------------------------
 # 8/20/2020
+# 0b87b60
+#
 # On this day I realized for the last couple months I have been running the
 # wrong version of the 121 task. 
 # - I have been running: BanditOneHigh121
@@ -8764,7 +8766,9 @@ exp562:
 			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp562/param0/run{1} --master_seed={1}' ::: {1..100}
 
 
-
+# ------------------------------------------------------------------------
+# 8/20/2020
+# 8550d0a
 # test Uniform
 test_uniform:
 	-rm -rf $(DATA_PATH)/test
