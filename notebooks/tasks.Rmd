@@ -3,6 +3,7 @@ title: "Tasks - illustration"
 output: html_notebook
 ---
 
+# Library
 ```{r, message=FALSE}
 library(zoo)
 library(ggplot2)
@@ -257,24 +258,61 @@ p1 + a1 + p2 +
 ```
 
 # Task - Deception
-```{r, fig.width=0.9, fig.height=2}
+```{r, fig.width=1.5, fig.height=2}
 best <- 8
 best_choice = rep(0, 10)
 best_choice[best] <- 1
 
+# -------------------------------------------------------
+# p(R)
 deception_prob <- data.frame(
   choice=1:10,
   best=best_choice,
   prob=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.2, 0.2))
 
+# -------------------------------------------------------
+# parts of
+# R values in time
+std_R <- rep(1, 200)
+deception_R <- c(
+    rev(seq(0,1,.1)), 
+    seq(0,0.9,.1), 
+    rep(1,10), 
+    rep(1,169))
 
-deception_value <- c()
+# build df
+deception_value <- NULL
+for(n in 1:10){
+  if (n == best) {
+    R = deception_R
+    b <- 1
+  } else {
+    R = std_R
+    b <- 0
+  }
+  tmp <- data.frame(
+    time=1:200,
+    choice=rep(n, 200),
+    value=R,
+    best=rep(b, 200)
+  )
+    
+  deception_value <- bind_rows(tmp, deception_value)
+}
 
-deception_payout <- c()
+# -------------------------------------------------------
 
-# ------------------------------------------------------------------------
+# Avg payout in time
+deception_payout <- data.frame(
+  choice=1:10,
+  best=best_choice,
+  payout=c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.2, 0.2))
+
+# -------------------------------------------------------
+# Build
+
 # Choice
-sparse %>% 
+deception_prob %>% 
   ggplot(aes(label=choice)) + 
   geom_text(x=0.5, y=0.5) +
   labs(x="", y="", title="Choose?") +
@@ -287,15 +325,14 @@ sparse %>%
   theme(panel.grid.minor = element_blank())+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
 
-# Result
-sparse %>% 
-  ggplot(aes(x=1, y=payout, label=payout, color=factor(best))) + 
-  geom_bar(width=0.5, fill="black", alpha=1, stat="identity") +
-  geom_text(size=2, position = position_stack(vjust = 20)) +
+# Prob
+deception_prob %>% 
+  ggplot(aes(x=1, y=prob, fill=factor(best))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
-  scale_color_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Average\npayout") +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Reward\nprob.") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -308,11 +345,49 @@ sparse %>%
   theme(panel.grid.minor = element_blank()) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p2
 
+# value
+deception_value %>% 
+  ggplot(aes(x=time, y=value, color=factor(best), group=choice)) + 
+  geom_line(size=0.6, alpha=1) +
+  scale_y_continuous(limits=c(0,1.2), breaks = c(0, 1)) +
+  scale_color_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Reward\nvalue") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p3
+
+# Prob
+deception_payout %>% 
+  ggplot(aes(x=1, y=payout, fill=factor(best))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="", y="", title="Average\npayout") +
+  facet_wrap(choice~., ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p4
 
 # ------------------------------------------------------------------------
-p1 + a1 + p2 + 
-  plot_layout(widths=c(0.3, 0.3, 0.3)) + 
-  plot_annotation(title = "Task 2 - Sparse")
+p1 + a1 + p3 + p2 + p4 +
+  plot_layout(widths=c(0.2, 0.2, 0.2, 0.2, 0.2)) + 
+  plot_annotation(title = "Task 4 - Deception")
 ```
 
 # Task - Distraction forced choise
