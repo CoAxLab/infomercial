@@ -8534,12 +8534,245 @@ exp546:
 
 # ------------------------------------------------------------------------
 # 8/20/2020
+# On this day I realized for the last couple months I have been running the
+# wrong version of the 121 task. 
+# - I have been running: BanditOneHigh121
+# - I need to be running: BanditUniform121
+# 
+# These experiments rerun tune and test recipe for only those recipes that
+# were, and will be again, candidates for inclusion in the paper (#1)
+# 
+# On this date, there were -> and became
+# (tune file shown in parens)
+#
+# Ours
+# - meta: exp403 
+# Random
+# - epsilon: exp404 
+# - decay: exp405 
+# - random: exp407 
+# Reward
+# - extrinsic: exp510
+# Intrinsic 
+# - info: exp406 
+# - novelty: exp509 
+# - entropy:  exp512
+# - EB:  exp511 
+# - UCB:  exp541
+
+exp547_561: exp547 exp548 exp549 exp550 exp551 exp552 exp553 exp554 exp555 exp556 exp557 exp558 exp559 exp560 exp561
+
+# --- meta ----
+exp547:
+	tune_bandit.py random $(DATA_PATH)/exp547 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp548:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp547_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp548.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp548/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- epsilon ----
+exp549:
+	tune_bandit.py random $(DATA_PATH)/exp549 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp550:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp549_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp550.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp550/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- anneal ---
+exp551:
+	tune_bandit.py random $(DATA_PATH)/exp551 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp552:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp551_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp552.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp552/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- random ---
+exp553:
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp553.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp553/param0/run{1} --master_seed={1}' ::: {1..100}
+
+
+# --- beta (info) --- 
+exp554:
+	tune_bandit.py random $(DATA_PATH)/exp554 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.0001, 1000)'
+
+exp555:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp554_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp555.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp555/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- novelty ---
+exp556:
+	tune_bandit.py random $(DATA_PATH)/exp556 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0 \
+		--bonus='(1, 100)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp557:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp556_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp557.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp557/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- Count (EB) ---
+exp558:
+	tune_bandit.py random $(DATA_PATH)/exp558 \
+		--exp_name='count_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp559:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp558_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp559.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp559/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# --- Count (UCB) ---
+exp560:
+	tune_bandit.py random $(DATA_PATH)/exp560 \
+		--exp_name='count_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)'
+
+exp561:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp561.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp561/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# ------------------------------------------------------------------------
+# 8/20/2020
 # 
 # Run a random_bandit on BanditOneHigh4 for 2000 trials
 # This is the final test number for this task. 
-
-exp547:
+exp562:
 	parallel -j 39 \
-			--joblog '$(DATA_PATH)/exp547.log' \
+			--joblog '$(DATA_PATH)/exp562.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp547/param0/run{1} --master_seed={1}' ::: {1..100}
+			'random_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp562/param0/run{1} --master_seed={1}' ::: {1..100}
+
+
+
+# ------------------------------------------------------------------------
+# TODO
+# paper recipes
+data_archive:
+	# zip all the data in figures/supp
+	# zip the tune *_sorted files
+	# move all zip files to DATA_PATH/archive
+	# create/copy a readme in DATA_PATH/archive
+
+figure:
+	# make the figures 
