@@ -8786,18 +8786,29 @@ test_uniform:
 # even is it is a technically a bit off.
 exp563_572: exp563 exp564 exp565 exp566 exp567 exp568 exp569 exp570 exp571 exp572
 
+exp563_572_clean:
+	-rm -rf $(DATA_PATH)/exp563
+	-rm -rf $(DATA_PATH)/exp564
+	-rm -rf $(DATA_PATH)/exp565 
+	-rm -rf $(DATA_PATH)/exp566 
+	-rm -rf $(DATA_PATH)/exp567 
+	-rm -rf $(DATA_PATH)/exp568 
+	-rm -rf $(DATA_PATH)/exp569 
+	-rm -rf $(DATA_PATH)/exp570
+	-rm -rf $(DATA_PATH)/exp571
+	-rm -rf $(DATA_PATH)/exp572
 
 # meta (based on exp457)
 exp563:	
-	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --tie_threshold=0.0003 --lr_R=0.05 --log_dir=$(DATA_PATH)/exp563/param0/run1/
+	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --tie_threshold=0.003 --lr_R=0.05 --log_dir=$(DATA_PATH)/exp563/param0/run1/
 
 # ep (based on exp526)
 exp564:
-	epsilon_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --epsilon=0.07 --lr_R=0.21 --log_dir=$(DATA_PATH)/exp564/param0/run1/
+	epsilon_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --epsilon=0.15 --lr_R=0.21 --log_dir=$(DATA_PATH)/exp564/param0/run1/
 
 # anneal (based on exp527)
 exp565:
-	epsilon_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --epsilon=0.1 --epsilon_decay_tau=0.00026 --lr_R=0.02 --log_dir=$(DATA_PATH)/exp565/param0/run1/
+	epsilon_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --epsilon=0.1 --epsilon_decay_tau=0.0026 --lr_R=0.21 --log_dir=$(DATA_PATH)/exp565/param0/run1/
 
 # random (based on exp562)
 exp566:
@@ -8805,27 +8816,27 @@ exp566:
 
 # extrinsic (based on exp502)
 exp567:
-	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0 --temp=0.068 --lr_R=0.49 --log_dir=$(DATA_PATH)/exp567/param0/run1/
+	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0 --temp=0.268 --lr_R=0.49 --log_dir=$(DATA_PATH)/exp567/param0/run1/
 
 # beta (info) (based on exp525)
 exp568:
-	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.23 --temp=0.051 --lr_R=0.0019 --log_dir=$(DATA_PATH)/exp568/param0/run1/
+	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.23 --temp=0.021 --lr_R=0.0019 --log_dir=$(DATA_PATH)/exp568/param0/run1/
 
 # novelty (based on exp501)
 exp569:
-	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0 --bonus=1.42 --temp=0.017 --lr_R=0.013 --log_dir=$(DATA_PATH)/exp569/param0/run1/
+	softbeta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0 --bonus=1.42 --temp=0.047 --lr_R=0.013 --log_dir=$(DATA_PATH)/exp569/param0/run1/
 
 # entropy (based on exp504)
 exp570:
-	entropy_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.0011 --temp=0.021 --lr_R=0.024 --log_dir=$(DATA_PATH)/exp570/param0/run1/
+	entropy_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.11 --temp=0.061 --lr_R=0.024 --log_dir=$(DATA_PATH)/exp570/param0/run1/
 
 # EB (based on exp503)
 exp571:
-	count_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.0040 --temp=0.043 --lr_R=0.058 --mode='EB' --log_dir=$(DATA_PATH)/exp571/param0/run1/
+	count_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.040 --temp=0.163 --lr_R=0.058 --mode='EB' --log_dir=$(DATA_PATH)/exp571/param0/run1/
 
 # UCB (based on exp539)
 exp572:
-	count_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.062 --temp=0.063 --lr_R=0.46 --mode='UCB' --log_dir=$(DATA_PATH)/exp572/param0/run1/
+	count_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.062 --temp=0.193 --lr_R=0.46 --mode='UCB' --log_dir=$(DATA_PATH)/exp572/param0/run1/
 	
 # ------------------------------------------------------------------------
 # TODO
