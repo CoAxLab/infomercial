@@ -3,10 +3,33 @@ title: "Fig. Summary - all agents and reward tasks"
 output: html_notebook
 ---
 
-# Fig. Summary
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
 
-# Fig. Task 1
-## Load data
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "/Volumes/Data/infomercial/data"
+```
+
+# Fig. Summary
+## Fig. Task 1
+### Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditOneHigh4"
@@ -125,140 +148,10 @@ tmp <- bind_rows(tmp2, tmp1)
 result_task1 <- tmp
 ```
 
-### Cleanup
-```{r}
-# ----------------------------------------------------------------------------
-
-rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
-   exp_name, exp_names, file_names, i, param_codes,
-   run_codes, task_name, m, a_nam, num_arms, E_bias, task_code)
-```
-
-### Actions
-```{r, fig.width=3, fig.height=1.4}
-p <- 10
-r <- 3
-
-num_arm <- max(result_task1$action) + 1
-
-result_task1 %>% 
-  filter(param <= p, run == r) %>% 
-  mutate(
-    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=global_step, y=action+1, color=color)) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  scale_x_continuous(
-    limits=c(0, num_episodes+(num_episodes*.1)), 
-    breaks = c(0, num_episodes)) +
-  scale_color_identity() +
-  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
-  facet_grid(agent~param) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) 
-```
-
-### Reward (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task1 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_R/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Reward") +
-  scale_x_continuous(limits=c(0, 200),
-                     breaks = c(0, 200)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Info value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task1 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_E/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Info value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 1),
-                     # breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task1 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  group_by(agent, param, run) %>% 
-  mutate(total_value = total_R + total_E) %>% 
-  ggplot(aes(x=global_step, y=total_value/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Regret (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task1 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_regret/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Regret") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-  #                    breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-
 ### Summary stats
 ```{r, fig.width=2.1, fig.height=1.2}
+num_episodes <- 4*50
+
 result_task1 %>% 
   filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -364,9 +257,13 @@ tmp %>%
   coord_flip() -> p4
 
 # -------------------------------------------------------------------
-(p1 / (p2 + p3 + p4)) + 
+summary1 <- (p1 / (p2 + p3)) + 
   plot_annotation(title = "Task 1 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
+print(summary1)
+
+name <- "img/summary1"
+ggsave(paste(name, ".pdf", sep=""), plot=summary1, width = 2.1*2, height = 1.2*2)
 ```
 
 ## Fig. Task 2 
@@ -492,130 +389,11 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
    run_codes, task_name, m, a_name)
 ```
 
-### Actions
-```{r, fig.width=3, fig.height=1.4}
-p <- 10
-r <- 3
-
-num_arm <- max(result_task2$action) + 1
-
-result_task2 %>% 
-  mutate(
-    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  filter(param <= p, run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=color)) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  scale_x_continuous(
-    limits=c(0, num_episodes+(num_episodes*.1)), 
-    breaks = c(0, num_episodes)) +
-  scale_color_identity() +
-  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
-  labs(x="Time", y="Action") +
-  facet_grid(agent~param) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) 
-```
-
-### Reward (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task2 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_R/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Reward") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  scale_y_continuous(limits=c(0, 0.022),
-                     breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Info value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task2 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_E/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Info value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 1),
-                     # breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task2 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  group_by(agent, param, run) %>% 
-  mutate(total_value = total_R + total_E) %>% 
-  ggplot(aes(x=global_step, y=total_value/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  scale_y_continuous(limits=c(0, 0.022),
-                     breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-### Regret (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task2 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_regret/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Regret") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  scale_y_continuous(limits=c(0, 0.022),
-                     breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
 ### Summary stats
 ```{r, fig.width=2.1, fig.height=1.2}
+num_episodes <- 50000
+
+# -
 result_task2 %>% 
   filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -656,7 +434,7 @@ tmp %>%
              color="black",
              size=0.1) +
   labs(x="", y="Reward") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.01, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -721,9 +499,13 @@ tmp %>%
   coord_flip() -> p4
 
 # -------------------------------------------------------------------
-(p1 / (p2 + p3 + p4)) + 
+summary2 <- (p1 / (p2 + p3)) + 
   plot_annotation(title = "Task 2 - Sparse", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
+print(summary2)
+
+name <- "img/summary2"
+ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 2.1*2, height = 1.2*2)
 ```
 
 ## Fig. Task 3
@@ -850,130 +632,12 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
    run_codes, task_name, m, a_name)
 ```
 
-### Reward (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task3 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_R/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Reward") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-### Info value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task3 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_E/num_episodes, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Info value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 1),
-                     # breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task3 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  group_by(agent, param, run) %>% 
-  mutate(total_value = total_R + total_E) %>% 
-  ggplot(aes(x=global_step, y=total_value/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  scale_y_continuous(limits=c(0, 1),
-                     breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Regret (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task3 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_regret/num_episodes, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Regret") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-
-### Actions
-```{r, fig.width=3, fig.height=2.4}
-p <- 10
-r <- 7
-num_arm <- max(result_task3$action) + 1
-
-result_task3 %>% 
-  mutate(
-    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  filter(param <= p, run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=color)) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  scale_x_continuous(
-    limits=c(0, num_episodes+(num_episodes*.1)), 
-    breaks = c(0, num_episodes)) +
-  scale_color_identity() +
-  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
-  labs(x="Time", y="Action") +
-  facet_grid(agent~param) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) 
-```
 
 ### Summary stats
 ```{r, fig.width=2.1, fig.height=1.2}
+num_episodes <- 121 * 50
+
+# -
 result_task3 %>% 
   filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -1079,10 +743,14 @@ tmp %>%
   coord_flip() -> p4
 
 # -------------------------------------------------------------------
-(p1 / (p2 + p3 + p4)) + 
+summary3 <- (p1 / (p2 + p3)) + 
   plot_annotation(title = "Task 3 - Large", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
-# print(sub3)
+
+print(summary3)
+
+name <- "img/summary3"
+ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 2.1*2, height = 1.2*2)
 ```
 
 ## Fig. Task 4
@@ -1091,7 +759,7 @@ tmp %>%
 # -------------------------------------------------------------
 task_name <- "DeceptiveBanditOneHigh10"
 task_code <- 4
-num_episodes <- 200
+num_episodes <- 10*20
 
 # The overestimate due to E0
 num_arms <- 10
@@ -1210,107 +878,11 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
    run_codes, task_name, m, a_name)
 ```
 
-### Actions
-```{r, fig.width=3, fig.height=1.4}
-p <- 10
-r <- 3
-num_arm <- max(result_task4$action) + 1
-
-result_task4 %>% 
-  mutate(
-    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  filter(param <= p, run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=color)) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  scale_x_continuous(
-    limits=c(0, num_episodes+(num_episodes*.1)), 
-    breaks = c(0, num_episodes)) +
-  scale_color_identity() +
-  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
-  labs(x="Time", y="Action") +
-  facet_grid(agent~param) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) 
-```
-
-### Reward (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task4 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_R/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Reward") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-### Info value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task4 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_E/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Info value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 1),
-                     # breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task4 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  group_by(agent, param, run) %>% 
-  mutate(total_value = total_R + total_E) %>% 
-  ggplot(aes(x=global_step, y=total_value/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  scale_y_continuous(limits=c(0, 1),
-                     breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
 ### Summary stats
 ```{r, fig.width=2.1, fig.height=1.2}
+num_episodes <- 10*20
+
+# -
 result_task4 %>% 
   filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -1416,10 +988,13 @@ tmp %>%
   coord_flip() -> p4
 
 # -------------------------------------------------------------------
-(p1 / (p2 + p3 + p4)) + 
+summary4 <- (p1 / (p2 + p3)) + 
   plot_annotation(title = "Task 4 - Deception", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
-# print(sub4)
+print(summary4)
+
+name <- "img/summary4"
+ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 2.1*2, height = 1.2*2)
 ```
 
 ## Fig. Task 5
@@ -1546,130 +1121,11 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
    run_codes, task_name, m, a_name)
 ```
 
-### Actions
-```{r, fig.width=3, fig.height=1.4}
-p <- 10
-r <- 3
-num_arm <- max(result_task5$action) + 1
-
-result_task5 %>% 
-  mutate(
-    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  filter(param <= p, run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=color)) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  scale_x_continuous(
-    limits=c(0, num_episodes+(num_episodes*.1)), 
-    breaks = c(0, num_episodes)) +
-  scale_color_identity() +
-  scale_y_continuous(limits=c(0, num_arm+1), breaks = 1:num_arm) +
-  labs(x="Time", y="Action") +
-  facet_grid(agent~param) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  theme(strip.text.y = element_text(angle = 0)) +
-  theme(strip.text.x = element_blank()) +
-  theme(axis.text.y = element_blank()) 
-```
-
-### Reward (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task5 %>% 
-  filter(global_step > 20) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_R/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Reward") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-### Info value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task5 %>% 
-  filter(global_step > 10) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_E/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Info value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 1),
-                     # breaks = c(0, 0.5, 1)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Value (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task5 %>% 
-  filter(global_step > 20) %>% 
-  filter(param <= p, run <= r) %>% 
-  group_by(agent, param, run) %>% 
-  mutate(total_value = total_R + total_E) %>% 
-  ggplot(aes(x=global_step, y=total_value/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Value") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits=c(0, 0.022),
-                     # breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-### Regret (time)
-```{r, fig.width=3.2, fig.height=0.7}
-p <- 2
-r <- 10
-
-result_task5 %>% 
-  filter(global_step > 20) %>% 
-  filter(param <= p, run <= r) %>% 
-  ggplot(aes(x=global_step, y=total_regret/global_step, 
-             group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=1, shape=".") +
-  labs(x="Time", y="Regret") +
-  scale_x_continuous(limits=c(0, num_episodes),
-                     breaks = c(0, num_episodes)) +
-  # # scale_y_continuous(limits=c(0, 0.022),
-  #                    breaks = c(0, 0.01, 0.02)) +
-  facet_wrap(agent~., nrow=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(panel.spacing = unit(1, "lines")) +
-  theme(strip.background = element_blank()) 
-```
-
-
 ### Summary stats
 ```{r, fig.width=2.1, fig.height=1.2}
+num_episodes <- 10 * 50
+
+# -
 result_task5 %>% 
   filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -1775,14 +1231,18 @@ tmp %>%
   coord_flip() -> p4
 
 # -------------------------------------------------------------------
-(p1 / (p2 + p3 + p4)) + 
-  plot_annotation(title = "Task 5 - Deception", 
+summary5 <- (p1 / (p2 + p3)) + 
+  plot_annotation(title = "Task 5 - Distraction", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
-# print(sub5)
+print(summary5)
+
+name <- "img/summary5"
+ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 2.1*2, height = 1.2*2)
 ```
 
-
-## Fig. Task1-5
-```{r, fig.width=2.1, fig.height=4.5}
-# sub1 / sub2 / sub3 / sub4 / sub5
+# Cleanup
+```{r}
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name, num_arms, E_bias, task_code)
 ```
