@@ -8747,10 +8747,10 @@ exp561:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 40 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp561.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'count_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp561/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'count_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --mode='UCB' --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp561/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8838,6 +8838,77 @@ exp571:
 exp572:
 	count_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.062 --temp=0.193 --lr_R=0.46 --mode='UCB' --log_dir=$(DATA_PATH)/exp572/param0/run1/
 	
+
+# ------------------------------------------------------------------------
+# 8/20/2020
+# 0b87b60
+#
+# A few days ago I realized for the last couple months I have been running the
+# wrong version of the 121 task. 
+# - I have been running: BanditOneHigh121
+# - I need to be running: BanditUniform121
+#
+# I reran most agents already (exp547_561). Somehow I missed extrinsic and 
+# entopy in that rerun. Here I fix that.
+
+exp573_576: exp573 exp574 exp575 exp576
+
+
+# --- extrinsic ---
+exp573:
+	tune_bandit.py random $(DATA_PATH)/exp573 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+exp574:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp573_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp574.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp574/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# --- entropy ---
+exp575:
+	tune_bandit.py random $(DATA_PATH)/exp575 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=12100 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)'
+
+exp576:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp575_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 40 \
+			--joblog '$(DATA_PATH)/exp576.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'entropy_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp576/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
 # ------------------------------------------------------------------------
 # TODO
 # paper recipes
