@@ -1,0 +1,373 @@
+---
+title: "Task 3 - result analysis (several exps)"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "/Volumes/Data/infomercial/data"
+```
+
+
+### Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditUniform121"
+task_code <- 3
+num_episodes <- 121 * 250
+
+# The overestimate due to E0
+num_arms <- 121
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp548", 
+               "exp550", 
+               "exp552", 
+               "exp553", 
+               "exp574",
+               "exp555",
+               "exp557", 
+               "exp576", 
+               "exp559", 
+               "exp561")
+
+agent_names <- c("Curiosity", 
+                 "Random/Greedy", 
+                 "Decay/Greedy", 
+                 "Random",
+                 "Reward", 
+                 "+Info", 
+                 "+Novelty", 
+                 "+Entropy", 
+                 "+Count (EB)",
+                 "+Count (UCB)")
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task3 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task3 <- bind_rows(result_task3, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task3$agent <- factor(result_task3$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task3$total_E <- result_task3$total_E - E_bias
+result_task3$total_E[result_task3$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Reward", "Novelty")) {
+  m <- result_task3$agent == a_name
+  result_task3[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task3 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task3 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) %>% 
+  ungroup() -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task3 <- tmp
+
+# Set 'policy' in agents without separate ones.
+#
+# 1. Policy does not exist as a field in any but curiosity
+# it was filled with zero, which is misleading when I go to color by 
+# policy. All strategies not curiosity should have a policy of 1
+# to mean exploitation
+result_task3$policy[result_task3$strategy != "Curiosity"] <- 1
+
+# 2. To estimate exploration we use regret. Regret driven exploration we 
+# denote as -1
+result_task3$policy[result_task3$regret > 0] <- -1 
+
+# ----------------------------------------------------------------------------
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+
+### Summary stats
+```{r, fig.width=2.1, fig.height=1.2}
+
+# -
+result_task3 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_value = last(total_R) + last(total_E),
+            total_regret = last(total_regret),
+            num_explore = last(num_explore),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_R), 
+            var_R = mad(total_R),
+            median_E = mean(total_E), 
+            var_E = mad(total_E),
+            median_total_value = median(total_value), 
+            var_total_value = mad(total_value),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret),
+            median_num_explore=median(num_explore),
+            var_num_explore=mad(num_explore),
+            median_p_bests=median(p_bests),
+            var_p_bests=mad(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_E+var_E)/num_episodes), 
+    ymax=((median_E-var_E)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
+             color="black",
+             size=0.1) +
+  labs(x="", y="Info. value") +
+  # lims(y=c(0.5, 1)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_regret+var_regret)/num_episodes), 
+    ymax=((median_regret-var_regret)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Regret") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
+  geom_point(size=1, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=((median_num_explore+var_num_explore)/num_episodes), 
+    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
+             color="black",
+             size=0.1) +
+  labs(x="", y="Efficiency") +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  coord_flip() -> p4
+
+# -------------------------------------------------------------------
+summary3 <- (p1 / (p2 + p3)) + 
+  plot_annotation(title = "Task 3 - Large", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+
+print(summary3)
+```
+## Summary jitter
+```{r, fig.width=2.1, fig.height=1.2}
+result_task3 %>% 
+  filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_regret = last(total_regret),
+            p_bests = last(p_bests)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent, param) %>% 
+  summarise(total_R = median(total_R),
+            total_E = median(total_E),
+            total_regret = median(total_regret),
+            p_bests = median(p_bests)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_point(size=1.25, alpha=0.8) +
+  labs(x="", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+# -------------------------------------------------------------------
+summary3 <- p1 + 
+  plot_annotation(title = "Task 3 - Large", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+
+print(summary3)
+```
+
+## Actions
+```{r, fig.width=3.6, fig.height=2.1}
+# Pick an exp to show actions for
+r <- 2
+
+# Plot actions
+result_task3 %>% 
+  filter(agent != "Random") %>% 
+  filter(run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
+  geom_point(size=0.1, alpha=0.9) +
+  geom_line(size=0.1) +
+  labs(x="Time", y="Choice") +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_color_manual("", values=c("darkslategray4", "chartreuse4", "black")) +
+  # scale_y_continuous(limits=c(0.9, num_arms+.1), breaks = c(1, 4)) +
+  facet_grid(param~agent) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(.2, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.y = element_blank()) +
+  theme(strip.text.x = element_text(hjust = 0)) + 
+  plot_annotation(
+      title="Exploration strategies (task 3)", 
+      subtitle = "Ten 'animals'",
+      theme = theme_pubr(base_size = 8, legend = "none")) 
+```
+## Rewards
+```{r, fig.width=0.6, fig.height=2.1}
+result_task3 %>% 
+  filter(agent != "Random") %>% 
+  filter(global_step > 10) %>%
+  ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
+  geom_line(size=0.1, alpha=0.8) +
+  labs(x="Time", y="Avg. reward") +
+  scale_x_continuous(
+    limits=c(0, num_episodes+(num_episodes*.1)), 
+    breaks = c(0, num_episodes)) +
+  scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 1)) +
+  facet_grid(agent~.) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(.2, "lines")) +
+  theme(strip.text.y = element_text(angle=0, hjust = -.1)) + 
+  theme(strip.background = element_blank()) 
+```
+  
