@@ -3,9 +3,12 @@ title: "Cartoons"
 output: html_notebook
 ---
 
+# Library
 ```{r, message=FALSE}
 library(ggplot2)
+library(ggstance)
 library(ggthemes)
+library(ggformula)
 library(ggpubr)
 library(patchwork)
 library(tidyr)
@@ -19,12 +22,167 @@ library(scales)
 library(network)
 library(ggnetwork)
 library(sna)
-# library(tikzDevice)
-
 options(scipen=1000000)
+```
 
-kl_divergence <- function(p, q) {
-  sum(p * log(p/q))
+# Example spaces
+```{r, fig.width=1.5, fig.height=1.55}
+# --- An arrow
+arrow <- data.frame(x=0, xend=2, y=0.5, yend=0.5)
+arrow %>% 
+ggplot(aes(x=x, y=y, xend=xend, yend = yend)) +
+  geom_segment(
+    lineend = "butt", linejoin = "mitre",
+    size = 0.5, arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  labs(x="", y="") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # theme(panel.background = element_rect(fill = 'grey', color='grey')) +
+  theme(axis.text = element_blank()) +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) -> a1
+
+# --- Spaces
+probs <- c(0, 1)
+prob_space <- data.frame(x=probs, y=probs)
+
+ints <- 0:5
+int_space <- data.frame(x=ints, y=ints)
+
+ratios <- ints/2
+ratio_space <- data.frame(x=ratios, y=ratios)
+
+reals <- c(0, 0.3, 0.6, 0.9, 1.2, 1.5)
+real_space <- data.frame(x=reals, y=reals)
+
+# --- plot
+int_space %>%
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="white") +
+  labs(x="", y="", title="Count") +
+  theme_pubr(base_size = 5, legend = "none") +
+  scale_x_continuous(limits=c(0, 5), breaks=ints) +
+  scale_y_continuous(limits=c(0, 5), breaks=ints) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.2, 'line')))) -> p1
+
+ratio_space %>%
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="white") +
+  labs(x="", y="", title="Natural") +
+  theme_pubr(base_size = 5, legend = "none") +
+  # scale_x_continuous(limits=c(0, 5), breaks=ints) +
+  # scale_y_continuous(limits=c(0, 5), breaks=ints) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.2, 'line')))) -> p2
+
+prob_space %>% 
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="white") +
+  labs(x="", y="", title="Probability") +
+  theme_pubr(base_size = 5, legend = "none") +
+  scale_x_continuous(limits=bools, breaks=bools) +
+  scale_y_continuous(limits=bools, breaks=bools) -> p3
+  
+real_space %>%
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="white") +
+  labs(x="", y="", title="Real") +
+  theme_pubr(base_size = 6, legend = "none") +
+  scale_x_continuous(limits=c(0, 1.6), breaks=reals) +
+  scale_y_continuous(limits=c(0, 1.8), breaks=reals) + 
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.2, 'line')))) -> p4
+
+
+# --- build final
+((p1 / p2 / p3 ) | a1 | (plot_spacer() / p4 / plot_spacer())) + 
+  plot_annotation(title="Examples of memory space",
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
+
+
+# Learning in memory space
+```{r, fig.width=1, fig.height=1}
+x <- 10
+y <- 10
+shift <- 0.25
+
+points <- data.frame(x=c(4, 7, 1), y=c(2, 5, 8))
+points %>% 
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="dark gray") + 
+  scale_x_continuous(limits=c(0, x), breaks=x) +
+  scale_y_continuous(limits=c(0, y), breaks=y) +
+  labs(x=TeX("$\\theta_1$"), y=TeX("$\\theta_2$")) +
+  # labs(x="", y="", title="Learning in memory space") +
+  geom_segment(x=points$x[1], y=points$y[1], xend=points$x[2], yend=points$y[2], 
+               arrow = arrow(length = unit(0.2, 'line'),type="closed"),
+               size=0.3) +
+  geom_segment(x=points$x[1], y=points$y[1], xend=points$x[3], yend=points$y[3], 
+               arrow = arrow(length = unit(0.2, 'line'),type="closed"),
+               size=0.3) +
+  annotate("text", x = 1.5, y = 5.5, size=2, label = TeX("$f_{\\theta}(x_1)$")) +
+  annotate("text", x = 6, y = 3, size=2, label = TeX("$f_{\\theta}(x_2)$")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) +
+  plot_annotation(title="Learning in memory space",
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+```
+# Consistent and not - dynamics
+```{r, fig.width=1.2, fig.height=1.3}
+
+alpha <- function(x, g, t_peak) {
+  g * (x/t_peak) * exp(1 - x/t_peak)
 }
+
+t_max <- 20
+times <- 1:t_max
+t_stop <- 15
+
+
+# -- Consistent
+c1 <- c(0, 2.4, 3.8, 2, 1.2, 0.4, 0.8, 1.2, 1.6, 1.4, 0.8, 0.4, 0.2, 0.2, 0.1, 0, 0, 0, 0, 0)
+c2 <- 8*exp(-times)
+c3 <- 2*alpha(times, 1, 4)
+  
+c_curves <- data.frame(times=c(times, times, times),
+                     name=c(rep(1,t_max),rep(2,t_max),rep(3,t_max)),
+                     ys=c(c1, c2, c3))
+
+c_curves %>% 
+  ggplot(aes(x=times, y=ys, group=name, color=factor(name))) +
+  geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE) +
+  geom_vline(xintercept = t_stop, color="black", linetype="dotted", alpha=0.9, size=0.2) +
+  lims(x=c(1, t_max)) + 
+  labs(x="Time", y=TeX("||$\\nabla \\theta$||"), title="Consistent learning", tag="a.") +
+  scale_color_manual(values=c("chartreuse4", "aquamarine4", "darkseagreen4")) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p1
+
+# --- Inconsistent
+c1 <- c(0, 1.4, 2.2, 4, 3.8, 1.6, 1.5, 0.4, 0.35, 0.25, 0.12, 1.0, 1.8, 3.2, 6.4, 12.8, 24, 48, 92, 180)
+i_curves <- data.frame(times=times, name=rep(4, t_max), ys=c1)
+
+i_curves %>% 
+ggplot(aes(x=times, y=ys, group=name)) +
+  geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE, color="black") +
+  geom_vline(xintercept = t_stop, color="black", linetype="dotted", alpha=0.9, size=0.2) +
+  lims(x=c(1, t_max), y=c(0,14)) + 
+  labs(x="Time", y=TeX("||$\\nabla \\theta$||"), title="Inconsistent learning", tag="b.") +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p2
+
+(p1 / p2) + 
+  plot_annotation(title="Learning dynamics in memory space",
+                  theme = theme_pubr(base_size = 8, legend = "none"))
 ```
 
