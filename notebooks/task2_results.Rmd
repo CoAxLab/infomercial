@@ -344,7 +344,7 @@ tmp %>%
 # ---
 p1 / p2  / p3 / p4 + 
   plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
-  plot_annotation(title = "Task 2 - Classic", 
+  plot_annotation(title = "Task 2 - Sparse", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 ```
