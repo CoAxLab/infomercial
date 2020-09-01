@@ -1,5 +1,5 @@
 ---
-title: "Task 3 - result analysis (several exps)"
+title: "Task 2 - result analysis (several exps)"
 output: html_notebook
 ---
 
@@ -27,40 +27,38 @@ source("utils.R")
 data_path <- "/Volumes/Data/infomercial/data"
 ```
 
-
 # Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
-task_name <- "BanditUniform121"
-task_code <- 3
-num_episodes <- 121 * 250
+task_name <- "BanditHardAndSparse10"
+task_code <- 2
+num_episodes <- 50000
 
 # The overestimate due to E0
-num_arms <- 121
+num_arms <- 10
 E_bias <- log(num_arms) * num_arms 
 
-exp_names <- c("exp548", 
-               "exp550", 
-               "exp552", 
-               "exp553", 
-               "exp574",
-               "exp555",
-               "exp557", 
-               "exp576", 
-               "exp559", 
-               "exp561")
+exp_names <- c("exp546",
+               "exp409", 
+               "exp410", 
+               "exp412", 
+               "exp514",
+               "exp411", 
+               "exp513", 
+               "exp516", 
+               "exp515", 
+               "exp542")
 
-agent_names <- c(
-  "Curiosity", 
-  "Random/Greedy", 
-  "Decay/Greedy", 
-  "Random",
-  "Reward", 
-  "Info. value", 
-  "Novelty", 
-  "Entropy", 
-  "Count (EB)",
-  "Count (UCB)")
+agent_names <- c("Curiosity", 
+                 "del-random", 
+                 "tau-random", 
+                 "Random",
+                 "Extrinsic", 
+                 "Info", 
+                 "Novelty", 
+                 "Entropy", 
+                 "Count (EB)",
+                 "Count (UCB)")
 
 class_names <- c(
   "Curiosity",
@@ -83,7 +81,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-result_task3 <- NULL
+result_task2 <- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -108,57 +106,43 @@ for(i in 1:length(exp_names)){
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task3 <- bind_rows(result_task3, tmp)
+  result_task2 <- bind_rows(result_task2, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task3$agent <- factor(result_task3$agent, levels=rev(agent_names))
+result_task2$agent <- factor(result_task2$agent, levels=rev(agent_names))
 
 # Remove E_bias
-result_task3$total_E <- result_task3$total_E - E_bias
-result_task3$total_E[result_task3$total_E < 0] <- 0
+result_task2$total_E <- result_task2$total_E - E_bias
+result_task2$total_E[result_task2$total_E < 0] <- 0
 
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Reward", "Novelty")) {
-  m <- result_task3$agent == a_name
-  result_task3[["total_E"]][m] <- 0
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task2$agent == a_name
+  result_task2[["total_E"]][m] <- 0
 }
 
 # Estimate num_explore
 # - for curiosity this is defined by policy
 # - for the rest we can count non-zero regret values
-result_task3 %>%
+result_task2 %>%
   filter(agent != "Curiosity") %>% 
   group_by(agent, run, param) %>%
   mutate(num_explore = sum(regret > 0)) %>% 
   ungroup() -> tmp1
 
-result_task3 %>% 
+result_task2 %>% 
   filter(agent == "Curiosity") %>% 
   group_by(agent, run, param) %>%
-  mutate(num_explore = sum(policy == 0)) %>% 
-  ungroup() -> tmp2
+  mutate(num_explore = sum(policy == 0)) -> tmp2
 
 tmp <- bind_rows(tmp2, tmp1)
-result_task3 <- tmp
+result_task2 <- tmp
 
-# Set 'policy' in agents without separate ones.
-#
-# 1. Policy does not exist as a field in any but curiosity
-# it was filled with zero, which is misleading when I go to color by 
-# policy. All strategies not curiosity should have a policy of 1
-# to mean exploitation
-result_task3$policy[result_task3$strategy != "Curiosity"] <- 1
-
-# 2. To estimate exploration we use regret. Regret driven exploration we 
-# denote as -1
-result_task3$policy[result_task3$regret > 0] <- -1 
-
-# ----------------------------------------------------------------------------
 # Cleanup
 rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
    exp_name, exp_names, file_names, i, param_codes,
@@ -166,12 +150,11 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 
-# Summary stats
+# Summary stats (joint)
 ```{r, fig.width=2.1, fig.height=1.2}
-
 # -
-result_task3 %>% 
-  filter(agent != "Random") %>%
+result_task2 %>% 
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -210,7 +193,7 @@ tmp %>%
              color="black",
              size=0.1) +
   labs(x="", y="Reward") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.01, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -276,14 +259,15 @@ tmp %>%
 
 # -------------------------------------------------------------------
 summary3 <- (p1 / (p2 + p3)) + 
-  plot_annotation(title = "Task 3 - Large", 
+  plot_annotation(title = "Task 2 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(summary3)
 ```
+
 # Summary, by parts
 ```{r, fig.width=2.1, fig.height=1.7}
-result_task3 %>% 
+result_task2 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -303,7 +287,7 @@ tmp %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="", title="Deterministic") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -319,7 +303,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -335,7 +319,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -351,7 +335,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -360,7 +344,7 @@ tmp %>%
 # ---
 p1 / p2  / p3 / p4 + 
   plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
-  plot_annotation(title = "Task 3 - Large", 
+  plot_annotation(title = "Task 2 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 ```
@@ -369,10 +353,10 @@ p1 / p2  / p3 / p4 +
 # Actions
 ```{r, fig.width=3.6, fig.height=2.1}
 # Pick an exp to show actions for
-r <- 2
+r <- 1
 
 # Plot actions
-result_task3 %>% 
+result_task2 %>% 
   filter(agent != "Random") %>% 
   filter(run == r) %>% 
   ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
@@ -397,13 +381,13 @@ result_task3 %>%
   theme(axis.ticks.y = element_blank()) +
   theme(strip.text.x = element_text(hjust = 0)) + 
   plot_annotation(
-      title="Exploration strategies (task 3)", 
+      title="Exploration strategies (task 2)", 
       subtitle = "Ten 'animals'",
       theme = theme_pubr(base_size = 8, legend = "none")) 
 ```
 # Rewards
 ```{r, fig.width=0.6, fig.height=2.1}
-result_task3 %>% 
+result_task2 %>% 
   filter(agent != "Random") %>% 
   filter(global_step > 10) %>%
   ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
