@@ -60,7 +60,8 @@ agent_names <- c(
   "Novelty", 
   "Entropy", 
   "Count (EB)",
-  "Count (UCB)")
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",

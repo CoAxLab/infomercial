@@ -266,7 +266,7 @@ print(summary3)
 ```
 
 # Summary, by parts
-```{r, fig.width=2.1, fig.height=1.7}
+```{r, fig.width=2.x1, fig.height=1.7}
 result_task2 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
