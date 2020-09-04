@@ -53,16 +53,17 @@ exp_names <- c(
   "exp539")
 
 agent_names <- c(
-  "Curiosity",
-  "del-random", 
-  "tau-random", 
-  "Random", 
-  "Extrinsic", 
-  "Info", 
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
   "Novelty", 
   "Entropy", 
-  "Count (EB)", 
-  "Count (UCB)")
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -125,7 +126,7 @@ result_task1$total_E[result_task1$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "+Novelty")) {
   m <- result_task1$agent == a_name
   result_task1[["total_E"]][m] <- 0
 }
@@ -149,49 +150,30 @@ result_task1 <- tmp
 ```
 
 ### Summary stats
-```{r, fig.width=2.1, fig.height=1.2}
+```{r, fig.width=1.2, fig.height=1.7}
 num_episodes <- 4*50
 
+# --
 result_task1 %>% 
-  filter(agent != "Random") %>%
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
-            total_value = last(total_R) + last(total_E),
             total_regret = last(total_regret),
-            num_explore = last(num_explore),
             p_bests = last(p_bests)) %>% 
   ungroup() -> tmp
 
-tmp %>% 
-  group_by(strategy, agent) %>% 
-  summarise(median_R = median(total_R), 
-            var_R = mad(total_R),
-            median_E = mean(total_E), 
-            var_E = mad(total_E),
-            median_total_value = median(total_value), 
-            var_total_value = mad(total_value),
-            median_regret = median(total_regret),
-            var_regret = mad(total_regret),
-            median_num_explore=median(num_explore),
-            var_num_explore=mad(num_explore),
-            median_p_bests=median(p_bests),
-            var_p_bests=mad(p_bests)) %>% 
-  ungroup() -> tmp
 
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
 tmp %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Reward") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
@@ -199,71 +181,63 @@ tmp %>%
   coord_flip() -> p1
 
 tmp %>% 
+  filter(strategy == "Random") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)/num_episodes), 
-    ymax=((median_E-var_E)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Info. value") +
-  # lims(y=c(0.5, 1)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
   coord_flip() -> p2
 
 tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)/num_episodes), 
-    ymax=((median_regret-var_regret)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Regret") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p3
 
 tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)/num_episodes), 
-    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Efficiency") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p4
 
-# -------------------------------------------------------------------
-summary1 <- (p1 / (p2 + p3)) + 
+# ---
+summary1 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
   plot_annotation(title = "Task 1 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
+
 print(summary1)
 
 name <- "img/summary1"
-ggsave(paste(name, ".pdf", sep=""), plot=summary1, width = 2.1*2, height = 1.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=summary1, width = 1.2*2, height = 1.7*2)
 ```
 
 ## Fig. Task 2 
@@ -289,16 +263,18 @@ exp_names <- c("exp546",
                "exp515", 
                "exp542")
 
-agent_names <- c("Curiosity", 
-                 "del-random", 
-                 "tau-random", 
-                 "Random",
-                 "Extrinsic", 
-                 "Info", 
-                 "Novelty", 
-                 "Entropy", 
-                 "Count (EB)",
-                 "Count (UCB)")
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -390,157 +366,132 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=2.1, fig.height=1.2}
+```{r, fig.width=1.2, fig.height=1.7}
 num_episodes <- 50000
 
-# -
+# --
 result_task2 %>% 
-  filter(agent != "Random") %>%
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
-            total_value = last(total_R) + last(total_E),
             total_regret = last(total_regret),
-            num_explore = last(num_explore),
             p_bests = last(p_bests)) %>% 
   ungroup() -> tmp
 
-tmp %>% 
-  group_by(strategy, agent) %>% 
-  summarise(median_R = median(total_R), 
-            var_R = mad(total_R),
-            median_E = mean(total_E), 
-            var_E = mad(total_E),
-            median_total_value = median(total_value), 
-            var_total_value = mad(total_value),
-            median_regret = median(total_regret),
-            var_regret = mad(total_regret),
-            median_num_explore=median(num_explore),
-            var_num_explore=mad(num_explore),
-            median_p_bests=median(p_bests),
-            var_p_bests=mad(p_bests)) %>% 
-  ungroup() -> tmp
 
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
 tmp %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Reward") +
-  lims(y=c(0.01, 0.02)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
 tmp %>% 
+  filter(strategy == "Random") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)/num_episodes), 
-    ymax=((median_E-var_E)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Info. value") +
-  # lims(y=c(0.5, 1)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
   coord_flip() -> p2
 
 tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)/num_episodes), 
-    ymax=((median_regret-var_regret)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Regret") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p3
 
 tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)/num_episodes), 
-    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Efficiency") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p4
 
-# -------------------------------------------------------------------
-summary2 <- (p1 / (p2 + p3)) + 
+# ---
+summary2 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
   plot_annotation(title = "Task 2 - Sparse", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
+
 print(summary2)
 
 name <- "img/summary2"
-ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 2.1*2, height = 1.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.7*2)
 ```
 
-## Fig. Task 3
+
+## Fig. Task 3 - BanditUniform121
 ### Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
-task_name <- "BanditOneHigh121"
+task_name <- "BanditUniform121"
 task_code <- 3
-num_episodes <- 121 * 50
+num_episodes <- 121 * 250
 
 # The overestimate due to E0
 num_arms <- 121
 E_bias <- log(num_arms) * num_arms 
 
-exp_names <- c("exp403", 
-               "exp404", 
-               "exp405", 
-               "exp407", 
-               "exp510",
-               "exp406",
-               "exp509", 
-               "exp512", 
-               "exp511", 
-               "exp541")
+exp_names <- c("exp548", 
+               "exp550", 
+               "exp552", 
+               "exp553", 
+               "exp574",
+               "exp555",
+               "exp557", 
+               "exp576", 
+               "exp559", 
+               "exp561")
 
-agent_names <- c("Curiosity", 
-                 "del-random", 
-                 "tau-random", 
-                 "Random",
-                 "Extrinsic", 
-                 "Info", 
-                 "Novelty", 
-                 "Entropy", 
-                 "Count (EB)",
-                 "Count (UCB)")
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -634,50 +585,30 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 
 
 ### Summary stats
-```{r, fig.width=2.1, fig.height=1.2}
-num_episodes <- 121 * 50
+```{r, fig.width=1.2, fig.height=1.7}
+num_episodes <- 121 * 250
 
-# -
+# ---
 result_task3 %>% 
-  filter(agent != "Random") %>%
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
-            total_value = last(total_R) + last(total_E),
             total_regret = last(total_regret),
-            num_explore = last(num_explore),
             p_bests = last(p_bests)) %>% 
   ungroup() -> tmp
 
-tmp %>% 
-  group_by(strategy, agent) %>% 
-  summarise(median_R = median(total_R), 
-            var_R = mad(total_R),
-            median_E = mean(total_E), 
-            var_E = mad(total_E),
-            median_total_value = median(total_value), 
-            var_total_value = mad(total_value),
-            median_regret = median(total_regret),
-            var_regret = mad(total_regret),
-            median_num_explore=median(num_explore),
-            var_num_explore=mad(num_explore),
-            median_p_bests=median(p_bests),
-            var_p_bests=mad(p_bests)) %>% 
-  ungroup() -> tmp
 
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
 tmp %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Reward") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
@@ -685,72 +616,63 @@ tmp %>%
   coord_flip() -> p1
 
 tmp %>% 
+  filter(strategy == "Random") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)/num_episodes), 
-    ymax=((median_E-var_E)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Info. value") +
-  # lims(y=c(0.5, 1)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
   coord_flip() -> p2
 
 tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)/num_episodes), 
-    ymax=((median_regret-var_regret)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Regret") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p3
 
 tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)/num_episodes), 
-    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Efficiency") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p4
 
-# -------------------------------------------------------------------
-summary3 <- (p1 / (p2 + p3)) + 
+# ---
+summary3 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
   plot_annotation(title = "Task 3 - Large", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(summary3)
 
 name <- "img/summary3"
-ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 2.1*2, height = 1.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 1.2*2, height = 1.7*2)
 ```
 
 ## Fig. Task 4
@@ -776,16 +698,18 @@ exp_names <- c("exp449",
                "exp519", 
                "exp543")
 
-agent_names <- c("Curiosity", 
-                 "del-random", 
-                 "tau-random", 
-                 "Random",
-                 "Extrinsic", 
-                 "Info", 
-                 "Novelty", 
-                 "Entropy", 
-                 "Count (EB)",
-                 "Count (UCB)")
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -879,50 +803,30 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=2.1, fig.height=1.2}
+```{r, fig.width=1.2, fig.height=1.7}
 num_episodes <- 10*20
 
-# -
+# ---
 result_task4 %>% 
-  filter(agent != "Random") %>%
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
-            total_value = last(total_R) + last(total_E),
             total_regret = last(total_regret),
-            num_explore = last(num_explore),
             p_bests = last(p_bests)) %>% 
   ungroup() -> tmp
 
-tmp %>% 
-  group_by(strategy, agent) %>% 
-  summarise(median_R = median(total_R), 
-            var_R = mad(total_R),
-            median_E = mean(total_E), 
-            var_E = mad(total_E),
-            median_total_value = median(total_value), 
-            var_total_value = mad(total_value),
-            median_regret = median(total_regret),
-            var_regret = mad(total_regret),
-            median_num_explore=median(num_explore),
-            var_num_explore=mad(num_explore),
-            median_p_bests=median(p_bests),
-            var_p_bests=mad(p_bests)) %>% 
-  ungroup() -> tmp
 
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
 tmp %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Reward") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
@@ -930,71 +834,62 @@ tmp %>%
   coord_flip() -> p1
 
 tmp %>% 
+  filter(strategy == "Random") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)/num_episodes), 
-    ymax=((median_E-var_E)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Info. value") +
-  # lims(y=c(0.5, 1)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
   coord_flip() -> p2
 
 tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)/num_episodes), 
-    ymax=((median_regret-var_regret)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Regret") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p3
 
 tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)/num_episodes), 
-    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Efficiency") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p4
 
-# -------------------------------------------------------------------
-summary4 <- (p1 / (p2 + p3)) + 
+# ---
+summary4 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
   plot_annotation(title = "Task 4 - Deception", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary4)
 
 name <- "img/summary4"
-ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 2.1*2, height = 1.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.7*2)
 ```
 
 ## Fig. Task 5
@@ -1020,16 +915,18 @@ exp_names <- c("exp462",
                "exp523", 
                "exp544")
 
-agent_names <- c("Curiosity", 
-                 "del-random", 
-                 "tau-random", 
-                 "Random",
-                 "Extrinsic", 
-                 "Info", 
-                 "Novelty", 
-                 "Entropy", 
-                 "Count (EB)",
-                 "Count (UCB)")
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -1122,50 +1019,30 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=2.1, fig.height=1.2}
+```{r, fig.width=1.2, fig.height=1.7}
 num_episodes <- 10 * 50
 
-# -
+# ---
 result_task5 %>% 
-  filter(agent != "Random") %>%
+  # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
-            total_value = last(total_R) + last(total_E),
             total_regret = last(total_regret),
-            num_explore = last(num_explore),
             p_bests = last(p_bests)) %>% 
   ungroup() -> tmp
 
-tmp %>% 
-  group_by(strategy, agent) %>% 
-  summarise(median_R = median(total_R), 
-            var_R = mad(total_R),
-            median_E = mean(total_E), 
-            var_E = mad(total_E),
-            median_total_value = median(total_value), 
-            var_total_value = mad(total_value),
-            median_regret = median(total_regret),
-            var_regret = mad(total_regret),
-            median_num_explore=median(num_explore),
-            var_num_explore=mad(num_explore),
-            median_p_bests=median(p_bests),
-            var_p_bests=mad(p_bests)) %>% 
-  ungroup() -> tmp
 
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
 tmp %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Reward") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
@@ -1173,71 +1050,63 @@ tmp %>%
   coord_flip() -> p1
 
 tmp %>% 
+  filter(strategy == "Random") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_E/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)/num_episodes), 
-    ymax=((median_E-var_E)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)/num_episodes), 
-             color="black",
-             size=0.1) +
-  labs(x="", y="Info. value") +
-  # lims(y=c(0.5, 1)) +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
   coord_flip() -> p2
 
 tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_regret/num_episodes, color=color)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)/num_episodes), 
-    ymax=((median_regret-var_regret)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Regret") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p3
 
 tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
   mutate(
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_num_explore/num_episodes, color=color)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)/num_episodes), 
-    ymax=((median_num_explore-var_num_explore)/num_episodes)), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_num_explore)/num_episodes),  
-             color="black",
-             size=0.1) +
-  labs(x="", y="Efficiency") +
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
   coord_flip() -> p4
 
-# -------------------------------------------------------------------
-summary5 <- (p1 / (p2 + p3)) + 
+# ---
+summary5 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
   plot_annotation(title = "Task 5 - Distraction", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
+
 print(summary5)
 
 name <- "img/summary5"
-ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 2.1*2, height = 1.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.7*2)
 ```
 
 # Cleanup
