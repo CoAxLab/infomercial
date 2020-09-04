@@ -141,13 +141,13 @@ class ExampleBandit4(gym.Env):
             0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0
         ]
         self.rewards[2] = [
-            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0
         ]
         self.rewards[3] = [
-            0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
             1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
             0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
             1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0
@@ -158,8 +158,8 @@ class ExampleBandit4(gym.Env):
         self.rewards[1] = [
             1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1,
             1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0
+            1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0,
+            0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0
         ]
         self.max_steps = len(self.rewards[1])
 
@@ -173,6 +173,9 @@ class ExampleBandit4(gym.Env):
         self.count += 1
 
         return state, reward, self.done, {}
+
+    def seed(self, seed):
+        pass
 
     def reset(self):
         self.done = False
@@ -981,7 +984,8 @@ class BanditUniform121(BanditEnv):
         self.np_random, seed = seeding.np_random(seed)
 
         # Reset p(R) dist with the seed
-        self.p_dist = self.np_random.uniform(self.p_min, self.p_max,
+        self.p_dist = self.np_random.uniform(self.p_min,
+                                             self.p_max,
                                              size=self.num_arms).tolist()
         self.p_dist[self.best[0]] = self.p_best
 
