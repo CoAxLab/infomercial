@@ -8908,6 +8908,34 @@ exp576:
 	# Clean up
 	rm tmp
 
+# ------------------------------------------------------------------------
+# 9-4-2020
+#
+# Run a softmeta exp using the top10 from meta. How much worse
+# does stochastic search make reward collection?
+exp577_578: exp577 exp578 
+
+exp577:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp577.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --temp=1.0 --log_dir=$(DATA_PATH)/exp577/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+exp578:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp578.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --temp=0.1 --log_dir=$(DATA_PATH)/exp578/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
 
 # ------------------------------------------------------------------------
 # TODO
@@ -8920,3 +8948,4 @@ data_archive:
 
 figure:
 	# make the figures 
+
