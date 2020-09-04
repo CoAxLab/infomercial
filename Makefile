@@ -8800,7 +8800,7 @@ exp563_572_clean:
 
 # meta (based on exp457)
 exp563:	
-	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --tie_threshold=0.003 --lr_R=0.05 --log_dir=$(DATA_PATH)/exp563/param0/run1/
+	meta_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --tie_threshold=0.0005 --lr_R=0.05 --log_dir=$(DATA_PATH)/exp563/param0/run1/
 
 # ep (based on exp526)
 exp564:
