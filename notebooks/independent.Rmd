@@ -61,7 +61,7 @@ result563$value_E[result563$value_E >= E_bias] <- 0
 ```
 
 ## Build
-```{r,  fig.width=2, fig.height=2.2}
+```{r,  fig.width=1.1, fig.height=2.6}
 # Select data for example plot
 r <- 1
 p <- 0
@@ -87,57 +87,17 @@ result563 %>%
 result563 %>% 
   filter(run == r, param == p) %>% 
   filter(global_step <= n) %>%
-  ggplot(aes(x=global_step, y=value_E)) +
-  geom_line(size=0.6, color="chartreuse4") +
-  geom_hline(yintercept = eta, color="chartreuse4", alpha=0.5, size=1) +
-  scale_y_log10() +
-  annotation_logticks(side="l", size=.1) +
-  labs(x="", y="Info. value", title="Value by policy") + 
-  theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> c1b
-
-result563 %>% 
-  filter(run == r, param == p) %>% 
-  filter(global_step > 4) %>% 
-  ggplot(aes(x=global_step, y=score_R)) +
-  geom_point(size=0.6, alpha=1, color="black") +
-  geom_ribbon(aes(ymin=0, ymax=score_R), 
-              size=0.6, alpha=0.1, fill="black", color=NA) +
-  labs(x="Time", y="Reward") + 
-  lims(y=c(0, 1)) +
-  theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> c1c
-
-result563 %>% 
-  filter(run == r, param == p) %>% 
-  filter(global_step <= n) %>%
-  ggplot(aes(x=global_step, y=value_R)) +
-  geom_line(size=0.6, color="black") +
-  # scale_y_continuous(limits=c(-.1, 1.1), breaks=c(0, 0.5, 1)) +
-  labs(x="Time", y="Reward value") + 
-  lims(y=c(0, 1)) +
-  theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none", ) -> c1d
-
-sub1 <- (c1a / c1b / c1c / c1d)
-
-
-# --------------------------------------------------------------------
-# Actions and values
-result563 %>% 
-  filter(run == r, param == p) %>% 
-  filter(global_step <= n) %>%
   ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
   geom_line(size=0.1) +
-  labs(x="Time", y="Choice", title="Behavoir") +
-  # facet_wrap(policy~., ncol=1) +
+  labs(x="Time", y="Choice", title="Behavoiral choice") +
+  facet_wrap(policy~., ncol=1) +
   scale_y_continuous(limits=c(0.8, 4.2), breaks = c(1, 2, 3, 4)) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(strip.text = element_blank()) +
-  theme(panel.spacing = unit(0.5, "lines")) -> c2a
+  theme(panel.spacing = unit(0.25, "lines")) -> c1b
 
 result563 %>%
   filter(run == r, param == p) %>%
@@ -150,7 +110,7 @@ result563 %>%
   geom_point(aes(global_step, score_R+0.00001), 
               size=0.6, alpha=1, color="black") +
   geom_hline(yintercept = eta, color="chartreuse4", alpha=0.5, size=1) +
-  labs(x="Time", y="Values", title="Value by choice") +
+  labs(x="", y="Values", title="Value by choice") +
   facet_grid(action~., switch="y") +
   scale_y_log10(limits=c(0.00001, 4)) +
   annotation_logticks(side="l", size=.1) + 
@@ -159,21 +119,31 @@ result563 %>%
   theme(axis.ticks.y = element_blank()) + 
   theme(axis.text.y = element_blank()) + 
   theme(strip.text.y.left = element_text(angle = 0)) +
-  theme(strip.text.y = element_text(size=6)) -> c2b
+  theme(strip.text.y = element_text(size=6)) -> c1c
 
-sub2 <- (c2a / (c2b)) + plot_layout(heights = c(0.2, 0.8))
+result563 %>% 
+  filter(run == r, param == p) %>% 
+  # filter(global_step <= n) %>%
+  ggplot(aes(x=global_step, y=regret)) +
+  geom_line(size=0.6, color="black") +
+  labs(x="Time", y="Regret") + 
+  theme(strip.background = element_blank()) +
+  theme_pubr(base_size = 6, legend = "none") -> c1d
+
+
 
 # -----------------------------------------------------------------------
 ## Build figure
-independent1 <- (sub1 | sub2) +
+independent1 <- (c1a / c1b / c1c / c1d) +
+  plot_layout(heights = c(0.15, 0.25, 0.6, 0.12)) +
   plot_annotation(
       tag_levels="a", tag_suffix=".", 
-      title="Explore-exploit with independent deterministic policies (task 1)", 
+      title="Explore-exploit with independent\npolicies (Task 1)",
       theme = theme_pubr(base_size = 8, legend = "none"))
 print(independent1)
 
 name <- "img/independent1"
-ggsave(paste(name, ".pdf", sep=""), plot=independent1, width = 2*2, height = 2.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=independent1, width = 1.1*2, height = 2.6*2)
 ```
 
 ## Cleanup
