@@ -353,7 +353,7 @@ independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) +
   plot_layout(widths = c(0.26, 0.26, 0.26, 0.22)) +
     plot_annotation(
       title="Reward collection with independent policies:",
-      subtitle = "deterministic versus stochastic curiosity",
+      subtitle = "deterministic versus stochastic",
                   theme = theme_pubr(base_size = 8, legend = "none"),
       tag_levels="a", tag_suffix=".")
 
@@ -363,3 +363,4 @@ print(independent2)
 name <- "img/independent2"
 ggsave(paste(name, ".pdf", sep=""), plot=independent2, width = 3.3*2, height = 1.4*2)
 ```
+
