@@ -8910,6 +8910,7 @@ exp576:
 
 # ------------------------------------------------------------------------
 # 9-4-2020
+# cafac88
 #
 # Run a softmeta exp using the top10 from meta. How much worse
 # does stochastic search make reward collection?
@@ -8936,6 +8937,93 @@ exp578:
 			'softmeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --temp=0.05 --log_dir=$(DATA_PATH)/exp578/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# ------------------------------------------------------------------------
+# 9-4-2020
+# cafac88
+#
+# For all models that rely on softmax to sample, set the temp=1e-12
+# to make them essentially deterministic. Observe the result.
+#
+# Our target exps are:
+# Reward
+# - extrinsic: exp502
+exp579_584: exp579 exp581 exp582 exp583 exp584
+
+
+# extrinsic - params: exp473
+exp579:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp473_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp579.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta=0 --bonus=0 --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp579/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# Intrinsic
+# - info: exp525
+exp580:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp496_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp580.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp580/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - novelty: exp501
+exp581:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp472_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp581.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta=0 --bonus={bonus} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp581/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - entropy:  exp504
+exp582:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp475_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp582.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp582/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - EB:  exp503
+exp583:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp474_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp583.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp583/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - UCB:  exp539
+exp584:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp528_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp584.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp584/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
 
 # ------------------------------------------------------------------------
 # TODO
