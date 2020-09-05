@@ -309,7 +309,7 @@ filter(global_step > 4) %>%
   theme(strip.background = element_blank()) -> r2
 
 result457_577_578 %>% 
-filter(global_step > 4) %>% 
+  filter(global_step > 4) %>% 
   filter(param <= 2, run > 1) %>% 
   filter(exp == "exp578") %>% 
   ggplot(aes(x=global_step, y=total_R/global_step, 
@@ -333,7 +333,9 @@ result457_577_578 %>%
   ungroup() -> tmp
 
 tmp %>% 
-  ggplot(aes(x=agent, y=total_R/num_episodes)) +
+  mutate(
+    color = ifelse(strategy == "Deterministic", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="Reward", title="") +
   lims(y=c(0.2, 0.9)) +
@@ -344,7 +346,6 @@ tmp %>%
 # print(s1)
 ```
 
-
 ## Build figure
 ```{r, fig.width=3.3, fig.height=1.4}
 # independent2 <- (a1 + a2 + a3) + (r1 / r2 / r3) + 
@@ -352,7 +353,7 @@ independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) +
   plot_layout(widths = c(0.26, 0.26, 0.26, 0.22)) +
     plot_annotation(
       title="Reward collection with independent policies:",
-      subtitle = "deterministic versus stochastic",
+      subtitle = "deterministic versus stochastic curiosity",
                   theme = theme_pubr(base_size = 8, legend = "none"),
       tag_levels="a", tag_suffix=".")
 
