@@ -545,82 +545,6 @@ class UnstableBanditEnv(gym.Env):
         pass
 
 
-class ChangeBanditEnv(gym.Env):
-    """
-    n-armed bandit environment, where the best arm changes half the time.
-
-    Params
-    ------
-    p_dist : list
-        A list of probabilities of the likelihood that a particular bandit will pay out
-    """
-    def __init__(self, p_dist1, p_dist2, min_steps=10, max_steps=100):
-        if min_steps < 1:
-            raise ValueError('min_steps must be > 1')
-        if min_steps > max_steps:
-            raise ValueError('min_steps must be less than max_steps')
-        if len(p_dist1) != len(p_dist2):
-            raise ValueError('p_dists dont match')
-        if min(p_dist1) < 0 or max(p_dist1) > 1:
-            raise ValueError("All probabilities must be between 0 and 1")
-        if min(p_dist2) < 0 or max(p_dist2) > 1:
-            raise ValueError("All probabilities must be between 0 and 1")
-
-        # Init
-        self.min_steps = min_steps
-        self.max_steps = max_steps
-
-        self.p_dist1 = p_dist1  # first dist
-        self.p_dist2 = p_dist2  # second dist, if we change
-        self.p_dist = self.p_dist1
-        self.best = np.argmax(self.p_dist)
-
-        self.n_bandits = len(self.p_dist)
-        self.action_space = spaces.Discrete(self.n_bandits)
-        self.observation_space = spaces.Discrete(1)
-        self.steps = 0
-        self.seed()
-
-        # Do change, and where?
-        self.change_episode = 0
-        if self.np_random.rand() > 0.5:
-            self.change_episode = self.np_random.randint(
-                self.min_steps, self.max_steps)
-
-    def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
-        return [seed]
-
-    def step(self, action):
-        # Sanity
-        if self.steps > self.max_steps:
-            raise EnvironmentError("Number of steps exceeded max.")
-        assert self.action_space.contains(action)
-
-        # Change?
-        if self.steps == self.change_episode:
-            self.p_dist = self.p_dist2
-            self.best = np.argmax(self.p_dist)
-
-        # Build return
-        state = 0
-        reward = 0
-        self.done = True
-        if self.np_random.rand() < self.p_dist[action]:
-            reward = 1
-
-        # -
-        self.steps += 1
-        return state, reward, self.done, {}
-
-    def reset(self):
-        self.done = False
-        return 0
-
-    def render(self, mode='human', close=False):
-        pass
-
-
 class DeceptiveBanditEnv(gym.Env):
     """
     n-armed bandit environment, you have to move steps_away to find the best arm.
@@ -988,6 +912,25 @@ class BanditUniform121(BanditEnv):
                                              self.p_max,
                                              size=self.num_arms).tolist()
         self.p_dist[self.best[0]] = self.p_best
+
+        return [seed]
+
+
+class BanditChange121(BanditUniform121):
+    """Change the best choice in BanditUniform121 to the worst"""
+    def __init__(self):
+        super().__init__()
+
+        # Make the best the worst
+        self.p_dist[self.best[0]] = 0.1
+
+        # Now update the best
+        self.changed_best = [np.argmax(self.p_dist)]
+
+    def seed(self, seed=None):
+        super().seed(seed)
+        self.p_dist[self.best[0]] = 0.1
+        self.changed_best = [np.argmax(self.p_dist)]
 
         return [seed]
 
