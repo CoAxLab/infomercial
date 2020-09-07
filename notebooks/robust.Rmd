@@ -1,0 +1,497 @@
+---
+title: "Reanalysis of parameter robustness"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(tidyr)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "/Volumes/Data/infomercial/data"
+```
+
+# BanditOneHigh4
+## Load data 1
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditOneHigh4"
+task_code <- 1
+num_episodes <- 40
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+rank_names <- c(
+  "exp455_sorted.csv", 
+  "exp497_sorted.csv", 
+  "exp498_sorted.csv", 
+  "exp473_sorted.csv",
+  "exp496_sorted.csv", 
+  "exp472_sorted.csv", 
+  "exp475_sorted.csv", 
+  "exp474_sorted.csv", 
+  "exp528_sorted.csv")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+
+result_ranked <- NULL
+for(i in 1:length(rank_names)){
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- read_csv(paste(data_path, rank_name, sep="/"))
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  result_ranked <- bind_rows(result_ranked, tmp)
+}
+```
+## Top 500
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 500) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  lims(y=c(0.2, 0.8)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+
+## All
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  lims(y=c(0.2, 0.8)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+# BanditHardAndSparse10
+## Load data 
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditHardAndSparse10"
+task_code <- 1
+num_episodes <- 10000
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+rank_names <- c(
+  "exp387_sorted.csv", 
+  "exp385_sorted.csv", 
+  "exp386_sorted.csv", 
+  "exp485_sorted.csv",
+  "exp388_sorted.csv", 
+  "exp484_sorted.csv", 
+  "exp487_sorted.csv", 
+  "exp486_sorted.csv", 
+  "exp531_sorted.csv")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+result_ranked <- NULL
+for(i in 1:length(rank_names)){
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- read_csv(paste(data_path, rank_name, sep="/"))
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  result_ranked <- bind_rows(result_ranked, tmp)
+}
+```
+
+## Top 50
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 50) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+## Top 500
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 500) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+
+## All
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+# BanditUniform121
+## Load data 
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditUniform121"
+task_code <- 1
+num_episodes <- 12100
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+rank_names <- c(
+  "exp547_sorted.csv", 
+  "exp549_sorted.csv", 
+  "exp551_sorted.csv", 
+  "exp573_sorted.csv",
+  "exp554_sorted.csv", 
+  "exp556_sorted.csv", 
+  "exp575_sorted.csv", 
+  "exp558_sorted.csv", 
+  "exp560_sorted.csv")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+result_ranked <- NULL
+for(i in 1:length(rank_names)){
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- read_csv(paste(data_path, rank_name, sep="/"))
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  result_ranked <- bind_rows(result_ranked, tmp)
+}
+```
+
+## Top 50
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 50) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+## Top 500
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 500) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+
+## All
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+# DistractionBanditOneHigh10
+## Load data 
+Ours
+- meta: exp462
+Random
+- epsilon: exp463
+- decay: exp464
+- random: exp466
+Reward
+- extrinsic: exp522
+Intrinsic
+- info: exp465
+- novelty: exp521
+- entropy: exp524
+- EB: exp523
+- UCB:  exp544
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "DistractionBanditOneHigh10"
+task_code <- 1
+num_episodes <- 100
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+rank_names <- c(
+  "exp460_sorted.csv", 
+  "exp458_sorted.csv", 
+  "exp459_sorted.csv", 
+  "exp493_sorted.csv",
+  "exp461_sorted.csv", 
+  "exp492_sorted.csv", 
+  "exp495_sorted.csv", 
+  "exp494_sorted.csv", 
+  "exp533_sorted.csv")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+result_ranked <- NULL
+for(i in 1:length(rank_names)){
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- read_csv(paste(data_path, rank_name, sep="/"))
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  result_ranked <- bind_rows(result_ranked, tmp)
+}
+```
+
+## Top 50
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 50) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+## Top 500
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  filter(index <= 500) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
+
+## All
+```{r, fig.width=0.8, fig.height=0.5}
+result_ranked %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward") +
+  # lims(y=c(0.0, 0.02)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
