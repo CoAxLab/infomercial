@@ -9033,6 +9033,14 @@ exp584:
 test_load1:
 	-rm -rf $(DATA_PATH)/test
 	# ours
-	meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/meta_bandit --tie_threshold=0.001 --load=$(DATA_PATH)/exp548/param1/run2/result.pkl
+	meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --log_dir=$(DATA_PATH)/test/meta --tie_threshold=0.001 --load=$(DATA_PATH)/exp548/param1/run2/result.pkl
 	# beta
-	softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0.11 --lr_R=0.01 --temp=0.005 --log_dir=$(DATA_PATH)/test/softbeta_bandit --load=$(DATA_PATH)/exp555/param1/run2/result.pkl
+	softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0.11 --lr_R=0.1 --temp=0.005 --log_dir=$(DATA_PATH)/test/softbeta --load=$(DATA_PATH)/exp555/param1/run2/result.pkl
+	# ep
+	epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --epsilon=0.11 --lr_R=0.1 --log_dir=$(DATA_PATH)/test/epsilon --load=$(DATA_PATH)/exp550/param1/run2/result.pkl
+	# extrinsic
+	softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --lr_R=0.1 --temp=0.09 --log_dir=$(DATA_PATH)/test/extrinsic --load=$(DATA_PATH)/exp555/param1/run2/result.pkl
+	# entropy
+	entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.001 --temp=0.08 --log_dir=$(DATA_PATH)/test/entropy --load=$(DATA_PATH)/exp576/param1/run2/result.pkl
+	# count
+	count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.21 --temp=0.08 --mode='EB' --log_dir=$(DATA_PATH)/test/count --load=$(DATA_PATH)/exp559/param1/run2/result.pkl
