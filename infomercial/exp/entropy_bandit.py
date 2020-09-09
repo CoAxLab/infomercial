@@ -32,6 +32,7 @@ def run(env_name='BanditOneHigh2-v0',
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
+        load=None,
         log_dir=None):
     """Bandit agent - sample(R + beta H(actions)"""
 
@@ -53,6 +54,14 @@ def run(env_name='BanditOneHigh2-v0',
     all_actions = list(range(num_actions))
 
     entropy = EntropyMemory(initial_bins=all_actions, initial_count=1, base=2)
+
+    # Update with pre-loaded data. This will let you run
+    # test experiments on pre-trained model and/or to
+    # continue training.
+    if load is not None:
+        result = load_checkpoint(load)
+        critic.load_state_dict(result['critic'])
+        entropy.load_state_dict(result['entropy'])
 
     # -
     total_R = 0.0
