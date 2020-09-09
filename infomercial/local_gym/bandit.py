@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 import numpy as np
 import gym
+
+from copy import deepcopy
 from gym import spaces
 from gym.utils import seeding
 from itertools import cycle
@@ -922,15 +924,17 @@ class BanditChange121(BanditUniform121):
         super().__init__()
 
         # Make the best the worst
-        self.p_dist[self.best[0]] = 0.1
+        self.original_best = deepcopy(self.best)
+        self.p_dist[self.original_best[0]] = 0.1
 
         # Now update the best
-        self.changed_best = [np.argmax(self.p_dist)]
+        self.best = [np.argmax(self.p_dist)]
 
     def seed(self, seed=None):
         super().seed(seed)
-        self.p_dist[self.best[0]] = 0.1
-        self.changed_best = [np.argmax(self.p_dist)]
+        self.original_best = deepcopy(self.best)
+        self.p_dist[self.original_best[0]] = 0.1
+        self.best = [np.argmax(self.p_dist)]
 
         return [seed]
 

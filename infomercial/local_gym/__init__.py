@@ -27,6 +27,7 @@ from infomercial.local_gym.bandit import BanditGaussian10
 from infomercial.local_gym.bandit import BanditTwoExtreme1000
 from infomercial.local_gym.bandit import BanditUniform10
 from infomercial.local_gym.bandit import BanditUniform121
+from infomercial.local_gym.bandit import BanditChange121
 
 from infomercial.local_gym.bandit import DeceptiveBanditOneHigh10
 from infomercial.local_gym.bandit import DistractionBanditOneHigh10
@@ -67,6 +68,7 @@ environments = [
     ['BanditHardAndSparse1000', 'v0', 1],
     ['BanditUniform10', 'v0', 1],
     ['BanditUniform121', 'v0', 1],
+    ['BanditChange121', 'v0', 1],
     ['BanditGaussian10', 'v0', 1],
     ['DeceptiveBanditOneHigh10', 'v0', 1],
     ['InfoBlueYellow2a', 'v0', 1],
