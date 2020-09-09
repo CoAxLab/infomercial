@@ -33,6 +33,7 @@ def run(env_name='BanditOneHot2-v0',
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
+        load=None,
         log_dir=None):
     """Play some slots!"""
 
@@ -54,6 +55,13 @@ def run(env_name='BanditOneHot2-v0',
                          decay_tau=epsilon_decay_tau,
                          seed_value=master_seed)
     all_actions = list(range(num_actions))
+
+    # Update with pre-loaded data. This will let you run
+    # test experiments on pre-trained model and/or to
+    # continue training.
+    if load is not None:
+        result = load_checkpoint(load)
+        critic.load_state_dict(result['critic'])
 
     # -
     num_best = 0
