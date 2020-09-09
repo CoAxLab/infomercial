@@ -49,7 +49,8 @@ def R_homeostasis(reward, total_reward, set_point):
     return reward_value
 
 
-def run(env_name='BanditOneHot10-v0',
+def run(
+        env_name='BanditOneHot10-v0',
         num_episodes=1000,
         tie_break='next',
         tie_threshold=0.0,
@@ -57,6 +58,7 @@ def run(env_name='BanditOneHot10-v0',
         master_seed=42,
         initial_bins=None,
         write_to_disk=True,
+        load=None,  # TODO load old result and use that?
         log_dir=None):
     """Bandit agent - argmax (E, R)"""
 
@@ -77,7 +79,7 @@ def run(env_name='BanditOneHot10-v0',
     E_t = default_info_value
     R_t = default_reward_value
 
-    # -
+    # - Init agents and memories
     critic_R = Critic(num_actions, default_value=default_reward_value)
     critic_E = Critic(num_actions, default_value=default_info_value)
     actor_R = DeterministicActor(num_actions,
@@ -91,6 +93,16 @@ def run(env_name='BanditOneHot10-v0',
         DiscreteDistribution(initial_bins=initial_bins)
         for _ in range(num_actions)
     ]
+
+    # Update with pre-loaded data. This will let you run
+    # test experiments on pre-trained model and/or to
+    # continue training.
+    if load is not None:
+        result = load_checkpoint(load)
+        critic_E.load_state_dict(result['critic_E'])
+        critic_R.load_state_dict(result['critic_R'])
+        for i, mem in enumerate(memories):
+            mem.load_state_dict(result['memories'][i])
 
     # -
     num_best = 0
