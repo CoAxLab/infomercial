@@ -49,8 +49,7 @@ def R_homeostasis(reward, total_reward, set_point):
     return reward_value
 
 
-def run(
-        env_name='BanditOneHot10-v0',
+def run(env_name='BanditOneHot10-v0',
         num_episodes=1000,
         tie_break='next',
         tie_threshold=0.0,
@@ -58,7 +57,7 @@ def run(
         master_seed=42,
         initial_bins=None,
         write_to_disk=True,
-        load=None,  # TODO load old result and use that?
+        load=None,
         log_dir=None):
     """Bandit agent - argmax (E, R)"""
 
