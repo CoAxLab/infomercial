@@ -91,6 +91,9 @@ class EntropyMemory:
     def state_dict(self):
         return self.memory
 
+    def load_state_dict(self, state_dict):
+        self.memory = state_dict
+
 
 class ModulusMemory:
     """A very generic memory system, with a finite capacity."""
@@ -161,6 +164,9 @@ class DiscreteDistribution:
 
     def state_dict(self):
         return self.count
+
+    def load_state_dict(self, state_dict):
+        self.count = state_dict
 
 
 class Kernel:

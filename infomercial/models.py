@@ -28,6 +28,9 @@ class Critic:
     def state_dict(self):
         return self.model
 
+    def load_state_dict(self, state_dict):
+        self.model = state_dict
+
 
 class NoisyCritic:
     def __init__(self,
