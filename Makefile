@@ -9027,7 +9027,7 @@ exp584:
 
 # ------------------------------------------------------------------------
 # 9-8-2020
-#
+# eb856bc 
 #
 # Test loading an old result and retraining it.
 test_load1:
@@ -9044,3 +9044,137 @@ test_load1:
 	entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.001 --temp=0.08 --log_dir=$(DATA_PATH)/test/entropy --load=$(DATA_PATH)/exp576/param1/run2/result.pkl
 	# count
 	count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.21 --temp=0.08 --mode='EB' --log_dir=$(DATA_PATH)/test/count --load=$(DATA_PATH)/exp559/param1/run2/result.pkl
+
+# ------------------------------------------------------------------------
+# 9-8-2020
+# eb856bc 
+#
+# Run BanditChange121 using top10 params EXCEPT all lr_R is overridden to 0.1
+# to spped up running the experimetns and see how fast different strategies
+# can adapt. 
+# 
+# Fix --num_episodes=100
+#
+# Target exps/params are:
+#
+exp585_594: exp585 exp586 exp587 exp588 exp589 exp590 exp591 exp592 exp593 exp594
+
+# BanditUniform121
+# Ours
+# - meta: exp548
+exp585:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp547_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp585.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp585/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp548/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# Random
+# - epsilon: exp550
+exp586:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp549_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp586.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --epsilon={epsilon} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp586/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp550/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - decay: exp552
+exp587:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp551_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp587.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp587/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp552/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - random: exp553
+exp588:
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp588.log' \
+			--nice 19 --delay 0 --bar --colsep ',' \
+			'random_bandit.py --env_name=BanditChange121-v0 --num_episodes=100  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp588/param0/run{1} --master_seed={1} --load=$(DATA_PATH)/exp553/param0/run{1}/result.pkl' ::: {1..100}
+
+# Reward
+# - extrinsic: exp574
+exp589:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp573_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp589.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --bonus=0 --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp589/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp574/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# Intrinsic
+# - info: exp555
+exp590:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp554_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp590.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp590/param{index}/run{1} --master_seed={1}--load=$(DATA_PATH)/exp555/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - novelty: exp557
+exp591:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp556_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp591.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --bonus={bonus} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp591/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp557/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - entropy:  exp576
+exp592:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp575_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp592.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp592/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp576/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - EB: exp559
+exp593:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp558_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp593.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp593/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp559/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# - UCB: exp561
+exp594:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 4 \
+			--joblog '$(DATA_PATH)/exp594.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --mode='UCB' --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
