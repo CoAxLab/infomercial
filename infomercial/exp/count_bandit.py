@@ -36,6 +36,7 @@ def run(env_name='BanditOneHigh2-v0',
         mode='EB',
         master_seed=42,
         write_to_disk=True,
+        load=None,
         log_dir=None):
     """Bandit agent - sample(R + beta count^(-1/2))"""
 
@@ -56,6 +57,14 @@ def run(env_name='BanditOneHigh2-v0',
     critic = Critic(num_actions, default_value=default_reward_value)
     actor = SoftmaxActor(num_actions, temp=temp, seed_value=master_seed)
     count = CountMemory()
+
+    # Update with pre-loaded data. This will let you run
+    # test experiments on pre-trained model and/or to
+    # continue training.
+    if load is not None:
+        result = load_checkpoint(load)
+        critic.load_state_dict(result['critic'])
+        count.load_state_dict(result['count'])
 
     # -
     total_R = 0.0
