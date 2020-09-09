@@ -39,6 +39,7 @@ def run(env_name='BanditOneHigh2-v0',
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
+        load=None,
         log_dir=None):
     """Bandit agent - sample(R + beta E)"""
 
@@ -66,6 +67,15 @@ def run(env_name='BanditOneHigh2-v0',
 
     novelty = NoveltyMemory(bonus=bonus)
     memories = [DiscreteDistribution() for _ in range(num_actions)]
+
+    # Update with pre-loaded data. This will let you run
+    # test experiments on pre-trained model and/or to
+    # continue training.
+    if load is not None:
+        result = load_checkpoint(load)
+        critic.load_state_dict(result['critic'])
+        for i, mem in enumerate(memories):
+            mem.load_state_dict(result['memories'][i])
 
     # -
     total_R = 0.0
