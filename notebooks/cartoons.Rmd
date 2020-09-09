@@ -82,8 +82,8 @@ prob_space %>%
   geom_point(color="white") +
   labs(x="", y="", title="Probability") +
   theme_pubr(base_size = 5, legend = "none") +
-  scale_x_continuous(limits=bools, breaks=bools) +
-  scale_y_continuous(limits=bools, breaks=bools) -> p3
+  scale_x_continuous(limits=probs, breaks=probs) +
+  scale_y_continuous(limits=probs, breaks=probs) -> p3
   
 real_space %>%
   ggplot(aes(x=x, y=y)) +
