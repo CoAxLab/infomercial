@@ -30,6 +30,12 @@ class NoveltyMemory:
 
         return bonus
 
+    def state_dict(self):
+        return self.memory
+
+    def load_state_dict(self, state_dict):
+        self.memory = state_dict
+
 
 class CountMemory:
     """A simple state counter."""
@@ -52,6 +58,9 @@ class CountMemory:
 
     def state_dict(self):
         return self.memory
+
+    def load_state_dict(self, state_dict):
+        self.memory = state_dict
 
 
 class EntropyMemory:
@@ -115,6 +124,13 @@ class ModulusMemory:
     def reset(self):
         self.memory = []
         self.position = 0
+
+    def state_dict(self):
+        return {'position': self.position, 'memory': self.memory}
+
+    def load_state_dict(self, state_dict):
+        self.memory = state_dict['memory']
+        self.position = state_dict['position']
 
     def __len__(self):
         return len(self.memory)
