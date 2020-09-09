@@ -9026,14 +9026,13 @@ exp584:
 
 
 # ------------------------------------------------------------------------
-# TODO
-# paper recipes
-data_archive:
-	# zip all the data in figures/supp
-	# zip the tune *_sorted files
-	# move all zip files to DATA_PATH/archive
-	# create/copy a readme in DATA_PATH/archive
-
-figure:
-	# make the figures 
-
+# 9-8-2020
+#
+#
+# Test loading an old result and retraining it.
+test_load1:
+	-rm -rf $(DATA_PATH)/test
+	# ours
+	meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --log_dir=$(DATA_PATH)/test/meta_bandit --tie_threshold=0.001 --load=$(DATA_PATH)/exp548/param1/run2/result.pkl
+	# beta
+	softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0.11 --lr_R=0.1 --temp=0.005 --log_dir=$(DATA_PATH)/test/softbeta_bandit --load=$(DATA_PATH)/exp525/param1/run2/result.pkl
