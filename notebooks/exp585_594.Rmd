@@ -27,14 +27,12 @@ source("utils.R")
 data_path <- "/Volumes/Data/infomercial/data"
 ```
 
-# Fig. Summary
-## Fig. Task 1
-### Load data
+# Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditChange121"
 task_code <- 1
-num_episodes <- 100
+num_episodes <- 12100
 
 # The overestimate due to E0
 num_arms <- 4
@@ -146,9 +144,9 @@ tmp <- bind_rows(tmp2, tmp1)
 result584_594 <- tmp
 ```
 
-### Summary stats
+# Summary stats
 ```{r, fig.width=1.2, fig.height=1.7}
-num_episodes <- 100
+num_episodes <- 12100
 
 # --
 result584_594 %>% 
@@ -157,7 +155,7 @@ result584_594 %>%
   summarise(total_R = last(total_R),
             total_E = last(total_E),
             total_regret = last(total_regret),
-            p_bests = last(p_bests)) %>% 
+            p_bests = last(p_bests)) %>%     
   ungroup() -> tmp
 
 
@@ -233,3 +231,19 @@ summary1 <- p1 / p2  / p3 / p4 +
 
 print(summary1)
 ```
+# Reward
+```{r, fig.width=10, fig.height=4}
+result584_594 %>% 
+  filter(global_step < 121) %>% 
+  filter(global_step > 10) %>% 
+  # ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(run,param))) +
+  ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
+  # geom_line(size=0.1) +
+  geom_boxplot(outlier.size = -1) +
+  facet_wrap(agent~.) +
+  labs(x="Time", y="Reward") +
+  lims(y=c(0.2, 0.9)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) 
+```
+
