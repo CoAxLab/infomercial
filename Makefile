@@ -9057,7 +9057,19 @@ test_load1:
 #
 # Target exps/params are:
 #
-exp585_594: exp585 exp586 exp587 exp588 exp589 exp590 exp591 exp592 exp593 exp594
+exp585_594: exp585 exp586 exp587 exp589 exp590 exp591 exp592 exp593 exp594
+
+exp585_594_clean:
+	-rm -rf $(DATA_PATH)/exp585
+	-rm -rf $(DATA_PATH)/exp586
+	-rm -rf $(DATA_PATH)/exp587
+	-rm -rf $(DATA_PATH)/exp589
+	-rm -rf $(DATA_PATH)/exp590
+	-rm -rf $(DATA_PATH)/exp591
+	-rm -rf $(DATA_PATH)/exp592
+	-rm -rf $(DATA_PATH)/exp593
+	-rm -rf $(DATA_PATH)/exp594
+
 
 # BanditUniform121
 # Ours
@@ -9066,10 +9078,10 @@ exp585:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp547_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp585.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp585/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp548/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'meta_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp585/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp548/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9079,10 +9091,10 @@ exp586:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp549_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp586.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --epsilon={epsilon} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp586/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp550/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp586/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp550/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9091,19 +9103,19 @@ exp587:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp551_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp587.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp587/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp552/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp587/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp552/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
 # - random: exp553
 exp588:
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp588.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=BanditChange121-v0 --num_episodes=100  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp588/param0/run{1} --master_seed={1} --load=$(DATA_PATH)/exp553/param0/run{1}/result.pkl' ::: {1..100}
+			'random_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100  --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp588/param0/run{1} --master_seed={1} --load=$(DATA_PATH)/exp553/param0/run{1}/result.pkl' ::: {1..100}
 
 # Reward
 # - extrinsic: exp574
@@ -9111,10 +9123,10 @@ exp589:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp573_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp589.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --bonus=0 --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp589/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp574/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp589/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp574/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9124,10 +9136,10 @@ exp590:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp554_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp590.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp590/param{index}/run{1} --master_seed={1}--load=$(DATA_PATH)/exp555/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp590/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp555/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9136,10 +9148,10 @@ exp591:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp556_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp591.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --bonus={bonus} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp591/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp557/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp591/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp557/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9148,10 +9160,10 @@ exp592:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp575_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp592.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp592/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp576/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp592/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp576/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9160,10 +9172,10 @@ exp593:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp558_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp593.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp593/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp559/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp593/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp559/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9172,9 +9184,9 @@ exp594:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 4 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp594.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --mode='UCB' --beta={beta} --temp={temp} --lr_R=0.1 --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --mode='UCB' --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
