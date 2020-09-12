@@ -434,7 +434,7 @@ changed %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Average payout") +
+  labs(x="Choice", y="", title="Reward payout") +
   facet_wrap(choice~., ncol=11) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
