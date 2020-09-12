@@ -41,7 +41,7 @@ info %>%
   geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="Choice", y="", title="Average payout") +
+  labs(x="Choice", y="", title="Info. payout") +
   facet_wrap(choice~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -58,13 +58,13 @@ info %>%
 # ------------------------------------------------------------------------
 # task0 <- (p1 + plot_spacer() + plot_spacer()) +
   # plot_layout(widths=c(0.3, 0.3, 0.3)) +
-task0 <- (p1) +
-  plot_annotation(title = "Task 0 - Information") 
-print(task0)
+task1 <- (p1) + 
+  plot_annotation(title = "Task 1 - Information") 
+print(task1)
 
 # save
-name <- "img/task0"
-ggsave(paste(name, ".pdf", sep=""), plot=task0, width = 1.2*2, height = 0.6*2)
+name <- "img/task1"
+ggsave(paste(name, ".pdf", sep=""), plot=task1, width = 1.2*2, height = 0.6*2)
 
 # Cleanup
 rm(p1)
@@ -88,7 +88,7 @@ classic %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Average payout") +
+  labs(x="Choice", y="", title="Reward payout") +
   facet_wrap(choice~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -105,15 +105,15 @@ classic %>%
 # ------------------------------------------------------------------------
 # task1 <- (p1 + plot_spacer() + plot_spacer()) + 
   # plot_layout(widths=c(0.3, 0.3, 0.3)) +
-task1 <- (p1) +
-  plot_annotation(title = "Task 1 - Classic")
-print(task1)
+task2 <- (p1) +
+  plot_annotation(title = "Task 2 - Classic")
+print(task2)
 
 # save
-name <- "img/task1"
-ggsave(paste(name, ".pdf", sep=""), plot=task1, width = 1.2*2, height = 0.6*2)
+name <- "img/task2"
+ggsave(paste(name, ".pdf", sep=""), plot=task2, width = 1.2*2, height = 0.6*2)
 
-rm(p1, p2)
+rm(p1)
 ```
 
 # Task - sparse forced choice
@@ -136,7 +136,7 @@ sparse %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_color_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Average\npayout") +
+  labs(x="Choice", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -151,63 +151,16 @@ sparse %>%
 
 
 # ------------------------------------------------------------------------
-task2 <- (p1 + plot_layout() + plot_layout()) + 
+task3 <- (p1 + plot_layout() + plot_layout()) + 
   plot_layout(widths=c(0.3, 0.3, 0.3)) + 
-  plot_annotation(title = "Task 2 - Sparse")
-print(task2)
-
-# save
-name <- "img/task2"
-ggsave(paste(name, ".pdf", sep=""), plot=task2, width = 0.75*2, height = 2.2*2)
-
-rm(p1, p2)
-```
-
-# Task - high dimensional
-```{r, fig.width=2, fig.height=2.2}
-best <- 55
-payout = runif(121, 0.2, 0.6)
-payout[best] <- 0.8
-
-best_choice = rep(0, 121)
-best_choice[best] <- 1
-
-large <- data.frame(
-  choice=1:121,
-  best=best_choice,
-  payout=payout)
-
-# ------------------------------------------------------------------------
-# Result
-large %>% 
-  ggplot(aes(x=1, y=payout, fill=factor(best_choice))) + 
-  geom_bar(width=0.5, alpha=1, stat="identity") +
-  lims(x=c(0, 2)) +
-  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
-  scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Average payout") +
-  facet_wrap(choice~., ncol=11) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.x = element_blank()) +
-  # theme(axis.text.y = element_blank()) +
-  theme(axis.ticks.x = element_blank()) +
-  theme(strip.text = element_blank()) +
-  theme(axis.line = element_blank()) +
-  theme(panel.grid.major = element_blank()) +
-  theme(panel.grid.minor = element_blank()) +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
-
-# ------------------------------------------------------------------------
-task3 <- (p1) + 
-  plot_annotation(title = "Task 3 - High dimensional")
+  plot_annotation(title = "Task 3 - Sparse")
 print(task3)
 
 # save
 name <- "img/task3"
-ggsave(paste(name, ".pdf", sep=""), plot=task3, width = 2*2, height = 2.2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=task3, width = 0.75*2, height = 2.2*2)
 
-rm(p1, p2)
+rm(p1)
 ```
 
 # Task - deception
@@ -269,7 +222,7 @@ deception_prob %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Reward\nprob.") +
+  labs(x="Choice", y="", title="Reward\nprob.") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -309,7 +262,7 @@ deception_payout %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Average\npayout") +
+  labs(x="Choice", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -332,7 +285,7 @@ print(task4)
 name <- "img/task4"
 ggsave(paste(name, ".pdf", sep=""), plot=task4, width = 1*2, height = 2.3*2)
 
-rm(p1, p2, p3, p4)
+rm(p1, p2, p3)
 ```
 
 # Task - distraction forced choise
@@ -358,7 +311,7 @@ distraction_stim %>%
   geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="", y="", title="Stimulus") +
+  labs(x="Choice", y="", title="Info.\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -378,7 +331,7 @@ distraction_payout %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="", y="", title="Average\npayout") +
+  labs(x="Choice", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -403,15 +356,105 @@ ggsave(paste(name, ".pdf", sep=""), plot=task5, width = 0.95*2, height = 2.2*2)
 
 rm(p1, p2, p3)
 ```
+# Task - high dimensional
+```{r, fig.width=2, fig.height=2.2}
+best <- 55
+payout = runif(121, 0.2, 0.6)
+payout[best] <- 0.8
 
-# Cleanup
-```{r}
-# data
-rm(arrow, classic, deception_payout, deception_prob, deception_R, deception_value,
-   large, sparse, info,distraction_payout, distraction_stim)
+best_choice = rep(0, 121)
+best_choice[best] <- 1
 
-# Misc and shared
-rm(a1)
-rm(tmp)
-rm(b, best, best_choice, n, payout, R, std_R, deception_R)
+large <- data.frame(
+  choice=1:121,
+  best=best_choice,
+  payout=payout)
+
+# ------------------------------------------------------------------------
+# Result
+large %>% 
+  ggplot(aes(x=1, y=payout, fill=factor(best_choice))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="Choice", y="", title="Reward payout") +
+  facet_wrap(choice~., ncol=11) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# ------------------------------------------------------------------------
+task6 <- (p1) + 
+  plot_annotation(title = "Task 6 - High dimensional")
+print(task6)
+
+# save
+name <- "img/task6"
+ggsave(paste(name, ".pdf", sep=""), plot=task6, width = 2*2, height = 2.2*2)
+
+rm(p1)
+```
+
+# Task - unexpected change
+- Depends on high dimensional above 
+```{r, fig.width=2, fig.height=2.2}
+# Unexpected change
+old_best <- best
+payout[old_best] <- 0.1
+best <- which.max(payout)
+
+best_choice = rep(0, 121)
+best_choice[best] <- 1
+
+old_choice = rep(NA, 121)
+old_choice[old_best] <- 0.5
+
+changed <- data.frame(
+  choice=1:121,
+  best=best_choice,
+  old=old_choice,
+  payout=payout)
+```
+
+```{r, fig.width=2, fig.height=2.2}
+# ------------------------------------------------------------------------
+# Result
+changed %>% 
+  ggplot(aes(x=1, y=payout, fill=factor(best_choice))) + 
+  geom_bar(width=0.5, alpha=1, stat="identity") +
+  geom_point(mapping=aes(x=1, y=old), shape=4, color="red") +
+  lims(x=c(0, 2)) +
+  scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
+  scale_fill_manual(values=c("darkgrey", "black")) +
+  labs(x="Choice", y="", title="Average payout") +
+  facet_wrap(choice~., ncol=11) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(axis.ticks.x = element_blank()) +
+  theme(strip.text = element_blank()) +
+  theme(axis.line = element_blank()) +
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) -> p1
+
+# ------------------------------------------------------------------------
+task7 <- (p1) + 
+  plot_annotation(title = "Task 7 - Unexpected change")
+print(task7)
+
+# save
+name <- "img/task7"
+ggsave(paste(name, ".pdf", sep=""), plot=task7, width = 2*2, height = 2.2*2)
+
+rm(p1)
 ```
