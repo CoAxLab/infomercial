@@ -9112,10 +9112,10 @@ exp587:
 
 # - random: exp553
 exp588:
-	parallel -j 39 \
+	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp588.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100  --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp588/param0/run{1} --master_seed={1} --load=$(DATA_PATH)/exp553/param0/run{1}/result.pkl' ::: {1..100}
+			'random_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100  --lr_R=0.01 --log_dir=$(DATA_PATH)/exp588/param0/run{1} --master_seed={1}' ::: {1..100}
 
 # Reward
 # - extrinsic: exp574
