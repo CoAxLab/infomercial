@@ -463,7 +463,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.7*2
 # -------------------------------------------------------------
 task_name <- "BanditUniform121"
 task_code <- 3
-num_episodes <- 121 * 250
+num_episodes <- 121 * 20
 
 # The overestimate due to E0
 num_arms <- 121
@@ -586,7 +586,7 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 
 ### Summary stats
 ```{r, fig.width=1.2, fig.height=1.7}
-num_episodes <- 121 * 250
+num_episodes <- 121 * 20
 
 # ---
 result_task3 %>% 
@@ -666,7 +666,7 @@ tmp %>%
 # ---
 summary3 <- p1 / p2  / p3 / p4 + 
   plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
-  plot_annotation(title = "Task 3 - Large", 
+  plot_annotation(title = "Task 3 - High dimensional", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(summary3)
@@ -896,24 +896,25 @@ ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.7*2
 ### Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
-task_name <- "DistractionBanditOneHigh10"
-task_code <- 5
-num_episodes <- 10 * 50
+task_name <- "BanditChange121"
+task_code <- 1
+num_episodes <- 121 * 20
 
 # The overestimate due to E0
-num_arms <- 10
+num_arms <- 4
 E_bias <- log(num_arms) * num_arms 
 
-exp_names <- c("exp462", 
-               "exp463", 
-               "exp464", 
-               "exp466", 
-               "exp522",
-               "exp465", 
-               "exp521", 
-               "exp524", 
-               "exp523", 
-               "exp544")
+exp_names <- c(
+  "exp585", 
+  "exp586", 
+  "exp587", 
+  "exp588",
+  "exp589",
+  "exp590", 
+  "exp591", 
+  "exp592", 
+  "exp593", 
+  "exp594")
 
 agent_names <- c(
   "Curiosity", 
@@ -949,7 +950,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-result_task5 <- NULL
+result_task5<- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -962,8 +963,8 @@ for(i in 1:length(exp_names)){
     run_codes <- 1:10
   }
   
-  tmp <- load_result(
-    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
+                     n_max=num_episodes+1)
   
   tmp %>% 
     filter(global_step <= num_episodes) -> tmp
@@ -989,7 +990,7 @@ result_task5$total_E[result_task5$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_task5$agent == a_name
   result_task5[["total_E"]][m] <- 0
 }
@@ -1010,17 +1011,12 @@ result_task5 %>%
 
 tmp <- bind_rows(tmp2, tmp1)
 result_task5 <- tmp
-
-# ----------------------------------------------------------------------------
-# Cleanup
-rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
-   exp_name, exp_names, file_names, i, param_codes,
-   run_codes, task_name, m, a_name)
+rm(tmp1, tmp2)
 ```
 
 ### Summary stats
 ```{r, fig.width=1.2, fig.height=1.7}
-num_episodes <- 10 * 50
+num_episodes <- 121 * 20
 
 # ---
 result_task5 %>% 
@@ -1100,13 +1096,230 @@ tmp %>%
 # ---
 summary5 <- p1 / p2  / p3 / p4 + 
   plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
-  plot_annotation(title = "Task 5 - Distraction", 
+  plot_annotation(title = "Task 5 - Unexpected change", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(summary5)
 
 name <- "img/summary5"
 ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.7*2)
+```
+
+## Fig. Task 6
+### Load data
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "DistractionBanditOneHigh10"
+task_code <- 5
+num_episodes <- 10 * 50
+
+# The overestimate due to E0
+num_arms <- 10
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c("exp462", 
+               "exp463", 
+               "exp464", 
+               "exp466", 
+               "exp522",
+               "exp465", 
+               "exp521", 
+               "exp524", 
+               "exp523", 
+               "exp544")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Bayesian", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Random",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+file_names <- c("action", 
+                "p_bests", 
+                "total_R",
+                "total_E",
+                "policy",
+                "regret",
+                "total_regret")
+
+result_task6 <- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(
+    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result_task6 <- bind_rows(result_task6, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result_task6$agent <- factor(result_task6$agent, levels=rev(agent_names))
+
+# Remove E_bias
+result_task6$total_E <- result_task6$total_E - E_bias
+result_task6$total_E[result_task6$total_E < 0] <- 0
+
+# Clean total_E
+# - Novelty, extrinsic have total_E but it is not used, so set 
+#   it to zero 
+for(a_name in c("Extrinsic", "Novelty")) {
+  m <- result_task6$agent == a_name
+  result_task6[["total_E"]][m] <- 0
+}
+
+# Estimate num_explore
+# - for curiosity this is defined by policy
+# - for the rest we can count non-zero regret values
+result_task6 %>%
+  filter(agent != "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(regret > 0)) %>% 
+  ungroup() -> tmp1
+
+result_task6 %>% 
+  filter(agent == "Curiosity") %>% 
+  group_by(agent, run, param) %>%
+  mutate(num_explore = sum(policy == 0)) -> tmp2
+
+tmp <- bind_rows(tmp2, tmp1)
+result_task6 <- tmp
+
+# ----------------------------------------------------------------------------
+# Cleanup
+rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
+   exp_name, exp_names, file_names, i, param_codes,
+   run_codes, task_name, m, a_name)
+```
+
+### Summary stats
+```{r, fig.width=1.2, fig.height=1.7}
+num_episodes <- 10 * 50
+
+# ---
+result_task6 %>% 
+  # filter(agent != "Random") %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_regret = last(total_regret),
+            p_bests = last(p_bests)) %>% 
+  ungroup() -> tmp
+
+
+# Med R for curiosity
+median_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
+  
+tmp %>% 
+  filter(strategy == "Curiosity") %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="", title="Deterministic") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p1
+
+tmp %>% 
+  filter(strategy == "Random") %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Random") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p2
+
+tmp %>% 
+  filter(strategy == "Extrinsic") %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="", title="Extrinsic") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p3
+
+tmp %>% 
+  filter(strategy == "Intrinsic") %>% 
+  mutate(
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_hline(aes(yintercept=max(median_R/num_episodes)), 
+             color="chartreuse4",
+             size=0.3) +
+  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.9)) +
+  scale_color_identity() +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p4
+
+# ---
+summary6 <- p1 / p2  / p3 / p4 + 
+  plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
+  plot_annotation(title = "Task 6 - Distraction", 
+                  theme = theme_pubr(base_size = 8, legend = "none"))
+
+print(summary6)
+
+name <- "img/summary6"
+ggsave(paste(name, ".pdf", sep=""), plot=summary6, width = 1.2*2, height = 1.7*2)
 ```
 
 # Cleanup
