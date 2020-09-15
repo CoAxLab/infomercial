@@ -8475,15 +8475,6 @@ exp544:
 	# Clean up
 	rm tmp
 
-
-
-
-
-
-
-
-
-
 # ---------------------------------------------------------------------------
 # 8-10-2020
 # b2047e6
@@ -9190,3 +9181,154 @@ exp594:
 			'count_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --mode='UCB' --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+# -----------------------------------------------------------------------
+# 9-15-2020
+# Tweaks
+#
+# Rerun some tune searchers for OneHigh4 and Uniform121 so that the num ep
+# match the summary figure, and we use the median not the mean. Again like
+# the sum fig. The choice of sum doesn't seem to in past exps change the 
+# final results much. No need to run everything? This is just for demo/
+# robustness of parrams figures.
+
+# --- BanditOneHigh4 --- 
+exp595_exp603: exp595 exp596 exp597 exp598 exp599 exp600 exp601 exp602 exp603
+
+# meta
+exp595:
+	tune_bandit.py random $(DATA_PATH)/exp595 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# ep
+exp596:
+	tune_bandit.py random $(DATA_PATH)/exp596 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+# anneal
+exp597:
+	tune_bandit.py random $(DATA_PATH)/exp597 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)'
+
+# extrinsic
+exp598:
+	tune_bandit.py random $(DATA_PATH)/exp598 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# softbeta
+exp599:
+	tune_bandit.py random $(DATA_PATH)/exp599 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.001, 1000)' \
+
+
+# novelty
+exp600:
+	tune_bandit.py random $(DATA_PATH)/exp600 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0 \
+		--bonus='(1, 100)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# entropy
+exp601:
+	tune_bandit.py random $(DATA_PATH)/exp601 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# count EB
+exp602:
+	tune_bandit.py random $(DATA_PATH)/exp602 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='EB' \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# count UCB
+exp603:
+	tune_bandit.py random $(DATA_PATH)/exp603 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='UCB' \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
