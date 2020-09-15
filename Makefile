@@ -9312,7 +9312,6 @@ exp602:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode="EB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
@@ -9454,7 +9453,6 @@ exp611:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode="EB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
