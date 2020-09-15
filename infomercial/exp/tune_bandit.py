@@ -92,7 +92,7 @@ def train(exp_func=None,
         scores.append(trial[metric])
 
     # Override metric, with num_repeat average
-    trial[metric] = np.mean(scores)
+    trial[metric] = np.median(scores)
 
     # Save metadata
     trial.update({
