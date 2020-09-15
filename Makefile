@@ -9312,7 +9312,7 @@ exp602:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode='EB' \
+		--mode="EB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
@@ -9328,7 +9328,7 @@ exp603:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode='UCB' \
+		--mode="UCB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
@@ -9454,7 +9454,7 @@ exp611:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode='EB' \
+		--mode="EB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
@@ -9470,7 +9470,7 @@ exp612:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode='UCB' \
+		--mode="UCB" \
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
