@@ -75,7 +75,6 @@ class_names <- c(
   "Intrinsic"
 )
 
-
 result_ranked <- NULL
 for(i in 1:length(rank_names)){
   rank_name <- rank_names[i]
@@ -100,10 +99,11 @@ for(i in 1:length(rank_names)){
   result_ranked <- bind_rows(result_ranked, tmp)
 }
 ```
-## Top 500
+
+## Top 100
 ```{r, fig.width=0.8, fig.height=0.5}
 result_ranked %>% 
-  filter(index <= 500) %>% 
+  filter(index <= 100) %>% 
   mutate(
     color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
@@ -337,7 +337,7 @@ result_ranked %>%
 ## Top 500
 ```{r, fig.width=0.8, fig.height=0.5}
 result_ranked %>% 
-  filter(index <= 500) %>% 
+  # filter(index <= 500) %>% 
   mutate(
     color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
