@@ -9472,3 +9472,170 @@ exp612:
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
+
+
+# ---------------------------------------------------------------------------
+# 9-15-2020
+#
+# A temp/noise to the top1 models. Study one task BanditOneHigh4.
+#
+# - Study only softmax based models, including softmeta
+# - Use tune_bandit buyt sample around the top1 values look
+#   from the various sorted files **by hand**.
+# --- BanditOneHigh4 --- 
+exp613_621: exp613 exp614 exp615 exp616 exp617 exp618 exp619 exp620 exp621
+
+# meta
+# index,tie_threshold,lr_R,total_R
+# 0,0.009372406727188936,0.05076952043479801,28.76
+exp613:
+	tune_bandit.py random $(DATA_PATH)/exp613 \
+		--exp_name='softmeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold=0.0093 \
+		--lr_R=0.050 \
+		--temp='(0.001, 1000)' 
+
+# ep
+# index,epsilon,lr_R,total_R
+# 0,0.08360017944932674,0.10073435973976101,8398.96
+exp614:
+	tune_bandit.py random $(DATA_PATH)/exp614 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R=0.10 
+
+# anneal
+# index,epsilon,epsilon_decay_tau,lr_R,total_R
+# 0,0.10504798712146907,0.00026825893334438155,0.02268823892006516,26.74
+exp615:
+	tune_bandit.py random $(DATA_PATH)/exp615 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau=0.00026 \
+		--lr_R=0.022
+
+# extrinsic
+# index,bonus,beta,temp,lr_R,total_R
+# 0,0.0,0.0,0.0688312308621586,0.49125026755811774,27.94
+exp616:
+	tune_bandit.py random $(DATA_PATH)/exp616 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R=0.49
+
+# softbeta
+# index,beta,lr_R,temp,total_R
+# 0,0.23147498497146318,0.05157737909861323,0.00195091441202382,29.24
+exp617:
+	tune_bandit.py random $(DATA_PATH)/exp617 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0.23 \
+		--lr_R=0.051 \
+		--temp='(0.001, 1000)' \
+
+# novelty
+# index,beta,bonus,temp,lr_R,total_R
+# 0,0.0,1.424414376251461,0.01770480968769014,0.013688280883830697,25.64
+exp618:
+	tune_bandit.py random $(DATA_PATH)/exp618 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0 \
+		--bonus=1.42 \
+		--temp='(0.001, 1000)' \
+		--lr_R=0.013
+
+# entropy
+# index,beta,temp,lr_R,total_R
+# 0,0.0011065909026762382,0.021771088807868443,0.02409604919058677,27.16
+exp619:
+	tune_bandit.py random $(DATA_PATH)/exp619 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0.0011 \
+		--temp='(0.001, 1000)' \
+		--lr_R=0.024 
+
+# count EB
+# index,beta,temp,lr_R,total_R
+# 0,0.0040849400432943165,0.04328894058680061,0.058567276441824835,27.98
+exp620:
+	tune_bandit.py random $(DATA_PATH)/exp620 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0.004 \
+		--temp='(0.001, 1000)' \
+		--lr_R=0.058
+
+# count UCB
+# index,mode,beta,temp,lr_R,total_R
+# 0,UCB,0.06284736159496815,0.06333056942295086,0.4616074035393582,27.88
+exp621:
+	tune_bandit.py random $(DATA_PATH)/exp621 \
+		--exp_name='count_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="UCB" \
+		--beta=0.062 \
+		--temp='(0.001, 1000)' \
+		--lr_R=0.46
