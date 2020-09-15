@@ -9332,3 +9332,145 @@ exp603:
 		--beta='(0.001, 10)' \
 		--temp='(0.001, 1000)' \
 		--lr_R='(0.001, 0.5)' 
+
+
+# --- BanditUniform121 --- 
+exp604_exp612: exp604 exp605 exp606 exp607 exp608 exp609 exp610 exp611 exp612
+
+# meta
+exp604:
+	tune_bandit.py random $(DATA_PATH)/exp604 \
+		--exp_name='meta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
+
+# ep
+exp605:
+	tune_bandit.py random $(DATA_PATH)/exp605 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--lr_R='(0.001, 0.5)' 
+
+# anneal
+exp606:
+	tune_bandit.py random $(DATA_PATH)/exp606 \
+		--exp_name='epsilon_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--epsilon='(0.01, 0.99)' \
+		--epsilon_decay_tau='(0.0001, 0.1)' \
+		--lr_R='(0.001, 0.5)'
+
+# extrinsic
+exp607:
+	tune_bandit.py random $(DATA_PATH)/exp607 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--bonus=0 \
+		--beta=0 \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# softbeta
+exp608:
+	tune_bandit.py random $(DATA_PATH)/exp608 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--lr_R='(0.001, 0.5)' \
+		--temp='(0.001, 1000)' \
+
+
+# novelty
+exp609:
+	tune_bandit.py random $(DATA_PATH)/exp609 \
+		--exp_name='softbeta_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta=0 \
+		--bonus='(1, 100)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# entropy
+exp610:
+	tune_bandit.py random $(DATA_PATH)/exp610 \
+		--exp_name='entropy_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# count EB
+exp611:
+	tune_bandit.py random $(DATA_PATH)/exp611 \
+		--exp_name='count_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='EB' \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
+
+# count UCB
+exp612:
+	tune_bandit.py random $(DATA_PATH)/exp612 \
+		--exp_name='count_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='UCB' \
+		--beta='(0.001, 10)' \
+		--temp='(0.001, 1000)' \
+		--lr_R='(0.001, 0.5)' 
