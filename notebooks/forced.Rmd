@@ -1,5 +1,5 @@
 ---
-title: "Figs. Forcding det. on stochastic search algortihms"
+title: "Figs. Forcding det or noise on search algortihms"
 output: html_notebook
 ---
 
@@ -27,8 +27,8 @@ source("utils.R")
 data_path <- "/Volumes/Data/infomercial/data"
 ```
 
-# Load data
-
+# Forced det
+## Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditOneHigh4"
@@ -49,7 +49,7 @@ exp_names <- c(
 
 agent_names <- c(
   "Curiosity", 
-  "Info. value", 
+  "Bayesian", 
   "Novelty", 
   "Entropy", 
   "Count (EB)",
@@ -112,6 +112,7 @@ result_forced$total_E <- result_forced$total_E - E_bias
 result_forced$total_E[result_forced$total_E < 0] <- 0
 ```
 
+## Fig.
 ```{r, fig.width = 1.2, fig.height = 1.1}
 num_episodes <- 4*50
 
@@ -167,7 +168,7 @@ tmp %>%
 forced1 <- p1 / p2 +
   plot_layout(heights = c(0.2, 0.8)) +
   plot_annotation(
-    title = "Forced determinism on stochastic\nsearch (Task 1)",
+    title = "Forced determinism on stochastic\nsearch",
     theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(forced1)
@@ -176,3 +177,113 @@ name <- "img/forced1"
 ggsave(paste(name, ".pdf", sep=""), plot=forced1, width = 1.2*2, height = 1.7*2)
 ```
 
+
+# Forced noise
+## Load data 
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditOneHigh4"
+task_code <- 1
+num_episodes <- 200
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+rank_names <- c(
+  "exp613_sorted.csv", 
+  "exp614_sorted.csv", 
+  "exp615_sorted.csv", 
+  "exp616_sorted.csv",
+  "exp617_sorted.csv", 
+  "exp618_sorted.csv", 
+  "exp619_sorted.csv", 
+  "exp620_sorted.csv", 
+  "exp621_sorted.csv")
+
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)"
+)
+
+class_names <- c(
+  "Stochastic",
+  "Random",
+  "Random",
+  "Extrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic",
+  "Intrinsic"
+)
+
+result_noise4 <- NULL
+for(i in 1:length(rank_names)){
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- read_csv(paste(data_path, rank_name, sep="/"))
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  result_noise4 <- bind_rows(result_noise4, tmp)
+}
+```
+
+## Fig
+```{r, fig.width=1, fig.height=2}
+result_noise4 %>% 
+  filter(strategy == "Stochastic") %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=temp, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="", y="Reward", title="Stochastic (forced)") +
+  lims(y=c(0.2, 0.8)) +
+  scale_x_log10() +
+  facet_grid(agent~.) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle=0)) -> p1
+
+result_noise4 %>% 
+filter(strategy == "Intrinsic") %>% 
+mutate(
+    color = ifelse(agent == "Soft curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=temp, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Noise level", y="Reward", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.2, 0.8)) +
+  scale_x_log10() +
+  facet_grid(agent~.) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank())  +
+  theme(strip.text.y = element_text(angle=0)) -> p2
+
+p1 / p2 + plot_layout(heights = c(0.16, 0.16*6)) +
+  plot_annotation(
+    title = "The effect of noise on\nstochastic search",
+    theme = theme_pubr(base_size = 8, legend = "none"))
+```
