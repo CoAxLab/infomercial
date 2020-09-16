@@ -356,7 +356,6 @@ independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) +
       subtitle = "deterministic versus stochastic",
                   theme = theme_pubr(base_size = 8, legend = "none"),
       tag_levels="a", tag_suffix=".")
-
 print(independent2)
 
 # -- Save a to pdf --
