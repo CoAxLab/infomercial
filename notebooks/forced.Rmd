@@ -170,13 +170,11 @@ forced1 <- p1 / p2 +
   plot_annotation(
     title = "Forced determinism on stochastic\nsearch",
     theme = theme_pubr(base_size = 8, legend = "none"))
-
 print(forced1)
 
 name <- "img/forced1"
-ggsave(paste(name, ".pdf", sep=""), plot=forced1, width = 1.2*2, height = 1.7*2)
+ggsave(paste(name, ".pdf", sep=""), plot=forced1, width = 1.2*2, height = 1.1*2)
 ```
-
 
 # Forced noise
 ## Load data 
@@ -248,6 +246,8 @@ for(i in 1:length(rank_names)){
   
   result_noise4 <- bind_rows(result_noise4, tmp)
 }
+
+result_noise4$agent <- factor(result_noise4$agent, levels = agent_names)
 ```
 
 ## Fig
@@ -280,10 +280,15 @@ mutate(
   facet_grid(agent~.) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank())  +
-  theme(strip.text.y = element_text(angle=0)) -> p2
+  theme(strip.text.y = element_text(angle=0, hjust=1)) -> p2
 
-p1 / p2 + plot_layout(heights = c(0.16, 0.16*6)) +
+# ---
+forced2 <- p1 / p2 + plot_layout(heights = c(0.16, 0.16*6)) +
   plot_annotation(
     title = "The effect of noise on\nstochastic search",
     theme = theme_pubr(base_size = 8, legend = "none"))
+print(forced2)
+
+name <- "img/forced2"
+ggsave(paste(name, ".pdf", sep=""), plot=forced2, width = 1*2, height = 2*2)
 ```
