@@ -57,7 +57,7 @@ agent_names <- c(
   "Random/Greedy", 
   "Decay/Greedy", 
   "Reward", 
-  "Info. value", 
+  "Bayesian", 
   "Novelty", 
   "Entropy", 
   "Count (EB)",
@@ -99,54 +99,63 @@ for(i in 1:length(rank_names)){
   
   result_ranked4 <- bind_rows(result_ranked4, tmp)
 }
+
+result_ranked4$agent <- factor(result_ranked4$agent, levels = agent_names)
 ```
 
-### Top 10
-```{r, fig.width=1, fig.height=0.5}
+## Fig
+```{r, fig.width=1.8, fig.height=2.5}
+result_ranked4 %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward", title="All") +
+  lims(y=c(0.2, 0.8)) +
+  scale_x_continuous(limits=c(1,1020), breaks = c(1,500,1000)) +
+  facet_grid(agent~.) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) + 
+  theme(strip.text.y = element_text(angle=0, hjust=1)) -> p1
+
 N <- 10
 result_ranked4 %>% 
   filter(index <= N) %>% 
   mutate(
     color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
-  ggplot(aes(x=factor(index), y=total_R/num_episodes, group=agent, color=factor(color))) +
+  ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
   labs(x="Rank", y="Reward", title = "Top 10") +
-  # lims(y=c(0.0, 0.02)) +
+  scale_x_continuous(limits=c(1,10), breaks = c(1,5,10)) +
   theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) 
-```
+  theme(strip.background = element_blank())  -> p2
 
-### Worst N
-```{r, fig.width=1, fig.height=0.5}
 N <- 10
 result_ranked4 %>% 
   filter(index >= 1000 - N) %>% 
   mutate(
     color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
-  ggplot(aes(x=factor(index), y=total_R/num_episodes, group=agent, color=factor(color))) +
+  ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.8, alpha=0.9) +
   # geom_point(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title="Worst 10") +
+  labs(x="Rank", y="Reward", title="Bottom 10") +
   lims(y=c(0.2, 0.8)) +
+  scale_x_continuous(limits=c(990,1000), breaks = c(990,995,1000)) +
   theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) 
-```
+  theme(strip.background = element_blank()) -> p3
 
-### All
-```{r, fig.width=0.6, fig.height=2}
-result_ranked4 %>% 
-  mutate(
-    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
-  ggplot(aes(x=index, y=total_R/num_episodes, group=agent, color=factor(color))) +
-  geom_line(size=0.6, alpha=0.9) +
-  scale_color_identity() +
-  labs(x="Rank", y="Reward") +
-  lims(y=c(0.2, 0.8)) +
-  facet_wrap(agent~., ncol=1) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) 
+# ---
+robust1 <- p1 + (p2/p3/plot_spacer()/plot_spacer()) +
+  plot_annotation(title = "Reward collection and parameter choice", 
+                  subtitle = "Task 1 - Classic",
+                  tag_levels="a", tag_suffix=".")
+print(robust1)
+
+name <- "img/robust1"
+ggsave(paste(name, ".pdf", sep=""), plot=robust1, width=1.8*2, height=2.5*2)
 ```
 
 ## BanditUniform121
@@ -177,7 +186,7 @@ agent_names <- c(
   "Random/Greedy", 
   "Decay/Greedy", 
   "Reward", 
-  "Info. value", 
+  "Bayesian", 
   "Novelty", 
   "Entropy", 
   "Count (EB)",
@@ -219,54 +228,61 @@ for(i in 1:length(rank_names)){
   
   result_ranked121 <- bind_rows(result_ranked121, tmp)
 }
+
+result_ranked121$agent <- factor(result_ranked121$agent, levels = agent_names)
 ```
 
-### Top 10
-```{r, fig.width=1.2, fig.height=0.5}
-N <- 10
-result_ranked121 %>% 
-  filter(index < N) %>% 
-  mutate(
-    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
-  ggplot(aes(x=factor(index+1), y=total_R/num_episodes, group=agent, color=factor(color))) +
-  geom_line(size=0.6, alpha=0.9) +
-  scale_color_identity() +
-  labs(x="Rank", y="Reward", title = "Top 10") +
-  # lims(y=c(0.0, 0.02)) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) 
-```
-
-### Worst N
-```{r, fig.width=1.2, fig.height=0.5}
-N <- 11
-result_ranked121 %>% 
-  filter(index >= 1000 - N) %>% 
-  mutate(
-    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
-  ggplot(aes(x=factor(index+1), y=total_R/num_episodes, group=agent, color=factor(color))) +
-  geom_line(size=0.6, alpha=0.9) +
-  scale_color_identity() +
-  labs(x="Rank", y="Reward", title = "Worst 10") +
-  # lims(y=c(0.0, 0.02)) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) 
-```
-
-### All
-```{r, fig.width=0.8, fig.height=2.2}
+## Fig
+```{r, fig.width=1.8, fig.height=2.5}
 result_ranked121 %>% 
   mutate(
     color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward") +
+  labs(x="Rank", y="Reward", title="All") +
   lims(y=c(0.2, 0.8)) +
   scale_x_continuous(limits=c(1,1020), breaks = c(1,500,1000)) +
   facet_grid(agent~.) +
   theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.y = element_text(angle=0))
-```
+  theme(strip.background = element_blank()) + 
+  theme(strip.text.y = element_text(angle=0, hjust=1)) -> p1
 
+N <- 10
+result_ranked121 %>% 
+  filter(index <= N) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward", title = "Top 10") +
+  scale_x_continuous(limits=c(1,10), breaks = c(1,5,10)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank())  -> p2
+
+N <- 10
+result_ranked121 %>% 
+  filter(index >= 1000 - N) %>% 
+  mutate(
+    color = ifelse(agent == "Curiosity", "chartreuse4", "black")) %>% 
+  ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
+  geom_line(size=0.8, alpha=0.9) +
+  # geom_point(size=0.6, alpha=0.9) +
+  scale_color_identity() +
+  labs(x="Rank", y="Reward", title="Bottom 10") +
+  lims(y=c(0.2, 0.8)) +
+  scale_x_continuous(limits=c(990,1000), breaks = c(990,995,1000)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) -> p3
+
+# ---
+supp_robust1 <- p1 + (p2 / p3 / plot_spacer() / plot_spacer()) +
+  plot_annotation(title = "Reward collection and parameter choice", 
+                  subtitle = "Task 6 - High dimensional",
+                  tag_levels="a", tag_suffix=".")
+print(supp_robust1)
+
+name <- "img/supp_robust1"
+ggsave(paste(name, ".pdf", sep=""), plot=supp_robust1, width=1.8*2, height=2.5*2)
+```
