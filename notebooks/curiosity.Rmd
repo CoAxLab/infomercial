@@ -212,16 +212,9 @@ result348 %>%
 sub1 <- (c1a + c1b) / c1c / c1d #+ 
 
 # ------------------------------------------------------------------
-summary348 %>% 
-  ggplot(aes(x=actor, y=median_E, color=actor)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_E+var_E)), 
-    ymax=((median_E-var_E))), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=max(median_E)), 
-             color="black",
-             size=0.1) +
+final348 %>% 
+  ggplot(aes(x=actor, y=total_E, color=actor)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="Info. value") +
   scale_y_continuous(limits=c(0.0015, 0.0032), breaks = c(0.0015, 0.0015*2, 0.003)) +
   scale_color_manual("", values=c("black", "chartreuse4")) +
@@ -229,33 +222,19 @@ summary348 %>%
   theme(strip.background = element_blank()) +
   coord_flip() -> c2a
 
-summary348 %>% 
-  ggplot(aes(x=actor, y=median_regret, color=actor)) +
-  geom_point(size=1.25, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_regret+var_regret)), 
-    ymax=((median_regret-var_regret))), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=min(median_regret)),  
-             color="black",
-             size=0.1) +
+final348 %>% 
+  ggplot(aes(x=actor, y=total_regret, color=actor)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="Regret") +
-  scale_y_continuous(limits=c(0, 0.000045), breaks = c(0, 0.00004)) +
+  scale_y_continuous(limits=c(0, 0.00005), breaks = c(0, 0.00004)) +
   scale_color_manual("", values=c("black", "chartreuse4")) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> c2b
 
-summary348 %>% 
-  ggplot(aes(x=actor, y=median_num_explore, color=actor)) +
-  geom_point(size=1, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=((median_num_explore+var_num_explore)), 
-    ymax=((median_num_explore-var_num_explore))), 
-    alpha=0.4) +
-  # geom_hline(aes(yintercept=min(median_num_explore)),  
-             # color="black",
-             # size=0.1) +
+final348 %>% 
+  ggplot(aes(x=actor, y=num_explore, color=actor)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="Num. explore") +
   scale_y_continuous(limits=c(80, 160), breaks = c(80, 120, 160)) +
   scale_color_manual("", values=c("black", "chartreuse4")) +
@@ -263,15 +242,14 @@ summary348 %>%
   theme(strip.background = element_blank()) +
   coord_flip() -> c2c
 
-
 sub2 <- c2a / c2b / c2c
 
 # -------------------------------------------------------------------------
 curiosity1 <- (sub1 | sub2 + plot_spacer() + plot_spacer()) + 
   plot_layout(widths = c(0.7, 0.3)) +
     plot_annotation(
-      tag_levels="a", tag_suffix=".", 
-      title="Deterministic versus stochastic curiosity in a random world (task 0)", 
+      tag_levels="a", tag_suffix=".",
+      title="Deterministic versus stochastic curiosity in a random world", 
       theme = theme_pubr(base_size=8, legend="none"))
 print(curiosity1)
 

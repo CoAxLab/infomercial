@@ -111,7 +111,7 @@ result_ranked4 %>%
   ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title="All") +
+  labs(x="Parameter rank", y="Reward", title="All", tag="a.") +
   lims(y=c(0.2, 0.8)) +
   scale_x_continuous(limits=c(1,1020), breaks = c(1,500,1000)) +
   facet_grid(agent~.) +
@@ -127,7 +127,7 @@ result_ranked4 %>%
   ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title = "Top 10") +
+  labs(x="Parameter rank", y="Reward", title = "Top 10", tag="b.") +
   scale_x_continuous(limits=c(1,10), breaks = c(1,5,10)) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank())  -> p2
@@ -141,7 +141,7 @@ result_ranked4 %>%
   geom_line(size=0.8, alpha=0.9) +
   # geom_point(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title="Bottom 10") +
+  labs(x="Parameter rank", y="Reward", title="Bottom 10", tag="c.") +
   lims(y=c(0.2, 0.8)) +
   scale_x_continuous(limits=c(990,1000), breaks = c(990,995,1000)) +
   theme_pubr(base_size = 6, legend = "none") +
@@ -150,8 +150,7 @@ result_ranked4 %>%
 # ---
 robust1 <- p1 + (p2/p3/plot_spacer()/plot_spacer()) +
   plot_annotation(title = "Reward collection and parameter choice", 
-                  subtitle = "Task 1 - Classic",
-                  tag_levels="a", tag_suffix=".")
+                  subtitle = "Task 1 - Classic")
 print(robust1)
 
 name <- "img/robust1"
@@ -240,7 +239,7 @@ result_ranked121 %>%
   ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title="All") +
+  labs(x="Parameter rank", y="Reward", title="All", tag="d.") +
   lims(y=c(0.2, 0.8)) +
   scale_x_continuous(limits=c(1,1020), breaks = c(1,500,1000)) +
   facet_grid(agent~.) +
@@ -256,7 +255,7 @@ result_ranked121 %>%
   ggplot(aes(x=index+1, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title = "Top 10") +
+  labs(x="Parameter rank", y="Reward", title = "Top 10", tag="e.") +
   scale_x_continuous(limits=c(1,10), breaks = c(1,5,10)) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank())  -> p2
@@ -270,19 +269,18 @@ result_ranked121 %>%
   geom_line(size=0.8, alpha=0.9) +
   # geom_point(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="Rank", y="Reward", title="Bottom 10") +
+  labs(x="Parameter rank", y="Reward", title="Bottom 10", tag="f.") +
   lims(y=c(0.2, 0.8)) +
   scale_x_continuous(limits=c(990,1000), breaks = c(990,995,1000)) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) -> p3
 
 # ---
-supp_robust1 <- p1 + (p2 / p3 / plot_spacer() / plot_spacer()) +
-  plot_annotation(title = "Reward collection and parameter choice", 
-                  subtitle = "Task 6 - High dimensional",
-                  tag_levels="a", tag_suffix=".")
-print(supp_robust1)
+robust2 <- p1 + (p2 / p3 / plot_spacer() / plot_spacer()) +
+  plot_annotation(title = "", 
+                  subtitle = "Task 6 - High dimensional")
+print(robust2)
 
-name <- "img/supp_robust1"
-ggsave(paste(name, ".pdf", sep=""), plot=supp_robust1, width=1.8*2, height=2.5*2)
+name <- "img/robust2"
+ggsave(paste(name, ".pdf", sep=""), plot=robust2, width=1.8*2, height=2.5*2)
 ```

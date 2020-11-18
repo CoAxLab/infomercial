@@ -113,7 +113,7 @@ result_forced$total_E[result_forced$total_E < 0] <- 0
 ```
 
 ## Fig.
-```{r, fig.width = 1.2, fig.height = 1.1}
+```{r, fig.width = 1.2, fig.height = 1.2}
 num_episodes <- 4*50
 
 # --
@@ -136,11 +136,11 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(size=0.3, outlier.shape=NA) + 
-  geom_jitter(size=0.1, position=position_jitter(width=.2, height=0)) +
+  # geom_jitter(size=0.1, position=position_jitter(width=.2, height=0)) +
   # geom_hline(aes(yintercept=max(median_R/num_episodes)), 
   #            color="chartreuse4",
   #            size=0.3) +
-  labs(x="", y="", title="Deterministic") +
+  labs(x="", y="", title="Deterministic", tag="b.") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
@@ -153,7 +153,7 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(size=0.3, outlier.shape=NA) +
-  geom_jitter(size=0.1, position=position_jitter(width=.2, height=0)) +
+  # geom_jitter(size=0.1, position=position_jitter(width=.2, height=0)) +
   geom_hline(aes(yintercept=max(median_R/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
@@ -173,7 +173,7 @@ forced1 <- p1 / p2 +
 print(forced1)
 
 name <- "img/forced1"
-ggsave(paste(name, ".pdf", sep=""), plot=forced1, width = 1.2*2, height = 1.1*2)
+ggsave(paste(name, ".pdf", sep=""), plot=forced1, width = 1.2*2, height = 1.2*2)
 ```
 
 # Forced noise
@@ -251,7 +251,7 @@ result_noise4$agent <- factor(result_noise4$agent, levels = agent_names)
 ```
 
 ## Fig
-```{r, fig.width=1, fig.height=2}
+```{r, fig.width=1, fig.height=2.1}
 result_noise4 %>% 
   filter(strategy == "Stochastic") %>% 
   mutate(
@@ -259,7 +259,7 @@ result_noise4 %>%
   ggplot(aes(x=temp, y=total_R/num_episodes, group=agent, color=factor(color))) +
   geom_line(size=0.6, alpha=0.9) +
   scale_color_identity() +
-  labs(x="", y="Reward", title="Stochastic (forced)") +
+  labs(x="", y="Reward", title="Stochastic (forced)", tag="a.") +
   lims(y=c(0.2, 0.8)) +
   scale_x_log10() +
   facet_grid(agent~.) +
@@ -290,5 +290,5 @@ forced2 <- p1 / p2 + plot_layout(heights = c(0.16, 0.16*6)) +
 print(forced2)
 
 name <- "img/forced2"
-ggsave(paste(name, ".pdf", sep=""), plot=forced2, width = 1*2, height = 2*2)
+ggsave(paste(name, ".pdf", sep=""), plot=forced2, width = 1*2, height = 2.1*2)
 ```

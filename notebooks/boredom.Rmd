@@ -247,7 +247,7 @@ result499 %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Non-optimal") +
+  labs(x="Time", y="Choice", title="Unoptimized") +
   lims(x=c(0, num_episodes)) +
   facet_wrap(run~.) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -281,7 +281,7 @@ result499 %>%
   ggplot(aes(x=global_step, y=total_R/global_step, 
              group=interaction(param,run))) +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Avg. Reward", title="Non-optimal") +
+  labs(x="Time", y="Avg. Reward", title="Unoptimized") +
   scale_x_continuous(limits=c(0, num_episodes),
                      breaks = c(0, num_episodes/2, num_episodes)) +
   scale_y_continuous(limits=c(0, 1),
@@ -295,7 +295,7 @@ result499 %>%
 boredom2 <- a1 + a2 + (r1 / r2 + plot_spacer()) + 
   plot_layout(widths = c(0.4, 0.4, 0.2)) +
   plot_annotation(
-      title="Optimizing boredom for reward collection (task 1)", 
+      title="Optimizing boredom for reward collection", 
       subtitle = "100 simulated experiments",
       tag_levels="a", tag_suffix=".", 
       theme = theme_pubr(base_size = 8, legend = "none"))

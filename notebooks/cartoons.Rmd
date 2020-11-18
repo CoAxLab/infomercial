@@ -109,7 +109,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=cartoon1, width = 1.5*2, height = 1.55*
 
 
 # Learning in memory space
-```{r, fig.width=1, fig.height=1}
+```{r, fig.width=1.2, fig.height=1.2}
 x <- 10
 y <- 10
 shift <- 0.25
@@ -120,7 +120,7 @@ points %>%
   geom_point(color="dark gray") + 
   scale_x_continuous(limits=c(0, x), breaks=x) +
   scale_y_continuous(limits=c(0, y), breaks=y) +
-  labs(x=TeX("$\\theta_1$"), y=TeX("$\\theta_2$")) +
+  labs(x=TeX("$\\theta_i$"), y=TeX("$\\theta_j$"), tag="a.") +
   # labs(x="", y="", title="Learning in memory space") +
   geom_segment(x=points$x[1], y=points$y[1], xend=points$x[2], yend=points$y[2], 
                arrow = arrow(length = unit(0.2, 'line'),type="closed"),
@@ -128,22 +128,23 @@ points %>%
   geom_segment(x=points$x[1], y=points$y[1], xend=points$x[3], yend=points$y[3], 
                arrow = arrow(length = unit(0.2, 'line'),type="closed"),
                size=0.3) +
-  annotate("text", x = 1.2, y = 5.5, size=2, label = TeX("||$f_{\\theta}(x_1)$||")) +
-  annotate("text", x = 6.2, y = 3, size=2, label = TeX("||$f_{\\theta}(x_2)$||")) +
+  # annotate("text", x = 4, y = 1.5, size=2, label = TeX("$x_0$")) +
+  annotate("text", x = 1.2, y = 5.5, size=2, label = TeX("$x_1$")) +
+  annotate("text", x = 6.2, y = 3, size=2, label = TeX("$x_2$")) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(axis.text = element_blank()) +
   theme(axis.ticks = element_blank()) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) +
-  plot_annotation(title="Learning in memory space",
+  plot_annotation(title="Definition 1 - distance",
                   theme = theme_pubr(base_size = 8, legend = "none")) -> cartoon2
 
 print(cartoon2)
 
 name <- "img/cartoon2"
-ggsave(paste(name, ".pdf", sep=""), plot=cartoon2, width = 1*2, height = 1*2)
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon2, width = 1.2*2, height = 1.2*2)
 ```
 # Consistent and not - dynamics
-```{r, fig.width=1.2, fig.height=1.3}
+```{r, fig.width=1, fig.height=1.2}
 
 alpha <- function(x, g, t_peak) {
   g * (x/t_peak) * exp(1 - x/t_peak)
@@ -168,7 +169,7 @@ c_curves %>%
   geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE) +
   geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
   lims(x=c(1, t_max)) + 
-  labs(x="Time", y=TeX("||$\\nabla \\theta$||"), title="Consistent learning", tag="a.") +
+  labs(x="Time", y=TeX("||$\\Delta \\theta$||"), title="Consistent", tag="b.") +
   scale_color_manual(values=c("chartreuse4", "aquamarine4", "darkseagreen4")) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(axis.text = element_blank()) +
@@ -184,18 +185,18 @@ ggplot(aes(x=times, y=ys, group=name)) +
   geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE, color="black") +
   geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
   lims(x=c(1, t_max), y=c(0,14)) + 
-  labs(x="Time", y=TeX("||$\\nabla \\theta$||"), title="Inconsistent learning", tag="b.") +
+  labs(x="Time", y=TeX("||$\\Delta \\theta$||"), title="Inconsistent", tag="c.") +
   theme_pubr(base_size = 6, legend = "none") +
   theme(axis.text = element_blank()) +
   theme(axis.ticks = element_blank()) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p2
 
 cartoon3 <- (p1 / p2) + 
-  plot_annotation(title="Learning dynamics in memory space",
+  plot_annotation(title="Definition 2 - deceleration",
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(cartoon3)
 
 name <- "img/cartoon3"
-ggsave(paste(name, ".pdf", sep=""), plot=cartoon3, width = 1.2*2, height = 1.3*2)
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon3, width = 1*2, height = 1.2*2)
 ```
 
