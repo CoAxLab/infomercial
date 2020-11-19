@@ -27,173 +27,13 @@ source("utils.R")
 data_path <- "/Volumes/Data/infomercial/data"
 ```
 
-# Fig. Example 1  
-## Load data (example)
-```{r, message=FALSE}
-# -------------------------------------------------------------
-task_name <- "BanditOneHigh4"
-task_code <- 1
-num_arms <- 4
-num_episodes <- num_arms*50
-
-exp_names <- c(
-  "exp563",
-  "exp564",
-  "exp565",
-  "exp566",
-  "exp567",
-  "exp568",
-  "exp569",
-  "exp570",
-  "exp571",
-  "exp572")
-
-agent_names <- c(
-  "Curiosity",
-  "del-random", 
-  "tau-random", 
-  "Random", 
-  "Extrinsic", 
-  "Info", 
-  "Novelty", 
-  "Entropy", 
-  "Count (EB)", 
-  "Count (UCB)")
-
-class_names <- c(
-  "Curiosity",
-  "Random",
-  "Random",
-  "Random",
-  "Extrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic"
-)
-
-file_names <- c("action", 
-                "p_bests", 
-                "total_R",
-                "total_E",
-                "policy",
-                "regret",
-                "total_regret")
-
-
-# These are fixed for ExampleBandit4
-param_codes <- c(0)
-run_codes <- c(1)
-
-# -
-example_task1<- NULL
-for(i in 1:length(exp_names)){
-  exp_name <- exp_names[i]
-  agent_name <- agent_names[i]
-  class_name <- class_names[i]
-  
-  # -
-  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
-                     n_max=num_episodes+1)
-  
-  # -
-  tmp %>% 
-    filter(global_step <= num_episodes) -> tmp
-  tmp$exp <- exp_name
-  tmp$agent <- agent_name
-  tmp$task <- task_name
-  tmp$task_code <- task_code
-  tmp$strategy <- class_name
-  tmp$num_episodes <- num_episodes
-  
-  example_task1 <- bind_rows(example_task1, tmp)
-}
-
-# ----------------------------------------------------------------------------
-# post-process
-# Force order
-example_task1$agent <- factor(example_task1$agent, levels=agent_names)
-
-# The overestimate due to E0
-E_bias <- log(num_arms) * num_arms 
-example_task1$total_E <- example_task1$total_E - E_bias
-example_task1$total_E[example_task1$total_E < 0] <- 0
-
-# Policy does not exist as a field in any but curiosity
-# it was filled with zero, which is misleading when I go to color by 
-# policy. All strategies not curiosity should have a policy of 1
-example_task1$policy[example_task1$strategy != "Curiosity"] <- 1
-
-
-# Clean total_E
-# - Novelty, extrinsic have total_E but it is not used, so set 
-#   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
-  m <- example_task1$agent == a_name
-  example_task1[["total_E"]][m] <- 0
-}
-
-# Estimate num_explore
-# - for curiosity this is defined by policy
-# - for the rest we can count non-zero regret values
-example_task1 %>%
-  filter(agent != "Curiosity") %>% 
-  group_by(agent, run, param) %>%
-  mutate(num_explore = sum(regret > 0)) %>% 
-  ungroup() -> tmp1
-
-example_task1 %>% 
-  filter(agent == "Curiosity") %>% 
-  group_by(agent, run, param) %>%
-  mutate(num_explore = sum(policy == 0)) -> tmp2
-
-tmp <- bind_rows(tmp2, tmp1)
-example_task1 <- tmp
-```
-
-## Plot
-- One approach to show this
-```{r, fig.width=0.9, fig.height=1.5}
-num_plot <- 80
-example_task1 %>% 
-  filter(global_step <= num_plot) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
-  geom_point(size=0.2, alpha=0.9) +
-  geom_line(size=0.1) +
-  labs(x="Time", y="Choice") +
-  scale_x_continuous(
-    limits=c(0, num_plot+(num_plot*.1)), 
-    breaks = c(0, num_plot)) +
-  scale_color_manual("", values=c("chartreuse4", "black")) +
-  scale_y_continuous(limits=c(0.9, num_arms+.1), breaks = 1:num_arms) +
-  facet_wrap(agent~., ncol = 2) +
-  theme_pubr(base_size = 6, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.1, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(legend.position = "none") +
-  theme(legend.box.background = element_rect(colour = "black", size=1)) +
-  theme(plot.title = element_text(size = 6)) +
-  # theme(strip.text.y = element_blank()) +
-  theme(strip.text.y = element_text(angle=0)) +
-  theme(axis.text.y = element_blank()) 
-```
-
-## Cleanup
-```{r}
-rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
-   exp_name, exp_names, file_names, i, param_codes,
-   run_codes, task_name, m, a_name, E_bias, task_code)
-```
-
-# Fig. Task 1 exploration 
+# Fig. Exploration 
 ## Load data (task 1)
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditOneHigh4"
-task_code <- 1
-num_episodes <- 4*50
+task_code <- 2
+num_episodes <- 2*50
 
 # The overestimate due to E0
 num_arms <- 4
@@ -212,16 +52,17 @@ exp_names <- c(
   "exp539")
 
 agent_names <- c(
-  "Curiosity",
-  "del-random", 
-  "tau-random", 
-  "Random", 
-  "Extrinsic", 
-  "Info", 
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Bayesian", 
   "Novelty", 
   "Entropy", 
-  "Count (EB)", 
-  "Count (UCB)")
+  "Count (EB)",
+  "Count (UCB)"
+)
 
 class_names <- c(
   "Curiosity",
@@ -290,13 +131,13 @@ result_task1$policy[result_task1$regret > 0] <- -1
 ## Plot
 ```{r, fig.width=3.6, fig.height=2.1}
 # Pick an exp to show actions for
-r <- 1
+r <- 6
 
 # Plot actions
 result_task1 %>% 
   filter(agent != "Random") %>% 
   filter(run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action+1)) + #, color=factor(policy))) +
   geom_point(size=0.1, alpha=0.9) +
   geom_line(size=0.1) +
   labs(x="Time", y="Choice") +
@@ -326,10 +167,11 @@ result_task1 %>%
 result_task1 %>% 
   filter(agent != "Random") %>% 
   filter(global_step > 10) %>%
+  filter(run == r) %>% 
   ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
-  geom_line(size=0.1, alpha=0.8) +
-  labs(x="Time", y="Avg. reward") +
-  scale_x_continuous(limits=c(0, 200), breaks = c(0, 200)) +
+  geom_line(size=0.4, alpha=0.8) +
+  labs(x="Time", y="Reward") +
+  scale_x_continuous(limits=c(0, 100), breaks = c(0, 100)) +
   scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 1)) +
   facet_grid(agent~.) +
   theme_pubr(base_size = 6, legend = "none") +
@@ -342,7 +184,7 @@ exploration1 <- a1 + r1 +
   plot_layout(widths = c(0.9, 0.1)) + 
   plot_annotation(
       tag_levels="a", tag_suffix=".", 
-      title="Exploration strategies (task 1)", 
+      title="Exploration strategies", 
       subtitle = "Ten 'animals'",
       theme = theme_pubr(base_size = 8, legend = "none"))
 
