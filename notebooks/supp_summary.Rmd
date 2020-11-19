@@ -126,7 +126,7 @@ result_classic$total_E[result_classic$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Reward", "+Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_classic$agent == a_name
   result_classic[["total_E"]][m] <- 0
 }
@@ -150,7 +150,7 @@ result_classic <- tmp
 ```
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 4*50
 
 # --
@@ -172,10 +172,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="", title="Deterministic", tag="a.") +
+  lims(y=c(0.0, 0.0125)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -189,9 +189,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.0125)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -205,9 +205,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.0125)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -220,10 +220,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.0125)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -235,8 +235,8 @@ summary2 <- p1 / p2  / p3 / p4 +
 
 print(summary2)
 
-name <- "img/summary2"
-ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info2"
+ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 3
@@ -336,7 +336,7 @@ result_sparse$total_E[result_sparse$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_sparse$agent == a_name
   result_sparse[["total_E"]][m] <- 0
 }
@@ -365,7 +365,7 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 50000
 
 # --
@@ -388,10 +388,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  lims(y=c(0.0, 0.02)) +
+  labs(x="", y="", title="Deterministic", tag="b.") +
+  scale_y_continuous(limits = c(0.0, 0.00002), breaks=c(0.0, 0.00001, 0.00002)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -405,9 +405,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  lims(y=c(0.0, 0.02)) +
+  scale_y_continuous(limits = c(0.0, 0.00002), breaks=c(0.0, 0.00001, 0.00002)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -421,9 +421,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  lims(y=c(0.0, 0.02)) +
+  scale_y_continuous(limits = c(0.0, 0.00002), breaks=c(0.0, 0.00001, 0.00002)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -436,10 +436,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  lims(y=c(0.0, 0.02)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  scale_y_continuous(limits = c(0.0, 0.00002), breaks=c(0.0, 0.00001, 0.00002)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -450,8 +450,8 @@ summary3 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary3)
 
-name <- "img/summary3"
-ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info3"
+ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 4
@@ -552,7 +552,7 @@ result_deception$total_E[result_deception$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_deception$agent == a_name
   result_deception[["total_E"]][m] <- 0
 }
@@ -582,12 +582,12 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 10*20
 
 # ---
 result_deception %>% 
-  # filter(agent != "Random") %>%
+  # filter(agent != "Random") %>% 
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -605,10 +605,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="", title="Deterministic", tag="c.") +
+  lims(y=c(0.0, 0.04)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -622,9 +622,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.04)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -638,9 +638,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.04)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -653,10 +653,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.04)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -667,8 +667,8 @@ summary4 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary4)
 
-name <- "img/summary4"
-ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info4"
+ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.8*2)
 ```
 
 
@@ -769,7 +769,7 @@ result_distraction$total_E[result_distraction$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_distraction$agent == a_name
   result_distraction[["total_E"]][m] <- 0
 }
@@ -799,7 +799,7 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 ```
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 10 * 50
 
 # ---
@@ -822,10 +822,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="", title="Deterministic", tag="d.") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -839,9 +839,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -855,9 +855,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -870,10 +870,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -884,8 +884,8 @@ summary5 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary5)
 
-name <- "img/summary5"
-ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info5"
+ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.8*2)
 ```
 
 
@@ -986,7 +986,7 @@ result_highd$total_E[result_highd$total_E < 0] <- 0
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
+for(a_name in c("Reward", "Novelty")) {
   m <- result_highd$agent == a_name
   result_highd[["total_E"]][m] <- 0
 }
@@ -1017,7 +1017,7 @@ rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
 
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 121 * 20
 
 # ---
@@ -1040,10 +1040,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="", title="Deterministic", tag="e.") +
+  lims(y=c(0.0, 0.03)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1057,9 +1057,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.03)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1073,9 +1073,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.03)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1088,10 +1088,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.03)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1102,8 +1102,8 @@ summary6 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary6)
 
-name <- "img/summary6"
-ggsave(paste(name, ".pdf", sep=""), plot=summary6, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info6"
+ggsave(paste(name, ".pdf", sep=""), plot=summary6, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 7
@@ -1229,7 +1229,7 @@ rm(tmp1, tmp2)
 ```
 
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 121 * 20
 
 # ---
@@ -1252,10 +1252,10 @@ tmp %>%
     color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_E/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="", title="Deterministic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="", title="Deterministic", tag="f.") +
+  lims(y=c(0.0, 0.25)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1269,9 +1269,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.25)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1285,9 +1285,9 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  lims(y=c(0.0, 0.25)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1300,10 +1300,10 @@ tmp %>%
   geom_hline(aes(yintercept=max(median_val/num_episodes)), 
              color="chartreuse4",
              size=0.3) +
-  labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  # lims(y=c(0.2, 0.9)) +
+  labs(x="", y="Info. value", title="Extrinsic + Intrinsic") +
+  lims(y=c(0.0, 0.25)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1314,15 +1314,15 @@ summary7 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary7)
 
-name <- "img/summary7"
-ggsave(paste(name, ".pdf", sep=""), plot=summary7, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_info7"
+ggsave(paste(name, ".pdf", sep=""), plot=summary7, width = 1.2*2, height = 1.8*2)
 ```
 
 
 # Fig. Summary G
 ## Fig. Task 2
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 4*50
 
 # --
@@ -1348,7 +1348,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag="a.") +
   lims(y=c(0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1364,7 +1364,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1380,7 +1380,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1396,7 +1396,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1408,13 +1408,13 @@ summary2 <- p1 / p2  / p3 / p4 +
 
 print(summary2)
 
-name <- "img/summary2"
-ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret2"
+ggsave(paste(name, ".pdf", sep=""), plot=summary2, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 3
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 50000
 
 # --
@@ -1440,7 +1440,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag = "b.") +
   lims(y=c(0.0, 0.01)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1456,7 +1456,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0.0, 0.01)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1472,7 +1472,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0.0, 0.01)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1488,7 +1488,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0.0, 0.01)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1499,13 +1499,13 @@ summary3 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary3)
 
-name <- "img/summary3"
-ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret3"
+ggsave(paste(name, ".pdf", sep=""), plot=summary3, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 4
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 10*20
 
 # ---
@@ -1531,7 +1531,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag="c.") +
   lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1547,7 +1547,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1563,7 +1563,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1579,7 +1579,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0.0, 0.02)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1590,14 +1590,14 @@ summary4 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary4)
 
-name <- "img/summary4"
-ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret4"
+ggsave(paste(name, ".pdf", sep=""), plot=summary4, width = 1.2*2, height = 1.8*2)
 ```
 
 
 ## Fig. Task 5
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 10 * 50
 
 # ---
@@ -1623,7 +1623,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag="d.") +
   lims(y=c(0.0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1639,7 +1639,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0.0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1655,7 +1655,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0.0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1671,7 +1671,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0.0, 0.2)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1682,14 +1682,14 @@ summary5 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary5)
 
-name <- "img/summary5"
-ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret5"
+ggsave(paste(name, ".pdf", sep=""), plot=summary5, width = 1.2*2, height = 1.8*2)
 ```
 
 
 ## Fig. Task 6
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 121 * 20
 
 # ---
@@ -1715,7 +1715,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag="e.") +
   lims(y=c(0.0, 0.3)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1731,7 +1731,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0.0, 0.3)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1747,7 +1747,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0.0, 0.3)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1763,7 +1763,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0.0, 0.3)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1774,13 +1774,13 @@ summary6 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary6)
 
-name <- "img/summary6"
-ggsave(paste(name, ".pdf", sep=""), plot=summary6, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret6"
+ggsave(paste(name, ".pdf", sep=""), plot=summary6, width = 1.2*2, height = 1.8*2)
 ```
 
 ## Fig. Task 7
 ### Summary stats
-```{r, fig.width=1.2, fig.height=1.7}
+```{r, fig.width=1.2, fig.height=1.8}
 num_episodes <- 121 * 20
 
 # ---
@@ -1806,7 +1806,7 @@ tmp %>%
   labs(x="", y="", title="Deterministic", tag="f.") +
   lims(y=c(0.0, 0.15)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
@@ -1822,7 +1822,7 @@ tmp %>%
   labs(x="", y="", title="Random") +
   lims(y=c(0.0, 0.15)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
@@ -1838,7 +1838,7 @@ tmp %>%
   labs(x="", y="", title="Extrinsic") +
   lims(y=c(0.0, 0.15)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
 
@@ -1854,7 +1854,7 @@ tmp %>%
   labs(x="", y="Regret", title="Extrinsic + Intrinsic") +
   lims(y=c(0.0, 0.15)) +
   scale_color_identity() +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
 
@@ -1865,7 +1865,7 @@ summary7 <- p1 / p2  / p3 / p4 +
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(summary7)
 
-name <- "img/summary7"
-ggsave(paste(name, ".pdf", sep=""), plot=summary7, width = 1.2*2, height = 1.7*2)
+name <- "img/supp_regret7"
+ggsave(paste(name, ".pdf", sep=""), plot=summary7, width = 1.2*2, height = 1.8*2)
 ```
 
