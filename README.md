@@ -1,8 +1,8 @@
 # Informercial
 
-`infomercial` contains code for [A way around the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v3), bioArxiv _671362v5_ (2019).
+`infomercial` contains code for [Curiosity eliminates the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v8), bioArxiv _671362v5_ (2020).
 
-In this paper we present an alternative interpretation of the classic exploration-exploitation dilemma. 
+In this paper we present an alternative interpretation of the classic but intractible exploration-exploitation dilemma. We prove the key to finding a tractable solution is to do an unintuitive thing--to explore without considering reward value.
 
 # Research summary 
 The exploration-exploitation dilemma is summarized by a simple question: “Should I exploit an available reward, or explore to try out a new uncertain action?” Unfortunately, it’s been proven that this dilemma, when stated as a mathematical problem, is intractable and so can’t be solved directly. This fundamentally limits our ability to predict optimal naturalistic behavior during foraging and exploration, and to optimally drive learning in artificial agents.
