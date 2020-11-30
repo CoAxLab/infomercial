@@ -9,7 +9,7 @@ The exploration-exploitation dilemma is summarized by a simple question: “Shou
 
 To overcome this field-wide limitation, we took a fresh look at the dilemma. Our goal was simple: when one mathematical problem can’t be solved, it’s often good to find another related problem that can be and use that to make progress on both.
 
-We show, for the first time, that nearly any dilemma problem can also be viewed as competition, between exploiting known rewards or exploring to learn a world model--a simplified concept of memory borrowed from computer science. We prove this competition can be perfectly solved using the simplest of all value learning algorithms: a deterministic greedy policy. To ensure this solution is as broad as possible we also derived a new universal theory of information value which complements--but is independent of--Shannon’s Information Theory.
+We show, for the first time, that nearly any dilemma problem can also be viewed as competition, between exploiting known rewards or exploring to learn for its own sake. We prove this competition can be perfectly solved using the famous win-stay, lose-switch strategy from game theory. To ensure this solution is as broad as possible we also derived a new universal theory of information value which complements--but is independent of--Shannon’s Information Theory.
 
 # Code dependencies
 - A standard anaconda install
