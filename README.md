@@ -1,6 +1,6 @@
 # Informercial
 
-`infomercial` contains code for [Curiosity eliminates the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v8), bioArxiv _671362v5_ (2020).
+`infomercial` contains code for [Curiosity eliminates the exploration-exploitation dilemma](https://www.biorxiv.org/content/10.1101/671362v8), bioArxiv _671362v8_ (2020).
 
 In this paper we present an alternative interpretation of the classic but intractible exploration-exploitation dilemma. We prove the key to finding a tractable solution is to do an unintuitive thing--to explore without considering reward value.
 
