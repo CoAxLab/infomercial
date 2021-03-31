@@ -79,3 +79,11 @@ def kl(memory_new, memory_old, default, base=None):
         return default
 
     return scientropy(p_old, qk=p_new, base=base)
+
+
+def js(memory_new, memory_old, default, base=None):
+    """Calculate JS, assuming prob. memories."""
+    m1 = kl(memory_new, memory_old, default, base=base)
+    m2 = kl(memory_old, memory_new, default, base=base)
+
+    return (m1 + m2) / 2
