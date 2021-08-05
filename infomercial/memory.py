@@ -119,12 +119,8 @@ class RateMemory:
     def __init__(self, window_size=1, initial_value=1):
         self.window_size = window_size
         self.initial_value = initial_value
-        self.memory = deque(maxlen=self.window_size)
-
-        # Fill the list-like with the initial_value,
-        # in order to add stability to the first few
-        # observations
-        self.memory.extend(self.window_size * [self.initial_value])
+        self.memory = MeanMemory(window_size=window_size,
+                                 initial_value=initial_value)
 
     def __call__(self, x):
         return self.forward(x)
