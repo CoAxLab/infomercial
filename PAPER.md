@@ -4,11 +4,14 @@ Experimental data used in:
 
 Peterson, E. J. & Verstynen, T. D. A way around the exploration-exploitation dilemma. http://biorxiv.org/lookup/doi/10.1101/671362 (2019) doi:10.1101/671362.
 
+# Rerun list
+`make exp455 exp457 exp497 exp526 exp498 exp527 exp562 exp473 exp502 exp496 exp525 exp472 exp501 exp475 exp504 exp474 exp503 exp528 exp539 exp387 exp408 exp385 exp409 exp386 exp410 exp412 exp485 exp514 exp388 exp411 exp484 exp513 exp487 exp516 exp486 exp515 exp531 exp542 exp547 exp548 exp549 exp550 exp551 exp552 exp553 exp573 exp574 exp554 exp555 exp556 exp557 exp575 exp576 exp558 exp559 exp560 exp561 exp383 exp403 exp381 exp404 exp382 exp405 exp407 exp481 exp510 exp384 exp406 exp480 exp509 exp483 exp512 exp482 exp511 exp530 exp541 exp391 exp449 exp389 exp450 exp390 exp451 exp453 exp489 exp518 exp392 exp452 exp488 exp517 exp491 exp520 exp490 exp519 exp532 exp543 exp460 exp462 exp458 exp463 exp459 exp466 exp493 exp522 exp461 exp465 exp492 exp521 exp495 exp524 exp494 exp523 exp533 exp544`
+
 ## BanditOneHigh4
 Ours
 - meta: exp457 (exp455_sorted)
 Random
-- epsilon: exp526 (exp381_sorted)
+- epsilon: exp526 (exp497_sorted)
 - decay: exp527 (exp498_sorted)
 - random: exp562 (NA)
 Reward
