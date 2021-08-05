@@ -87,6 +87,8 @@ def run(env_name='BanditOneHigh2-v0',
         state, R_t, _, _ = env.step(action)
 
         # Apply count bonus
+        count.update(action)
+
         if mode == "EB":
             count_bonus = count(action)**(-0.5)
         elif mode == "UCB":

@@ -14,14 +14,18 @@ from infomercial.models import Critic
 from infomercial.models import DeterministicActor
 
 from infomercial.memory import DiscreteDistribution
+from infomercial.memory import CountMemory
 from infomercial.distance import kl
+from infomercial.distance import js
+from infomercial.distance import l1
+from infomercial.distance import l2
 from infomercial.utils import estimate_regret
 from infomercial.utils import load_checkpoint
 from infomercial.utils import save_checkpoint
 
 
 def R_update(state, reward, critic, lr):
-    """Really simple TD learning"""
+    """Really simple RL learning"""
 
     update = lr * (reward - critic(state))
     critic.update(state, update)
@@ -53,6 +57,7 @@ def run(env_name='BanditOneHot10-v0',
         num_episodes=1000,
         tie_break='next',
         tie_threshold=0.0,
+        mode='kl',
         lr_R=.1,
         master_seed=42,
         initial_bins=None,
@@ -88,10 +93,15 @@ def run(env_name='BanditOneHot10-v0',
                                  tie_break=tie_break,
                                  tie_threshold=tie_threshold)
 
-    memories = [
-        DiscreteDistribution(initial_bins=initial_bins)
-        for _ in range(num_actions)
-    ]
+    if mode == 'kl' or mode == 'js':
+        memories = [
+            DiscreteDistribution(initial_bins=initial_bins)
+            for _ in range(num_actions)
+        ]
+    elif mode == 'ucb' or mode == 'em':
+        memories = CountMemory()
+    elif mode == 'rate':
+        raise NotImplementedError
 
     # Update with pre-loaded data. This will let you run
     # test experiments on pre-trained model and/or to
@@ -136,10 +146,24 @@ def run(env_name='BanditOneHot10-v0',
         R_t = R_homeostasis(R_t, total_R, num_episodes)
 
         # Estimate E
-        old = deepcopy(memories[action])
-        memories[action].update((int(state), int(R_t)))
-        new = deepcopy(memories[action])
-        E_t = kl(new, old, default_info_value)
+        if mode == 'kl':
+            old = deepcopy(memories[action])
+            memories[action].update((int(state), int(R_t)))
+            new = deepcopy(memories[action])
+            E_t = kl(new, old, default_info_value)
+        elif mode == 'js':
+            old = deepcopy(memories[action])
+            memories[action].update((int(state), int(R_t)))
+            new = deepcopy(memories[action])
+            E_t = js(new, old, default_info_value)
+        elif mode == 'rate':
+            raise NotImplementedError()
+        elif mode == 'ucb':
+            raise NotImplementedError()
+        elif mode == 'eb':
+            raise NotImplementedError()
+        else:
+            raise ValueError("mode not known")
 
         # Learning, both policies.
         critic_R = R_update(action, R_t, critic_R, lr_R)
