@@ -4171,7 +4171,7 @@ exp309:
 # meta - use HP from exp294
 exp310:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp294_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp294_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp310.log' \
@@ -4183,7 +4183,7 @@ exp310:
 # ep - use HP from exp295
 exp311:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp295_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp295_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp311.log' \
@@ -4195,7 +4195,7 @@ exp311:
 # anneal-ep - use HP from exp296
 exp312:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp296_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp296_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp312.log' \
@@ -4207,7 +4207,7 @@ exp312:
 # beta - use HP from exp297
 exp313:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp297_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp297_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp313.log' \
@@ -4223,7 +4223,7 @@ exp313:
 # meta - use HP from exp298
 exp314:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp298_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp298_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp314.log' \
@@ -4235,7 +4235,7 @@ exp314:
 # ep - use HP from exp299
 exp315:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp299_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp299_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp315.log' \
@@ -4247,7 +4247,7 @@ exp315:
 # anneal-ep - use HP from exp300
 exp316:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp300_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp300_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp316.log' \
@@ -4259,7 +4259,7 @@ exp316:
 # beta - use HP from exp301
 exp317:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp301_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp301_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp317.log' \
@@ -4275,7 +4275,7 @@ exp317:
 # meta - use HP from exp302
 exp318:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp302_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp302_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp318.log' \
@@ -4287,7 +4287,7 @@ exp318:
 # ep - use HP from exp303
 exp319:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp303_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp303_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp319.log' \
@@ -4299,7 +4299,7 @@ exp319:
 # ep-anneal - use HP from exp304
 exp320:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp304_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp304_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp320.log' \
@@ -4311,7 +4311,7 @@ exp320:
 # beta - use HP from exp305
 exp321:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp305_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp305_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp321.log' \
@@ -4327,7 +4327,7 @@ exp321:
 # meta - use HP from exp306
 exp322:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp306_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp306_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp322.log' \
@@ -4339,7 +4339,7 @@ exp322:
 # ep - use HP from exp307
 exp323:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp307_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp307_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp323.log' \
@@ -4351,7 +4351,7 @@ exp323:
 # anneal-ep - use HP from exp308
 exp324:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp308_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp308_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp324.log' \
@@ -4363,7 +4363,7 @@ exp324:
 # beta - use HP from exp309
 exp325:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp309_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp309_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp325.log' \
@@ -5598,7 +5598,7 @@ exp360:
  # meta - use HP from exp294
 exp361:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp294_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp294_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp361.log' \
@@ -5610,7 +5610,7 @@ exp361:
 # ep - use HP from exp295
 exp362:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp362.log' \
@@ -5622,7 +5622,7 @@ exp362:
 # anneal-ep - use HP from exp296
 exp363:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp296_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp296_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp363.log' \
@@ -5634,7 +5634,7 @@ exp363:
 # beta - use HP from exp297
 exp364:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp297_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp297_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp364.log' \
@@ -5650,7 +5650,7 @@ exp364:
 # meta - use HP from exp298
 exp365:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp298_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp298_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp365.log' \
@@ -5662,7 +5662,7 @@ exp365:
 # ep - use HP from exp299
 exp366:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp299_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp299_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp366.log' \
@@ -5674,7 +5674,7 @@ exp366:
 # anneal-ep - use HP from exp300
 exp367:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp300_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp300_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp367.log' \
@@ -5686,7 +5686,7 @@ exp367:
 # beta - use HP from exp301
 exp368:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp301_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp301_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp368.log' \
@@ -5702,7 +5702,7 @@ exp368:
 # meta - use HP from exp302
 exp369:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp302_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp302_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp369.log' \
@@ -5714,7 +5714,7 @@ exp369:
 # ep - use HP from exp303
 exp370:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp303_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp303_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp370.log' \
@@ -5726,7 +5726,7 @@ exp370:
 # ep-anneal - use HP from exp304
 exp371:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp304_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp304_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp371.log' \
@@ -5738,7 +5738,7 @@ exp371:
 # beta - use HP from exp305
 exp372:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp305_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp305_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp372.log' \
@@ -5754,7 +5754,7 @@ exp372:
 # meta - use HP from exp306
 exp373:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp306_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp306_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp373.log' \
@@ -5766,7 +5766,7 @@ exp373:
 # ep - use HP from exp307
 exp374:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp307_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp307_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp374.log' \
@@ -5778,7 +5778,7 @@ exp374:
 # anneal-ep - use HP from exp308
 exp375:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp308_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp308_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp375.log' \
@@ -5790,7 +5790,7 @@ exp375:
 # beta - use HP from exp309
 exp376:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp309_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp309_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp376.log' \
@@ -6062,7 +6062,7 @@ exp393_exp397: exp393 exp394 exp395 exp396 exp397
  # meta - use exp379_sorted
 exp393:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp379_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp393.log' \
@@ -6074,7 +6074,7 @@ exp393:
 # ep - use exp377_sorted
 exp394:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp394.log' \
@@ -6086,7 +6086,7 @@ exp394:
 # anneal-ep - use exp378_sorted
 exp395:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp378_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp395.log' \
@@ -6098,7 +6098,7 @@ exp395:
 # beta - use exp380_sorted
 exp396:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp380_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp396.log' \
@@ -6133,7 +6133,7 @@ exp398_402_clean:
 # meta - use exp379_sorted
 exp398:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp379_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp398.log' \
@@ -6145,7 +6145,7 @@ exp398:
 # ep - use exp377_sorted
 exp399:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp399.log' \
@@ -6157,7 +6157,7 @@ exp399:
 # anneal-ep - use exp378_sorted
 exp400:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp378_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp400.log' \
@@ -6169,7 +6169,7 @@ exp400:
 # beta - use exp380_sorted
 exp401:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp380_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp401.log' \
@@ -6204,7 +6204,7 @@ exp403_407_clean:
 # meta - use exp379_sorted
 exp403:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp383_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp383_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp403.log' \
@@ -6216,7 +6216,7 @@ exp403:
 # ep - use exp377_sorted
 exp404:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp381_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp381_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp404.log' \
@@ -6228,7 +6228,7 @@ exp404:
 # anneal-ep - use exp378_sorted
 exp405:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp382_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp382_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp405.log' \
@@ -6240,7 +6240,7 @@ exp405:
 # beta - use exp380_sorted
 exp406:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp384_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp384_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp406.log' \
@@ -6275,7 +6275,7 @@ exp408_412_clean:
 # meta 
 exp408:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp387_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp408.log' \
@@ -6287,7 +6287,7 @@ exp408:
 # ep 
 exp409:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp385_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp385_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp409.log' \
@@ -6299,7 +6299,7 @@ exp409:
 # anneal-ep 
 exp410:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp386_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp386_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp410.log' \
@@ -6311,7 +6311,7 @@ exp410:
 # beta 
 exp411:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp388_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp388_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp411.log' \
@@ -6347,7 +6347,7 @@ exp413_417_clean:
 # meta 
 exp413:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp391_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp413.log' \
@@ -6359,7 +6359,7 @@ exp413:
 # ep 
 exp414:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp389_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp389_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp414.log' \
@@ -6371,7 +6371,7 @@ exp414:
 # anneal-ep 
 exp415:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp390_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp390_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp415.log' \
@@ -6383,7 +6383,7 @@ exp415:
 # beta 
 exp416:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp392_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp392_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp416.log' \
@@ -6485,7 +6485,7 @@ exp422_exp426_clean:
 # meta 
 exp422:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp420_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp420_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp422.log' \
@@ -6497,7 +6497,7 @@ exp422:
 # ep 
 exp423:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp418_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp418_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp423.log' \
@@ -6509,7 +6509,7 @@ exp423:
 # anneal-ep 
 exp424:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp419_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp419_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp424.log' \
@@ -6521,7 +6521,7 @@ exp424:
 # beta 
 exp425:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp421_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp421_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp425.log' \
@@ -6566,7 +6566,7 @@ exp427:
 # meta 
 exp428:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp427_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp427_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp428.log' \
@@ -6600,7 +6600,7 @@ exp429_433: exp429 exp430 exp431 exp432 exp433
 # meta 
 exp429:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp387_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp429.log' \
@@ -6612,7 +6612,7 @@ exp429:
 # ep 
 exp430:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp385_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp385_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp430.log' \
@@ -6624,7 +6624,7 @@ exp430:
 # anneal-ep 
 exp431:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp386_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp386_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp431.log' \
@@ -6636,7 +6636,7 @@ exp431:
 # beta 
 exp432:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp388_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp388_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp432.log' \
@@ -6665,7 +6665,7 @@ exp434_438: exp434 exp435 exp436 exp437 exp438
 # meta - use exp379_sorted
 exp434:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp379_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp434.log' \
@@ -6677,7 +6677,7 @@ exp434:
 # ep - use exp377_sorted
 exp435:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp435.log' \
@@ -6689,7 +6689,7 @@ exp435:
 # anneal-ep - use exp378_sorted
 exp436:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp378_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp436.log' \
@@ -6701,7 +6701,7 @@ exp436:
 # beta - use exp380_sorted
 exp437:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp380_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp437.log' \
@@ -6729,7 +6729,7 @@ exp439_443: exp439 exp440 exp441 exp442 exp443
 # meta - use exp379_sorted
 exp439:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp383_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp383_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp439.log' \
@@ -6741,7 +6741,7 @@ exp439:
 # ep - use exp377_sorted
 exp440:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp381_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp381_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp440.log' \
@@ -6753,7 +6753,7 @@ exp440:
 # anneal-ep - use exp378_sorted
 exp441:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp382_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp382_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp441.log' \
@@ -6765,7 +6765,7 @@ exp441:
 # beta - use exp380_sorted
 exp442:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp384_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp384_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp442.log' \
@@ -6800,7 +6800,7 @@ exp444_448: exp444 exp445 exp446 exp447 exp448
 # meta 
 exp444:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp391_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp444.log' \
@@ -6812,7 +6812,7 @@ exp444:
 # ep 
 exp445:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp389_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp389_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp445.log' \
@@ -6824,7 +6824,7 @@ exp445:
 # anneal-ep 
 exp446:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp390_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp390_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp446.log' \
@@ -6836,7 +6836,7 @@ exp446:
 # beta 
 exp447:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp392_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp392_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp447.log' \
@@ -6867,7 +6867,7 @@ exp449_453: exp449 exp450 exp451 exp452 exp453
 # meta 
 exp449:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp391_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp449.log' \
@@ -6879,7 +6879,7 @@ exp449:
 # ep 
 exp450:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp389_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp389_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp450.log' \
@@ -6891,7 +6891,7 @@ exp450:
 # anneal-ep 
 exp451:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp390_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp390_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp451.log' \
@@ -6903,7 +6903,7 @@ exp451:
 # beta 
 exp452:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp392_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp392_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp452.log' \
@@ -6974,7 +6974,7 @@ exp455:
 # --- Test ---
 exp456:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp454_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp454_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp456.log' \
@@ -6985,7 +6985,7 @@ exp456:
 
 exp457:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp455_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp457.log' \
@@ -7098,7 +7098,7 @@ exp462_466_clean:
 # meta 
 exp462:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp460_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp460_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp462.log' \
@@ -7110,7 +7110,7 @@ exp462:
 # ep 
 exp463:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp458_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp458_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp463.log' \
@@ -7122,7 +7122,7 @@ exp463:
 # anneal-ep 
 exp464:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp459_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp459_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp464.log' \
@@ -7134,7 +7134,7 @@ exp464:
 # beta 
 exp465:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp461_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp461_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp465.log' \
@@ -7175,7 +7175,7 @@ exp467_471: exp467 exp468 exp469 exp470 exp471
 # meta 
 exp467:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp379_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp379_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp467.log' \
@@ -7187,7 +7187,7 @@ exp467:
 # ep 
 exp468:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp377_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp377_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp468.log' \
@@ -7199,7 +7199,7 @@ exp468:
 # anneal-ep 
 exp469:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp378_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp378_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp469.log' \
@@ -7211,7 +7211,7 @@ exp469:
 # beta 
 exp470:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp380_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp380_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp470.log' \
@@ -7793,7 +7793,7 @@ exp501_exp504_clean:
 # beta 
 exp501:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp472_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp472_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp501.log' \
@@ -7805,7 +7805,7 @@ exp501:
 # extrinsic - params: exp473
 exp502:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp473_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp473_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp502.log' \
@@ -7817,7 +7817,7 @@ exp502:
 # count - params: exp474
 exp503:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp474_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp474_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp503.log' \
@@ -7829,7 +7829,7 @@ exp503:
 # entropy - params: exp475
 exp504:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp475_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp475_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp504.log' \
@@ -7847,7 +7847,7 @@ exp505_exp508: exp505 exp506 exp507 exp508
 # beta 
 exp505:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp476_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp476_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp505.log' \
@@ -7859,7 +7859,7 @@ exp505:
 # extrinsic - params: exp477
 exp506:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp477_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp477_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp506.log' \
@@ -7871,7 +7871,7 @@ exp506:
 # count - params: exp478
 exp507:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp478_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp478_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp507.log' \
@@ -7883,7 +7883,7 @@ exp507:
 # entropy - params: exp479
 exp508:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp479_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp479_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp508.log' \
@@ -7907,7 +7907,7 @@ exp509_exp512_clean:
 # beta 
 exp509:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp480_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp480_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp509.log' \
@@ -7919,7 +7919,7 @@ exp509:
 # extrinsic - params: exp481
 exp510:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp481_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp481_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp510.log' \
@@ -7931,7 +7931,7 @@ exp510:
 # count - params: exp482
 exp511:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp482_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp482_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp511.log' \
@@ -7943,7 +7943,7 @@ exp511:
 # entropy - params: exp483
 exp512:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp483_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp483_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp512.log' \
@@ -7968,7 +7968,7 @@ exp513_exp516_clean:
 # beta 
 exp513:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp484_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp484_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp513.log' \
@@ -7980,7 +7980,7 @@ exp513:
 # extrinsic - params: exp485
 exp514:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp485_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp485_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp514.log' \
@@ -7992,7 +7992,7 @@ exp514:
 # count - params: exp486
 exp515:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp486_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp486_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp515.log' \
@@ -8004,7 +8004,7 @@ exp515:
 # entropy - params: exp487
 exp516:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp487_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp487_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp516.log' \
@@ -8023,7 +8023,7 @@ exp517_exp520: exp517 exp518 exp519 exp520
 # beta 
 exp517:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp488_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp488_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp517.log' \
@@ -8035,7 +8035,7 @@ exp517:
 # extrinsic - params: exp489
 exp518:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp489_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp489_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp518.log' \
@@ -8047,7 +8047,7 @@ exp518:
 # count - params: exp490
 exp519:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp490_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp490_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp519.log' \
@@ -8059,7 +8059,7 @@ exp519:
 # entropy - params: exp491
 exp520:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp491_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp491_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp520.log' \
@@ -8083,7 +8083,7 @@ exp521_exp524_clean:
 # beta 
 exp521:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp492_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp492_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp521.log' \
@@ -8095,7 +8095,7 @@ exp521:
 # extrinsic - params: exp493
 exp522:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp493_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp493_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp522.log' \
@@ -8107,7 +8107,7 @@ exp522:
 # count - params: exp494
 exp523:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp494_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp494_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp523.log' \
@@ -8119,7 +8119,7 @@ exp523:
 # entropy - params: exp495
 exp524:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp495_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp495_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp524.log' \
@@ -8148,7 +8148,7 @@ exp525_exp527_clean:
 # softbeta - param: exp496
 exp525:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp496_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp496_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp525.log' \
@@ -8160,7 +8160,7 @@ exp525:
 # epsilon - param: exp497
 exp526:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp497_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp497_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp526.log' \
@@ -8172,7 +8172,7 @@ exp526:
 # anneal - param: exp498
 exp527:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp498_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp498_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp527.log' \
@@ -8328,7 +8328,7 @@ exp534_exp538_clean:
 # BanditOneHigh4
 exp534:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp455_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp534.log' \
@@ -8341,7 +8341,7 @@ exp534:
 # BanditHardAndSparse10 
 exp535:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp387_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp535.log' \
@@ -8353,7 +8353,7 @@ exp535:
 # BanditOneHigh121
 exp536:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp383_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp383_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp536.log' \
@@ -8365,7 +8365,7 @@ exp536:
 # DeceptiveBanditOneHigh10
 exp537:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp391_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp391_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp537.log' \
@@ -8377,7 +8377,7 @@ exp537:
 # DistractionBanditOneHigh10
 exp538:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp460_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp460_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp538.log' \
@@ -8405,7 +8405,7 @@ exp539_exp544_clean:
 # BanditOneHigh4 - param: exp528
 exp539:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp528_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp528_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp539.log' \
@@ -8417,7 +8417,7 @@ exp539:
 # BanditOneHigh10 - param: exp529
 exp540:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp529_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp529_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp540.log' \
@@ -8429,7 +8429,7 @@ exp540:
 # BanditOneHigh121 - param: exp530
 exp541:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp530_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp530_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp541.log' \
@@ -8442,7 +8442,7 @@ exp541:
 # BanditHardAndSparse10 - param: exp531
 exp542:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp531_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp531_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp542.log' \
@@ -8454,7 +8454,7 @@ exp542:
 # DeceptiveBanditOneHigh10 - param: exp532
 exp543:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp532_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp532_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp543.log' \
@@ -8466,7 +8466,7 @@ exp543:
 # DistractionBanditOneHigh10 - param: exp533
 exp544:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp533_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp533_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp544.log' \
@@ -8502,7 +8502,7 @@ exp544:
 # num_episodes=40000
 exp545:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp387_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp545.log' \
@@ -8514,7 +8514,7 @@ exp545:
 # num_episodes=60000
 exp546:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp387_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp387_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp546.log' \
@@ -8571,7 +8571,7 @@ exp547:
 
 exp548:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp547_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp547_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp548.log' \
@@ -8596,7 +8596,7 @@ exp549:
 
 exp550:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp549_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp549_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp550.log' \
@@ -8622,7 +8622,7 @@ exp551:
 
 exp552:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp551_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp551_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp552.log' \
@@ -8656,7 +8656,7 @@ exp554:
 
 exp555:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp554_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp554_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp555.log' \
@@ -8683,7 +8683,7 @@ exp556:
 
 exp557:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp556_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp556_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp557.log' \
@@ -8709,7 +8709,7 @@ exp558:
 
 exp559:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp558_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp558_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp559.log' \
@@ -8736,7 +8736,7 @@ exp560:
 
 exp561:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp560_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp561.log' \
@@ -8863,7 +8863,7 @@ exp573:
 
 exp574:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp573_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp573_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp574.log' \
@@ -8890,7 +8890,7 @@ exp575:
 
 exp576:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp575_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp575_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp576.log' \
@@ -8909,7 +8909,7 @@ exp577_578: exp577 exp578
 
 exp577:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp455_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp577.log' \
@@ -8920,7 +8920,7 @@ exp577:
 
 exp578:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp455_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp455_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp578.log' \
@@ -8945,7 +8945,7 @@ exp579_584: exp579 exp581 exp582 exp583 exp584
 # extrinsic - params: exp473
 exp579:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp473_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp473_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp579.log' \
@@ -8958,7 +8958,7 @@ exp579:
 # - info: exp525
 exp580:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp496_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp496_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp580.log' \
@@ -8970,7 +8970,7 @@ exp580:
 # - novelty: exp501
 exp581:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp472_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp472_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp581.log' \
@@ -8982,7 +8982,7 @@ exp581:
 # - entropy:  exp504
 exp582:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp475_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp475_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp582.log' \
@@ -8994,7 +8994,7 @@ exp582:
 # - EB:  exp503
 exp583:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp474_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp474_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp583.log' \
@@ -9006,7 +9006,7 @@ exp583:
 # - UCB:  exp539
 exp584:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp528_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp528_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp584.log' \
@@ -9067,7 +9067,7 @@ exp585_594_clean:
 # - meta: exp548
 exp585:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp547_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp547_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp585.log' \
@@ -9080,7 +9080,7 @@ exp585:
 # - epsilon: exp550
 exp586:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp549_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp549_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp586.log' \
@@ -9092,7 +9092,7 @@ exp586:
 # - decay: exp552
 exp587:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp551_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp551_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp587.log' \
@@ -9112,7 +9112,7 @@ exp588:
 # - extrinsic: exp574
 exp589:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp573_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp573_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp589.log' \
@@ -9125,7 +9125,7 @@ exp589:
 # - info: exp555
 exp590:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp554_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp554_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp590.log' \
@@ -9137,7 +9137,7 @@ exp590:
 # - novelty: exp557
 exp591:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp556_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp556_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp591.log' \
@@ -9149,7 +9149,7 @@ exp591:
 # - entropy:  exp576
 exp592:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp575_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp575_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp592.log' \
@@ -9161,7 +9161,7 @@ exp592:
 # - EB: exp559
 exp593:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp558_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp558_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp593.log' \
@@ -9173,7 +9173,7 @@ exp593:
 # - UCB: exp561
 exp594:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	head -n 25 $(DATA_PATH)/exp560_sorted.csv > tmp 
 	# Run them 10 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp594.log' \
