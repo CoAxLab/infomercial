@@ -1,7 +1,7 @@
 SHELL=/bin/bash -O expand_aliases
 # DATA_PATH=/Users/qualia/Code/infomercial/data
-DATA_PATH=/Volumes/Data/infomercial/data
-# DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/Volumes/Data/infomercial/data
+DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
@@ -11,7 +11,7 @@ exp1:
 	parallel -j 1 -v \
 			--joblog '$(DATA_PATH)/exp1.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'wsls_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --debug=True --master_seed={1}' ::: 1 2
+			'wsls_bandit.py --env_name BanditOneHot2-v0 --num_episodes=10 --tie_break='next' --tie_threshold=1e-8 --lr_R=.1 --save=$(DATA_PATH)/exp1_{1}.pkl --interactive=False --debug=True --master_seed={1}' ::: 1 2
 
 # As a first real exp, run several bandits with the same parameters 
 # drawn from some hand tuning. See where were at, overall.
