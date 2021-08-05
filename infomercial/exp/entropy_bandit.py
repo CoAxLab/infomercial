@@ -85,7 +85,6 @@ def run(env_name='BanditOneHigh2-v0',
 
         # Apply count bonus
         entropy.update(action)
-
         entropy_bonus = entropy(action)
         payout = R_t + (beta * entropy_bonus)
 

@@ -22,15 +22,14 @@ class NoveltyMemory:
         return self.forward(state)
 
     def forward(self, state):
-        return self.memory[state]
-
-    def update(self, state):
         if state in self.memory:
             bonus = 0
         else:
-            self.memory[state] = 1
             bonus = self.bonus
         return bonus
+
+    def update(self, state):
+        self.memory[state] = 1
 
     def keys(self):
         return self.memory.keys()

@@ -106,6 +106,7 @@ def run(env_name='BanditOneHigh2-v0',
 
         # Apply bonus?
         novelty_bonus = novelty(action)
+        novelty.update(action)
 
         # Critic learns
         payout = R_t + novelty_bonus + (beta * E_t)
