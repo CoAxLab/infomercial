@@ -121,15 +121,16 @@ results_test %>%
   labs(x="Time", y="Action")
 ```
 # Policy - wsls only
-```{r, fig.width=6, fig.height=1.5}
+```{r, fig.width=8, fig.height=1.5}
 results_test %>% 
   filter(agent=="wsls") %>% 
   filter(run <= 6) %>%
-  ggplot(aes(x=global_step, y=policy, group=run)) +
-  # geom_line() +
-  geom_point() +
+  ggplot(aes(x=global_step, y=policy, group=run, color=policy)) +
+  geom_point(size=1) +
+  scale_color_grey() +
   facet_grid(agent~run) +
   theme_classic() +
+  theme(legend.position = "none") +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
   labs(x="Time", y="Policy")
