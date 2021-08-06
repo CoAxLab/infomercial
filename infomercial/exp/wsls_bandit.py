@@ -176,15 +176,19 @@ def run(env_name='BanditOneHot10-v0',
             h_new = memories[action]((int(state), int(R_t)))
             E_t = np.sqrt((h_new - h_old)**2)  # L2
         elif mode == 'UCB':
-            ucb_old = ((2 * np.log(n + 1)) / memories(action))**(0.5)
+            # ucb_old = ((2 * np.log(n + 1)) / memories(action))**(0.5)
+            # memories[0].update(action)
+            # ucb_new = ((2 * np.log(n + 1)) / memories(action))**(0.5)
+            # E_t = np.sqrt((ucb_new - ucb_old)**2)  # L2
             memories[0].update(action)
-            ucb_new = ((2 * np.log(n + 1)) / memories(action))**(0.5)
-            E_t = np.sqrt((ucb_new - ucb_old)**2)  # L2
+            E_t = ((2 * np.log(n + 1)) / memories(action))**(0.5)
         elif mode == 'EB':
-            eb_old = memories(action)**(-0.5)
+            # eb_old = memories(action)**(-0.5)
+            # memories[0].update(action)
+            # eb_new = memories(action)**(-0.5)
+            # E_t = np.sqrt((eb_new - eb_old)**2)  # L2
             memories[0].update(action)
-            eb_new = memories(action)**(-0.5)
-            E_t = np.sqrt((eb_new - eb_old)**2)  # L2
+            E_t = memories(action)**(-0.5)
         else:
             raise ValueError("mode not known")
 
