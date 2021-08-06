@@ -19,7 +19,7 @@ test1:
 # softbeta tester - change as needed
 test2:
 	-rm -rf $(DATA_PATH)/test2*
-	parallel -j 1 39 \
+	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
 			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1}' ::: {0..100}
 
