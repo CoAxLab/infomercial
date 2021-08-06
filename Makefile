@@ -7282,7 +7282,7 @@ test_agents1:
 	# Count
 	softcount_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=.1 --temp=1 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_count
 	# Entropy
-	entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=10 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_entropy
+	softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=80 --beta=1 --temp=10 --lr_R=0.01 --log_dir=$(DATA_PATH)/test/test_entropy
 
 
 
@@ -7350,7 +7350,7 @@ exp474:
 # entropy
 exp475:
 	tune_bandit.py random $(DATA_PATH)/exp475 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditOneHigh4-v0 \
 		--num_samples=1000 \
 		--num_episodes=40 \
@@ -7417,7 +7417,7 @@ exp478:
 # entropy
 exp479:
 	tune_bandit.py random $(DATA_PATH)/exp479 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
@@ -7485,7 +7485,7 @@ exp482:
 # entropy
 exp483:
 	tune_bandit.py random $(DATA_PATH)/exp483 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditOneHigh121-v0 \
 		--num_samples=1000 \
 		--num_episodes=12100 \
@@ -7553,7 +7553,7 @@ exp486:
 # entropy
 exp487:
 	tune_bandit.py random $(DATA_PATH)/exp487 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditHardAndSparse10-v0 \
 		--num_samples=1000 \
 		--num_episodes=10000 \
@@ -7621,7 +7621,7 @@ exp490:
 # entropy
 exp491:
 	tune_bandit.py random $(DATA_PATH)/exp491 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
@@ -7687,7 +7687,7 @@ exp494:
 # entropy
 exp495:
 	tune_bandit.py random $(DATA_PATH)/exp495 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=DistractionBanditOneHigh10-v0 \
 		--num_samples=1000 \
 		--num_episodes=100 \
@@ -7856,7 +7856,7 @@ exp504:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp504.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp504/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp504/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7910,7 +7910,7 @@ exp508:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp508.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp508/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp508/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -7970,7 +7970,7 @@ exp512:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp512.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp512/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditOneHigh121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp512/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8031,7 +8031,7 @@ exp516:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp516.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp516/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditHardAndSparse10-v0 --num_episodes=50000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp516/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8086,7 +8086,7 @@ exp520:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp520.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8146,7 +8146,7 @@ exp524:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp524.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=5000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp524/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=DistractionBanditOneHigh10-v0 --num_episodes=5000 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp524/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8841,7 +8841,7 @@ exp569:
 
 # entropy (based on exp504)
 exp570:
-	entropy_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.11 --temp=0.061 --lr_R=0.024 --log_dir=$(DATA_PATH)/exp570/param0/run1/
+	softentropy_bandit.py --env_name=ExampleBandit4-v0 --num_episodes=200 --beta=0.11 --temp=0.061 --lr_R=0.024 --log_dir=$(DATA_PATH)/exp570/param0/run1/
 
 # EB (based on exp503)
 exp571:
@@ -8898,7 +8898,7 @@ exp574:
 # --- entropy ---
 exp575:
 	tune_bandit.py random $(DATA_PATH)/exp575 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_samples=1000 \
 		--num_episodes=12100 \
@@ -8917,7 +8917,7 @@ exp576:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp576.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp576/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditUniform121-v0 --num_episodes=60500 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp576/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9009,7 +9009,7 @@ exp582:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp582.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp582/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=2000 --beta={beta} --temp=1e-12 --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp582/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9054,7 +9054,7 @@ test_load1:
 	# extrinsic
 	softbeta_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --beta=0 --lr_R=0.1 --temp=0.09 --log_dir=$(DATA_PATH)/test/extrinsic --load=$(DATA_PATH)/exp555/param1/run2/result.pkl
 	# entropy
-	entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.001 --temp=0.08 --log_dir=$(DATA_PATH)/test/entropy --load=$(DATA_PATH)/exp576/param1/run2/result.pkl
+	softentropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.001 --temp=0.08 --log_dir=$(DATA_PATH)/test/entropy --load=$(DATA_PATH)/exp576/param1/run2/result.pkl
 	# count
 	softcount_bandit.py --env_name=BanditChange121-v0 --num_episodes=100 --lr_R=0.1 --beta=0.21 --temp=0.08 --mode='EB' --log_dir=$(DATA_PATH)/test/count --load=$(DATA_PATH)/exp559/param1/run2/result.pkl
 
@@ -9176,7 +9176,7 @@ exp592:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp592.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'entropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp592/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp576/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=BanditChange121-v0 --num_episodes=12100 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp592/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp576/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -9311,7 +9311,7 @@ exp600:
 # entropy
 exp601:
 	tune_bandit.py random $(DATA_PATH)/exp601 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditOneHigh4-v0 \
 		--num_samples=1000 \
 		--num_episodes=200 \
@@ -9452,7 +9452,7 @@ exp609:
 # entropy
 exp610:
 	tune_bandit.py random $(DATA_PATH)/exp610 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditUniform121-v0 \
 		--num_samples=1000 \
 		--num_episodes=2420 \
@@ -9615,7 +9615,7 @@ exp618:
 # 0,0.0011065909026762382,0.021771088807868443,0.02409604919058677,27.16
 exp619:
 	tune_bandit.py random $(DATA_PATH)/exp619 \
-		--exp_name='entropy_bandit' \
+		--exp_name='softentropy_bandit' \
 		--env_name=BanditOneHigh4-v0 \
 		--num_samples=100 \
 		--num_episodes=200 \
