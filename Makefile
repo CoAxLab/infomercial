@@ -1,29 +1,48 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/Users/qualia/Code/infomercial/data
 # DATA_PATH=/Volumes/Data/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # Test recipes for various agents/parameters
 # 
 # Note: This should run fine with main/HEAD. It is kept up to date, in other
 # words. Or, well, it should be.
-test1:
-	parallel -j 1 -v \
-			--joblog '$(DATA_PATH)/exp1.log' \
-			--nice 19 --delay 2 --colsep ',' \
-			'wsls_bandit.py --env_name BanditOneHigh4-v0 --num_episodes=40 --tie_break='next' --tie_threshold=1e-4 --mode='KL' --lr_R=.1 --save=$(DATA_PATH)/test1.pkl --interactive=False --debug=False --master_seed={1}' ::: 1 2
 
+# WSLS tester - change as needed
+test1:
+	-rm -rf $(DATA_PATH)/test1*
+	parallel -j 1 -v \
+			--nice 19 --delay 2 --colsep ',' \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --tie_break='next' --tie_threshold=1e-4 --mode='KL' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1}' ::: 1 2
+
+# softbeta tester - change as needed
 test2:
+	-rm -rf $(DATA_PATH)/test2*
 	parallel -j 1 -v \
-			--joblog '$(DATA_PATH)/exp1.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softbeta_bandit.py --env_name BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --save=$(DATA_PATH)/test2.pkl --interactive=False --debug=False --master_seed={1}' ::: 1 2
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1}' ::: 1 2
+
+# softcount tester - change as needed
 test3:
+	-rm -rf $(DATA_PATH)/test3*
 	parallel -j 1 -v \
-			--joblog '$(DATA_PATH)/exp1.log' \
 			--nice 19 --delay 2 --colsep ',' \
-			'softcount_bandit.py --env_name BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --save=$(DATA_PATH)/test3.pkl --interactive=False --debug=False --master_seed={1}' ::: 1 2
+			'softcount_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --log_dir=$(DATA_PATH)/test3/run{1} --master_seed={1}' ::: 1 2
+
+# softentropy tester - change as needed
+test4:
+	-rm -rf $(DATA_PATH)/test4*
+	parallel -j 1 -v \
+			--nice 19 --delay 2 --colsep ',' \
+			'softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1}' ::: 1 2
+
+# epgreedy tester - change as needed
+test5:
+	-rm -rf $(DATA_PATH)/test5*
+	parallel -j 1 -v \
+			--nice 19 --delay 2 --colsep ',' \
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1}' ::: 1 2
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
