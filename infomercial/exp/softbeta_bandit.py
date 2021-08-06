@@ -40,7 +40,8 @@ def run(env_name='BanditOneHigh2-v0',
         master_seed=42,
         write_to_disk=True,
         load=None,
-        log_dir=None):
+        log_dir=None,
+        output=False):
     """Bandit agent - sample(R + beta E)"""
 
     # --- Init ---
@@ -148,7 +149,10 @@ def run(env_name='BanditOneHigh2-v0',
         save_checkpoint(result,
                         filename=os.path.join(writer.log_dir, "result.pkl"))
 
-    return result
+    if output:
+        return result
+    else:
+        return None
 
 
 if __name__ == "__main__":

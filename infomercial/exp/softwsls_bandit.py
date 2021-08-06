@@ -58,7 +58,8 @@ def run(env_name='BanditOneHot10-v0',
         lr_R=.1,
         master_seed=42,
         write_to_disk=True,
-        log_dir=None):
+        log_dir=None,
+        output=False):
     """Bandit agent - softmax (E, R)"""
 
     # --- Init ---
@@ -163,7 +164,10 @@ def run(env_name='BanditOneHot10-v0',
         save_checkpoint(result,
                         filename=os.path.join(writer.log_dir, "result.pkl"))
 
-    return result
+    if output:
+        return result
+    else:
+        return None
 
 
 if __name__ == "__main__":

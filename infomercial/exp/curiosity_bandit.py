@@ -45,6 +45,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         critic_seed=None,
         reward_mode=False,
         log_dir=None,
+        output=False,
         write_to_disk=True,
         **actor_kwargs):
     """Play some slots!"""
@@ -175,7 +176,10 @@ def run(env_name='InfoBlueYellow4b-v0',
         save_checkpoint(result,
                         filename=os.path.join(writer.log_dir, "result.pkl"))
 
-    return result
+    if output:
+        return result
+    else:
+        return None
 
 
 if __name__ == "__main__":
