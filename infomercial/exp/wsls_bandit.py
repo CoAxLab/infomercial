@@ -14,6 +14,7 @@ from infomercial.models import Critic
 from infomercial.models import DeterministicActor
 
 from infomercial.memory import DiscreteDistribution
+from infomercial.memory import EntropyMemory
 from infomercial.memory import CountMemory
 from infomercial.distance import kl
 from infomercial.distance import js
@@ -57,7 +58,7 @@ def run(env_name='BanditOneHot10-v0',
         num_episodes=1000,
         tie_break='next',
         tie_threshold=0.0,
-        mode='kl',
+        mode='KL',
         lr_R=.1,
         master_seed=42,
         initial_bins=None,
@@ -83,7 +84,7 @@ def run(env_name='BanditOneHot10-v0',
     E_t = default_info_value
     R_t = default_reward_value
 
-    # - Init agents and memories
+    # - Init agents
     critic_R = Critic(num_actions, default_value=default_reward_value)
     critic_E = Critic(num_actions, default_value=default_info_value)
     actor_R = DeterministicActor(num_actions,
@@ -93,15 +94,21 @@ def run(env_name='BanditOneHot10-v0',
                                  tie_break=tie_break,
                                  tie_threshold=tie_threshold)
 
-    if mode == 'kl' or mode == 'js':
+    # - Init select kinds of memories
+    if mode == 'KL' or mode == 'JS' or mode == "L1":
         memories = [
             DiscreteDistribution(initial_bins=initial_bins)
             for _ in range(num_actions)
         ]
-    elif mode == 'ucb' or mode == 'em':
-        memories = CountMemory()
-    elif mode == 'rate':
-        raise NotImplementedError
+    elif mode == 'dH':
+        memories = [
+            EntropyMemory(initial_bins=initial_bins)
+            for _ in range(num_actions)
+        ]
+    elif mode == 'UCB' or mode == 'EB':
+        memories = [CountMemory()]
+    else:
+        raise ValueError("mode not known")
 
     # Update with pre-loaded data. This will let you run
     # test experiments on pre-trained model and/or to
@@ -145,23 +152,38 @@ def run(env_name='BanditOneHot10-v0',
         state, R_t, _, _ = env.step(action)
         R_t = R_homeostasis(R_t, total_R, num_episodes)
 
-        # Estimate E
-        if mode == 'kl':
+        # Estimate E -- for select combinations of memory
+        # and distance.
+        if mode == 'KL':
             old = deepcopy(memories[action])
             memories[action].update((int(state), int(R_t)))
             new = deepcopy(memories[action])
             E_t = kl(new, old, default_info_value)
-        elif mode == 'js':
+        elif mode == 'JS':
             old = deepcopy(memories[action])
             memories[action].update((int(state), int(R_t)))
             new = deepcopy(memories[action])
             E_t = js(new, old, default_info_value)
-        elif mode == 'rate':
-            raise NotImplementedError()
-        elif mode == 'ucb':
-            raise NotImplementedError()
-        elif mode == 'eb':
-            raise NotImplementedError()
+        elif mode == 'L1':
+            old = deepcopy(memories[action])
+            memories[action].update((int(state), int(R_t)))
+            new = deepcopy(memories[action])
+            E_t = l1(new, old, default_info_value)
+        elif mode == 'H':
+            h_old = memories[action]((int(state), int(R_t)))
+            memories[action].update((int(state), int(R_t)))
+            h_new = memories[action]((int(state), int(R_t)))
+            E_t = np.sqrt((h_new - h_old)**2)  # L2
+        elif mode == 'UCB':
+            ucb_old = ((2 * np.log(n + 1)) / memories(action))**(0.5)
+            memories[0].update(action)
+            ucb_new = ((2 * np.log(n + 1)) / memories(action))**(0.5)
+            E_t = np.sqrt((ucb_new - ucb_old)**2)  # L2
+        elif mode == 'EB':
+            eb_old = memories(action)**(-0.5)
+            memories[0].update(action)
+            eb_new = memories(action)**(-0.5)
+            E_t = np.sqrt((eb_new - eb_old)**2)  # L2
         else:
             raise ValueError("mode not known")
 
