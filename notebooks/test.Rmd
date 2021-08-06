@@ -1,0 +1,222 @@
+---
+title: "Test analysis notebook - test1-5"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data/"
+```
+
+# Load data 
+```{r, message=FALSE, warning=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditOneHigh4"
+task_code <- 1
+num_episodes <- 40
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+run_codes <- 1:100
+
+exp_names <- c(
+  "test1", 
+  "test2", 
+  "test3", 
+  "test4",
+  "test5")
+
+agent_names <- c(
+  "wsls", 
+  "softbeta", 
+  "softcount", 
+  "softentropy",
+  "epsilon") 
+
+class_names <- c(
+  "Curiosity",
+  "Bayes",
+  "Count",
+  "ActionEntropy",
+  "Ep-greedy")
+
+file_names <- c("action", 
+                "total_R",
+                "total_E",
+                "value_E",
+                "value_R",
+                "policy",
+                "regret",
+                "total_regret")
+
+results_test <- NULL
+for(i in 1:length(exp_names)){
+  # Load
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  tmp <- load_result_np(exp_name, run_codes, file_names, n_max=num_episodes+1)
+  
+  # Meta
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  # Join
+  results_test <- bind_rows(results_test, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+results_test$agent <- factor(results_test$agent, levels=agent_names)
+
+# Policy as factors
+# Rename levels
+results_test$policy <- as.factor(results_test$policy)
+results_test$policy <- recode_factor(results_test$policy, `0`="explore", `1`="exploit")
+
+# Remove E_bias
+results_test$total_E <- results_test$total_E - E_bias
+results_test$total_E[results_test$total_E < 0] <- 0
+```
+
+# Behave
+```{r, fig.width=6, fig.height=3}
+results_test %>% 
+  filter(run <= 6) %>%
+  ggplot(aes(x=global_step, y=action+1)) +
+  geom_point(size=0.5) +
+  geom_line(size=0.1) +
+  facet_grid(agent~run) +
+  theme_classic() +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  labs(x="Time", y="Action")
+```
+# Policy - wsls only
+```{r, fig.width=6, fig.height=1.5}
+results_test %>% 
+  filter(agent=="wsls") %>% 
+  filter(run <= 6) %>%
+  ggplot(aes(x=global_step, y=policy, group=run)) +
+  # geom_line() +
+  geom_point() +
+  facet_grid(agent~run) +
+  theme_classic() +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  labs(x="Time", y="Policy")
+```
+
+# Values
+## Info value
+```{r, fig.width=6, fig.height=1.5}
+results_test %>% 
+  filter(agent=="wsls") %>% 
+  filter(run <= 6) %>%
+  ggplot(aes(x=global_step, y=value_E, group=run)) +
+  geom_line() +
+  # geom_point() +
+  facet_grid(agent~run) +
+  theme_classic() +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  labs(x="Time", y="Value")
+```
+## Reward
+```{r, fig.width=6, fig.height=3}
+results_test %>% 
+  filter(run <= 6) %>%
+  ggplot(aes(x=global_step, y=value_R, group=run)) +
+  geom_line() +
+  # geom_point() +
+  facet_grid(agent~run) +
+  theme_classic() +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.background = element_blank()) +
+  labs(x="Time", y="Value")
+```
+# Total reward
+## Boxplot
+```{r, fig.width=2, fig.height=3}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_boxplot(width=0.5) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(legend.position = "none") +
+  labs(x="Agent", y="Total reward")
+```
+
+## Scatter/mean
+```{r, fig.width=2, fig.height=3}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(width=0.2, size=0.1) +
+  stat_summary(fun = mean) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(legend.position = "none") +
+  labs(x="Agent", y="Total reward")
+```
+
+## Density
+```{r, fig.width=4, fig.height=2}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=total_R, fill=agent, color=agent)) +
+  geom_density(alpha=0.2) +
+  theme_classic() +
+  labs(x="Agent", y="Total reward") +
+  lims(x=c(0, 50))
+```
