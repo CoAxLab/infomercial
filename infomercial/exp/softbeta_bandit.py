@@ -121,6 +121,7 @@ def run(env_name='BanditOneHigh2-v0',
         writer.add_scalar("score_E", E_t, n)
         writer.add_scalar("score_R", R_t, n)
         writer.add_scalar("value_ER", critic(action), n)
+        writer.add_scalar("value_R", critic(action), n)
 
         total_E += E_t
         total_R += R_t
