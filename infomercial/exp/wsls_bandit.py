@@ -101,7 +101,7 @@ def run(env_name='BanditOneHot10-v0',
             DiscreteDistribution(initial_bins=initial_bins)
             for _ in range(num_actions)
         ]
-    elif mode == 'dH':
+    elif mode == 'H':
         memories = [
             EntropyMemory(initial_bins=initial_bins)
             for _ in range(num_actions)
