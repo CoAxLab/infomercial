@@ -50,7 +50,7 @@ class RateMemory:
     def __init__(self, maxlen=10, default_value=0.0):
         self.maxlen = maxlen
         self.default_value = default_value
-        self.memory = defaultdict(deque(maxlen=self.maxlen))
+        self.memory = dict()
 
     def __call__(self, state, reward):
         return self.forward(state, reward)
@@ -61,9 +61,10 @@ class RateMemory:
 
     def update(self, state, reward):
         # Init?
-        if state not in self.target:
+        if state not in self.memory:
+            self.memory[state] = deque(maxlen=self.maxlen)
             for _ in range(self.maxlen):
-                self.target[state].append(self.default_value)
+                self.memory[state].append(self.default_value)
 
         # Update
         self.memory[state].append(reward)
