@@ -36,10 +36,10 @@ class NoveltyMemory:
         self.memory[state] = 1
 
     def keys(self):
-        return self.memory.keys()
+        return list(self.memory.keys())
 
     def values(self):
-        return self.memory.values()
+        return list(self.memory.values())
 
     def state_dict(self):
         return self.memory
@@ -76,10 +76,10 @@ class RateMemory:
         self.memory[state].append(reward)
 
     def keys(self):
-        return self.memory.keys()
+        return list(self.memory.keys())
 
     def values(self):
-        return self.memory.values()
+        return list(self.memory.values())
 
     def state_dict(self):
         return self.memory
@@ -112,10 +112,10 @@ class CountMemory:
         self.memory[state] += 1
 
     def keys(self):
-        return self.memory.keys()
+        return list(self.memory.keys())
 
     def values(self):
-        return self.memory.values()
+        return list(self.memory.values())
 
     def state_dict(self):
         return self.memory
@@ -163,10 +163,10 @@ class EntropyMemory:
         self.memory[action] += 1
 
     def keys(self):
-        return self.memory.keys()
+        return list(self.memory.keys())
 
     def values(self):
-        return self.memory.values()
+        return list(self.memory.values())
 
     def state_dict(self):
         return self.memory
