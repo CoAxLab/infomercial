@@ -96,7 +96,7 @@ def run(env_name='BanditOneHot10-v0',
                                  tie_threshold=tie_threshold)
 
     # - Init select kinds of memories
-    if mode == 'KL' or mode == 'JS' or mode == "L1":
+    if mode == 'KL' or mode == 'JS' or mode == "L1" or mode == "L2":
         memories = [
             DiscreteDistribution(initial_bins=initial_bins)
             for _ in range(num_actions)
@@ -176,6 +176,11 @@ def run(env_name='BanditOneHot10-v0',
             memories[action].update((int(state), int(R_t)))
             new = deepcopy(memories[action])
             E_t = l1(new, old, default_info_value)
+        elif mode == 'L2':
+            old = deepcopy(memories[action])
+            memories[action].update((int(state), int(R_t)))
+            new = deepcopy(memories[action])
+            E_t = l2(new, old, default_info_value)
         elif mode == 'H':
             h_old = memories[action]((int(state), int(R_t)))
             memories[action].update((int(state), int(R_t)))
