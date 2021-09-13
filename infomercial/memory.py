@@ -22,6 +22,9 @@ class NoveltyMemory:
     def __call__(self, state):
         return self.forward(state)
 
+    def __len__(self):
+        return len(self.memory)
+
     def forward(self, state):
         if state in self.memory:
             bonus = 0
@@ -54,6 +57,9 @@ class RateMemory:
 
     def __call__(self, state, reward):
         return self.forward(state, reward)
+
+    def __len__(self):
+        return len(self.memory)
 
     def forward(self, state):
         rate = np.mean(self.memory[state])
@@ -89,6 +95,9 @@ class CountMemory:
 
     def __call__(self, state):
         return self.forward(state)
+
+    def __len__(self):
+        return len(self.memory)
 
     def forward(self, state):
         return self.memory[state]
@@ -135,6 +144,9 @@ class EntropyMemory:
 
     def __call__(self, action):
         return self.forward(action)
+
+    def __len__(self):
+        return len(self.memory)
 
     def forward(self, state):
         # Estimate H
