@@ -116,7 +116,6 @@ def tune_random(name,
                 num_processes=1,
                 metric="total_R",
                 log_space=False,
-                verbose=False,
                 master_seed=None,
                 **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
