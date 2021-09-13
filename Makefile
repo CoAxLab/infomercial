@@ -9792,3 +9792,20 @@ exp627:
 		--mode='KL' \
 		--lr_R=0.1 \
 		--tie_threshold='(1e-9, 1e-1)' \
+
+
+# L2 (a bayes model)
+exp628:
+	tune_bandit.py random $(DATA_PATH)/exp628 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L2' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e-1)' \
