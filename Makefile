@@ -9691,8 +9691,11 @@ exp621:
 # options, and how it hopefully does not matter much for final WSLS perf?
 # 
 # I tested the below first using the test recipes at the top of this
-# Makfefile. Now, paramsearch. First focus on 
-# meta
+# Makfefile. Now, paramsearch. First focus on BanditOneHigh4
+
+# The modes are:
+
+# L1 (a bayes model)
 exp622:
 	tune_bandit.py random $(DATA_PATH)/exp622 \
 		--exp_name='wsls_bandit' \
@@ -9703,6 +9706,66 @@ exp622:
 		--num_processes=39 \
 		--log_space=True \
 		--metric="total_R" \
-		--mode="L1"
-		--tie_threshold='(1e-9, 1e-2)' \
+		--mode='L1' \
+		--tie_threshold='(1e-9, 1e-1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# delta H (ala Calhoun)
+exp623:
+	tune_bandit.py random $(DATA_PATH)/exp623 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='H' \
+		--tie_threshold='(1e-9, 1e-1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# delta rate / l2
+exp624:
+	tune_bandit.py random $(DATA_PATH)/exp624 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='rate' \
+		--tie_threshold='(1e-9, 1e-1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# UCB (count model 1)
+exp625:
+	tune_bandit.py random $(DATA_PATH)/exp625 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='UCB' \
+		--tie_threshold='(1e-9, 1e-1)' \
+		--lr_R='(0.001, 0.5)' 
+
+# EB  (count model 2)
+exp626:
+	tune_bandit.py random $(DATA_PATH)/exp626 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode='EB' \
+		--tie_threshold='(1e-9, 1e-1)' \
 		--lr_R='(0.001, 0.5)' 
