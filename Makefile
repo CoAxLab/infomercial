@@ -1,7 +1,7 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/Users/qualia/Code/infomercial/data
 # DATA_PATH=/Volumes/Data/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # Test recipes for various agents/parameters
@@ -14,7 +14,7 @@ test1:
 	-rm -rf $(DATA_PATH)/test1*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --tie_break='next' --tie_threshold=1e-4 --mode='KL' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1}' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1}' ::: {0..100}
 
 # softbeta tester - change as needed
 test2:
@@ -9680,3 +9680,29 @@ exp621:
 		--beta=0.062 \
 		--temp='(0.001, 1000)' \
 		--lr_R=0.46
+
+
+# ---------------------------------------------------------------------------
+# 9/13/2021
+#
+# Tune alternate memory models for PLOS rev 1.
+# 
+# Rev's got hung up on the use of of prob memory and JS. Show them other 
+# options, and how it hopefully does not matter much for final WSLS perf?
+# 
+# I tested the below first using the test recipes at the top of this
+# Makfefile. Now, paramsearch. First focus on 
+# meta
+exp622:
+	tune_bandit.py random $(DATA_PATH)/exp622 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--metric="total_R" \
+		--mode="L1"
+		--tie_threshold='(1e-9, 1e-2)' \
+		--lr_R='(0.001, 0.5)' 
