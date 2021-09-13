@@ -14,35 +14,35 @@ test1:
 	-rm -rf $(DATA_PATH)/test1*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1}' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1}' ::: {0..100}
 
 # softbeta tester - change as needed
 test2:
 	-rm -rf $(DATA_PATH)/test2*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1}' ::: {0..100}
+			'softbeta_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1}' ::: {0..100}
 
 # softcount tester - change as needed
 test3:
 	-rm -rf $(DATA_PATH)/test3*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softcount_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --log_dir=$(DATA_PATH)/test3/run{1} --master_seed={1}' ::: {0..100}
+			'softcount_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --log_dir=$(DATA_PATH)/test3/run{1} --master_seed={1}' ::: {0..100}
 
 # softentropy tester - change as needed
 test4:
 	-rm -rf $(DATA_PATH)/test4*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1}' ::: {0..100}
+			'softentropy_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1}' ::: {0..100}
 
 # epgreedy tester - change as needed
 test5:
 	-rm -rf $(DATA_PATH)/test5*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=40 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1}' ::: {0..100}
+			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1}' ::: {0..100}
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
