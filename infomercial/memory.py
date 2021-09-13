@@ -44,6 +44,40 @@ class NoveltyMemory:
         self.memory = state_dict
 
 
+class RateMemory:
+    """A finite memory of reward rate."""
+    def __init__(self, maxlen=10, default_value=0.0):
+        self.maxlen = maxlen
+        self.default_value = default_value
+        self.memory = defaultdict(deque(maxlen=self.maxlen))
+
+    def __call__(self, state, reward):
+        return self.forward(state, reward)
+
+    def forward(self, state, reward):
+        return np.mean(self.memory[state])
+
+    def update(self, state, reward):
+        # Init?
+        if state not in self.memory:
+            for _ in range(self.maxlen):
+                self.memory[state].append(self.default_value)
+        # Update
+        self.memory[state].append(reward)
+
+    def keys(self):
+        return self.memory.keys()
+
+    def values(self):
+        return self.memory.values()
+
+    def state_dict(self):
+        return self.memory
+
+    def load_state_dict(self, state_dict):
+        self.memory = state_dict
+
+
 class CountMemory:
     """A simple state counter."""
     def __init__(self):
