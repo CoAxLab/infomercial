@@ -117,6 +117,7 @@ def tune_random(name,
                 metric="total_R",
                 log_space=False,
                 master_seed=None,
+                output=False,
                 **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
     prng = np.random.RandomState(master_seed)
@@ -198,7 +199,10 @@ def tune_random(name,
         sorted_configs[i].update({metric: trial[metric]})
     save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
 
-    return trials
+    if output:
+        return trials
+    else:
+        return None
 
 
 def tune_replicator(name,
@@ -212,6 +216,7 @@ def tune_replicator(name,
                     metric="total_R",
                     verbose=False,
                     master_seed=None,
+                    output=False,
                     **config_kwargs):
     """Tune hyperparameters of any bandit experiment."""
     prng = np.random.RandomState(master_seed)
@@ -441,7 +446,10 @@ def tune_replicator(name,
         sorted_configs[i].update({metric: trial[metric]})
     save_csv(sorted_configs, filename=os.path.join(path, name + "_sorted.csv"))
 
-    return trials
+    if output:
+        return trials
+    else:
+        return None
 
 
 if __name__ == "__main__":
