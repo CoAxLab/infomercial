@@ -1,3 +1,4 @@
+from copy import deepcopy
 import numpy as np
 
 import torch
@@ -45,7 +46,7 @@ class NoveltyMemory:
 
 
 class RateMemory:
-    """A finite memory of reward rate."""
+    """A finite memory of the reward rate changes."""
     def __init__(self, maxlen=10, default_value=0.0):
         self.maxlen = maxlen
         self.default_value = default_value
@@ -54,14 +55,16 @@ class RateMemory:
     def __call__(self, state, reward):
         return self.forward(state, reward)
 
-    def forward(self, state, reward):
-        return np.mean(self.memory[state])
+    def forward(self, state):
+        rate = np.mean(self.memory[state])
+        return rate
 
     def update(self, state, reward):
         # Init?
-        if state not in self.memory:
+        if state not in self.target:
             for _ in range(self.maxlen):
-                self.memory[state].append(self.default_value)
+                self.target[state].append(self.default_value)
+
         # Update
         self.memory[state].append(reward)
 

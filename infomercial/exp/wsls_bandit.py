@@ -175,6 +175,11 @@ def run(env_name='BanditOneHot10-v0',
             memories[action].update((int(state), int(R_t)))
             h_new = memories[action]((int(state), int(R_t)))
             E_t = np.sqrt((h_new - h_old)**2)  # L2
+        elif mode == 'rate':
+            old = deepcopy(memories[action])
+            memories[action].update((int(state), int(R_t)))
+            new = deepcopy(memories[action])
+            E_t = l2(new, old, default_info_value)
         elif mode == 'UCB':
             memories[0].update(action)
             E_t = ((2 * np.log(n + 1)) / memories[0](action))**(0.5)
