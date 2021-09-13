@@ -168,7 +168,7 @@ def tune_random(name,
                         low, high).rvs(random_state=prng)
                 else:
                     params["config"][k] = prng.uniform(low=low, high=high)
-            except TypeError:  # number or str?
+            except (TypeError, ValueError):  # number or str?
                 try:
                     params["config"][k] = float(par)
                 except ValueError:  # string?
