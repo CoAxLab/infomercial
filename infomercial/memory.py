@@ -55,8 +55,8 @@ class RateMemory:
         self.default_value = default_value
         self.memory = dict()
 
-    def __call__(self, state, reward):
-        return self.forward(state, reward)
+    def __call__(self, state):
+        return self.forward(state)
 
     def __len__(self):
         return len(self.memory)
