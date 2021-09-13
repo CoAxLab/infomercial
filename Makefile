@@ -9759,7 +9759,7 @@ exp625:
 		--metric="total_R" \
 		--mode='UCB' \
 		--lr_R=0.1 \
-		--tie_threshold='(1e-9, 1e-1)' \
+		--tie_threshold='(1e-3, 10)' \
 
 # EB  (count model 2)
 exp626:
@@ -9775,7 +9775,7 @@ exp626:
 		--metric="total_R" \
 		--mode='EB' \
 		--lr_R=0.1 \
-		--tie_threshold='(1e-9, 1e-1)' \
+		--tie_threshold='(1e-3, 10)' \
 
 # KL  (the ref model)
 exp627:
