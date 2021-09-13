@@ -45,7 +45,7 @@ def run(env_name='InfoBlueYellow4b-v0',
         critic_seed=None,
         reward_mode=False,
         log_dir=None,
-        output=False,
+        output=True,
         write_to_disk=True,
         **actor_kwargs):
     """Play some slots!"""

@@ -35,7 +35,7 @@ def run(env_name='BanditOneHot2-v0',
         write_to_disk=True,
         load=None,
         log_dir=None,
-        output=False):
+        output=True):
     """Play some slots!"""
 
     # --- Init ---

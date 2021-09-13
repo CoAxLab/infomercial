@@ -41,7 +41,7 @@ def run(env_name='BanditOneHigh2-v0',
         write_to_disk=True,
         load=None,
         log_dir=None,
-        output=False):
+        output=True):
     """Bandit agent - sample(R + beta E)"""
 
     # --- Init ---

@@ -65,7 +65,7 @@ def run(env_name='BanditOneHot10-v0',
         write_to_disk=True,
         load=None,
         log_dir=None,
-        output=False):
+        output=True):
     """Bandit agent - argmax (E, R)"""
 
     # --- Init ---

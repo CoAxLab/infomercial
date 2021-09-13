@@ -28,7 +28,7 @@ def run(env_name='BanditOneHot2-v0',
         master_seed=42,
         write_to_disk=True,
         log_dir=None,
-        output=False):
+        output=True):
     """Bandit agent - random"""
 
     # --- Init ---
