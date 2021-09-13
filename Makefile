@@ -9705,6 +9705,7 @@ exp622:
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
+		--output=False \
 		--metric="total_R" \
 		--mode='L1' \
 		--tie_threshold='(1e-9, 1e-1)' \
@@ -9720,6 +9721,7 @@ exp623:
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
+		--output=False \
 		--metric="total_R" \
 		--mode='H' \
 		--tie_threshold='(1e-9, 1e-1)' \
@@ -9735,6 +9737,7 @@ exp624:
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
+		--output=False \
 		--metric="total_R" \
 		--mode='rate' \
 		--tie_threshold='(1e-9, 1e-1)' \
@@ -9750,6 +9753,7 @@ exp625:
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
+		--output=False \
 		--metric="total_R" \
 		--mode='UCB' \
 		--tie_threshold='(1e-9, 1e-1)' \
@@ -9765,6 +9769,7 @@ exp626:
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
+		--output=False \
 		--metric="total_R" \
 		--mode='EB' \
 		--tie_threshold='(1e-9, 1e-1)' \
