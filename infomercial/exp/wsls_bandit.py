@@ -13,7 +13,7 @@ from collections import OrderedDict
 from infomercial.models import Critic
 from infomercial.models import DeterministicActor
 
-from infomercial.memory import DiscreteDistribution
+from infomercial.memory import DiscreteDistribution, RateMemory
 from infomercial.memory import EntropyMemory
 from infomercial.memory import CountMemory
 from infomercial.distance import kl
@@ -104,6 +104,12 @@ def run(env_name='BanditOneHot10-v0',
     elif mode == 'H':
         memories = [
             EntropyMemory(initial_bins=initial_bins)
+            for _ in range(num_actions)
+        ]
+    elif mode == 'rate':
+        memories = [
+            RateMemory(maxlen=2 * num_actions,
+                       default_value=default_reward_value)
             for _ in range(num_actions)
         ]
     elif mode == 'UCB' or mode == 'EB':
