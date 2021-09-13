@@ -9793,7 +9793,6 @@ exp627:
 		--lr_R=0.1 \
 		--tie_threshold='(1e-9, 1e-1)' \
 
-
 # L2 (a bayes model)
 exp628:
 	tune_bandit.py random $(DATA_PATH)/exp628 \
