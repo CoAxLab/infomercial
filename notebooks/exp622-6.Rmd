@@ -28,13 +28,28 @@ data_path <- "~/Code/infomercial/data/"
 ```{r}
 # What to load, and its names
 exp_names <-
-  c("exp627", "exp622", "exp623", "exp624", "exp625", "exp626")
-agent_names <- c("KL/Prob", 
+  c("exp627",
+    "exp622",
+    "exp628",
+    "exp623",
+    "exp624",
+    "exp625",
+    "exp626")
+agent_names <- c("KL/Prob",
                  "L1/Prob",
+                 "L2/Prob",
                  "L2/Entropy",
                  "L2/Rate",
                  "UCB",
                  "EB")
+
+colors <- c("black",
+            "grey",
+            "darkgrey",
+            "lightskyblue4",
+            "olivedrab4",
+            "orange3",
+            "orange4")
 # ---
 results <- NULL
 
@@ -77,14 +92,6 @@ results %>%
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_continuous(breaks = c(0, 500, 1000)) +
   scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
-  scale_color_manual("",
-                     values = c(
-                       "black",
-                       "grey",
-                       "lightskyblue4",
-                       "olivedrab4",
-                       "orange3",
-                       "orange4"
-                     )) +
+  scale_color_manual("", values = colors) +
   facet_grid(. ~ agent) 
 ```
