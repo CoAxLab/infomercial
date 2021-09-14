@@ -1,5 +1,5 @@
 ---
-title: "Analysis of exp622-6: tune runs for alternate memory models"
+title: "Analysis of exp622-6: tune runs for alternate memory models on BanditOneHigh4"
 output: html_notebook
 ---
 
