@@ -100,7 +100,7 @@ class RandomScentGrid(ScentGrid):
         pass
 
 
-def run(agent="wsls",
+def run(agent_name="wsls",
          num_episodes=10,
          num_steps=200,
          num_experiments=10,
@@ -120,6 +120,8 @@ def run(agent="wsls",
 
     # TODO - HERE - should I only be run num_experiments as num_episodes
     # because anything else is not consistent w/ the data in bandits.
+    # Or must I run several exps/trials per episone to get anything like 
+    # progress. The two APIs are imperfectly aligned.
     
     for n in range(num_episodes):
         # - Imprelentation note: -
@@ -127,23 +129,23 @@ def run(agent="wsls",
         # in caase agent.reset() is not a complete.
         # reset. It might not be in exploirationlib
         # agnets.
-        if agent == "wsls":
+        if agent_name == "wsls":
             model = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
-        elif agent == "diffusion":
+        elif agent_name == "diffusion":
             model = DiffusionGrid(min_length=min_length, scale=1)
-        elif agent == "sniff":
+        elif agent_name == "sniff":
             min_length = 1
             model = GradientDiffusionGrid(min_length=1,
                                           scale=1.0,
                                           p_neg=1,
                                           p_pos=0.0)
-        elif agent == "entropy":
+        elif agent_name == "entropy":
             model = AccumulatorInfoGrid(min_length=1,
                                         max_steps=1,
                                         drift_rate=1,
                                         threshold=3,
                                         accumulate_sigma=1)
-        elif agent == "softmax":
+        elif agent_name == "softmax":
             possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
             critic = CriticGrid(default_value=0.5)
             actor = SoftmaxActor(num_actions=4,
@@ -162,7 +164,7 @@ def run(agent="wsls",
         env.reset()
 
         # Run
-        result = experiment(f"{agent}",
+        result = experiment(f"{agent_name}",
                             model,
                             env,
                             num_steps=num_steps,
@@ -181,30 +183,30 @@ def run(agent="wsls",
             total_R = total_reward(result)
             writer.add_scalar("total_R", total_R, n)
 
-            # Get state/value
-        # Log data
-        writer.add_scalar("state", int(state), n)
-        writer.add_scalar("action", action, n)
-        writer.add_scalar("regret", regret, n)
-        writer.add_scalar("bonus", novelty_bonus, n)
-        writer.add_scalar("score_E", E_t, n)
-        writer.add_scalar("score_R", R_t, n)
-        writer.add_scalar("value_ER", critic(action), n)
-        writer.add_scalar("value_R", critic(action), n)
+        # Get state/value
+        # # Log data
+        # writer.add_scalar("state", int(state), n)
+        # writer.add_scalar("action", action, n)
+        # writer.add_scalar("regret", regret, n)
+        # writer.add_scalar("bonus", novelty_bonus, n)
+        # writer.add_scalar("score_E", E_t, n)
+        # writer.add_scalar("score_R", R_t, n)
+        # writer.add_scalar("value_ER", critic(action), n)
+        # writer.add_scalar("value_R", critic(action), n)
 
-        total_E += E_t
-        total_R += R_t
-        total_regret += regret
-        writer.add_scalar("total_regret", total_regret, n)
-        writer.add_scalar("total_E", total_E, n)
-        writer.add_scalar("total_R", total_R, n)
-        writer.add_scalar("p_bests", num_best / (n + 1), n)
+        # total_E += E_t
+        # total_R += R_t
+        # total_regret += regret
+        # writer.add_scalar("total_regret", total_regret, n)
+        # writer.add_scalar("total_E", total_E, n)
+        # writer.add_scalar("total_R", total_R, n)
+        # writer.add_scalar("p_bests", num_best / (n + 1), n)
     
     writer.close()
 
     # -- Summarize ressults --
     summary = dict(env_name="RandomScentGrid",
-                  agent_name=agent,
+                  agent_name=agent_name,
                   model=deepcopy(model),
                   env=deepcopy(env),
                   num_episodes=num_episodes,
