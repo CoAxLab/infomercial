@@ -1,20 +1,10 @@
-import shutil
-import glob
-import os
-from IPython.core import oinspect
-
 from gym import spaces
-from gym.utils import seeding
 
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from copy import deepcopy
 
 from noboard.csv import SummaryWriter
 
-import explorationlib
 from explorationlib.local_gym import ScentGrid
 
 from explorationlib.agent import DeterministicWSLSGrid
@@ -22,28 +12,15 @@ from explorationlib.agent import CriticGrid
 from explorationlib.agent import SoftmaxActor
 from explorationlib.agent import DiffusionGrid
 from explorationlib.agent import GradientDiffusionGrid
-from explorationlib.agent import AccumulatorGradientGrid
 from explorationlib.agent import AccumulatorInfoGrid
 from explorationlib.agent import ActorCriticGrid
 
 from explorationlib.run import experiment
-from explorationlib.util import select_exp
-from explorationlib.util import load
-from explorationlib.util import save
 
 from explorationlib.local_gym import uniform_targets
 from explorationlib.local_gym import constant_values
 from explorationlib.local_gym import ScentGrid
-from explorationlib.local_gym import create_grid_scent
-from explorationlib.local_gym import add_noise
-from explorationlib.local_gym import create_grid_scent_patches as create_patches
-
-from explorationlib.plot import plot_position2d
-from explorationlib.plot import plot_length_hist
-from explorationlib.plot import plot_length
-from explorationlib.plot import plot_targets2d
-from explorationlib.plot import plot_scent_grid
-from explorationlib.plot import plot_targets2d
+from explorationlib.local_gym import create_grid_scent_patches
 
 from explorationlib.score import total_reward
 from explorationlib.score import total_info_value
@@ -51,56 +28,6 @@ from explorationlib.score import search_efficiency
 from explorationlib.score import num_death
 
 from infomercial.utils import save_checkpoint
-from infomercial.utils import load_checkpoint
-
-
-class RandomScentGrid(ScentGrid):
-    """ScentGrid with random targets/scemts."""
-    def __init__(self):
-        # Meta init
-        super().__init__()
-
-        # Init rest of Env
-        self.noise_sigma = 1.0
-        self.p_targets = 1.0
-        self.num_targets = 20
-        self.target_boundary = (10, 10)
-
-        # Env space
-        self.action_space = spaces.Discrete(4)
-        self.observation_space = spaces.Discrete(2)
-
-        # Targets/scents/etc
-        self.seed()
-        self.reset()
-
-    def reset(self):
-        # Create Targets
-        self.targets = uniform_targets(self.num_targets, self.target_boundary,
-                                       self.np_random)
-        self.values = constant_values(self.targets, 1)
-
-        # Create 'Scent'
-        scents = []
-        for _ in range(len(self.targets)):
-            coord, scent = create_patches(self.target_boundary,
-                                          p=1.0,
-                                          amplitude=1,
-                                          sigma=2)
-            scents.append(scent)
-        self.add_scents(self.targets,
-                        self.values,
-                        coord,
-                        scents,
-                        noise_sigma=self.noise_sigma)
-
-        # Begin in the center
-        self.state = np.zeros(2)
-        self.reward = 0.0
-        self.last()
-
-    def render(self, mode='human', close=False):
-        pass
 
 
 def wsls(num_episodes=10,
@@ -206,17 +133,33 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
          write_to_disk, log_dir, output):
 
     # -- Init --
-    # Worlds
-    seed_value = master_seed
-    env = RandomScentGrid()
+    num_targets = 20
+    target_boundary = (10, 10)  # Field size
+    reward = 1  # Target value
+    p_scent = 0.1  # Prob detection
+    noise_sigma = 1.0  # Sensor noise
 
-    # Re(set) seeds
-    agent.seed(seed_value + n)
-    agent.reset()
-    env.seed(seed_value + n)
-    env.reset()
+    # Targets
+    prng = np.random.RandomState(master_seed)
+    targets = uniform_targets(num_targets, target_boundary, prng=prng)
+    values = constant_values(targets, reward)
 
-    # Run
+    # Scents
+    scents = []
+    for _ in range(len(targets)):
+        coord, scent = create_grid_scent_patches(
+            target_boundary,
+            p=p_scent,
+            amplitude=1,  # Scent width
+            sigma=2)  # Scent mag.
+        scents.append(scent)
+
+    # Env
+    env = ScentGrid(mode=None)
+    env.seed(master_seed)
+    env.add_scents(targets, values, coord, scents, noise_sigma=noise_sigma)
+
+    # -- Run --
     results = experiment(f"{agent_name}",
                          agent,
                          env,
@@ -224,7 +167,7 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
                          num_experiments=num_episodes,
                          dump=False,
                          split_state=True,
-                         seed=seed_value)
+                         seed=master_seed)
 
     # -- Write complete results? ---
     # Note: The exploraationlib fmt varies from the infomercial fmt used
