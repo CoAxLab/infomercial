@@ -9930,3 +9930,247 @@ exp635:
 		--mode='L2' \
 		--lr_R=0.1 \
 		--tie_threshold='(1e-9, 1e1)' \
+
+
+# ----------------------------------------------------------------------------
+# 9/15/2021
+# abad302
+# 
+# More tuning exps w/ alt memories. See exp622-25 for prev. 
+#
+# This time the env is DeceptiveBanditOneHigh10-v0
+
+# L1 (a bayes model) 
+exp636:
+	tune_bandit.py random $(DATA_PATH)/exp636 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L1' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+		
+
+# delta H (ala Calhoun)
+exp637:
+	tune_bandit.py random $(DATA_PATH)/exp637 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='H' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# delta rate / l2
+exp638:
+	tune_bandit.py random $(DATA_PATH)/exp638 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='rate' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# UCB (count model 1)
+exp639:
+	tune_bandit.py random $(DATA_PATH)/exp639 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='UCB' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# EB  (count model 2)
+exp640:
+	tune_bandit.py random $(DATA_PATH)/exp640 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='EB' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# KL  (the ref model)
+exp641:
+	tune_bandit.py random $(DATA_PATH)/exp641 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='KL' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# L2 (a bayes model)
+exp642:
+	tune_bandit.py random $(DATA_PATH)/exp642 \
+		--exp_name='wsls_bandit' \
+		--env_name=DeceptiveBanditOneHigh10-v0 \
+		--num_samples=1000 \
+		--num_episodes=30 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L2' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+
+# ----------------------------------------------------------------------------
+# 9/15/2021
+# abad302
+# 
+# More tuning exps w/ alt memories. See exp622-25 for prev. 
+#
+# This time the env is BanditHardAndSparse10-v0
+
+# L1 (a bayes model) 
+exp643:
+	tune_bandit.py random $(DATA_PATH)/exp643 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L1' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+		
+
+# delta H (ala Calhoun)
+exp644:
+	tune_bandit.py random $(DATA_PATH)/exp644 \
+		--exp_name='wsls_bandit' \
+		---env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='H' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# delta rate / l2
+exp645:
+	tune_bandit.py random $(DATA_PATH)/exp645 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='rate' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# UCB (count model 1)
+exp646:
+	tune_bandit.py random $(DATA_PATH)/exp646 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='UCB' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# EB  (count model 2)
+exp647:
+	tune_bandit.py random $(DATA_PATH)/exp647 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='EB' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# KL  (the ref model)
+exp648:
+	tune_bandit.py random $(DATA_PATH)/exp648 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='KL' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
+
+# L2 (a bayes model)
+exp649:
+	tune_bandit.py random $(DATA_PATH)/exp649 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditHardAndSparse10-v0 \
+		--num_samples=1000 \
+		--num_episodes=10000 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L2' \
+		--lr_R=0.1 \
+		--tie_threshold='(1e-9, 1e1)' \
