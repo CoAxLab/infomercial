@@ -45,6 +45,8 @@ from explorationlib.plot import plot_scent_grid
 from explorationlib.plot import plot_targets2d
 
 from explorationlib.score import total_reward
+from explorationlib.score import total_info_value
+from explorationlib.score import search_efficiency
 from explorationlib.score import num_death
 
 from infomercial.utils import save_checkpoint
@@ -103,7 +105,6 @@ class RandomScentGrid(ScentGrid):
 def run(agent_name="wsls",
          num_episodes=10,
          num_steps=200,
-         num_experiments=10,
          lr=0.1,
          gamma=0.1,
          boredom=0.001,
@@ -113,105 +114,88 @@ def run(agent_name="wsls",
          output=True):
 
     # -- Init --
+    # Worlds
     env = RandomScentGrid()
 
-    # -- Run ! --
-    results = []
+    # Agent 
+    # (Make some hard and fixed choices)
+    if agent_name == "wsls":
+        agent = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
+    elif agent_name == "diffusion":
+        agent = DiffusionGrid(min_length=1, scale=1)
+    elif agent_name == "sniff":
+        agent = GradientDiffusionGrid(min_length=1,
+                                        scale=1.0,
+                                        p_neg=1,
+                                        p_pos=0.0)
+    elif agent_name == "entropy":
+        agent = AccumulatorInfoGrid(min_length=1,
+                                    max_steps=1,
+                                    drift_rate=1,
+                                    threshold=3,
+                                    accumulate_sigma=1)
+    elif agent_name == "softmax":
+        possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        critic = CriticGrid(default_value=0.5)
+        actor = SoftmaxActor(num_actions=len(possible_actions),
+                                actions=possible_actions,
+                                beta=6)
+        agent = ActorCriticGrid(actor, critic, lr=lr, gamma=0.1)
+    else:
+        raise ValueError("agent not known")
 
-    # TODO - HERE - should I only be run num_experiments as num_episodes
-    # because anything else is not consistent w/ the data in bandits.
-    # Or must I run several exps/trials per episone to get anything like 
-    # progress. The two APIs are imperfectly aligned.
-    
-    for n in range(num_episodes):
-        # - Imprelentation note: -
-        # Agents defined every iteration just
-        # in caase agent.reset() is not a complete.
-        # reset. It might not be in exploirationlib
-        # agnets.
-        if agent_name == "wsls":
-            model = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
-        elif agent_name == "diffusion":
-            model = DiffusionGrid(min_length=min_length, scale=1)
-        elif agent_name == "sniff":
-            min_length = 1
-            model = GradientDiffusionGrid(min_length=1,
-                                          scale=1.0,
-                                          p_neg=1,
-                                          p_pos=0.0)
-        elif agent_name == "entropy":
-            model = AccumulatorInfoGrid(min_length=1,
-                                        max_steps=1,
-                                        drift_rate=1,
-                                        threshold=3,
-                                        accumulate_sigma=1)
-        elif agent_name == "softmax":
-            possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-            critic = CriticGrid(default_value=0.5)
-            actor = SoftmaxActor(num_actions=4,
-                                 actions=possible_actions,
-                                 beta=6)
-            model = ActorCriticGrid(actor, critic, lr=0.1, gamma=0.1)
-        else:
-            raise ValueError("agent not known")
+    # Re(set) seeds
+    agent.seed(seed_value + n)
+    agent.reset()
+    env.seed(seed_value + n)
+    env.reset()
 
-        # Set seeds
-        model.seed(seed_value + n)
-        env.seed(seed_value + n)
+    # Run
+    results = experiment(f"{agent_name}",
+                        agent,
+                        env,
+                        num_steps=num_steps,
+                        num_experiments=num_episodes,
+                        dump=False,
+                        split_state=True,
+                        seed=seed_value)
 
-        # Reset
-        model.reset()
-        env.reset()
-
-        # Run
-        result = experiment(f"{agent_name}",
-                            model,
-                            env,
-                            num_steps=num_steps,
-                            num_experiments=num_experiments,
-                            dump=False,
-                            split_state=True,
-                            seed=seed_value)
-        results.append(deepcopy(result))
-
-    # -- Build the final result, and save or return it ---
-    # Extract data to write
+    # -- Write complete results? ---
+    # Note: The exploraationlib fmt varies from the infomercial fmt used
+    # elsewhere. Here I align them, as best I can.
     if write_to_disk:
-        result = None # safety
+        # Inir
         writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
-        for n, result in enumerate(results):
-            total_R = total_reward(result)
-            writer.add_scalar("total_R", total_R, n)
+        
+        # Extract using explib fns.
+        total_Rs = total_reward(results)
+        total_Es = total_info_value(results)
+        total_deaths = num_death(results)
+        total_effs = search_efficiency(results)
+        
+        # Write 'em into writer
+        for n in range(num_episodes):
+            writer.add_scalar("total_E", total_Es[n], n)
+            writer.add_scalar("total_R", total_Rs[n], n)
+            writer.add_scalar("death", total_deaths[n], n)
+            writer.add_scalar("efficiency", total_effs[n], n)
+            # Approx with the step values functions
+            # with their mean
+            log = results[n]
+            writer.add_scalar("value_R", np.mean(log["agent_reward_value"]), n)
+            writer.add_scalar("value_E", np.mean(log["agent_info_value"]), n)
 
-        # Get state/value
-        # # Log data
-        # writer.add_scalar("state", int(state), n)
-        # writer.add_scalar("action", action, n)
-        # writer.add_scalar("regret", regret, n)
-        # writer.add_scalar("bonus", novelty_bonus, n)
-        # writer.add_scalar("score_E", E_t, n)
-        # writer.add_scalar("score_R", R_t, n)
-        # writer.add_scalar("value_ER", critic(action), n)
-        # writer.add_scalar("value_R", critic(action), n)
+        # Clean 
+        writer.close()
 
-        # total_E += E_t
-        # total_R += R_t
-        # total_regret += regret
-        # writer.add_scalar("total_regret", total_regret, n)
-        # writer.add_scalar("total_E", total_E, n)
-        # writer.add_scalar("total_R", total_R, n)
-        # writer.add_scalar("p_bests", num_best / (n + 1), n)
-    
-    writer.close()
-
-    # -- Summarize ressults --
+    # -- Summarize --
     summary = dict(env_name="RandomScentGrid",
                   agent_name=agent_name,
-                  model=deepcopy(model),
+                  agent=deepcopy(agent),
                   env=deepcopy(env),
                   num_episodes=num_episodes,
-                  total_E=total_E,
-                  total_R=total_R,
+                  total_E=total_Es[-1],
+                  total_R=total_Rs[-1],
                   master_seed=seed_value)      
     if write_to_disk:
         save_checkpoint(summary,
