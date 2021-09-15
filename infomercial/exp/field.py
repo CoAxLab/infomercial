@@ -131,7 +131,7 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
     num_targets = 20
     target_boundary = (10, 10)  # Field size
     reward = 1  # Target value
-    p_scent = 0.1  # Prob detection
+    p_scent = 1.0  # Prob detection
     noise_sigma = 1.0  # Sensor noise
 
     # Targets
