@@ -1,5 +1,5 @@
 ---
-title: "Test analysis notebook - test1-5"
+title: "Test analysis notebook - test1-5 and test6-9"
 output: html_notebook
 ---
 
@@ -27,7 +27,8 @@ source("utils.R")
 data_path <- "~/Code/infomercial/data/"
 ```
 
-# Load data 
+# Test: 1-5
+## Load data 
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditOneHigh4"
@@ -107,7 +108,7 @@ results_test$total_E <- results_test$total_E - E_bias
 results_test$total_E[results_test$total_E < 0] <- 0
 ```
 
-# Behave
+## Behave
 ```{r, fig.width=10, fig.height=3}
 results_test %>% 
   filter(run <= 10) %>%
@@ -120,7 +121,8 @@ results_test %>%
   theme(strip.background = element_blank()) +
   labs(x="Time", y="Action")
 ```
-# Policy - wsls only
+
+## Policy - wsls only
 ```{r, fig.width=10, fig.height=1.5}
 results_test %>% 
   filter(agent=="wsls") %>% 
@@ -136,8 +138,8 @@ results_test %>%
   labs(x="Time", y="Policy")
 ```
 
-# Values
-## Info value
+## Values
+### Info value
 ```{r, fig.width=10, fig.height=1.5}
 results_test %>% 
   filter(agent=="wsls") %>% 
@@ -151,7 +153,8 @@ results_test %>%
   theme(strip.background = element_blank()) +
   labs(x="Time", y="Value")
 ```
-## Reward
+
+### Reward
 ```{r, fig.width=10, fig.height=3}
 results_test %>% 
   filter(run <= 10) %>%
@@ -164,8 +167,9 @@ results_test %>%
   theme(strip.background = element_blank()) +
   labs(x="Time", y="Value")
 ```
-# Total reward
-## Boxplot
+
+## Total reward
+### Boxplot
 ```{r, fig.width=2, fig.height=3}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
@@ -184,7 +188,7 @@ tmp %>%
   labs(x="Agent", y="Total reward")
 ```
 
-## Scatter/mean
+### Scatter/mean
 ```{r, fig.width=2, fig.height=3}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
@@ -204,7 +208,7 @@ tmp %>%
   labs(x="Agent", y="Total reward")
 ```
 
-## Histogram
+### Histogram
 ```{r, fig.width=4, fig.height=2}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
@@ -221,7 +225,7 @@ tmp %>%
   labs(x="Total reward", y="Count") 
 ```
 
-## Density
+### Density
 ```{r, fig.width=4, fig.height=2}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
@@ -234,6 +238,117 @@ results_test %>%
 tmp %>% 
   ggplot(aes(x=total_R, fill=agent)) +
   geom_density(alpha=0.6) +
+  theme_classic() +
+  labs(x="Total reward", y="Count") 
+```
+
+# Test: 16-8
+## Load data 
+```{r, message=FALSE, warning=FALSE}
+# -------------------------------------------------------------
+task_name <- "ScentGrid"
+task_code <- 1
+num_episodes <- 200
+run_codes <- 1:100
+
+exp_names <- c(
+  "test6", 
+  "test7", 
+  "test8")
+
+agent_names <- c(
+  "wsls", 
+  "chemotaxis", 
+  "softmax") 
+
+class_names <- c(
+  "Curiosity",
+  "Sense",
+  "RL")
+
+file_names <- c("total_R",
+                "total_E",
+                "value_E",
+                "value_R")
+
+results_test <- NULL
+for(i in 1:length(exp_names)){
+  # Load
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  tmp <- load_result_np(exp_name, run_codes, file_names, n_max=num_episodes+1)
+  
+  # Meta
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  # Join
+  results_test <- bind_rows(results_test, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+results_test$agent <- factor(results_test$agent, levels=agent_names)
+```
+
+## Total reward
+### Boxplot
+```{r, fig.width=2, fig.height=3}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_boxplot(width=0.5) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(legend.position = "none") +
+  labs(x="Agent", y="Total reward")
+```
+
+### Scatter/mean
+```{r, fig.width=2, fig.height=3}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E)) %>% 
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(width=0.2, size=0.1) +
+  stat_summary(fun = mean) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(legend.position = "none") +
+  labs(x="Agent", y="Total reward")
+```
+
+### Histogram
+```{r, fig.width=4, fig.height=2}
+results_test %>% 
+  group_by(strategy, agent, run) %>% 
+  summarise(total_R = last(total_R),
+            total_E = last(total_E)) %>% 
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=total_R, fill=agent)) +
+  geom_histogram(alpha=0.6, bins=50) +
   theme_classic() +
   labs(x="Total reward", y="Count") 
 ```
