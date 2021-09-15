@@ -177,14 +177,13 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
         total_deaths = num_death(results)
         total_effs = search_efficiency(results)
 
-        # Write 'em into writer
+        # Write 'em
         for n in range(num_episodes):
             writer.add_scalar("total_E", total_Es[n], n)
             writer.add_scalar("total_R", total_Rs[n], n)
             writer.add_scalar("num_death", total_deaths, n)
             writer.add_scalar("efficiency", total_effs[n], n)
-            # Approx with the step values functions
-            # with their mean
+            # Approx total step value functions
             log = results[n]
             writer.add_scalar("value_R", np.mean(log["agent_reward_value"]), n)
             writer.add_scalar("value_E", np.mean(log["agent_info_value"]), n)
