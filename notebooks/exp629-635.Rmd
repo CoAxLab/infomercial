@@ -91,7 +91,6 @@ results %>%
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_continuous(breaks = c(0, 500, 1000)) +
-  scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) +
   facet_grid(. ~ agent) 
 ```
@@ -102,14 +101,12 @@ results %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1, alpha = 0.6) +
   geom_vline(aes(xintercept=1), color="grey") +
-  geom_hline(aes(yintercept=200/4), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_log10() +
-  scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) +
   facet_wrap(. ~ agent) 
 ```
@@ -118,15 +115,13 @@ results %>%
 ```{r, fig.width=8, fig.height=4}
 results %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
-  geom_point(size = 1, alpha = 0.6) +
+  geom_point(size = 1.25, alpha = 0.6) +
   geom_vline(aes(xintercept=1), color="grey") +
-  geom_hline(aes(yintercept=200/4), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
   # theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_log10() +
-  scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) 
 ```
