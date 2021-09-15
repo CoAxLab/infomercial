@@ -19,5 +19,6 @@ setup(name='infomercial',
           'infomercial/exp/softentropy_bandit.py',
           'infomercial/exp/tune_bandit.py',
           'infomercial/exp/curiosity_bandit.py',
+          'infomercial/exp/field.py',
       ],
       zip_safe=False)
