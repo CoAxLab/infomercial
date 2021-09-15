@@ -1,6 +1,7 @@
 import shutil
 import glob
 import os
+from IPython.core import oinspect
 
 from gym import spaces
 from gym.utils import seeding
@@ -102,47 +103,112 @@ class RandomScentGrid(ScentGrid):
         pass
 
 
-def run(agent_name="wsls",
-         num_episodes=10,
+def wsls(num_episodes=10,
          num_steps=200,
          lr=0.1,
          gamma=0.1,
          boredom=0.001,
-         seed_value=None,
+         master_seed=None,
          write_to_disk=True,
          log_dir=None,
          output=True):
 
+    agent_name = "wsls"
+    agent = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
+
+    return _run(agent, agent_name, num_episodes, num_steps, master_seed,
+                write_to_disk, log_dir, output)
+
+
+def diffusion(num_episodes=10,
+              num_steps=200,
+              min_length=1,
+              scale=1,
+              master_seed=None,
+              write_to_disk=True,
+              log_dir=None,
+              output=True):
+
+    agent_name = "diffusion"
+    agent = DiffusionGrid(min_length=min_length, scale=scale)
+
+    return _run(agent, agent_name, num_episodes, num_steps, master_seed,
+                write_to_disk, log_dir, output)
+
+
+def chemotaxis(num_episodes=10,
+               num_steps=200,
+               min_length=1,
+               scale=1,
+               p_neg=1,
+               p_pos=0.0,
+               master_seed=None,
+               write_to_disk=True,
+               log_dir=None,
+               output=True):
+
+    agent_name = "chemotaxis"
+    agent = GradientDiffusionGrid(min_length=min_length,
+                                  scale=scale,
+                                  p_neg=p_neg,
+                                  p_pos=p_pos)
+
+    return _run(agent, agent_name, num_episodes, num_steps, master_seed,
+                write_to_disk, log_dir, output)
+
+
+def entropy(num_episodes=10,
+            num_steps=200,
+            min_length=1,
+            max_steps=1,
+            drift_rate=1,
+            threshold=3,
+            accumulate_sigma=1,
+            master_seed=None,
+            write_to_disk=True,
+            log_dir=None,
+            output=True):
+
+    agent_name = "entropy"
+    agent = AccumulatorInfoGrid(min_length=min_length,
+                                max_steps=max_steps,
+                                drift_rate=drift_rate,
+                                threshold=threshold,
+                                accumulate_sigma=accumulate_sigma)
+
+    return _run(agent, agent_name, num_episodes, num_steps, master_seed,
+                write_to_disk, log_dir, output)
+
+
+def softmax(num_episodes=10,
+            num_steps=200,
+            lr=0.1,
+            temp=6,
+            gamma=0.1,
+            master_seed=None,
+            write_to_disk=True,
+            log_dir=None,
+            output=True):
+
+    agent_name = "softmax"
+    possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    critic = CriticGrid(default_value=0.5)
+    actor = SoftmaxActor(num_actions=len(possible_actions),
+                         actions=possible_actions,
+                         beta=temp)
+    agent = ActorCriticGrid(actor, critic, lr=lr, gamma=gamma)
+
+    return _run(agent, agent_name, num_episodes, num_steps, master_seed,
+                write_to_disk, log_dir, output)
+
+
+def _run(agent, agent_name, num_episodes, num_steps, master_seed,
+         write_to_disk, log_dir, output):
+
     # -- Init --
     # Worlds
+    seed_value = master_seed
     env = RandomScentGrid()
-
-    # Agent 
-    # (Make some hard and fixed choices)
-    if agent_name == "wsls":
-        agent = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
-    elif agent_name == "diffusion":
-        agent = DiffusionGrid(min_length=1, scale=1)
-    elif agent_name == "sniff":
-        agent = GradientDiffusionGrid(min_length=1,
-                                        scale=1.0,
-                                        p_neg=1,
-                                        p_pos=0.0)
-    elif agent_name == "entropy":
-        agent = AccumulatorInfoGrid(min_length=1,
-                                    max_steps=1,
-                                    drift_rate=1,
-                                    threshold=3,
-                                    accumulate_sigma=1)
-    elif agent_name == "softmax":
-        possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        critic = CriticGrid(default_value=0.5)
-        actor = SoftmaxActor(num_actions=len(possible_actions),
-                                actions=possible_actions,
-                                beta=6)
-        agent = ActorCriticGrid(actor, critic, lr=lr, gamma=0.1)
-    else:
-        raise ValueError("agent not known")
 
     # Re(set) seeds
     agent.seed(seed_value + n)
@@ -152,13 +218,13 @@ def run(agent_name="wsls",
 
     # Run
     results = experiment(f"{agent_name}",
-                        agent,
-                        env,
-                        num_steps=num_steps,
-                        num_experiments=num_episodes,
-                        dump=False,
-                        split_state=True,
-                        seed=seed_value)
+                         agent,
+                         env,
+                         num_steps=num_steps,
+                         num_experiments=num_episodes,
+                         dump=False,
+                         split_state=True,
+                         seed=seed_value)
 
     # -- Write complete results? ---
     # Note: The exploraationlib fmt varies from the infomercial fmt used
@@ -166,13 +232,13 @@ def run(agent_name="wsls",
     if write_to_disk:
         # Inir
         writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
-        
+
         # Extract using explib fns.
         total_Rs = total_reward(results)
         total_Es = total_info_value(results)
         total_deaths = num_death(results)
         total_effs = search_efficiency(results)
-        
+
         # Write 'em into writer
         for n in range(num_episodes):
             writer.add_scalar("total_E", total_Es[n], n)
@@ -185,22 +251,22 @@ def run(agent_name="wsls",
             writer.add_scalar("value_R", np.mean(log["agent_reward_value"]), n)
             writer.add_scalar("value_E", np.mean(log["agent_info_value"]), n)
 
-        # Clean 
+        # Clean
         writer.close()
 
     # -- Summarize --
     summary = dict(env_name="RandomScentGrid",
-                  agent_name=agent_name,
-                  agent=deepcopy(agent),
-                  env=deepcopy(env),
-                  num_episodes=num_episodes,
-                  total_E=total_Es[-1],
-                  total_R=total_Rs[-1],
-                  master_seed=seed_value)      
+                   agent_name=agent_name,
+                   agent=deepcopy(agent),
+                   env=deepcopy(env),
+                   num_episodes=num_episodes,
+                   total_E=total_Es[-1],
+                   total_R=total_Rs[-1],
+                   master_seed=seed_value)
     if write_to_disk:
         save_checkpoint(summary,
                         filename=os.path.join(writer.log_dir, "result.pkl"))
-                        
+
     if output:
         return summary
     else:
@@ -209,4 +275,10 @@ def run(agent_name="wsls",
 
 if __name__ == "__main__":
     import fire
-    fire.Fire({run)
+    fire.Fire({
+        "wsls": wsls,
+        "softmax": softmax,
+        "diffusion": diffusion,
+        "chemotaxis": chemotaxis,
+        "entropy": entropy
+    })
