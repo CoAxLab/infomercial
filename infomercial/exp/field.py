@@ -1,12 +1,12 @@
-from gym import spaces
-
+import os
 import numpy as np
+
 from copy import deepcopy
 
 from noboard.csv import SummaryWriter
+from infomercial.utils import save_checkpoint
 
 from explorationlib.local_gym import ScentGrid
-
 from explorationlib.agent import DeterministicWSLSGrid
 from explorationlib.agent import CriticGrid
 from explorationlib.agent import SoftmaxActor
@@ -14,20 +14,15 @@ from explorationlib.agent import DiffusionGrid
 from explorationlib.agent import GradientDiffusionGrid
 from explorationlib.agent import AccumulatorInfoGrid
 from explorationlib.agent import ActorCriticGrid
-
 from explorationlib.run import experiment
-
 from explorationlib.local_gym import uniform_targets
 from explorationlib.local_gym import constant_values
 from explorationlib.local_gym import ScentGrid
 from explorationlib.local_gym import create_grid_scent_patches
-
 from explorationlib.score import total_reward
 from explorationlib.score import total_info_value
 from explorationlib.score import search_efficiency
 from explorationlib.score import num_death
-
-from infomercial.utils import save_checkpoint
 
 
 def wsls(num_episodes=10,
@@ -186,7 +181,7 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
         for n in range(num_episodes):
             writer.add_scalar("total_E", total_Es[n], n)
             writer.add_scalar("total_R", total_Rs[n], n)
-            writer.add_scalar("death", total_deaths[n], n)
+            writer.add_scalar("num_death", total_deaths, n)
             writer.add_scalar("efficiency", total_effs[n], n)
             # Approx with the step values functions
             # with their mean
@@ -205,7 +200,7 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
                    num_episodes=num_episodes,
                    total_E=total_Es[-1],
                    total_R=total_Rs[-1],
-                   master_seed=seed_value)
+                   master_seed=master_seed)
     if write_to_disk:
         save_checkpoint(summary,
                         filename=os.path.join(writer.log_dir, "result.pkl"))
