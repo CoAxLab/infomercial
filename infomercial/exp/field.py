@@ -167,15 +167,17 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
     # -- Write complete results? ---
     # Note: The exploraationlib fmt varies from the infomercial fmt used
     # elsewhere. Here I align them, as best I can.
+
+    # Get totals
+    total_Rs = total_reward(results)
+    total_Es = total_info_value(results)
+    total_deaths = num_death(results)
+    total_effs = search_efficiency(results)
+
+    # Write?
     if write_to_disk:
         # Inir
         writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
-
-        # Extract using explib fns.
-        total_Rs = total_reward(results)
-        total_Es = total_info_value(results)
-        total_deaths = num_death(results)
-        total_effs = search_efficiency(results)
 
         # Write 'em
         for n in range(num_episodes):
