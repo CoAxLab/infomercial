@@ -176,19 +176,35 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
 
     # Write?
     if write_to_disk:
-        # Inir
+        # Init
         writer = SummaryWriter(log_dir=log_dir, write_to_disk=write_to_disk)
 
         # Write 'em
         for n in range(num_episodes):
+            # Totals for nth
             writer.add_scalar("total_E", total_Es[n], n)
             writer.add_scalar("total_R", total_Rs[n], n)
             writer.add_scalar("num_death", total_deaths, n)
             writer.add_scalar("efficiency", total_effs[n], n)
-            # Approx total step value functions
+
+            # All ith steps
             log = results[n]
-            writer.add_scalar("value_R", np.mean(log["agent_reward_value"]), n)
-            writer.add_scalar("value_E", np.mean(log["agent_info_value"]), n)
+            ## States
+            for i, pos in enumerate(log["exp_state"]):
+                writer.add_scalar(f"x_pos_{n}", pos[0], i)
+                writer.add_scalar(f"y_pos_{n}", pos[1], i)
+            ## Scent/'obs'
+            for i, obs in enumerate(log["exp_obs"]):
+                writer.add_scalar(f"obs_{n}", obs, i)
+            ## Values
+            for i, value_R in enumerate(log["agent_reward_value"]):
+                writer.add_scalar(f"value_R_{n}", value_R, i)
+            for i, value_E in enumerate(log["agent_info_value"]):
+                writer.add_scalar(f"value_E_{n}", value_E, i)
+            ## Actions
+            for i, action in enumerate(log["agent_action"]):
+                writer.add_scalar(f"x_action_{n}", action[0], i)
+                writer.add_scalar(f"y_action_{n}", action[1], i)
 
         # Clean
         writer.close()
