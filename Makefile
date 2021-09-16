@@ -1,7 +1,7 @@
 SHELL=/bin/bash -O expand_aliases
-# DATA_PATH=/Users/qualia/Code/infomercial/data
+DATA_PATH=/Users/qualia/Code/infomercial/data
 # DATA_PATH=/Volumes/Data/infomercial/data
-DATA_PATH=/home/stitch/Code/infomercial/data/
+# DATA_PATH=/home/stitch/Code/infomercial/data/
 
 # ----------------------------------------------------------------------------
 # Test recipes for various agents/parameters
@@ -43,6 +43,29 @@ test5:
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
 			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1} --output=False' ::: {0..100}
+
+# field tester - change as needed
+# wsls
+test6:
+	-rm -rf $(DATA_PATH)/test6*
+	parallel -j 4 \
+			--nice 19 --delay 2 --colsep ',' --bar \
+			'field.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
+
+# chemo		
+test7:
+	-rm -rf $(DATA_PATH)/test7*
+	parallel -j 4 \
+			--nice 19 --delay 2 --colsep ',' --bar \
+			'field.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1 --min_length=1 --p_neg=1.0 --p_pos=0.0 --log_dir=$(DATA_PATH)/test7/run{1} --master_seed={1} --output=False' ::: {0..100}
+
+# softmax (rl)		
+test8:
+	-rm -rf $(DATA_PATH)/test8*
+	parallel -j 4 \
+			--nice 19 --delay 2 --colsep ',' --bar \
+			'field.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..100}
+
 
 # ----------------------------------------------------------------------------
 # 3-28-2019
