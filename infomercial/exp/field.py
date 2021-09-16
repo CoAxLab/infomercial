@@ -35,9 +35,11 @@ def wsls(num_episodes=10,
          log_dir=None,
          output=True):
 
+    # Init
     agent_name = "wsls"
     agent = DeterministicWSLSGrid(lr=lr, gamma=gamma, boredom=boredom)
 
+    # !
     return _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 write_to_disk, log_dir, output)
 
@@ -50,10 +52,11 @@ def diffusion(num_episodes=10,
               write_to_disk=True,
               log_dir=None,
               output=True):
-
+    # Init
     agent_name = "diffusion"
     agent = DiffusionGrid(min_length=min_length, scale=scale)
 
+    # !
     return _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 write_to_disk, log_dir, output)
 
@@ -69,12 +72,14 @@ def chemotaxis(num_episodes=10,
                log_dir=None,
                output=True):
 
+    # Init
     agent_name = "chemotaxis"
     agent = GradientDiffusionGrid(min_length=min_length,
                                   scale=scale,
                                   p_neg=p_neg,
                                   p_pos=p_pos)
 
+    # !
     return _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 write_to_disk, log_dir, output)
 
@@ -91,6 +96,7 @@ def entropy(num_episodes=10,
             log_dir=None,
             output=True):
 
+    # Init
     agent_name = "entropy"
     agent = AccumulatorInfoGrid(min_length=min_length,
                                 max_steps=max_steps,
@@ -98,6 +104,7 @@ def entropy(num_episodes=10,
                                 threshold=threshold,
                                 accumulate_sigma=accumulate_sigma)
 
+    # !
     return _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 write_to_disk, log_dir, output)
 
@@ -112,6 +119,7 @@ def softmax(num_episodes=10,
             log_dir=None,
             output=True):
 
+    # Init
     agent_name = "softmax"
     possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     critic = CriticGrid(default_value=0.5)
@@ -120,6 +128,7 @@ def softmax(num_episodes=10,
                          beta=temp)
     agent = ActorCriticGrid(actor, critic, lr=lr, gamma=gamma)
 
+    # !
     return _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 write_to_disk, log_dir, output)
 
