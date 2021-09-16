@@ -10197,3 +10197,88 @@ exp649:
 		--mode='L2' \
 		--lr_R=0.1 \
 		--tie_threshold='(1e-9, 1e1)' \
+
+
+# --------------------------------------------------------------------------
+# 9/16/2021
+# c052563
+#
+# Optimize exploration parameters for field models. Fix lr/gamma (0,1)
+
+# field.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
+
+# wsls
+exp650:
+	tune_field.py random $(DATA_PATH)/exp650 \
+		--exp_name='wsls' \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--lr=0.1 \
+		--gamma=0.1 \
+		--boredom='(1e-9, 1e1)' \
+
+# diffusion
+exp651:
+	tune_field.py random $(DATA_PATH)/exp651 \
+		--exp_name='diffusion' \
+		--num_samples=10 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=False \
+		--output=False \
+		--metric="total_R" \
+		--scale='(1, 5)' \
+
+# chemotaxis
+exp652:
+	tune_field.py random $(DATA_PATH)/exp652 \
+		--exp_name='chemotaxis' \
+		--num_samples=10 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=False \
+		--output=False \
+		--metric="total_R" \
+		--p_neg=1.0 \
+		--p_pos=0.0 \
+		--scale='(1, 5)' \
+
+# entropy
+exp653:
+	tune_field.py random $(DATA_PATH)/exp653 \
+		--exp_name='entropy' \
+		--num_samples=100 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--accumulate_sigma=(0.01, 10) \
+
+# softmax (standard actor-critic rl)
+exp654:
+	tune_field.py random $(DATA_PATH)/exp654 \
+		--exp_name='softmax' \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--lr=0.1 \
+		--gamma=0.1 \
+		--temp=(0.001, 10) \
