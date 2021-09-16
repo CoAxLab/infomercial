@@ -194,10 +194,9 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
         writer.close()
 
     # -- Summarize --
-    summary = dict(env_name="RandomScentGrid",
+    summary = dict(env_name="ScentGrid",
                    agent_name=agent_name,
                    agent=deepcopy(agent),
-                   env=deepcopy(env),
                    num_episodes=num_episodes,
                    total_E=total_Es[-1],
                    total_R=total_Rs[-1],
