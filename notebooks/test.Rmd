@@ -71,7 +71,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-results_test <- NULL
+results_test15 <- NULL
 for(i in 1:length(exp_names)){
   # Load
   exp_name <- exp_names[i]
@@ -90,27 +90,27 @@ for(i in 1:length(exp_names)){
   tmp$num_episodes <- num_episodes
   
   # Join
-  results_test <- bind_rows(results_test, tmp)
+  results_test15 <- bind_rows(results_test15, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-results_test$agent <- factor(results_test$agent, levels=agent_names)
+results_test15$agent <- factor(results_test15$agent, levels=agent_names)
 
 # Policy as factors
 # Rename levels
-results_test$policy <- as.factor(results_test$policy)
-results_test$policy <- recode_factor(results_test$policy, `0`="explore", `1`="exploit")
+results_test15$policy <- as.factor(results_test15$policy)
+results_test15$policy <- recode_factor(results_test15$policy, `0`="explore", `1`="exploit")
 
 # Remove E_bias
-results_test$total_E <- results_test$total_E - E_bias
-results_test$total_E[results_test$total_E < 0] <- 0
+results_test15$total_E <- results_test15$total_E - E_bias
+results_test15$total_E[results_test15$total_E < 0] <- 0
 ```
 
 ## Behave
 ```{r, fig.width=10, fig.height=3}
-results_test %>% 
+results_test15 %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.5) +
@@ -124,7 +124,7 @@ results_test %>%
 
 ## Policy - wsls only
 ```{r, fig.width=10, fig.height=1.5}
-results_test %>% 
+results_test15 %>% 
   filter(agent=="wsls") %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=policy, group=run, color=policy)) +
@@ -141,14 +141,14 @@ results_test %>%
 ## Values
 ### Info value
 ```{r, fig.width=10, fig.height=1.5}
-results_test %>% 
+results_test15 %>% 
   filter(agent=="wsls") %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=value_E, group=run)) +
   geom_line() +
   facet_grid(agent~run) +
-  scale_y_log10() +
   theme_classic() +
+  scale_y_log10() +
   theme(strip.text.y = element_text(angle = 0)) +
   theme(strip.background = element_blank()) +
   labs(x="Time", y="Value")
@@ -156,7 +156,7 @@ results_test %>%
 
 ### Reward
 ```{r, fig.width=10, fig.height=3}
-results_test %>% 
+results_test15 %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=value_R, group=run)) +
   geom_line() +
@@ -171,7 +171,7 @@ results_test %>%
 ## Total reward
 ### Boxplot
 ```{r, fig.width=2, fig.height=3}
-results_test %>% 
+results_test15 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -190,7 +190,7 @@ tmp %>%
 
 ### Scatter/mean
 ```{r, fig.width=2, fig.height=3}
-results_test %>% 
+results_test15 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -210,7 +210,7 @@ tmp %>%
 
 ### Histogram
 ```{r, fig.width=4, fig.height=2}
-results_test %>% 
+results_test15 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -227,7 +227,7 @@ tmp %>%
 
 ### Density
 ```{r, fig.width=4, fig.height=2}
-results_test %>% 
+results_test15 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E),
@@ -242,7 +242,7 @@ tmp %>%
   labs(x="Total reward", y="Count") 
 ```
 
-# Test: 16-8
+# Test: 6-8
 ## Load data 
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
@@ -279,7 +279,7 @@ file_names <- c("total_R",
                 "y_pos_20",
                 "obs_20")
 
-results_test <- NULL
+results_test68 <- NULL
 for(i in 1:length(exp_names)){
   # Load
   exp_name <- exp_names[i]
@@ -298,19 +298,19 @@ for(i in 1:length(exp_names)){
   tmp$num_episodes <- num_episodes
   
   # Join
-  results_test <- bind_rows(results_test, tmp)
+  results_test68 <- bind_rows(results_test68, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-results_test$agent <- factor(results_test$agent, levels=agent_names)
+results_test68$agent <- factor(results_test68$agent, levels=agent_names)
 ```
 
 ## Behave
 ### First ep
 ```{r, fig.width=3, fig.height=2}
-results_test %>% 
+results_test68 %>% 
   filter(run == 5) %>% 
   ggplot(aes(x=x_pos_1, y=y_pos_1, color=agent)) +
   geom_point(alpha=0.5) +
@@ -321,7 +321,7 @@ results_test %>%
 
 ### Last ep
 ```{r, fig.width=3, fig.height=2}
-results_test %>% 
+results_test68 %>% 
   filter(run == 5) %>% 
   ggplot(aes(x=x_pos_20, y=y_pos_20, color=agent)) +
   geom_point(alpha=0.5) +
@@ -333,7 +333,7 @@ results_test %>%
 ## Total reward
 ### Boxplot
 ```{r, fig.width=2, fig.height=2}
-results_test %>% 
+results_test68 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E)) %>%  
@@ -351,7 +351,7 @@ tmp %>%
 
 ### Scatter/mean
 ```{r, fig.width=2, fig.height=2}
-results_test %>% 
+results_test68 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E)) %>% 
