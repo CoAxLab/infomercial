@@ -249,7 +249,7 @@ tmp %>%
 task_name <- "ScentGrid"
 task_code <- 1
 num_episodes <- 200
-run_codes <- 1:100
+run_codes <- 1:20
 
 exp_names <- c(
   "test6", 
@@ -268,8 +268,16 @@ class_names <- c(
 
 file_names <- c("total_R",
                 "total_E",
-                "value_E",
-                "value_R")
+                "value_E_1", #
+                "value_R_1",
+                "x_pos_1",
+                "y_pos_1",
+                "obs_1",
+                "value_E_20", #
+                "value_R_20",
+                "x_pos_20",
+                "y_pos_20",
+                "obs_20")
 
 results_test <- NULL
 for(i in 1:length(exp_names)){
@@ -277,7 +285,7 @@ for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
   class_name <- class_names[i]
-  tmp <- load_result_np(exp_name, run_codes, file_names, n_max=num_episodes+1)
+  tmp <- load_result_np(exp_name, run_codes, file_names, n_max=num_episodes-1)
   
   # Meta
   tmp %>% 
@@ -299,9 +307,32 @@ for(i in 1:length(exp_names)){
 results_test$agent <- factor(results_test$agent, levels=agent_names)
 ```
 
+## Behave
+### First ep
+```{r, fig.width=3, fig.height=2}
+results_test %>% 
+  filter(run == 5) %>% 
+  ggplot(aes(x=x_pos_1, y=y_pos_1, color=agent)) +
+  geom_point(alpha=0.5) +
+  theme_classic() +
+  labs(x="x", y="y") +
+  lims(x=c(-30, 30), y=c(-30, 30))
+```
+
+### Last ep
+```{r, fig.width=3, fig.height=2}
+results_test %>% 
+  filter(run == 5) %>% 
+  ggplot(aes(x=x_pos_20, y=y_pos_20, color=agent)) +
+  geom_point(alpha=0.5) +
+  theme_classic() +
+  labs(x="x", y="y") +
+  lims(x=c(-30, 30), y=c(-30, 30))
+```
+
 ## Total reward
 ### Boxplot
-```{r, fig.width=2, fig.height=3}
+```{r, fig.width=2, fig.height=2}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
@@ -319,7 +350,7 @@ tmp %>%
 ```
 
 ### Scatter/mean
-```{r, fig.width=2, fig.height=3}
+```{r, fig.width=2, fig.height=2}
 results_test %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
@@ -351,4 +382,26 @@ tmp %>%
   geom_histogram(alpha=0.6, bins=50) +
   theme_classic() +
   labs(x="Total reward", y="Count") 
+```
+## Value
+### First ep
+```{r, fig.width=3, fig.height=1}
+results_test %>% 
+  filter(agent != "chemotaxis") %>% 
+  filter(run == 5) %>% 
+  ggplot(aes(x=global_step, y=value_R_1, color=agent)) +
+  geom_line(alpha=1) +
+  theme_classic() +
+  labs(x="Step", y="Value") 
+```
+
+### Last ep
+```{r, fig.width=3, fig.height=1}
+results_test %>% 
+  filter(agent != "chemotaxis") %>% 
+  filter(run == 5) %>% 
+  ggplot(aes(x=global_step, y=value_R_20, color=agent)) +
+  geom_line(alpha=1) +
+  theme_classic() +
+  labs(x="Step", y="Value") 
 ```
