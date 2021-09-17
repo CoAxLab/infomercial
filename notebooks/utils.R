@@ -70,7 +70,7 @@ load_result_np <- function(exp_name,
       ),
       skip = skip,
       n_max = n_max,
-      show_col_types = FALSE
+      # show_col_types = FALSE
     )
     for (name in file_names[2:num_files]) {
       file_name <- paste(
@@ -86,7 +86,7 @@ load_result_np <- function(exp_name,
             file_name,
             skip = skip,
             n_max = n_max,
-            show_col_types = FALSE
+            # show_col_types = FALSE
           )
         runtmp[[name]] <- tmp[[name]]
       } else {
