@@ -26,7 +26,7 @@ options(scipen=1000000)
 ```
 
 # Example spaces
-```{r, fig.width=1.5, fig.height=1.55}
+```{r, fig.width=3.2, fig.height=3.3}
 # --- An arrow
 arrow <- data.frame(x=0, xend=2, y=0.5, yend=0.5)
 arrow %>% 
@@ -36,7 +36,7 @@ ggplot(aes(x=x, y=y, xend=xend, yend = yend)) +
     size = 0.5, arrow = arrow(length = unit(0.1, "inches"))
   ) +
   labs(x="", y="") +
-  theme_pubr(base_size = 8, legend = "none") +
+  theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   # theme(panel.background = element_rect(fill = 'grey', color='grey')) +
   theme(axis.text = element_blank()) +
@@ -63,7 +63,7 @@ int_space %>%
   ggplot(aes(x=x, y=y)) +
   geom_point(color="white") +
   labs(x="", y="", title="Count") +
-  theme_pubr(base_size = 5, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   scale_x_continuous(limits=c(0, 5), breaks=ints) +
   scale_y_continuous(limits=c(0, 5), breaks=ints) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.2, 'line')))) -> p1
@@ -72,7 +72,7 @@ ratio_space %>%
   ggplot(aes(x=x, y=y)) +
   geom_point(color="white") +
   labs(x="", y="", title="Rational") +
-  theme_pubr(base_size = 5, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   # scale_x_continuous(limits=c(0, 5), breaks=ints) +
   # scale_y_continuous(limits=c(0, 5), breaks=ints) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.2, 'line')))) -> p2
@@ -81,7 +81,7 @@ prob_space %>%
   ggplot(aes(x=x, y=y)) +
   geom_point(color="white") +
   labs(x="", y="", title="Probability") +
-  theme_pubr(base_size = 5, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   scale_x_continuous(limits=probs, breaks=probs) +
   scale_y_continuous(limits=probs, breaks=probs) -> p3
   
@@ -89,7 +89,7 @@ real_space %>%
   ggplot(aes(x=x, y=y)) +
   geom_point(color="white") +
   labs(x="", y="", title="Real") +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 7, legend = "none") +
   scale_x_continuous(limits=c(0, 1.6), breaks=reals) +
   scale_y_continuous(limits=c(0, 1.8), breaks=reals) + 
   theme(axis.text = element_blank()) +
@@ -99,8 +99,8 @@ real_space %>%
 
 # --- build final
 cartoon1 <- ((p1 / p2 / p3 ) | a1 | (plot_spacer() / p4 / plot_spacer())) + 
-  plot_annotation(title="Examples of memory space",
-                  theme = theme_pubr(base_size = 8, legend = "none"))
+  plot_annotation(title="Examples of memory",
+                  theme = theme_pubr(base_size = 10, legend = "none"))
 print(cartoon1)
 
 name <- "img/cartoon1"
@@ -109,7 +109,8 @@ ggsave(paste(name, ".pdf", sep=""), plot=cartoon1, width = 1.5*2, height = 1.55*
 
 
 # Learning in memory space
-```{r, fig.width=1.2, fig.height=1.2}
+## Two examples
+```{r, fig.width=2.5, fig.height=2.5}
 x <- 10
 y <- 10
 shift <- 0.25
@@ -129,22 +130,52 @@ points %>%
                arrow = arrow(length = unit(0.2, 'line'),type="closed"),
                size=0.3) +
   # annotate("text", x = 4, y = 1.5, size=2, label = TeX("$x_0$")) +
-  annotate("text", x = 1.2, y = 5.5, size=2, label = TeX("$E_1$")) +
-  annotate("text", x = 6.2, y = 3, size=2, label = TeX("$E_2$")) +
-  theme_pubr(base_size = 6, legend = "none") +
+  annotate("text", x = 1.2, y = 5.5, size=3, label = TeX("$E_1$")) +
+  annotate("text", x = 6.2, y = 3, size=3, label = TeX("$E_2$")) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(axis.text = element_blank()) +
   theme(axis.ticks = element_blank()) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) +
-  plot_annotation(title="Distance in memory M",
-                  theme = theme_pubr(base_size = 8, legend = "none")) -> cartoon2
+  plot_annotation(title="Information value",
+                  theme = theme_pubr(base_size = 10, legend = "none")) -> cartoon2
 
 print(cartoon2)
 
 name <- "img/cartoon2"
 ggsave(paste(name, ".pdf", sep=""), plot=cartoon2, width = 1.2*2, height = 1.2*2)
 ```
+## One example
+```{r, fig.width=2.5, fig.height=2.5}
+x <- 10
+y <- 10
+shift <- 0.25
+
+points <- data.frame(x=c(4, 7), y=c(2, 5))
+points %>% 
+  ggplot(aes(x=x, y=y)) +
+  geom_point(color="dark gray") + 
+  scale_x_continuous(limits=c(0, x), breaks=x) +
+  scale_y_continuous(limits=c(0, y), breaks=y) +
+  labs(x=TeX("$\\m_i$"), y=TeX("$\\m_j$"), tag="a.") +
+  geom_segment(x=points$x[1], y=points$y[1], xend=points$x[2], yend=points$y[2], 
+               arrow = arrow(length = unit(0.2, 'line'),type="closed"),
+               size=0.3) +
+  annotate("text", x = 6.2, y = 3, size=3, label = TeX("$E$")) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) +
+  plot_annotation(title="Information value",
+                  theme = theme_pubr(base_size = 10, legend = "none")) -> cartoon2
+
+print(cartoon2)
+
+name <- "img/cartoon2"
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon2, width = 1.2*2, height = 1.2*2)
+```
+
 # Consistent and not - dynamics
-```{r, fig.width=1, fig.height=1.2}
+```{r, fig.width=2, fig.height=2.5}
 
 alpha <- function(x, g, t_peak) {
   g * (x/t_peak) * exp(1 - x/t_peak)
@@ -165,13 +196,12 @@ c_curves <- data.frame(times=c(times, times, times),
                      ys=c(c1, c2, c3))
 
 c_curves %>% 
-  ggplot(aes(x=times, y=ys, group=name, color=factor(name))) +
-  geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE) +
+  ggplot(aes(x=times, y=ys, group=name)) +
+  geom_smooth(method = "loess", color="black", size=0.5, span=.35, degree=4, se=FALSE) +
   geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
   lims(x=c(1, t_max)) + 
-  labs(x="Time", y=TeX("||$\\nabla \\M$||"), title="Consistent", tag="b.") +
-  scale_color_manual(values=c("chartreuse4", "aquamarine4", "darkseagreen4")) +
-  theme_pubr(base_size = 6, legend = "none") +
+  labs(x="Time", y=TeX("$$E$$"), title="Consistent", tag="b.") +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(axis.text = element_blank()) +
   theme(axis.ticks = element_blank()) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p1
@@ -185,14 +215,14 @@ ggplot(aes(x=times, y=ys, group=name)) +
   geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE, color="black") +
   geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
   lims(x=c(1, t_max), y=c(0,14)) + 
-  labs(x="Time", y=TeX("||$\\nabla \\M$||"), title="Inconsistent", tag="c.") +
-  theme_pubr(base_size = 6, legend = "none") +
+  labs(x="Time", y=TeX("$$E$$"), title="Inconsistent", tag="c.") +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(axis.text = element_blank()) +
   theme(axis.ticks = element_blank()) +
   theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p2
 
 cartoon3 <- (p1 / p2) + 
-  plot_annotation(title="Deceleration of M",
+  plot_annotation(title="Learning equilibrium",
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(cartoon3)
 

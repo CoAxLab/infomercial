@@ -21,7 +21,8 @@ load_result <-
             sep = "/"
           ),
           skip = skip,
-          n_max = n_max
+          n_max = n_max,
+          show_col_types = FALSE
         )
         for (name in file_names[2:num_files]) {
           file_name <- paste(
@@ -33,7 +34,13 @@ load_result <-
             sep = "/"
           )
           if (file.exists(file_name)) {
-            tmp <- read_csv(file_name, skip = skip, n_max = n_max)
+            tmp <-
+              read_csv(
+                file_name,
+                skip = skip,
+                n_max = n_max,
+                show_col_types = FALSE
+              )
             runtmp[[name]] <- tmp[[name]]
           } else {
             warning(paste(file_name, " does not exist (filling with 0).\n", sep = ""))
@@ -98,5 +105,5 @@ load_result_np <- function(exp_name,
     runtmp$t <- NULL  # No need to keep the wall time
     result <- bind_rows(result, runtmp)
   }
-result
+  result
 }

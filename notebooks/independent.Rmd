@@ -9,8 +9,6 @@ library(zoo)
 library(ggplot2)
 library(ggpubr)
 library(patchwork)
-library(tidyr)
-library(dplyr)
 library(gridExtra)
 library(grid)
 library(readr)
@@ -18,16 +16,18 @@ library(latex2exp)
 # library(MASS) 
 library(scales)
 library(patchwork)
+library(tidyr)
+library(dplyr)
 options(scipen=1000000)
 
 # Load load_result and other helpful functions
 source("utils.R")
 
 # --- Main path to all data ---
-data_path <- "/Volumes/Data/infomercial/data"
+data_path <- "~/Code/infomercial/data"
 ```
 
-# Fig. indepdent policies example
+# Fig. Example
 ## Load data
 ```{r message=FALSE, cache=TRUE}
 exp_name <- "exp563"
@@ -63,8 +63,8 @@ result563$value_E[result563$value_E >= E_bias] <- 0
 result563$action <- result563$action + 1
 ```
 
-## Build
-```{r,  fig.width=1.2, fig.height=2.8}
+## Vis
+```{r,  fig.width=3, fig.height=6}
 # Select data for example plot
 r <- 1
 p <- 0
@@ -74,79 +74,78 @@ eta <- 0.0005
 # ---------------------------------------------------------------
 # Time course
 result563 %>% 
-  filter(run == r, param == p) %>% 
   filter(global_step <= n) %>%
   ggplot(aes(x=global_step, y=factor(1-policy), color=factor(policy))) +
-  geom_point(size=0.3, alpha=0.9) +
-  labs(x="", y="Policy", title="Control") +
+  geom_point(size=0.6, alpha=0.9) +
+  labs(x="Time", y="Policy", title="Control", tag="a.") +
   scale_y_discrete(
     breaks=c(0, 1), 
     labels=c("Exploit", "Explore")) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(0.3, "lines")) -> c1a
 
 result563 %>% 
-  filter(run == r, param == p) %>% 
   filter(global_step <= n) %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
-  geom_point(size=0.3, alpha=0.9) +
-  geom_line(size=0.1) +
-  labs(x="Time", y="Choice", title="Behavoiral choice") +
-  facet_wrap(policy~., ncol=1) +
+  geom_point(size=0.6, alpha=0.9) +
+  # geom_line(size=0.1) +
+  labs(x="Time", y="Arm", title="Choice" , tag="b.") +
+  # facet_wrap(policy~., ncol=1) +
   scale_y_continuous(limits=c(0.8, 4.2), breaks = c(1, 2, 3, 4)) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
   theme(strip.text = element_blank()) +
   theme(panel.spacing = unit(0.15, "lines")) -> c1b
 
-result563 %>%
-  filter(run == r, param == p) %>%
-  ggplot(aes(x=global_step, y=value_E)) +
-  geom_point(size=0.3, color="chartreuse4") +
-  geom_ribbon(aes(ymin=0, ymax=value_E), 
-              size=0.6, alpha=0.1, fill="chartreuse4", color=NA) +
-  geom_ribbon(aes(ymin=0, ymax=score_R), 
-              size=0.6, alpha=0.1, fill="black", color=NA) +
-  geom_point(aes(global_step, score_R+0.00001), 
-              size=0.3, alpha=1, color="black") +
-  geom_hline(yintercept = eta, color="chartreuse4", alpha=0.5, size=1) +
-  labs(x="", y="Values", title="Value by choice") +
-  facet_grid(action~., switch="y") +
+# Shift scores by one, to show how WSLS works
+n <- nrow(result563)
+result563 %>% 
+  select(global_step, score_R, score_E, policy) %>% 
+  summarise(global_step=global_step[1:n-1],
+         score_R=score_R[1:n-1],
+         score_E=score_E[1:n-1],
+         policy=policy[2:n]) -> tmp
+tmp %>%
+  ggplot(aes(x=global_step, y=score_E, color=factor(policy))) +
+  geom_point(size=0.6) +
+  geom_hline(
+    yintercept = eta, color="chartreuse4", alpha=1, size=0.2) +
+  labs(x="", y="Info. value", title="WSLS", tag="c.") +
+  scale_color_manual("", values=c("chartreuse4", "black")) +
   scale_y_log10(limits=c(0.00001, 4)) +
   annotation_logticks(side="l", size=.1) + 
-  theme_pubr(base_size = 6, legend = "none") +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(axis.ticks.y = element_blank()) + 
-  theme(axis.text.y = element_blank()) + 
-  theme(strip.text.y.left = element_text(angle = 0)) +
   theme(strip.text.y = element_text(size=6)) -> c1c
 
-result563 %>% 
-  filter(run == r, param == p) %>% 
-  # filter(global_step <= n) %>%
-  ggplot(aes(x=global_step, y=regret)) +
-  geom_line(size=0.6, color="black") +
-  labs(x="Time", y="Regret") + 
+tmp %>%
+  ggplot(aes(x=global_step, y=score_R, color=factor(policy))) +
+  geom_point(size=0.6) +
+  labs(x="Time", y="Reward", title="") +
+  scale_color_manual("", values=c("chartreuse4", "black")) +
+  scale_y_continuous(limits=c(0, 1), breaks = c(0, 1)) +
+  theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme_pubr(base_size = 6, legend = "none") -> c1d
+  theme(strip.text.y = element_text(size=6)) -> c1d
 
 # -----------------------------------------------------------------------
 ## Build figure
-independent1 <- (c1a / c1b / c1c / c1d) +
-  plot_layout(heights = c(0.1, 0.2, 0.62, 0.1)) +
+independent1 <- (c1a / c1b / (c1c / c1d)) +
+  plot_layout(heights = c(0.2, 0.2, 0.6)) +
   plot_annotation(
-      tag_levels="a", tag_suffix=".", 
-      title="Explore-exploit with independent\npolicies (Task 1)",
-      theme = theme_pubr(base_size = 8, legend = "none"))
+      title="Explore-exploit with WSLS",
+      theme = theme_pubr(base_size = 10, legend = "none"))
 print(independent1)
 
 name <- "img/independent1"
-ggsave(paste(name, ".pdf", sep=""), plot=independent1, width = 1.2*2, height = 2.8*2)
+ggsave(paste(name, ".pdf", sep=""), 
+       plot=independent1, width = 1.2*2, height = 2.8*2)
 ```
-# Fig. Sto versus det in independent policies
+
+# Fig. Rew - Sto v. det
 ## Load data
 ```{r, message=FALSE}
 # -------------------------------------------------------------
@@ -219,16 +218,16 @@ result457_577_578$total_E <- result457_577_578$total_E - E_bias
 result457_577_578$total_E[result457_577_578$total_E < 0] <- 0
 ```
 
-## Actions and reward timecourse
-```{r, fig.width=2.5, fig.height=1.4}
+## Vis
+```{r, fig.width=6.6, fig.height=2.8}
 result457_577_578 %>% 
 filter(exp == "exp457") %>% 
 filter(param <= 2, run > 1) %>% 
 filter(global_step <= num_episodes) %>%
-  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Deterministic") +
+  labs(x="Time", y="Choice", title="Deterministic", tag="a.") +
   lims(x=c(0, num_episodes)) +
   facet_grid(run~param) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -243,7 +242,7 @@ result457_577_578 %>%
 filter(exp == "exp577") %>% 
 filter(param <= 2, run > 1) %>% 
 filter(global_step <= num_episodes) %>%
-  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
   labs(x="Time", y="Choice", title="Stochastic (temp=0.1)") +
@@ -261,7 +260,7 @@ result457_577_578 %>%
 filter(exp == "exp578") %>% 
 filter(param <= 2, run > 1) %>% 
 filter(global_step <= num_episodes) %>%
-  ggplot(aes(x=global_step, y=action, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
   labs(x="Time", y="Choice", title="Stochastic (temp=0.05)") +
@@ -283,7 +282,7 @@ filter(global_step > 4) %>%
   ggplot(aes(x=global_step, y=total_R/global_step, 
              group=interaction(param,run))) +
   geom_line(size=0.1, alpha=1) +
-  labs(x="", y="", title="Deterministic") +
+  labs(x="", y="", title="Deterministic", tag="b.") +
   scale_x_continuous(limits=c(0, num_episodes),
                      breaks = c(0, num_episodes/2, num_episodes)) +
   scale_y_continuous(limits=c(0, 1),
@@ -333,33 +332,224 @@ result457_577_578 %>%
   ungroup() -> tmp
 
 tmp %>% 
-  mutate(
-    color = ifelse(strategy == "Deterministic", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  # mutate(
+  #   color = ifelse(strategy == "Deterministic", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/num_episodes)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
-  labs(x="", y="Reward", title="") +
+  labs(x="", y="Reward", title="", tag="b.") +
   lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> s1
-# print(s1)
-```
 
-## Build figure
-```{r, fig.width=3.3, fig.height=1.4}
-# independent2 <- (a1 + a2 + a3) + (r1 / r2 / r3) + 
+# Build
 independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) + 
   plot_layout(widths = c(0.26, 0.26, 0.26, 0.22)) +
     plot_annotation(
-      title="Reward collection with independent policies:",
-      subtitle = "deterministic versus stochastic",
-                  theme = theme_pubr(base_size = 8, legend = "none"),
-      tag_levels="a", tag_suffix=".")
+      title="WSLS - deterministic versus stochastic",
+      subtitle = "Reward collection",
+                  theme = theme_pubr(base_size = 8, legend = "none"))
 print(independent2)
 
 # -- Save a to pdf --
 name <- "img/independent2"
-ggsave(paste(name, ".pdf", sep=""), plot=independent2, width = 3.3*2, height = 1.4*2)
+ggsave(paste(name, ".pdf", sep=""), 
+       plot=independent2, width = 3.3*2, height = 1.4*2)
 ```
 
+# Fig. Info - Sto v. det
+## Load data
+```{r message=FALSE, cache=TRUE}
+# ---
+exp_name <- "exp348"
+num_episodes <- 320
+num_arms <- 4
+
+actor_names <- c("DeterministicActor", 
+                 "SoftmaxActor")
+better_names <- c("Deterministic", 
+                  "Stochastic")
+
+run_codes <- 1:100
+file_names <- c("score_E", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "ties", 
+                "state", 
+                "total_E", 
+                "total_regret")
+
+# -------------------------------------------------------------------
+# This data has a slightly different structure compared to the rest in 
+# this notebook so we Need a custom load loop.
+result348 <- NULL
+for (i in 1:length(actor_names)){
+  actor <- actor_names[i]
+  better <- better_names[i]
+  for (run in run_codes) {
+    runtmp <- read_csv(paste(data_path, 
+                             exp_name, 
+                             actor,
+                             paste("run", run, sep=""), 
+                             paste(file_names[1], "csv", sep="."), sep="/"),
+                            show_col_types = FALSE)    
+    for (name in file_names[2:9]){
+      tmp <- read_csv(paste(data_path, 
+                            exp_name, 
+                            actor,
+                            paste("run", run, sep=""), 
+                            paste(name, "csv", sep="."), sep="/"),
+                      show_col_types = FALSE)  
+      runtmp[[name]] <- tmp[[name]]
+    }
+    runtmp$run <- run
+    runtmp$actor <- better
+    runtmp$num_episodes <- nrow(tmp)
+    result348 <- bind_rows(result348, runtmp)  
+  }
+}
+
+# -----------------------------------------------------------------------
+# Don't need wall time
+result348[["t"]] <- NULL
+
+# Remove E_bias
+E_bias <- log(num_arms)
+ 
+result348$total_E <- result348$total_E - (E_bias * num_arms)
+result348$total_E[result348$total_E < 0] <- 0
+# result348$score_E <- result348$score_E - E_bias
+# result348$score_E[result348$score_E < 0] <- 0
+# result348$value_E <- result348$value_E - E_bias
+# result348$value_E[result348$value_E < 0] <- 0
+
+# -----------------------------------------------------------------------
+# Summarize the results 
+result348 %>% 
+  group_by(actor, run) %>% 
+  summarise(
+    total_E=last(total_E)/last(num_episodes),
+    total_regret=last(total_regret)/last(num_episodes),
+    num_explore=last(num_episodes)
+  ) %>% 
+  ungroup() ->
+final348
+final348$actor <- factor(
+  final348$actor, levels=c("Stochastic", "Deterministic"))
+
+final348 %>% 
+  group_by(actor) %>% 
+  summarise(
+            median_E = median(total_E), 
+            var_E = mad(total_E),
+            median_num_explore = median(num_explore), 
+            var_num_explore = mad(num_explore),
+            median_regret = median(total_regret),
+            var_regret = mad(total_regret)) %>% 
+    ungroup() -> summary348
+```
+
+## Vis
+```{r, fig.width=4.8, fig.height=2.2}
+r <- 1
+
+# -------------------------------------------------------------------
+result348 %>% 
+  filter(actor == "Deterministic") %>% 
+  filter(run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  lims(x=c(0, 320)) +
+  geom_point(size=0.2, alpha=1, color="black") +
+  geom_line(size=0.1, color="black") +
+  labs(x="", y="Choice", title="Deterministic", tag="a.") +
+  facet_wrap(.~run, ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  scale_y_continuous(limits=c(0.8,4.5), breaks=c(1,4)) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(legend.key.size = unit(0.2, "cm")) -> 
+  c1a
+
+result348 %>% 
+  filter(actor == "Stochastic") %>% 
+  filter(run == r) %>% 
+  ggplot(aes(x=global_step, y=action+1)) +
+  lims(x=c(0, 320)) +
+  geom_point(size=0.2, alpha=1, color="black") +
+  geom_line(size=0.1, color="black") +
+  scale_y_continuous(limits=c(0.8,4.5), breaks=c(1,4)) +
+  labs(x="", y="", title="Stochastic (temp=0.1)") +
+  facet_wrap(.~run, ncol=1) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(0.1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(size = 6)) +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(legend.key.size = unit(0.2, "cm")) -> 
+  c1b
+
+result348 %>% 
+  filter(run == r) %>% 
+  filter(global_step > 5) %>%
+  ggplot(aes(x=global_step, y=value_E, color=actor)) +
+  geom_line(size=0.8, alpha=1, color="black") +
+  lims(x=c(0, 320)) +
+  scale_y_log10() +
+  annotation_logticks(size=0.1, sides = "l") +
+  facet_wrap(.~actor) +
+  labs(x="", y="Info. value", tag="b.") + 
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_blank()) -> 
+  c1c
+
+sub1 <- (c1a + c1b) / c1c #+ 
+
+# ------------------------------------------------------------------
+final348 %>% 
+  ggplot(aes(x=actor, y=total_E)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="Info. value", tag="c.") +
+  scale_y_continuous(limits=c(0.0015, 0.0032), breaks = c(0.0015, 0.0015*2, 0.003)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> c2a
+
+final348 %>% 
+  ggplot(aes(x=actor, y=num_explore)) +
+  geom_boxplot(outlier.size = 0, width=0.5, color="black") +
+  labs(x="", y="Num. explore", tag="d.") +
+  scale_y_continuous(limits=c(80, 160), breaks = c(80, 120, 160)) +
+  theme_pubr(base_size = 6, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> c2c
+
+sub2 <- c2a / c2c
+
+# -------------------------------------------------------------------------
+curiosity1 <- (sub1 | sub2) + 
+  plot_layout(widths = c(0.7, 0.3)) +
+    plot_annotation(
+      title="WSLS - deterministic versus stochastic",
+      subtitle = "Information collection",
+      theme = theme_pubr(base_size=8, legend="none"))
+print(curiosity1)
+
+name <- "img/independent3"
+ggsave(paste(name, ".pdf", sep=""), 
+       plot=curiosity1, width = 4.8, height = 2.2)
+```
