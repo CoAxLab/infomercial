@@ -10211,10 +10211,10 @@ exp649:
 exp650:
 	tune_field.py random $(DATA_PATH)/exp650 \
 		--exp_name='wsls' \
-		--num_samples=1000 \
+		--num_samples=200 \
 		--num_episodes=200 \
 		--num_steps=200 \
-		--num_repeats=50 \
+		--num_repeats=20 \
 		--num_processes=39 \
 		--log_space=True \
 		--output=False \
@@ -10224,61 +10224,61 @@ exp650:
 		--boredom='(1e-9, 1e1)' \
 
 # diffusion
-exp651:
-	tune_field.py random $(DATA_PATH)/exp651 \
-		--exp_name='diffusion' \
-		--num_samples=10 \
-		--num_episodes=200 \
-		--num_steps=200 \
-		--num_repeats=50 \
-		--num_processes=39 \
-		--log_space=False \
-		--output=False \
-		--metric="total_R" \
-		--scale='(1, 5)' \
-
-# chemotaxis
-exp652:
-	tune_field.py random $(DATA_PATH)/exp652 \
-		--exp_name='chemotaxis' \
-		--num_samples=10 \
-		--num_episodes=200 \
-		--num_steps=200 \
-		--num_repeats=50 \
-		--num_processes=39 \
-		--log_space=False \
-		--output=False \
-		--metric="total_R" \
-		--p_neg=1.0 \
-		--p_pos=0.0 \
-		--scale='(1, 5)' \
+# exp651:
+# 	tune_field.py random $(DATA_PATH)/exp651 \
+# 		--exp_name='diffusion' \
+# 		--num_samples=10 \
+# 		--num_episodes=200 \
+# 		--num_steps=200 \
+# 		--num_repeats=20 \
+# 		--num_processes=39 \
+# 		--log_space=False \
+# 		--output=False \
+# 		--metric="total_R" \
+# 		--scale='(1, 5)' \
+#
+# # chemotaxis
+# exp652:
+# 	tune_field.py random $(DATA_PATH)/exp652 \
+# 		--exp_name='chemotaxis' \
+# 		--num_samples=10 \
+# 		--num_episodes=200 \
+# 		--num_steps=200 \
+# 		--num_repeats=20 \
+# 		--num_processes=39 \
+# 		--log_space=False \
+# 		--output=False \
+# 		--metric="total_R" \
+# 		--p_neg=1.0 \
+# 		--p_pos=0.0 \
+# 		--scale='(1, 5)' \
 
 # entropy
 exp653:
 	tune_field.py random $(DATA_PATH)/exp653 \
 		--exp_name='entropy' \
-		--num_samples=100 \
+		--num_samples=200 \
 		--num_episodes=200 \
 		--num_steps=200 \
-		--num_repeats=50 \
+		--num_repeats=20 \
 		--num_processes=39 \
 		--log_space=True \
 		--output=False \
 		--metric="total_R" \
-		--accumulate_sigma=(0.01, 10) \
+		--accumulate_sigma='(0.01, 10)' \
 
 # softmax (standard actor-critic rl)
 exp654:
 	tune_field.py random $(DATA_PATH)/exp654 \
 		--exp_name='softmax' \
-		--num_samples=1000 \
+		--num_samples=200 \
 		--num_episodes=200 \
 		--num_steps=200 \
-		--num_repeats=50 \
+		--num_repeats=20 \
 		--num_processes=39 \
 		--log_space=True \
 		--output=False \
 		--metric="total_R" \
 		--lr=0.1 \
 		--gamma=0.1 \
-		--temp=(0.001, 10) \
+		--temp='(0.001, 10)' \
