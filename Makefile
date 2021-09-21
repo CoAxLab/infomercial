@@ -10324,7 +10324,7 @@ exp657:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp657.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py wsls --num_episodes=200 --num_steps=200 --accumulate_sigma={accumulate_sigma} --log_dir=$(DATA_PATH)/exp657/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'forage.py entropy --num_episodes=200 --num_steps=200 --accumulate_sigma={accumulate_sigma} --log_dir=$(DATA_PATH)/exp657/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
