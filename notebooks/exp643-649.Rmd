@@ -105,6 +105,7 @@ results %>%
   # theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_continuous(breaks = c(0, 500, 1000)) +
+  ylim(c(1, 200)) +
   scale_color_manual("", values = colors) 
 ```
 

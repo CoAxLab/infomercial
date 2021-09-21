@@ -24,7 +24,7 @@ options(scipen=1000000)
 source("utils.R")
 
 # --- Main path to all data ---
-data_path <- "/Volumes/Data/infomercial/data"
+data_path <- "~/Code/infomercial/data"
 ```
 
 

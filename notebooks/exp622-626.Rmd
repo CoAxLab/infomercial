@@ -96,6 +96,19 @@ results %>%
   facet_grid(. ~ agent) 
 ```
 
+```{r, fig.width=6, fig.height=4}
+results %>%
+  ggplot(aes(x = index, y = total_R, color = agent)) +
+  geom_line(size = 2, alpha = 0.6) +
+  labs(x = "Rank", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  # theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  scale_color_manual("", values = colors) 
+```
+
 ## Threshold
 ```{r, fig.width=10, fig.height=6}
 results %>%
