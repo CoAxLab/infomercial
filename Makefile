@@ -10295,15 +10295,49 @@ exp654:
 #
 # Run several foraging exp using the tune results from exp650-5
 # (Drop chemotaxis - doesn't really aad to the story much)
-#
+
 # wsls - exp650 
 exp655:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp650_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 1 \
+	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp655.log' \
-			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			--nice 19 --delay 0 --colsep ',' --header : \
 			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --boredom={boredom} --log_dir=$(DATA_PATH)/exp655/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# diffusion (no tune)
+exp656:
+	# Run them 100 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp656.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'forage.py diffusion --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} :::: tmp
+	# Clean up
+	rm tmp
+
+# entropy - exp653
+exp657:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp653_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp657.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'forage.py wsls --num_episodes=200 --num_steps=200 --accumulate_sigma={accumulate_sigma} --log_dir=$(DATA_PATH)/exp657/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# softmax - exp654
+exp658:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp654_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp658.log' \
+			--nice 19 --delay 0 --colsep ',' --header : \
+			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
