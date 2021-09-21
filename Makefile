@@ -10314,9 +10314,7 @@ exp656:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp656.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py diffusion --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} :::: tmp
-	# Clean up
-	rm tmp
+			'forage.py diffusion --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} 
 
 # entropy - exp653
 exp657:
