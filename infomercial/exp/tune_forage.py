@@ -6,7 +6,7 @@ from copy import deepcopy
 from multiprocessing import Pool
 from scipy.stats import loguniform
 
-from infomercial.exp import field
+from infomercial.exp import forage
 
 # Borrow from the other tune exp
 from infomercial.exp.tune_bandit import get_best_result
@@ -115,7 +115,7 @@ def tune_random(name,
     path, name = os.path.split(name)
 
     # Look up the bandit run function were using in this tuning.
-    exp_func = getattr(field, exp_name)
+    exp_func = getattr(forage, exp_name)
 
     # Build the parallel callback
     trials = []

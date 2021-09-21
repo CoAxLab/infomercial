@@ -44,27 +44,27 @@ test5:
 			--nice 19 --delay 2 --colsep ',' --bar \
 			'epsilon_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1} --output=False' ::: {0..100}
 
-# field tester - change as needed
+# forage tester - change as needed
 # wsls
 test6:
 	-rm -rf $(DATA_PATH)/test6*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'field.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # chemo		
 test7:
 	-rm -rf $(DATA_PATH)/test7*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'field.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1 --min_length=1 --p_neg=1.0 --p_pos=0.0 --log_dir=$(DATA_PATH)/test7/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1 --min_length=1 --p_neg=1.0 --p_pos=0.0 --log_dir=$(DATA_PATH)/test7/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # softmax (rl)		
 test8:
 	-rm -rf $(DATA_PATH)/test8*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'field.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 
 # ----------------------------------------------------------------------------
@@ -10203,13 +10203,13 @@ exp649:
 # 9/16/2021
 # c052563
 #
-# Optimize exploration parameters for field models. Fix lr/gamma (0,1)
+# Optimize exploration parameters for forage models. Fix lr/gamma (0,1)
 
-# field.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
+# forage.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # wsls
 exp650:
-	tune_field.py random $(DATA_PATH)/exp650 \
+	tune_forage.py random $(DATA_PATH)/exp650 \
 		--exp_name='wsls' \
 		--num_samples=200 \
 		--num_episodes=200 \
@@ -10230,7 +10230,7 @@ exp650:
 
 # diffusion
 exp651:
-	tune_field.py random $(DATA_PATH)/exp651 \
+	tune_forage.py random $(DATA_PATH)/exp651 \
 		--exp_name='diffusion' \
 		--num_samples=1 \
 		--num_episodes=200 \
@@ -10244,7 +10244,7 @@ exp651:
 
 # chemotaxis
 exp652:
-	tune_field.py random $(DATA_PATH)/exp652 \
+	tune_forage.py random $(DATA_PATH)/exp652 \
 		--exp_name='chemotaxis' \
 		--num_samples=1 \
 		--num_episodes=200 \
@@ -10261,7 +10261,7 @@ exp652:
 # .... back to tuning proper
 # entropy
 exp653:
-	tune_field.py random $(DATA_PATH)/exp653 \
+	tune_forage.py random $(DATA_PATH)/exp653 \
 		--exp_name='entropy' \
 		--num_samples=200 \
 		--num_episodes=200 \
@@ -10275,7 +10275,7 @@ exp653:
 
 # softmax (standard actor-critic rl)
 exp654:
-	tune_field.py random $(DATA_PATH)/exp654 \
+	tune_forage.py random $(DATA_PATH)/exp654 \
 		--exp_name='softmax' \
 		--num_samples=200 \
 		--num_episodes=200 \
@@ -10288,3 +10288,22 @@ exp654:
 		--lr=0.1 \
 		--gamma=0.1 \
 		--temp='(0.001, 10)' \
+
+
+# --------------------------------------------------------------------------
+# 9/21/2021
+#
+# Run several foraging exp using the tune results from exp650-5
+# (Drop chemotaxis - doesn't really aad to the story much)
+#
+# - UCB: exp561
+exp594:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp594.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'forage.py --env_name=BanditChange121-v0 --num_episodes=12100 --mode='UCB' --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
