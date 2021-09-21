@@ -10336,6 +10336,6 @@ exp658:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp658.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
