@@ -10296,14 +10296,14 @@ exp654:
 # Run several foraging exp using the tune results from exp650-5
 # (Drop chemotaxis - doesn't really aad to the story much)
 #
-# - UCB: exp561
-exp594:
+# wsls - exp650 
+exp655:
 	# Get top 10
-	head -n 11 $(DATA_PATH)/exp560_sorted.csv > tmp 
+	head -n 11 $(DATA_PATH)/exp650_sorted.csv > tmp 
 	# Run them 10 times
-	parallel -j 39 \
-			--joblog '$(DATA_PATH)/exp594.log' \
+	parallel -j 1 \
+			--joblog '$(DATA_PATH)/exp655.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'forage.py --env_name=BanditChange121-v0 --num_episodes=12100 --mode='UCB' --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp594/param{index}/run{1} --master_seed={1} --load=$(DATA_PATH)/exp561/param{index}/run{1}/result.pkl' ::: {0..10} :::: tmp
+			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --boredom={boredom} --log_dir=$(DATA_PATH)/exp655/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
