@@ -10342,3 +10342,33 @@ exp658:
 			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
+
+
+# -------------------------------------------------------------------------
+# 9/21/2021
+# e85f61a
+#
+# Alt memory model Top10 performance on:
+# * BanditOneHigh4
+# * BanditUniform121
+# * BanditHardAndSparse10
+#
+# Based on tune exps:
+# * exp622-exp628 
+# * exp629-exp635
+# * exp643-exp649
+
+# ----
+# * BanditOneHigh4 > exp622-exp628
+
+# L1 (tune: exp622)
+exp659:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp622_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 1 \
+			--joblog '$(DATA_PATH)/exp659.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='L1' --log_dir=$(DATA_PATH)/exp659/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
