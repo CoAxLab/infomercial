@@ -10223,36 +10223,42 @@ exp650:
 		--gamma=0.1 \
 		--boredom='(1e-9, 1e1)' \
 
-# diffusion
-# exp651:
-# 	tune_field.py random $(DATA_PATH)/exp651 \
-# 		--exp_name='diffusion' \
-# 		--num_samples=10 \
-# 		--num_episodes=200 \
-# 		--num_steps=200 \
-# 		--num_repeats=20 \
-# 		--num_processes=39 \
-# 		--log_space=False \
-# 		--output=False \
-# 		--metric="total_R" \
-# 		--scale='(1, 5)' \
-#
-# # chemotaxis
-# exp652:
-# 	tune_field.py random $(DATA_PATH)/exp652 \
-# 		--exp_name='chemotaxis' \
-# 		--num_samples=10 \
-# 		--num_episodes=200 \
-# 		--num_steps=200 \
-# 		--num_repeats=20 \
-# 		--num_processes=39 \
-# 		--log_space=False \
-# 		--output=False \
-# 		--metric="total_R" \
-# 		--p_neg=1.0 \
-# 		--p_pos=0.0 \
-# 		--scale='(1, 5)' \
+# In the two recipes below there is no search,
+# just run one param set the same number of times
+# as the exp650. etc. I want to be able to plot all
+# these tunes and "tunes" side-by-side.
 
+# diffusion
+exp651:
+	tune_field.py random $(DATA_PATH)/exp651 \
+		--exp_name='diffusion' \
+		--num_samples=1 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=20 \
+		--num_processes=1 \
+		--log_space=False \
+		--output=False \
+		--metric="total_R" \
+		--scale=1.0 \
+
+# chemotaxis
+exp652:
+	tune_field.py random $(DATA_PATH)/exp652 \
+		--exp_name='chemotaxis' \
+		--num_samples=1 \
+		--num_episodes=200 \
+		--num_steps=200 \
+		--num_repeats=20 \
+		--num_processes=1 \
+		--log_space=False \
+		--output=False \
+		--metric="total_R" \
+		--p_neg=1.0 \
+		--p_pos=0.0 \
+		--scale=1.0 \
+
+# .... back to tuning proper
 # entropy
 exp653:
 	tune_field.py random $(DATA_PATH)/exp653 \
