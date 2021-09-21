@@ -10294,7 +10294,7 @@ exp654:
 # 9/21/2021
 # c6a63b4
 #
-# ** Performance run**
+# Top10 performance on forge
 #
 # Run several foraging exp using the tune results from exp650-5
 # (Drop chemotaxis - doesn't really aad to the story much)
