@@ -10367,7 +10367,7 @@ exp659:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp659.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='L1' --log_dir=$(DATA_PATH)/exp659/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.01 --mode='L1' --log_dir=$(DATA_PATH)/exp659/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -10380,7 +10380,7 @@ exp660:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp660.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='H' --log_dir=$(DATA_PATH)/exp660/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.01 --mode='H' --log_dir=$(DATA_PATH)/exp660/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -10393,7 +10393,7 @@ exp661:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp661.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='rate' --log_dir=$(DATA_PATH)/exp661/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.01 --mode='rate' --log_dir=$(DATA_PATH)/exp661/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -10405,7 +10405,7 @@ exp662:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp662.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='UCB' --log_dir=$(DATA_PATH)/exp662/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.01 --mode='UCB' --log_dir=$(DATA_PATH)/exp662/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -10420,7 +10420,7 @@ exp663:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp663.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.1 --mode='KL' --log_dir=$(DATA_PATH)/exp663/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R=0.01 --mode='KL' --log_dir=$(DATA_PATH)/exp663/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
