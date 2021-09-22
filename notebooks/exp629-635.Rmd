@@ -42,7 +42,6 @@ agent_names <- c("KL/Prob",
                  "L2/Rate",
                  "UCB/Count",
                  "EB/Count")
-
 colors <- c("black",
             "grey",
             "darkgrey",
@@ -51,7 +50,7 @@ colors <- c("black",
             "orange3",
             "orange4")
 # ---
-results <- NULL
+results629_635 <- NULL
 
 for (i in 1:length(exp_names)) {
   # Meta
@@ -67,11 +66,11 @@ for (i in 1:length(exp_names)) {
   result$agent <- agent_name
   
   # Save
-  results <- bind_rows(results, result)
+  results629_635 <- bind_rows(results629_635, result)
 }
 
 # Order
-results$agent <- factor(results$agent, levels = agent_names)
+results629_635$agent <- factor(results629_635$agent, levels = agent_names)
 ```
 
 ## Clean up
@@ -82,7 +81,7 @@ rm(i, result, exp_name, agent_name)
 # Vis
 ## Ranked
 ```{r, fig.width=6, fig.height=2}
-results %>%
+results629_635 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
@@ -95,7 +94,7 @@ results %>%
   facet_grid(. ~ agent) 
 ```
 ```{r, fig.width=6, fig.height=4}
-results %>%
+results629_635 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
@@ -109,8 +108,9 @@ results %>%
 ```
 
 ## Threshold
+### Log
 ```{r, fig.width=10, fig.height=6}
-results %>%
+results629_635 %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1, alpha = 0.6) +
   geom_vline(aes(xintercept=1), color="grey") +
@@ -124,9 +124,24 @@ results %>%
   facet_wrap(. ~ agent) 
 ```
 
+### Raws
+```{r, fig.width=10, fig.height=6}
+results629_635 %>%
+  ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
+  geom_point(size = 1, alpha = 0.6) +
+  geom_vline(aes(xintercept=1), color="grey") +
+  labs(x = "Boredom", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_manual("", values = colors) +
+  facet_wrap(. ~ agent) 
+```
+
 ## Threshold (overlap plot)
 ```{r, fig.width=8, fig.height=4}
-results %>%
+results629_635 %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1.25, alpha = 0.6) +
   geom_vline(aes(xintercept=1), color="grey") +
