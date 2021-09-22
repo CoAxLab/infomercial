@@ -106,19 +106,21 @@ result664_668$policy <- as.factor(result664_668$policy)
 result664_668$policy <- recode_factor(result664_668$policy, `0`="explore", `1`="exploit")
 
 ```
+
 # Behave
 ## Policy
-```{r, fig.width=10, fig.height=4}
-# n <- 121 * 20
-n <- num_episodes
+### Param/Run
+```{r, fig.width=6, fig.height=24}
+# n <- num_episodes
+n <- 121 * 20
 
 result664_668 %>% 
   filter(global_step <= n) %>%
-  filter(run < 3) %>% 
-  filter(param < 3) %>% 
+  filter(run < 10) %>% 
+  filter(param < 15) %>% 
   ggplot(aes(x=global_step, y=policy, color=policy)) +
   geom_point(size=0.5) +
-  facet_grid(agent~interaction(run,param)) +
+  facet_grid(interaction(run, param)~agent) +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -126,25 +128,83 @@ result664_668 %>%
 ```
 
 ## Actions
-```{r, fig.width=10, fig.height=6}
-best <- 54
-# n <- 121 * 20
-n <- num_episodes
+### Param/Run
+```{r, fig.width=6, fig.height=20}
+# n <- num_episodes
+n <- 121*20
 
-result664_668 %>% 
+# Best factpr (for color)
+best <- 54
+tmp <- result664_668
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
   filter(global_step <= n) %>%
-  filter(run < 3) %>% 
-  filter(param < 3) %>% 
-  ggplot(aes(x=global_step, y=action)) +
+  filter(run < 10) %>% 
+  filter(param < 5) %>% 
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
   geom_point(size=0.5) +
-  geom_hline(aes(yintercept=best), color="blue") +
-  facet_grid(agent~interaction(run,param)) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0))
+
 ```
 
-# Summary stats
+### by Param
+```{r, fig.width=6, fig.height=10}
+# n <- num_episodes
+n <- 121*20
+run_n <- 9
+
+# Best factpr (for color)
+best <- 54
+tmp <- result664_668
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
+  filter(global_step <= n) %>%
+  filter(run == run_n) %>% 
+  filter(param < 11) %>% 
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
+  geom_point(size=0.5) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0))
+
+```
+### by Run
+```{r, fig.width=6, fig.height=10}
+# n <- num_episodes
+n <- 121*20
+param_n <- 1
+
+# Best factpr (for color)
+best <- 54
+tmp <- result664_668
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
+  filter(global_step <= n) %>%
+  filter(run < 11) %>% 
+  filter(param == param_n) %>% 
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
+  geom_point(size=0.5) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0))
+
+```
+
+# Summary stats   
 ## Total reward
 ### Boxplot
 ```{r, fig.width=4, fig.height=2}
