@@ -9732,7 +9732,7 @@ exp622:
 		--output=False \
 		--metric="total_R" \
 		--mode='L1' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 		
 
@@ -9749,7 +9749,7 @@ exp623:
 		--output=False \
 		--metric="total_R" \
 		--mode='H' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 # delta rate / l2
@@ -9765,7 +9765,7 @@ exp624:
 		--output=False \
 		--metric="total_R" \
 		--mode='rate' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 # UCB (count model 1)
@@ -9781,7 +9781,7 @@ exp625:
 		--output=False \
 		--metric="total_R" \
 		--mode='UCB' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 # EB  (count model 2)
@@ -9797,7 +9797,7 @@ exp626:
 		--output=False \
 		--metric="total_R" \
 		--mode='EB' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 # KL  (the ref model)
@@ -9813,7 +9813,7 @@ exp627:
 		--output=False \
 		--metric="total_R" \
 		--mode='KL' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 # L2 (a bayes model)
@@ -9829,7 +9829,7 @@ exp628:
 		--output=False \
 		--metric="total_R" \
 		--mode='L2' \
-		--lr_R=0.1 \
+		--lr_R=0.01 \
 		--tie_threshold='(1e-9, 1e1)' \
 
 
