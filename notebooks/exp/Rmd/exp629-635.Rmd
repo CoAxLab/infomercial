@@ -1,0 +1,155 @@
+---
+title: "Analysis of exp629-635: tune runs for alternate memory models on BanditUniform121"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data/"
+```
+
+# Load
+```{r}
+# What to load, and its names
+exp_names <-
+  c("exp629",
+    "exp630",
+    "exp631",
+    "exp632",
+    "exp633",
+    "exp634",
+    "exp635")
+agent_names <- c("KL/Prob",
+                 "L1/Prob",
+                 "L2/Prob",
+                 "L2/Entropy",
+                 "L2/Rate",
+                 "UCB/Count",
+                 "EB/Count")
+colors <- c("black",
+            "grey",
+            "darkgrey",
+            "lightskyblue4",
+            "olivedrab4",
+            "orange3",
+            "orange4")
+# ---
+results629_635 <- NULL
+
+for (i in 1:length(exp_names)) {
+  # Meta
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  
+  # Load
+  result <-
+    read_csv(paste(data_path, exp_name, "_sorted.csv", sep = ""),
+             show_col_types = FALSE)
+  
+  result$exp <- exp_name
+  result$agent <- agent_name
+  
+  # Save
+  results629_635 <- bind_rows(results629_635, result)
+}
+
+# Order
+results629_635$agent <- factor(results629_635$agent, levels = agent_names)
+```
+
+## Clean up
+```{r}
+rm(i, result, exp_name, agent_name)
+```
+
+# Vis
+## Ranked
+```{r, fig.width=6, fig.height=2}
+results629_635 %>%
+  ggplot(aes(x = index, y = total_R, color = agent)) +
+  geom_line(size = 2, alpha = 0.6) +
+  labs(x = "Rank", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  scale_color_manual("", values = colors) +
+  facet_grid(. ~ agent) 
+```
+```{r, fig.width=6, fig.height=4}
+results629_635 %>%
+  ggplot(aes(x = index, y = total_R, color = agent)) +
+  geom_line(size = 2, alpha = 0.6) +
+  labs(x = "Rank", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  # theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  ylim(c(1, 2000)) +
+  scale_color_manual("", values = colors) 
+```
+
+## Threshold
+### Log
+```{r, fig.width=10, fig.height=6}
+results629_635 %>%
+  ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
+  geom_point(size = 1, alpha = 0.6) +
+  geom_vline(aes(xintercept=1), color="grey") +
+  labs(x = "Boredom", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_log10() +
+  scale_color_manual("", values = colors) +
+  facet_wrap(. ~ agent) 
+```
+
+### Raws
+```{r, fig.width=10, fig.height=6}
+results629_635 %>%
+  ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
+  geom_point(size = 1, alpha = 0.6) +
+  geom_vline(aes(xintercept=1), color="grey") +
+  labs(x = "Boredom", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_manual("", values = colors) +
+  facet_wrap(. ~ agent) 
+```
+
+## Threshold (overlap plot)
+```{r, fig.width=8, fig.height=4}
+results629_635 %>%
+  ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
+  geom_point(size = 1.25, alpha = 0.6) +
+  geom_vline(aes(xintercept=1), color="grey") +
+  labs(x = "Boredom", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  # theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_log10() +
+  scale_color_manual("", values = colors) 
+```

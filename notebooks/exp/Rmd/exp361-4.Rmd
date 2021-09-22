@@ -1,0 +1,538 @@
+---
+title: "exp361-4 - BanditOneHigh10 - top10 param rerun"
+output: html_notebook
+---
+
+# Imports and paths
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+# library(MASS) 
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+kl_divergence <- function(p, q) {
+  sum(p * log(p/q))
+}
+
+load.result <- function(exp_name, param_codes, run_codes, file_names){
+  num_files <- length(file_names)
+  result <- NULL
+  for (param in param_codes){
+    for (run in run_codes) {
+      runtmp <- read_csv(paste(data_path, 
+                               exp_name, 
+                               paste("param", param, sep=""), 
+                               paste("run", run, sep=""), 
+                               paste(file_names[1], "csv", sep="."), sep="/"))    
+      for (name in file_names[2:num_files]){
+        tmp <- read_csv(paste(data_path, 
+                              exp_name, 
+                              paste("param", param, sep=""), 
+                              paste("run", run, sep=""), 
+                              paste(name, "csv", sep="."), sep="/"))  
+        runtmp[[name]] <- tmp[[name]]
+      }
+      runtmp$run <- run
+      runtmp$param <- param
+      result <- bind_rows(result, runtmp)  
+    }
+  }
+  result
+}
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data/"
+```
+
+# Exp361 - eta
+## Load data
+```{r message=FALSE, cache=TRUE}
+exp_name <- "exp361"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_E", 
+                "score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_E", 
+                "value_R", 
+                "ties", 
+                "policy",
+                "total_E", 
+                "total_R",
+                "total_regret")
+
+result361 <- load.result(exp_name, param_codes, run_codes, file_names)
+result361 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_E=max(total_E),
+    total_R=max(total_R),
+    total_regret=max(total_regret),
+    value_E=median(value_E),
+    value_R=median(value_R),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary361
+```
+
+## values
+```{r, fig.height=1.5, fig.width=0.8}
+summary361 %>% 
+  ggplot(aes(x=factor(param), y=total_E)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary361 %>% 
+  ggplot(aes(x=factor(param), y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary361 %>% 
+  ggplot(aes(x=factor(param), y=p_bests)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3
+```
+
+## actions
+```{r, fig.height=1.5, fig.width=4}
+result361 %>% 
+  filter(global_step <= 50) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(param))) +
+  lims(x=c(0, 50)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="Time", y="Choice") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # scale_color_grey() +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+# Exp362 - ep
+## Load data
+```{r message=FALSE, cache=TRUE}
+exp_name <- "exp362"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_R", 
+                "total_R",
+                "p_bests",
+                "total_regret")
+
+result362 <- load.result(exp_name, param_codes, run_codes, file_names)
+result362 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=max(total_R),
+    total_regret=max(total_regret),
+    value_R=median(value_R),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary362
+```
+
+## values
+```{r, fig.height=1.5, fig.width=0.8}
+summary362 %>% 
+  ggplot(aes(x=factor(param), y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary362 %>% 
+  ggplot(aes(x=factor(param), y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary362 %>% 
+  ggplot(aes(x=factor(param), y=p_bests)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3
+```
+
+## actions
+```{r, fig.height=1.5, fig.width=4}
+result362 %>% 
+  filter(global_step <= 50) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(param))) +
+  lims(x=c(0, 50)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="Time", y="Choice") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # scale_color_grey() +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+# Exp363 - ep decay
+## Load data
+```{r message=FALSE, cache=TRUE}
+exp_name <- "exp363"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_R", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_R", 
+                "total_R",
+                "p_bests",
+                "total_regret")
+
+result363 <- load.result(exp_name, param_codes, run_codes, file_names)
+result363 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=max(total_R),
+    total_regret=max(total_regret),
+    value_R=median(value_R),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary363
+```
+
+## values
+```{r, fig.height=1.5, fig.width=0.8}
+summary363 %>% 
+  ggplot(aes(x=factor(param), y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary363 %>% 
+  ggplot(aes(x=factor(param), y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary363 %>% 
+  ggplot(aes(x=factor(param), y=p_bests)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3
+```
+
+## actions
+```{r, fig.height=1.5, fig.width=4}
+result363 %>% 
+  filter(global_step <= 50) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(param))) +
+  lims(x=c(0, 50)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="Time", y="Choice") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # scale_color_grey() +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+# Exp364 - beta
+## Load data
+```{r message=FALSE, cache=TRUE}
+exp_name <- "exp364"
+param_codes <- 0:9
+run_codes <- 1:10
+file_names <- c("score_R", 
+                "score_E", 
+                "action", 
+                "p_bests", 
+                "regret", 
+                "value_ER",
+                "total_R",
+                "total_E",
+                "total_regret")
+
+result364 <- load.result(exp_name, param_codes, run_codes, file_names)
+result364 %>% 
+  group_by(param, run) %>% 
+  summarise(
+    total_R=max(total_R),
+    total_E=max(total_E),
+    total_regret=max(total_regret),
+    value_ER=median(value_ER),
+    p_bests=max(p_bests),
+    regret=median(regret[regret > 0])
+  ) %>% 
+  ungroup() ->
+summary364
+```
+
+## values
+```{r, fig.height=2.0, fig.width=0.8}
+summary364 %>% 
+  ggplot(aes(x=factor(param), y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary364 %>% 
+  ggplot(aes(x=factor(param), y=total_E)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary364 %>% 
+  ggplot(aes(x=factor(param), y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  # geom_boxplot(alpha=0.9, width=0.4, outlier.colour = NA) +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+summary364 %>% 
+  ggplot(aes(x=factor(param), y=p_bests)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="black", alpha=0.9, size=2, shape="-") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(x="Parameter set") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) -> p4
+
+p1 / p2 / p3 / p4
+```
+
+## actions
+```{r, fig.height=1.5, fig.width=4}
+result364 %>% 
+  filter(global_step <= 50) %>%
+  ggplot(aes(x=global_step, y=action, color=factor(param))) +
+  lims(x=c(0, 50)) +
+  geom_line(size=0.3, alpha=1) +
+  labs(x="Time", y="Choice") +
+  facet_grid(run~param) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  # scale_color_grey() +
+  theme(panel.spacing = unit(0.5, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") +
+  theme(legend.box.background = element_rect(colour = "black", size=1)) +
+  theme(plot.title = element_text(size = 6)) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  theme(strip.text.x = element_blank()) +
+  theme(strip.text.x = element_blank()) +
+  theme(axis.text.x = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  theme(axis.ticks = element_blank()) + 
+  theme(legend.key.size = unit(0.2, "cm")) 
+```
+
+# Join data
+## Join
+```{r}
+summary361 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp1
+summary362 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp2
+summary363 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp3
+summary364 %>% 
+  dplyr::select(param, run, total_R, total_regret, p_bests) -> tmp4
+
+tmp1$agent <- "dual value"
+tmp2$agent <- "ep-greedy"
+tmp3$agent <- "anneal-ep"
+tmp4$agent <- "bayesian"
+
+summary361_4 <- tmp1
+summary361_4 <- bind_rows(summary361_4, tmp2)
+summary361_4 <- bind_rows(summary361_4, tmp3)
+summary361_4 <- bind_rows(summary361_4, tmp4)
+```
+
+## Values
+```{r, fig.height=1.5, fig.width=1.2}
+## Values
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  scale_colour_manual("", values=c("mediumorchid4")) +
+  labs(y="Total R") +
+  lims(y=c(0,100)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p1
+
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(size=0.01, alpha=0.9, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Total regret") +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p2
+
+summary361_4 %>% 
+  ggplot(aes(x=agent, y=p_bests)) +
+  geom_jitter(size=0.05, alpha=0.4, width=0.2) +
+  stat_summary(fun=median, color="red", alpha=0.6, size=1, shape="|") +
+  labs(y="Best choice") +
+  lims(y=c(0,1)) +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "none") + 
+  theme(strip.background = element_blank()) +
+  coord_flip() +
+  theme(panel.spacing = unit(1, "lines")) -> p3
+
+p1 / p2 / p3 
+```
