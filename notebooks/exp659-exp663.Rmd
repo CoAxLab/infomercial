@@ -63,7 +63,7 @@ file_names <- c("action",
                 "policy",
                 "total_regret")
 
-result664_668<- NULL
+result659_663 <- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -88,33 +88,34 @@ for(i in 1:length(exp_names)){
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result664_668 <- bind_rows(result664_668, tmp)
+  result659_663 <- bind_rows(result659_663, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result664_668$agent <- factor(result664_668$agent, levels=rev(agent_names))
+result659_663$agent <- factor(result659_663$agent, levels=rev(agent_names))
 
 # Policy as factors
 # Rename levels
-result664_668$policy <- as.factor(result664_668$policy)
-result664_668$policy <- recode_factor(result664_668$policy, `0`="explore", `1`="exploit")
+result659_663$policy <- as.factor(result659_663$policy)
+result659_663$policy <- recode_factor(result659_663$policy, `0`="explore", `1`="exploit")
 
 ```
+
 # Behave
 ## Policy
-```{r, fig.width=10, fig.height=4}
-# n <- 121 * 20
-n <- num_episodes
+```{r, fig.width=6, fig.height=24}
+# n <- num_episodes
+n <- 20
 
-result664_668 %>% 
+result659_663 %>% 
   filter(global_step <= n) %>%
-  filter(run < 3) %>% 
-  filter(param < 3) %>% 
+  filter(run < 10) %>% 
+  filter(param < 15) %>% 
   ggplot(aes(x=global_step, y=policy, color=policy)) +
   geom_point(size=0.5) +
-  facet_grid(agent~interaction(run,param)) +
+  facet_grid(interaction(run, param)~agent) +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -122,31 +123,37 @@ result664_668 %>%
 ```
 
 ## Actions
-```{r, fig.width=10, fig.height=6}
-best <- 1
-n <- num_episodes
+```{r, fig.width=6, fig.height=20}
+# n <- num_episodes
+n <- 20
 
-result664_668 %>% 
+# Best factpr (for color)
+best <- 1
+tmp <- result659_663
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
   filter(global_step <= n) %>%
-  filter(run < 5) %>% 
+  filter(run < 10) %>% 
   filter(param < 5) %>% 
-  ggplot(aes(x=global_step, y=action)) +
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
   geom_point(size=0.5) +
-  geom_hline(aes(yintercept=best), color="blue") +
-  facet_grid(agent~interaction(run, param)) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0))
+
 ```
 
 # Summary stats
 ## Total reward
 ```{r, fig.width=4, fig.height=2}
-# ----------------------------------------------------------------------------------------
 n <- 121 * 20
 # n <- num_episodes
 
-result664_668 %>% 
+result659_663 %>% 
   filter(global_step < n) %>% 
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -171,7 +178,7 @@ tmp %>%
 # n <- 121 * 20
 n <- num_episodes
 
-result664_668 %>% 
+result659_663 %>% 
   filter(global_step < n) %>% 
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
