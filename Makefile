@@ -10496,3 +10496,192 @@ exp668:
 	rm tmp
 
 # Skip L2 (a bayes model)
+
+
+# ------------------------------------------------------------------
+#
+#
+# Tune lr and boredom in alt memory models. This will better match the 
+# experiments run for info max already.
+#
+# Use the exaact same borders as previous tunes.
+#
+# Tasks: BanditOneHigh4 and BanditUniform121
+# Agents: KL (infomax), L1/Prob, UCB/Count, Entropy/L2, Rate/L2,
+# 
+# Params from older runs,those used in the paper at present.
+#
+# --tie_threshold='(1e-9, 1e-2)' 
+# --lr_R='(0.001, 0.5)' 
+# 
+# These are much smaller, and fine for KL but prior peaks at tune
+# requires an expaned range for tie_threshold. 
+#
+# --tie_threshold='(1e-9, 2)' 
+# --lr_R='(0.001, 0.5)' 
+
+# ---
+# BanditOneHigh4
+#  L1 (a bayes model)
+exp669:
+	tune_bandit.py random $(DATA_PATH)/exp669 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L1' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+		
+# delta H (ala Calhoun)
+exp670:
+	tune_bandit.py random $(DATA_PATH)/exp670 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='H' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# delta rate / l2
+exp671:
+	tune_bandit.py random $(DATA_PATH)/exp671 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='rate' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# UCB (count model 1)
+exp672:
+	tune_bandit.py random $(DATA_PATH)/exp672 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='UCB' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# KL  (the ref model)
+exp673:
+	tune_bandit.py random $(DATA_PATH)/exp673 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditOneHigh4-v0 \
+		--num_samples=1000 \
+		--num_episodes=200 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='KL' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+
+
+# ----
+# BanditUniform121
+# L1 (a bayes model) 
+exp674:
+	tune_bandit.py random $(DATA_PATH)/exp674 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='L1' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+		
+# delta H (ala Calhoun)
+exp675:
+	tune_bandit.py random $(DATA_PATH)/exp675 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='H' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# delta rate / l2
+exp676:
+	tune_bandit.py random $(DATA_PATH)/exp676 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='rate' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# UCB (count model 1)
+exp677:
+	tune_bandit.py random $(DATA_PATH)/exp677 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='UCB' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
+
+# KL  (the ref model)
+exp678:
+	tune_bandit.py random $(DATA_PATH)/exp678 \
+		--exp_name='wsls_bandit' \
+		--env_name=BanditUniform121-v0 \
+		--num_samples=1000 \
+		--num_episodes=2420 \
+		--num_repeats=50 \
+		--num_processes=39 \
+		--log_space=True \
+		--output=False \
+		--metric="total_R" \
+		--mode='KL' \
+		--lr_R='(0.001, 0.5)' \
+		--tie_threshold='(1e-9, 2)' \
