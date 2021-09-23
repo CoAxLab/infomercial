@@ -10499,7 +10499,8 @@ exp668:
 
 
 # ------------------------------------------------------------------
-#
+# 9/23/2021
+# 817666b
 #
 # Tune lr and boredom in alt memory models. This will better match the 
 # experiments run for info max already.
