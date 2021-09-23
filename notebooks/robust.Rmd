@@ -253,7 +253,7 @@ result_ranked4 %>%
 
 tmp1 %>% 
   ggplot(aes(x=agent, y=total_R/max(tmp1$total_R), color=factor(strategy))) +
-  geom_point() +
+  geom_point(size=2) +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(x="", y="Relative reward\n summed over\nparameters", tag="c.") +
   theme_pubr(base_size = 10, legend = "none") +
@@ -269,7 +269,7 @@ result_ranked121 %>%
 
 tmp2 %>% 
   ggplot(aes(x=agent, y=total_R/max(tmp2$total_R), color=factor(strategy))) +
-  geom_point() +
+  geom_point(size=2) +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(x="", y="Relative reward\n summed over\nparameters", tag="d.") +
   theme_pubr(base_size = 10, legend = "none") +
