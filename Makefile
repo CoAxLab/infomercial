@@ -10690,7 +10690,7 @@ exp678:
 
 # ----------------------------------------------------------------------------
 # 9/23/2021
-# d330ee2
+# 49e6070
 #
 # Exploration examples for alt. memory models. Choose 'good' exploraation
 # params that 1. maximize the duration of exploration but also 2. get nearly 
