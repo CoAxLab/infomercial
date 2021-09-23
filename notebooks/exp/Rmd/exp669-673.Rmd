@@ -145,14 +145,18 @@ results669_673 %>%
   scale_color_manual("", values = colors) +
   facet_wrap(. ~ agent) 
 ```
-
-## Threshold (overlap plot)
+### Overlap 
 ```{r, fig.width=8, fig.height=4}
 results669_673 %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1, alpha = 0.6) +
-  geom_vline(aes(xintercept=1), color="grey") +
-  geom_hline(aes(yintercept=200/4), color="grey") +
+  geom_vline(aes(xintercept=1.0), color="grey") +
+  geom_vline(aes(xintercept=0.5), color="grey") +
+  geom_vline(aes(xintercept=0.25), color="grey") +
+  geom_vline(aes(xintercept=0.125), color="grey") +
+  geom_vline(aes(xintercept=0.06), color="grey") +
+  geom_vline(aes(xintercept=0.03), color="grey") +
+  geom_vline(aes(xintercept=0.015), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
@@ -161,4 +165,27 @@ results669_673 %>%
   scale_x_log10() +
   scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) 
+```
+
+## Learning rate
+### Raw
+```{r, fig.width=10, fig.height=6}
+results669_673 %>%
+  filter(tie_threshold < 2) %>% 
+  ggplot(aes(x = lr_R, y = total_R, color = agent)) +
+  geom_point(size = 1, alpha = 0.6) +
+  geom_vline(aes(xintercept=0.5), color="grey") +
+  geom_vline(aes(xintercept=0.25), color="grey") +
+  geom_vline(aes(xintercept=0.125), color="grey") +
+  geom_vline(aes(xintercept=0.06), color="grey") +
+  geom_vline(aes(xintercept=0.03), color="grey") +
+  geom_vline(aes(xintercept=0.015), color="grey") +
+  labs(x = "Learning rate", y = "Total reward") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
+  scale_color_manual("", values = colors) +
+  facet_wrap(. ~ agent) 
 ```
