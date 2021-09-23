@@ -256,8 +256,7 @@ tmp1 %>%
   geom_point() +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(x="", y="Relative reward\n summed over\nparameters", tag="c.") +
-  theme_classic() + 
-  theme(legend.position = "nane") +
+  theme_pubr(base_size = 10, legend = "none") +
   scale_y_continuous(limits = c(0, 1), breaks = c(0, 1)) +
   coord_flip() -> p1
 rm(tmp)
@@ -273,8 +272,7 @@ tmp2 %>%
   geom_point() +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(x="", y="Relative reward\n summed over\nparameters", tag="d.") +
-  theme_classic() + 
-  theme(legend.position = "nane") +
+  theme_pubr(base_size = 10, legend = "none") +
   scale_y_continuous(limits = c(0, 1), breaks = c(0, 1)) +
   coord_flip() -> p2
 
