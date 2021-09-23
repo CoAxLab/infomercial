@@ -21,7 +21,7 @@ library(patchwork)
 options(scipen=1000000)
 
 # Load load_result and other helpful functions
-source("utils.R")
+source("../../utils.R")
 
 # --- Main path to all data ---
 data_path <- "~/Code/infomercial/data"
