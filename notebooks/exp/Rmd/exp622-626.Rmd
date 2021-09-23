@@ -50,7 +50,7 @@ colors <- c("black",
             "orange3",
             "orange4")
 # ---
-results <- NULL
+results622_666 <- NULL
 
 for (i in 1:length(exp_names)) {
   # Meta
@@ -66,18 +66,18 @@ for (i in 1:length(exp_names)) {
   result$agent <- agent_name
   
   # Save
-  results <- bind_rows(results, result)
+  results622_666 <- bind_rows(results622_666, result)
 }
 
 # Order
-results$agent <- factor(results$agent, levels = agent_names)
+results622_666$agent <- factor(results622_666$agent, levels = agent_names)
 ```
 
 
 # Vis
 ## Ranked
 ```{r, fig.width=6, fig.height=2}
-results %>%
+results622_666 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
@@ -92,7 +92,7 @@ results %>%
 ```
 
 ```{r, fig.width=6, fig.height=4}
-results %>%
+results622_666 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
@@ -105,12 +105,19 @@ results %>%
 ```
 
 ## Threshold
+### Log
 ```{r, fig.width=10, fig.height=6}
-results %>%
+results622_666 %>%
+  filter(tie_threshold < 2) %>% 
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1, alpha = 0.6) +
-  geom_vline(aes(xintercept=1), color="grey") +
-  geom_hline(aes(yintercept=200/4), color="grey") +
+  geom_vline(aes(xintercept=1.0), color="grey") +
+  geom_vline(aes(xintercept=0.5), color="grey") +
+  geom_vline(aes(xintercept=0.25), color="grey") +
+  geom_vline(aes(xintercept=0.125), color="grey") +
+  geom_vline(aes(xintercept=0.06), color="grey") +
+  geom_vline(aes(xintercept=0.03), color="grey") +
+  geom_vline(aes(xintercept=0.015), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
@@ -122,22 +129,24 @@ results %>%
   facet_wrap(. ~ agent) 
 ```
 
-## Threshold - top N
+### Raw
 ```{r, fig.width=10, fig.height=6}
-top_n <- 20
-
-results %>%
-  filter(index < top_n) %>% 
+results622_666 %>%
+  filter(tie_threshold < 2) %>% 
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
-  geom_point(size = 2, alpha = 1) +
-  geom_vline(aes(xintercept=1), color="grey") +
-  geom_hline(aes(yintercept=200/4), color="grey") +
+  geom_point(size = 1, alpha = 0.6) +
+  geom_vline(aes(xintercept=1.0), color="grey") +
+  geom_vline(aes(xintercept=0.5), color="grey") +
+  geom_vline(aes(xintercept=0.25), color="grey") +
+  geom_vline(aes(xintercept=0.125), color="grey") +
+  geom_vline(aes(xintercept=0.06), color="grey") +
+  geom_vline(aes(xintercept=0.03), color="grey") +
+  geom_vline(aes(xintercept=0.015), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
-  # scale_x_log10() +
   scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) +
   facet_wrap(. ~ agent) 
@@ -145,7 +154,7 @@ results %>%
 
 ## Threshold (overlap plot)
 ```{r, fig.width=8, fig.height=4}
-results %>%
+results622_666 %>%
   ggplot(aes(x = tie_threshold, y = total_R, color = agent)) +
   geom_point(size = 1, alpha = 0.6) +
   geom_vline(aes(xintercept=1), color="grey") +
