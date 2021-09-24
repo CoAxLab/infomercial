@@ -83,7 +83,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-result_task1<- NULL
+result_task2 <- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -108,48 +108,48 @@ for(i in 1:length(exp_names)){
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task1 <- bind_rows(result_task1, tmp)
+  result_task2 <- bind_rows(result_task2, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task1$agent <- factor(result_task1$agent, levels=rev(agent_names))
+result_task2$agent <- factor(result_task2$agent, levels=rev(agent_names))
 
 # Remove E_bias
-result_task1$total_E <- result_task1$total_E - E_bias
-result_task1$total_E[result_task1$total_E < 0] <- 0
+result_task2$total_E <- result_task2$total_E - E_bias
+result_task2$total_E[result_task2$total_E < 0] <- 0
 
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
 for(a_name in c("Reward", "+Novelty")) {
-  m <- result_task1$agent == a_name
-  result_task1[["total_E"]][m] <- 0
+  m <- result_task2$agent == a_name
+  result_task2[["total_E"]][m] <- 0
 }
 
 # Estimate num_explore
 # - for curiosity this is defined by policy
 # - for the rest we can count non-zero regret values
-result_task1 %>%
+result_task2 %>%
   filter(agent != "Curiosity") %>% 
   group_by(agent, run, param) %>%
   mutate(num_explore = sum(regret > 0)) %>% 
   ungroup() -> tmp1
 
-result_task1 %>% 
+result_task2 %>% 
   filter(agent == "Curiosity") %>% 
   group_by(agent, run, param) %>%
   mutate(num_explore = sum(policy == 0)) -> tmp2
 
 tmp <- bind_rows(tmp2, tmp1)
-result_task1 <- tmp
+result_task2 <- tmp
 ```
 
 
 # Summary stats (joint)
 ```{r, fig.width=4.2, fig.height=2.4}
-result_task1 %>% 
+result_task2 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -263,7 +263,7 @@ print(summary3)
 
 # Summary, by parts
 ```{r, fig.width=4.2, fig.height=3.4}
-result_task1 %>% 
+result_task2 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -351,7 +351,7 @@ p1 / p2  / p3 / p4 +
 r <- 1
 
 # Plot actions
-result_task1 %>% 
+result_task2 %>% 
   filter(agent != "Random") %>% 
   filter(run == r) %>% 
   ggplot(aes(x=global_step, y=action+1)) + #, color=factor(policy))) +
@@ -382,7 +382,7 @@ result_task1 %>%
 ```
 # Rewards
 ```{r, fig.width=4.2, fig.height=4.2}
-result_task1 %>% 
+result_task2 %>% 
   filter(agent != "Random") %>% 
   filter(global_step > 10) %>%
   ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
