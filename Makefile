@@ -10786,7 +10786,135 @@ exp688:
 
 
 # ----------------------------------------------------------------------------
+# 9/24/2021
+# 97f5be4 
 #
+# Top10 performance for alt memory - with both tie and lr tuned.
 #
-# Top10 performance for tune exp
+# Env: BanditOneHigh4 and BanditUniform121
+# Agents: KL (infomax), L1/Prob, UCB/Count, Entropy/L2, Rate/L2,# Agents: 
 #
+# ---
+# BanditOneHigh4 
+# L1 
+exp689:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp669_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp689.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='L1' --log_dir=$(DATA_PATH)/exp689/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# delta Entropy 
+exp690:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp670_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp690.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='H' --log_dir=$(DATA_PATH)/exp690/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# delta rate / l2
+exp691:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp671_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp691.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='rate' --log_dir=$(DATA_PATH)/exp691/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# UCB 
+exp692:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp672_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp692.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='UCB' --log_dir=$(DATA_PATH)/exp692/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# KL
+exp693:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp673_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp693.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditOneHigh4-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='KL' --log_dir=$(DATA_PATH)/exp693/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+
+# ---
+# BanditUniform121 
+# L1 
+exp694:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp674_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp694.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='L1' --log_dir=$(DATA_PATH)/exp694/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# delta Entropy 
+exp695:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp675_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp695.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='H' --log_dir=$(DATA_PATH)/exp695/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# delta rate / l2 
+exp696:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp676_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp696.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='rate' --log_dir=$(DATA_PATH)/exp696/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# UCB
+exp697:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp677_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp697.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='UCB' --log_dir=$(DATA_PATH)/exp697/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
+
+# KL
+exp698:
+	# Get top 10
+	head -n 11 $(DATA_PATH)/exp678_sorted.csv > tmp 
+	# Run them 10 times
+	parallel -j 39 \
+			--joblog '$(DATA_PATH)/exp698.log' \
+			--nice 19 --delay 0 --bar --colsep ',' --header : \
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --mode='KL' --log_dir=$(DATA_PATH)/exp698/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+	# Clean up
+	rm tmp
