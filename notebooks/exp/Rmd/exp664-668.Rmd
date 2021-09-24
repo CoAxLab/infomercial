@@ -139,14 +139,14 @@ tmp <- result664_668
 tmp$best <- 0
 tmp$best[tmp$action == best] <- 1
 
-tmp %>% 
+tmp %>%
   filter(global_step <= n) %>%
-  filter(run < 10) %>% 
-  filter(param < 5) %>% 
-  ggplot(aes(x=global_step, y=action, color=factor(best))) +
-  geom_point(size=0.5) +
-  facet_grid(interaction(run, param)~agent) +
-  scale_color_manual(values=c("black", "darkorange3")) +
+  filter(run < 10) %>%
+  filter(param < 5) %>%
+  ggplot(aes(x = global_step, y = action, color = factor(best))) +
+  geom_point(size = 0.5) +
+  facet_grid(interaction(param, run) ~ agent) +
+  scale_color_manual(values = c("black", "darkorange3")) +
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0))
@@ -201,7 +201,6 @@ tmp %>%
   theme_classic() +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_text(angle = 0))
-
 ```
 
 # Summary stats   

@@ -112,6 +112,7 @@ results669_673 %>%
   geom_vline(aes(xintercept=0.06), color="grey") +
   geom_vline(aes(xintercept=0.03), color="grey") +
   geom_vline(aes(xintercept=0.015), color="grey") +
+  geom_vline(aes(xintercept=0.0075), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
@@ -209,4 +210,19 @@ results669_673 %>%
   scale_x_log10() +
   scale_y_continuous(breaks = c(1, 100, 200), limits = c(1, 200)) +
   scale_color_manual("", values = colors) 
+```
+
+## Threshold v rate
+```{r, fig.width=10, fig.height=6}
+results669_673 %>%
+  filter(tie_threshold < 2) %>%
+  ggplot(aes(x = tie_threshold, y = lr_R, color = total_R)) +
+  geom_point(size=4, alpha=0.6) +
+  labs(x = "Boredom", y = "Learning rate") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "right") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_viridis_b("Total reward") +
+  facet_wrap(. ~ agent) 
 ```

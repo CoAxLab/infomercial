@@ -121,6 +121,7 @@ results629_635 %>%
   geom_vline(aes(xintercept=0.06), color="grey") +
   geom_vline(aes(xintercept=0.03), color="grey") +
   geom_vline(aes(xintercept=0.015), color="grey") +
+  geom_vline(aes(xintercept=0.0075), color="grey") +
   labs(x = "Boredom", y = "Total reward") +
   theme_classic() +
   theme(strip.background = element_blank()) +
