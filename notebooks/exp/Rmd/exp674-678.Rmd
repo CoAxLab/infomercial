@@ -189,3 +189,18 @@ results674_678 %>%
   scale_color_manual("", values = colors) +
   facet_wrap(. ~ agent) 
 ```
+
+## Threshold v rate
+```{r, fig.width=10, fig.height=6}
+results669_673 %>%
+  filter(tie_threshold < 2) %>%
+  ggplot(aes(x = tie_threshold, y = lr_R, color = total_R)) +
+  geom_point(size=4, alpha=0.6) +
+  labs(x = "Boredom", y = "Learning rate") +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "right") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_viridis_b("Total reward") +
+  facet_wrap(. ~ agent) 
+```
