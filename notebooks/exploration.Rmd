@@ -49,16 +49,16 @@ exp_names <- c("exp457",
                "exp503",
                "exp539")
 
-agent_names <- c("Curiosity",
+agent_names <- c("Curiosity (Info.)",
                  # "Random/Greedy",
                  # "Decay/Greedy",
                  # "Random",
                  "Reward",
-                 "Bayesian",
-                 "Novelty",
-                 "Entropy",
-                 "EB",
-                 "UCB")
+                 "Reward+Info.",
+                 "Reward+Novelty",
+                 "Reward+Entropy",
+                 "Reward+EB",
+                 "Reward+UCB")
 
 class_names <- c(
   "Curiosity",
@@ -142,16 +142,16 @@ exp_names <- c("exp548",
                "exp559",
                "exp561")
 
-agent_names <- c("Curiosity",
+agent_names <- c("Curiosity (Info.)",
                  # "Random/Greedy",
                  # "Decay/Greedy",
                  # "Random",
                  "Reward",
-                 "Bayesian",
-                 "Novelty",
-                 "Entropy",
-                 "EB",
-                 "UCB")
+                 "Reward+Info.",
+                 "Reward+Novelty",
+                 "Reward+Entropy",
+                 "Reward+EB",
+                 "Reward+UCB")
 
 class_names <- c(
   "Curiosity",
@@ -218,7 +218,7 @@ result_task6$policy[result_task6$regret > 0] <- -1
 ```
 
 # Fig - Behave
-```{r, fig.width=6.5, fig.height=7}
+```{r, fig.width=9, fig.height=7}
 result_task2 %>%
   filter(run <= 5) %>%
   filter(param == 1) %>%

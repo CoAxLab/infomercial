@@ -36,49 +36,48 @@ task_name <- "BanditOneHigh4"
 task_code <- 1
 
 rank_names <- c(
-  "exp595_sorted.csv", 
-  # "exp596_sorted.csv", 
-  # "exp597_sorted.csv", 
+  "exp595_sorted.csv",
+  # "exp596_sorted.csv",
+  # "exp597_sorted.csv",
   "exp598_sorted.csv",
-  "exp599_sorted.csv", 
-  "exp600_sorted.csv", 
-  "exp601_sorted.csv", 
-  "exp602_sorted.csv", 
-  "exp603_sorted.csv")
+  "exp599_sorted.csv",
+  "exp600_sorted.csv",
+  "exp601_sorted.csv",
+  "exp602_sorted.csv",
+  "exp603_sorted.csv"
+)
 
 agent_names <- c(
-  "Curiosity", 
-  # "Random/Greedy", 
-  # "Decay/Greedy", 
-  "Reward", 
-  "Bayesian", 
-  "Novelty", 
-  "Entropy", 
-  "Count (EB)",
-  "Count (UCB)"
+  "Curiosity (Info.)",
+  # "Random/Greedy",
+  # "Decay/Greedy",
+  "Reward",
+  "Reward+Info.",
+  "Reward+Novelty",
+  "Reward+Entropy",
+  "Reward+EB",
+  "Reward+UCB"
 )
 
-class_names <- c(
-  "Info. value",
-  # "Random",
-  # "Raandom",
-  "Reward",
-  "Mixed",
-  "Mixed",
-  "Mixed",
-  "Mixed",
-  "Mixed"
-)
+class_names <- c("Info. value",
+                 # "Random",
+                 # "Raandom",
+                 "Reward",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed")
 
 result_ranked4 <- NULL
-for(i in 1:length(rank_names)){
+for (i in 1:length(rank_names)) {
   # Meta
   rank_name <- rank_names[i]
   agent_name <- agent_names[i]
   class_name <- class_names[i]
   
   # Get run?
-  if (agent_name == "Random"){
+  if (agent_name == "Random") {
     param_codes <- c(0)
     run_codes <- 1:100
   } else{
@@ -87,7 +86,8 @@ for(i in 1:length(rank_names)){
   }
   
   # Load and add meta
-  tmp <- read_csv(paste(data_path, rank_name, sep="/"), show_col_types = FALSE)
+  tmp <-
+    read_csv(paste(data_path, rank_name, sep = "/"), show_col_types = FALSE)
   tmp$exp <- rank_name
   tmp$agent <- agent_name
   tmp$task <- task_name
@@ -99,7 +99,8 @@ for(i in 1:length(rank_names)){
 }
 
 # Order factors for later vis
-result_ranked4$agent <- factor(result_ranked4$agent, levels = agent_names)
+result_ranked4$agent <-
+  factor(result_ranked4$agent, levels = agent_names)
 result_ranked4$strategy <-
   factor(result_ranked4$strategy,
          levels = c("Info. value", "Reward", "Mixed"))
@@ -107,9 +108,8 @@ result_ranked4$strategy <-
 
 ## BanditUniform121
 ```{r, message=FALSE}
-# -------------------------------------------------------------
 task_name <- "BanditUniform121"
-task_code <- 2
+task_code <- 6
 
 rank_names <- c(
   "exp604_sorted.csv",
@@ -124,28 +124,26 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity",
+  "Curiosity (Info.)",
   # "Random/Greedy",
   # "Decay/Greedy",
   "Reward",
-  "Bayesian",
-  "Novelty",
-  "Entropy",
-  "Count (EB)",
-  "Count (UCB)"
+  "Reward+Info.",
+  "Reward+Novelty",
+  "Reward+Entropy",
+  "Reward+EB",
+  "Reward+UCB"
 )
 
-class_names <- c(
-  "Info. value",
-  # "Random",
-  # "Raandom",
-  "Reward",
-  "Mixed",
-  "Mixed",
-  "Mixed",
-  "Mixed",
-  "Mixed"
-)
+class_names <- c("Info.",
+                 # "Random",
+                 # "Raandom",
+                 "Reward",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed")
 
 result_ranked121 <- NULL
 for (i in 1:length(rank_names)) {
@@ -173,10 +171,11 @@ for (i in 1:length(rank_names)) {
 }
 
 # Order factors for later vis
-result_ranked121$agent <- factor(result_ranked121$agent, levels = agent_names)
+result_ranked121$agent <-
+  factor(result_ranked121$agent, levels = agent_names)
 result_ranked121$strategy <-
   factor(result_ranked121$strategy,
-         levels = c("Info. value", "Reward", "Mixed"))
+         levels = c("Info.", "Reward", "Mixed"))
 ```
 
 # Vis
@@ -246,35 +245,49 @@ ggsave(paste(name, ".pdf", sep=""), plot=robust1, width = 6, height = 3)
 ## Summed over rank
 ```{r, fig.width=6, fig.height=2.5}
 # Classic
-result_ranked4 %>% 
-  group_by(agent, strategy) %>% 
-  summarise(total_R = sum(total_R)) -> 
+result_ranked4 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
   tmp1
 
-tmp1 %>% 
-  ggplot(aes(x=agent, y=total_R/max(tmp1$total_R), color=factor(strategy))) +
-  geom_point(size=2) +
+tmp1 %>%
+  ggplot(aes(
+    x = agent,
+    y = total_R / max(tmp1$total_R),
+    color = factor(strategy)
+  )) +
+  geom_point(size = 2) +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
-  labs(x="", y="Relative reward\n summed over\nparameters", tag="c.") +
+  labs(x = "", y = "Relative reward\n summed over\nparameters", tag = "c.") +
   theme_pubr(base_size = 10, legend = "none") +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
   coord_flip() -> p1
 rm(tmp)
 
 # High dimensional
-result_ranked121 %>% 
-  group_by(agent, strategy) %>% 
-  summarise(total_R = sum(total_R)) -> 
+result_ranked121 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
   tmp2
 
-tmp2 %>% 
-  ggplot(aes(x=agent, y=total_R/max(tmp2$total_R), color=factor(strategy))) +
-  geom_point(size=2) +
+tmp2 %>%
+  ggplot(aes(
+    x = agent,
+    y = total_R / max(tmp2$total_R),
+    color = factor(strategy)
+  )) +
+  geom_point(size = 2) +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
-  labs(x="", y="Relative reward\n summed over\nparameters", tag="d.") +
+  labs(x = "", y = "Relative reward\n summed over\nparameters", tag = "d.") +
   theme_pubr(base_size = 10, legend = "none") +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
   coord_flip() -> p2
 
-p1 + p2
+robust2 <- p1 + p2
+print(robust2)
+
+# ---
+# Write pdf
+name <- "img/robust2"
+ggsave(paste(name, ".pdf", sep=""), plot=robust2, width = 6, height = 2.5)
 ```
