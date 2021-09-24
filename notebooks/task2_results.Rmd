@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 # Library
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(zoo)
 library(ggplot2)
 library(ggpubr)
@@ -24,41 +24,43 @@ options(scipen=1000000)
 source("utils.R")
 
 # --- Main path to all data ---
-data_path <- "/Volumes/Data/infomercial/data"
+data_path <- "~/Code/infomercial/data"
 ```
 
-# Load data
-```{r, message=FALSE}
+# Data
+```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
-task_name <- "BanditHardAndSparse10"
+task_name <- "BanditOneHigh4"
 task_code <- 2
-num_episodes <- 50000
+num_episodes <- 4*50
 
 # The overestimate due to E0
-num_arms <- 10
+num_arms <- 4
 E_bias <- log(num_arms) * num_arms 
 
-exp_names <- c("exp546",
-               "exp409", 
-               "exp410", 
-               "exp412", 
-               "exp514",
-               "exp411", 
-               "exp513", 
-               "exp516", 
-               "exp515", 
-               "exp542")
+exp_names <- c(
+  "exp457", 
+  "exp526", 
+  "exp527", 
+  "exp547", 
+  "exp502",
+  "exp525", 
+  "exp501", 
+  "exp504", 
+  "exp503", 
+  "exp539")
 
-agent_names <- c("Curiosity", 
-                 "del-random", 
-                 "tau-random", 
-                 "Random",
-                 "Extrinsic", 
-                 "Info", 
-                 "Novelty", 
-                 "Entropy", 
-                 "Count (EB)",
-                 "Count (UCB)")
+agent_names <- c(
+  "Curiosity", 
+  "Random/Greedy", 
+  "Decay/Greedy", 
+  "Random",
+  "Reward", 
+  "Info. value", 
+  "Novelty", 
+  "Entropy", 
+  "Count (EB)",
+  "Count (UCB)")
 
 class_names <- c(
   "Curiosity",
@@ -81,7 +83,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-result_task2 <- NULL
+result_task1<- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -94,8 +96,8 @@ for(i in 1:length(exp_names)){
     run_codes <- 1:10
   }
   
-  tmp <- load_result(
-    exp_name, param_codes, run_codes, file_names, n_max=num_episodes+1)
+  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
+                     n_max=num_episodes+1)
   
   tmp %>% 
     filter(global_step <= num_episodes) -> tmp
@@ -106,54 +108,48 @@ for(i in 1:length(exp_names)){
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task2 <- bind_rows(result_task2, tmp)
+  result_task1 <- bind_rows(result_task1, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task2$agent <- factor(result_task2$agent, levels=rev(agent_names))
+result_task1$agent <- factor(result_task1$agent, levels=rev(agent_names))
 
 # Remove E_bias
-result_task2$total_E <- result_task2$total_E - E_bias
-result_task2$total_E[result_task2$total_E < 0] <- 0
+result_task1$total_E <- result_task1$total_E - E_bias
+result_task1$total_E[result_task1$total_E < 0] <- 0
 
 # Clean total_E
 # - Novelty, extrinsic have total_E but it is not used, so set 
 #   it to zero 
-for(a_name in c("Extrinsic", "Novelty")) {
-  m <- result_task2$agent == a_name
-  result_task2[["total_E"]][m] <- 0
+for(a_name in c("Reward", "+Novelty")) {
+  m <- result_task1$agent == a_name
+  result_task1[["total_E"]][m] <- 0
 }
 
 # Estimate num_explore
 # - for curiosity this is defined by policy
 # - for the rest we can count non-zero regret values
-result_task2 %>%
+result_task1 %>%
   filter(agent != "Curiosity") %>% 
   group_by(agent, run, param) %>%
   mutate(num_explore = sum(regret > 0)) %>% 
   ungroup() -> tmp1
 
-result_task2 %>% 
+result_task1 %>% 
   filter(agent == "Curiosity") %>% 
   group_by(agent, run, param) %>%
   mutate(num_explore = sum(policy == 0)) -> tmp2
 
 tmp <- bind_rows(tmp2, tmp1)
-result_task2 <- tmp
-
-# Cleanup
-rm(tmp, tmp1, tmp2, agent_name, agent_names, class_names, class_name,
-   exp_name, exp_names, file_names, i, param_codes,
-   run_codes, task_name, m, a_name)
+result_task1 <- tmp
 ```
 
 
 # Summary stats (joint)
-```{r, fig.width=2.1, fig.height=1.2}
-# -
-result_task2 %>% 
+```{r, fig.width=4.2, fig.height=2.4}
+result_task1 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -193,7 +189,7 @@ tmp %>%
              color="black",
              size=0.1) +
   labs(x="", y="Reward") +
-  lims(y=c(0.01, 0.02)) +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -259,15 +255,15 @@ tmp %>%
 
 # -------------------------------------------------------------------
 summary3 <- (p1 / (p2 + p3)) + 
-  plot_annotation(title = "Task 2 - Classic", 
+  plot_annotation(title = "Task 1 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
 
 print(summary3)
 ```
 
 # Summary, by parts
-```{r, fig.width=2.x1, fig.height=1.7}
-result_task2 %>% 
+```{r, fig.width=4.2, fig.height=3.4}
+result_task1 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -287,7 +283,7 @@ tmp %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0, width=0.5) +
   labs(x="", y="", title="Deterministic") +
-  lims(y=c(0.0, 0.02)) +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -303,7 +299,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Random") +
-  lims(y=c(0.0, 0.02)) +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -319,7 +315,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="", title="Extrinsic") +
-  lims(y=c(0.0, 0.02)) +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -335,7 +331,7 @@ tmp %>%
              color="chartreuse4",
              size=0.3) +
   labs(x="", y="Reward", title="Extrinsic + Intrinsic") +
-  lims(y=c(0.0, 0.02)) +
+  lims(y=c(0.2, 0.9)) +
   scale_color_identity() +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -344,22 +340,21 @@ tmp %>%
 # ---
 p1 / p2  / p3 / p4 + 
   plot_layout(heights = c(0.1, 0.3, 0.1, 0.5)) +
-  plot_annotation(title = "Task 2 - Sparse", 
+  plot_annotation(title = "Task 1 - Classic", 
                   theme = theme_pubr(base_size = 8, legend = "none"))
-
 ```
 
 
 # Actions
-```{r, fig.width=3.6, fig.height=2.1}
+```{r, fig.width=7.2, fig.height=4.2}
 # Pick an exp to show actions for
 r <- 1
 
 # Plot actions
-result_task2 %>% 
+result_task1 %>% 
   filter(agent != "Random") %>% 
   filter(run == r) %>% 
-  ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
+  ggplot(aes(x=global_step, y=action+1)) + #, color=factor(policy))) +
   geom_point(size=0.1, alpha=0.9) +
   geom_line(size=0.1) +
   labs(x="Time", y="Choice") +
@@ -386,18 +381,18 @@ result_task2 %>%
       theme = theme_pubr(base_size = 8, legend = "none")) 
 ```
 # Rewards
-```{r, fig.width=0.6, fig.height=2.1}
-result_task2 %>% 
+```{r, fig.width=4.2, fig.height=4.2}
+result_task1 %>% 
   filter(agent != "Random") %>% 
   filter(global_step > 10) %>%
   ggplot(aes(x=global_step, y=total_R/global_step, group=interaction(param,run))) +
   geom_line(size=0.1, alpha=0.8) +
-  labs(x="Time", y="Avg. reward") +
+  labs(x="Time", y="Relative reward") +
   scale_x_continuous(
     limits=c(0, num_episodes+(num_episodes*.1)), 
     breaks = c(0, num_episodes)) +
   scale_y_continuous(limits=c(-.1, 1.1), breaks = c(0, 1)) +
-  facet_grid(agent~.) +
+  facet_wrap(agent~.) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(panel.spacing = unit(.2, "lines")) +
   theme(strip.text.y = element_text(angle=0, hjust = -.1)) + 
