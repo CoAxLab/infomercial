@@ -1,0 +1,281 @@
+---
+title: "exp694-698 : BanditChange121 - Alt memories - Top 10"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("../../utils.R")
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data"
+```
+
+# Load data 
+```{r, message=FALSE}
+# -------------------------------------------------------------
+task_name <- "BanditUniform121"
+task_code <- 1
+num_episodes <- 12100
+
+# The overestimate due to E0
+num_arms <- 4
+E_bias <- log(num_arms) * num_arms 
+
+exp_names <- c(
+  "exp694", 
+  "exp695", 
+  "exp696", 
+  "exp697",
+  "exp698"
+)
+
+agent_names <- c(
+  "Prob/L1", 
+  "Entropy/L2", 
+  "Rate/L2", 
+  "Count/UCB",
+  "Prob/KL"
+)
+
+class_names <- c(
+  "Curiosity",
+  "Curiosity",
+  "Curiosity",
+  "Curiosity",
+  "Curiosity"
+)
+
+file_names <- c("action", 
+                "total_R",
+                "policy",
+                "total_regret")
+
+result694_698<- NULL
+for(i in 1:length(exp_names)){
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
+                     n_max=num_episodes+1)
+  
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  result694_698 <- bind_rows(result694_698, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+result694_698$agent <- factor(result694_698$agent, levels=rev(agent_names))
+
+# Policy as factors
+# Rename levels
+result694_698$policy <- as.factor(result694_698$policy)
+result694_698$policy <- recode_factor(result694_698$policy, `0`="explore", `1`="exploit")
+
+```
+
+# Behave
+## Policy
+### Param/Run
+```{r, fig.width=6, fig.height=24}
+# n <- num_episodes
+n <- 121 * 20
+
+result694_698 %>% 
+  filter(global_step <= n) %>%
+  filter(run < 10) %>% 
+  filter(param < 15) %>% 
+  ggplot(aes(x=global_step, y=policy, color=policy)) +
+  geom_point(size=0.5) +
+  facet_grid(interaction(run, param)~agent) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0)) +
+  scale_color_grey() 
+```
+
+## Actions
+### Param/Run
+```{r, fig.width=6, fig.height=20}
+# n <- num_episodes
+n <- 121*20
+
+# Best factpr (for color)
+best <- 54
+tmp <- result694_698
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>%
+  filter(global_step <= n) %>%
+  filter(run < 10) %>%
+  filter(param < 5) %>%
+  ggplot(aes(x = global_step, y = action, color = factor(best))) +
+  geom_point(size = 0.5) +
+  facet_grid(interaction(param, run) ~ agent) +
+  scale_color_manual(values = c("black", "darkorange3")) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0))
+
+```
+
+### by Param
+```{r, fig.width=6, fig.height=10}
+# n <- num_episodes
+n <- 121*20
+run_n <- 9
+
+# Best factpr (for color)
+best <- 54
+tmp <- result694_698
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
+  filter(global_step <= n) %>%
+  filter(run == run_n) %>% 
+  filter(param < 11) %>% 
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
+  geom_point(size=0.5) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0))
+
+```
+### by Run
+```{r, fig.width=6, fig.height=10}
+# n <- num_episodes
+n <- 121*50
+param_n <- 1
+
+# Best factpr (for color)
+best <- 54
+tmp <- result694_698
+tmp$best <- 0
+tmp$best[tmp$action == best] <- 1
+
+tmp %>% 
+  filter(global_step <= n) %>%
+  filter(run < 11) %>% 
+  filter(param == param_n) %>% 
+  ggplot(aes(x=global_step, y=action, color=factor(best))) +
+  geom_point(size=0.5) +
+  facet_grid(interaction(run, param)~agent) +
+  scale_color_manual(values=c("black", "darkorange3")) +
+  theme_classic() +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0))
+```
+
+# Summary stats   
+## Total reward
+### Boxplot
+```{r, fig.width=4, fig.height=2}
+# ----------------------------------------------------------------------------------------
+n <- 121 * 100
+max_R <- max(result694_698$total_R)
+
+result694_698 %>% 
+  filter(global_step < n) %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(agent == "Prob/KL", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_R/max_R, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="Relative reward", title="Alt. memories") +
+  scale_color_identity() +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() 
+```
+### Jitter
+```{r, fig.width=4, fig.height=2}
+# --------------------------------------------------------------------------
+n <- 121 * 100
+
+result694_698 %>% 
+  filter(global_step < n) %>% 
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(size=0.4, alpha=0.5) +
+  stat_summary(fun.y = "median", color="red", alpha=1, size=1, shape="|") +
+  labs(x="", y="Reward", title="Alt. memories") +
+  scale_color_identity() +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() 
+```
+
+## Total regret
+```{r, fig.width=4, fig.height=3}
+# ----------------------------------------------------------------------------------------
+# n <- 121 * 20
+n <- num_episodes
+
+result694_698 %>% 
+  filter(global_step < n) %>% 
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            total_regret = last(total_regret)) %>%  
+  ungroup() -> 
+  tmp
+
+tmp %>% 
+  mutate(
+    color = ifelse(agent == "Prob/KL", "chartreuse4", "black")) %>%
+  ggplot(aes(x=agent, y=total_regret, color=color)) +
+  geom_boxplot(outlier.size = 0, width=0.5) +
+  labs(x="", y="Regret", title="Alt. memories") +
+  scale_color_identity() +
+  theme_pubr(base_size = 8, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() 
+```
