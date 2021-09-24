@@ -10704,6 +10704,8 @@ exp678:
 # Env: BanditOneHigh4 and BanditUniform121
 # Agents: KL (infomax), L1/Prob, UCB/Count, Entropy/L2, Rate/L2,# Agents: 
 
+# HERE - run these
+
 # ---
 # BanditOneHigh4
 # L1 
@@ -10751,14 +10753,14 @@ exp684:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp684.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0075 --lr_R=0.15 --mode='L1' --log_dir=$(DATA_PATH)/exp684/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0075 --lr_R=0.125 --mode='L1' --log_dir=$(DATA_PATH)/exp684/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # delta Entropy
 exp685:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp685.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.25 --lr_R=0.15 --mode='H' --log_dir=$(DATA_PATH)/exp685/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.25 --lr_R=0.2 --mode='H' --log_dir=$(DATA_PATH)/exp685/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 
 # delta rate / l2 
@@ -10766,21 +10768,21 @@ exp686:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp686.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.06 --lr_R=0.15 --mode='rate' --log_dir=$(DATA_PATH)/exp686/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.06 --lr_R=0.25 --mode='rate' --log_dir=$(DATA_PATH)/exp686/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # UCB (count model 1) 
 exp687:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp687.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0001 --lr_R=0.15 --mode='UCB' --log_dir=$(DATA_PATH)/exp687/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0001 --lr_R=0.06 --mode='UCB' --log_dir=$(DATA_PATH)/exp687/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # KL (tune: exp634)
 exp688:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp688.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0075 --lr_R=0.15 --mode='KL' --log_dir=$(DATA_PATH)/exp688/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=BanditUniform121-v0 --num_episodes=12100 --tie_break='next' --tie_threshold=0.0075 --lr_R=0.37 --mode='KL' --log_dir=$(DATA_PATH)/exp688/param{index}/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 
 # ----------------------------------------------------------------------------
