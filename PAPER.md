@@ -74,6 +74,21 @@ Intrinsic
 - EB:  exp511 (exp482_sorted)
 - UCB:  exp541 (exp530_sorted)
 
+## BanditChange121
+Ours
+- meta: exp585 (exp547_sorted)
+Random
+- epsilon: exp586 (exp549_sorted)
+- decay: exp587 (exp551_sorted)
+- random: exp588 (NA)
+Reward
+- extrinsic: exp589 (exp573_sorted)
+Intrinsic
+- info: exp590 (exp554_sorted)
+- novelty: exp591 (exp556_sorted)
+- entropy: exp592 (exp575_sorted)
+- EB: exp593 (exp558_sorted)
+- UCB: exp594 (exp560_sorted)
 
 ## DeceptiveBanditOneHigh10
 Ours
