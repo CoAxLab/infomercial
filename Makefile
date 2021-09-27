@@ -6059,7 +6059,7 @@ exp389:
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6073,7 +6073,7 @@ exp390:
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6088,7 +6088,7 @@ exp391:
 		--exp_name='wsls_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6102,7 +6102,7 @@ exp392:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7619,7 +7619,7 @@ exp488:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7635,7 +7635,7 @@ exp489:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7651,7 +7651,7 @@ exp490:
 		--exp_name='softcount_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7666,7 +7666,7 @@ exp491:
 		--exp_name='softentropy_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -8325,7 +8325,7 @@ exp532:
 		--exp_name='softcount_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=100 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=4 \
 		--log_space=True \
