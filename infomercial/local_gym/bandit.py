@@ -929,12 +929,14 @@ class BanditChange121(BanditUniform121):
 
         # Now update the best
         self.best = [np.argmax(self.p_dist)]
+        self.p_dist[self.best[0]] = 0.8
 
     def seed(self, seed=None):
         super().seed(seed)
         self.original_best = deepcopy(self.best)
         self.p_dist[self.original_best[0]] = 0.1
         self.best = [np.argmax(self.p_dist)]
+        self.p_dist[self.best[0]] = 0.8
 
         return [seed]
 
