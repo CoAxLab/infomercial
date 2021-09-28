@@ -4,139 +4,122 @@ Experimental data used in:
 
 Peterson, E. J. & Verstynen, T. D. A way around the exploration-exploitation dilemma. http://biorxiv.org/lookup/doi/10.1101/671362 (2019) doi:10.1101/671362.
 
-# Major results - rerun list
-`make exp455 exp457 exp497 exp526 exp498 exp527 exp562 exp473 exp502 exp496 exp525 exp472 exp501 exp475 exp504 exp474 exp503 exp528 exp539 exp387 exp408 exp385 exp409 exp386 exp410 exp412 exp485 exp514 exp388 exp411 exp484 exp513 exp487 exp516 exp486 exp515 exp531 exp542 exp547 exp548 exp549 exp550 exp551 exp552 exp553 exp573 exp574 exp554 exp555 exp556 exp557 exp575 exp576 exp558 exp559 exp560 exp561 exp383 exp403 exp381 exp404 exp382 exp405 exp407 exp481 exp510 exp384 exp406 exp480 exp509 exp483 exp512 exp482 exp511 exp530 exp541 exp391 exp449 exp389 exp450 exp390 exp451 exp453 exp489 exp518 exp392 exp452 exp488 exp517 exp491 exp520 exp490 exp519 exp532 exp543 exp460 exp462 exp458 exp463 exp459 exp466 exp493 exp522 exp461 exp465 exp492 exp521 exp495 exp524 exp494 exp523 exp533 exp544`
+## Format
+ - exp_name (tune_exp_name)
+  
 
 ## BanditOneHigh4
 Ours
-- meta: exp457 (exp455_sorted)
+- meta: exp457 (exp455)
 Random
-- epsilon: exp526 (exp497_sorted)
-- decay: exp527 (exp498_sorted)
+- epsilon: exp526 (exp497)
+- decay: exp527 (exp498)
 - random: exp562 (NA)
 Reward
-- extrinsic: exp502 (exp473_sorted)
+- extrinsic: exp502 (exp473)
 Intrinsic
-- info: exp525 (exp496_sorted)
-- novelty: exp501 (exp472_sorted)
-- entropy:  exp504 (exp475_sorted)
-- EB:  exp503 (exp474_sorted)
-- UCB:  exp539 (exp528_sorted)
+- info: exp525 (exp496)
+- novelty: exp501 (exp472)
+- entropy:  exp504 (exp475)
+- EB:  exp503 (exp474)
+- UCB:  exp539 (exp528)
 
 
 ## BanditHardAndSparse10
 Ours
-- meta: exp408 (exp387_sorted)
+- meta: exp408 (exp387)
 Random
-- epsilon: exp409 (exp385_sorted)
-- decay: exp410 (exp386_sorted)
+- epsilon: exp409 (exp385)
+- decay: exp410 (exp386)
 - random: exp412 (NA)
 Reward
-- extrinsic: exp514 (exp485_sorted)
+- extrinsic: exp514 (exp485)
 Intrinsic 
-- info: exp411 (exp388_sorted)
-- novelty: exp513 (exp484_sorted)
-- entropy:  exp516 (exp487_sorted)
-- EB: exp515 (exp486_sorted)
-- UCB:  exp542 (exp531_sorted)
-
-
-## BanditUniform121
-Ours
-- meta: exp548 (exp547_sorted)
-Random
-- epsilon: exp550 (exp549_sorted)
-- decay: exp552 (exp551_sorted)
-- random: exp553 (NA)
-Reward
-- extrinsic: exp574 (exp573_sorted)
-Intrinsic
-- info: exp555 (exp554_sorted)
-- novelty: exp557 (exp556_sorted)
-- entropy:  exp576 (exp575_sorted)
-- EB: exp559 (exp558_sorted)
-- UCB: exp561 (exp560_sorted)
-
+- info: exp411 (exp388)
+- novelty: exp513 (exp484)
+- entropy:  exp516 (exp487)
+- EB: exp515 (exp486)
+- UCB:  exp542 (exp531)
 
 ## BanditUniform121 
 Ours
-- meta: exp403 (exp383_sorted)
+- meta: exp548 (exp547)
 Random
-- epsilon: exp404 (exp381_sorted)
-- decay: exp405 (exp382_sorted)
-- random: exp407 (NA)
+- epsilon: exp550 (exp549)
+- decay: exp552 (exp551)
+- random: exp553 (NA)
 Reward
-- extrinsic: exp510 (exp481_sorted)
+- extrinsic: exp574 (exp573)
 Intrinsic
-- info: exp406 (exp384_sorted)
-- novelty: exp509 (exp480_sorted)
-- entropy:  exp512 (exp483_sorted)
-- EB:  exp511 (exp482_sorted)
-- UCB:  exp541 (exp530_sorted)
+- info: exp555 (exp554)
+- novelty: exp557 (exp556)
+- entropy: exp576 (exp575)
+- EB: exp559 (exp558)
+- UCB: exp561 (exp560)
 
 ## BanditChange121
 Ours
-- meta: exp585 (exp547_sorted)
+- meta: exp585 (exp547)
 Random
-- epsilon: exp586 (exp549_sorted)
-- decay: exp587 (exp551_sorted)
+- epsilon: exp586 (exp549)
+- decay: exp587 (exp551)
 - random: exp588 (NA)
 Reward
-- extrinsic: exp589 (exp573_sorted)
+- extrinsic: exp589 (exp573)
 Intrinsic
-- info: exp590 (exp554_sorted)
-- novelty: exp591 (exp556_sorted)
-- entropy: exp592 (exp575_sorted)
-- EB: exp593 (exp558_sorted)
-- UCB: exp594 (exp560_sorted)
+- info: exp590 (exp554)
+- novelty: exp591 (exp556)
+- entropy: exp592 (exp575)
+- EB: exp593 (exp558)
+- UCB: exp594 (exp560)
 
 ## DeceptiveBanditOneHigh10
 Ours
-- meta: exp449 (exp391_sorted)
+- meta: exp449 (exp391)
 Random
-- epsilon: exp450 (exp389_sorted)
-- decay: exp451 (exp390_sorted)
+- epsilon: exp450 (exp389)
+- decay: exp451 (exp390)
 - random: exp453 (NA)
 Reward
-- extrinsic: exp518 (exp489_sorted)
+- extrinsic: exp518 (exp489)
 Intrinsic
-- info: exp452 (exp392_sorted)
-- novelty: exp517 (exp488_sorted)
-- entropy: exp520 (exp491_sorted)
-- EB: exp519 (exp490_sorted)
-- UCB:  exp543 (exp532_sorted)
+- info: exp452 (exp392)
+- novelty: exp517 (exp488)
+- entropy: exp520 (exp491)
+- EB: exp519 (exp490)
+- UCB:  exp543 (exp532)
 
 
 ## DistractionBanditOneHigh10
 Ours
-- meta: exp462 (exp460_sorted)
+- meta: exp462 (exp460)
 Random
-- epsilon: exp463 (exp458_sorted)
-- decay: exp464 (exp459_sorted)
+- epsilon: exp463 (exp458)
+- decay: exp464 (exp459)
 - random: exp466 (NA)
 Reward
-- extrinsic: exp522 (exp493_sorted)
+- extrinsic: exp522 (exp493)
 Intrinsic
-- info: exp465 (exp461_sorted)
-- novelty: exp521 (exp492_sorted)
-- entropy: exp524 (exp495_sorted)
-- EB: exp523 (exp494_sorted)
-- UCB:  exp544 (exp533_sorted)
+- info: exp465 (exp461)
+- novelty: exp521 (exp492)
+- entropy: exp524 (exp495)
+- EB: exp523 (exp494)
+- UCB:  exp544 (exp533)
 
 
 # Alt. memory
 ## BanditOneHigh4 
 Ours
-- L1/Prob: exp689 (exp669_sorted)
-- L2/Entropy: exp690 (exp670_sorted)
-- L2/dRate: exp691 (exp671_sorted)
-- UCB/Count exp692 (exp672_sorted)
-- KL/Prob: exp693 (exp673_sorted)
+- L1/Prob: exp689 (exp669)
+- L2/Entropy: exp690 (exp670)
+- L2/dRate: exp691 (exp671)
+- UCB/Count exp692 (exp672)
+- KL/Prob: exp693 (exp673)
 
 ## BanditUniform121 
 Ours
-- L1/Prob: exp694 (exp674_sorted)
-- L2/Entropy: exp695 (exp675_sorted)
-- L2/dRate: exp696 (exp676_sorted)
-- UCB/Count exp697 (exp677_sorted)
-- KL/Prob: exp698 (exp678_sorted)
+- L1/Prob: exp694 (exp674)
+- L2/Entropy: exp695 (exp675)
+- L2/dRate: exp696 (exp676)
+- UCB/Count exp697 (exp677)
+- KL/Prob: exp698 (exp678)
