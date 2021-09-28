@@ -1,0 +1,85 @@
+---
+title: "Figures - reward consistency"
+output: html_notebook
+---
+
+# Load data
+## Cached?
+```{r, eval=FALSE}
+load.image(file="performance.RData")
+```
+
+## New
+From indivdual notebooks, for all bandit tasks.
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+library(knitr)
+source(knitr::purl("task2_results.Rmd", quiet=TRUE))
+source(knitr::purl("task3_results.Rmd", quiet=TRUE))
+source(knitr::purl("task4_results.Rmd", quiet=TRUE))
+source(knitr::purl("task5_results.Rmd", quiet=TRUE))
+source(knitr::purl("task6_results.Rmd", quiet=TRUE))
+source(knitr::purl("task7_results.Rmd", quiet=TRUE))
+
+# Save
+save.image(file="performance.RData")
+```
+
+# Vis
+Est. reward deviance on the last episode
+## Overall
+```{r}
+# Sum
+result_task2 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp2 
+# Norm
+tmp2 %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp2$var_R)) ->
+  tmp2
+
+# todo = rest of tmps
+# Join
+bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
+  group_by(agent, strategy) %>%
+  summarise(var_R = median(var_R),
+            varvar_R = mad(var_R)) ->
+  tmp
+
+# -------------------------------------------------------------
+# Our value
+wsls_R <- filter(tmp, agent == "Curiosity (Info.)")$var_R
+random_R <-  filter(tmp, agent == "Random")$var_R
+
+tmp %>% 
+  filter(agent != "Random") %>% 
+  ggplot(aes(
+    x = agent,
+    y = var_R,
+    color = factor(strategy)
+  )) +
+  geom_point(size=2) +
+  geom_linerange(aes(
+    ymin = (var_R + varvar_R),
+    ymax = (var_R - varvar_R)
+  ), alpha = 0.4) +
+  geom_hline(aes(yintercept=wsls_R), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_R), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  theme_pubr(base_size = 12, legend = "none") +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  labs(
+    x = "",
+    y = "Reward deviance",
+    subtitle = "Overall"
+  ) +
+  scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
+  coord_flip()
+```
