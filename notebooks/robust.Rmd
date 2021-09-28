@@ -29,11 +29,11 @@ data_path <- "~/Code/infomercial/data"
 ```
 
 # Load data
-## BanditOneHigh4
+## Task 2 - BanditOneHigh4
 ```{r, message=FALSE}
 # -------------------------------------------------------------
 task_name <- "BanditOneHigh4"
-task_code <- 1
+task_code <- 2
 
 rank_names <- c(
   "exp595_sorted.csv",
@@ -49,8 +49,8 @@ rank_names <- c(
 
 agent_names <- c(
   "Curiosity (Info.)",
-  # "Random/Greedy",
-  # "Decay/Greedy",
+  # "Random",
+  # "Decay",
   "Reward",
   "Reward+Info.",
   "Reward+Novelty",
@@ -59,7 +59,7 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info. value",
+class_names <- c("Info.",
                  # "Random",
                  # "Raandom",
                  "Reward",
@@ -69,7 +69,7 @@ class_names <- c("Info. value",
                  "Mixed",
                  "Mixed")
 
-result_ranked4 <- NULL
+tune_task2 <- NULL
 for (i in 1:length(rank_names)) {
   # Meta
   rank_name <- rank_names[i]
@@ -95,18 +95,235 @@ for (i in 1:length(rank_names)) {
   tmp$strategy <- class_name
   
   # Save
-  result_ranked4 <- bind_rows(result_ranked4, tmp)
+  tune_task2 <- bind_rows(tune_task2, tmp)
 }
 
 # Order factors for later vis
-result_ranked4$agent <-
-  factor(result_ranked4$agent, levels = agent_names)
-result_ranked4$strategy <-
-  factor(result_ranked4$strategy,
-         levels = c("Info. value", "Reward", "Mixed"))
+tune_task2$agent <-
+  factor(tune_task2$agent, levels = agent_names)
+tune_task2$strategy <-
+  factor(tune_task2$strategy,
+         levels = c("Info.", "Reward", "Mixed"))
 ```
 
-## BanditUniform121
+## Task 3 - BanditHardAndSparse10
+```{r, message=FALSE}
+task_name <- "BanditHardAndSparse10"
+task_code <- 3
+
+rank_names <- c(
+  "exp387_sorted.csv",
+  # "exp385_sorted.csv",
+  # "exp386_sorted.csv",
+  "exp485_sorted.csv",
+  "exp388_sorted.csv",
+  "exp484_sorted.csv",
+  "exp487_sorted.csv",
+  "exp486_sorted.csv",
+  "exp531_sorted.csv"
+)
+
+agent_names <- c(
+  "Curiosity (Info.)",
+  # "Random",
+  # "Decay",
+  "Reward",
+  "Reward+Info.",
+  "Reward+Novelty",
+  "Reward+Entropy",
+  "Reward+EB",
+  "Reward+UCB"
+)
+
+class_names <- c("Info.",
+                 # "Random",
+                 # "Raandom",
+                 "Reward",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed")
+
+tune_task3 <- NULL
+for (i in 1:length(rank_names)) {
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random") {
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <-
+    read_csv(paste(data_path, rank_name, sep = "/"), show_col_types = FALSE)
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  tune_task3 <- bind_rows(tune_task3, tmp)
+}
+
+# Order factors for later vis
+tune_task3$agent <-
+  factor(tune_task3$agent, levels = agent_names)
+tune_task3$strategy <-
+  factor(tune_task3$strategy,
+         levels = c("Info.", "Reward", "Mixed"))
+```
+
+
+## Task 4 - DeceptiveBanditOneHigh10
+```{r, message=FALSE}
+task_name <- "DeceptiveBanditOneHigh10"
+task_code <- 4
+
+rank_names <- c(
+  "exp391_sorted.csv",
+  # "exp389_sorted.csv",
+  # "exp390_sorted.csv",
+  "exp489_sorted.csv",
+  "exp392_sorted.csv",
+  "exp488_sorted.csv",
+  "exp491_sorted.csv",
+  "exp490_sorted.csv",
+  "exp532_sorted.csv"
+)
+
+agent_names <- c(
+  "Curiosity (Info.)",
+  # "Random",
+  # "Decay",
+  "Reward",
+  "Reward+Info.",
+  "Reward+Novelty",
+  "Reward+Entropy",
+  "Reward+EB",
+  "Reward+UCB"
+)
+
+class_names <- c("Info.",
+                 # "Random",
+                 # "Raandom",
+                 "Reward",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed")
+
+tune_task4 <- NULL
+for (i in 1:length(rank_names)) {
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random") {
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <-
+    read_csv(paste(data_path, rank_name, sep = "/"), show_col_types = FALSE)
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  tune_task4 <- bind_rows(tune_task4, tmp)
+}
+
+# Order factors for later vis
+tune_task4$agent <-
+  factor(tune_task4$agent, levels = agent_names)
+tune_task4$strategy <-
+  factor(tune_task4$strategy,
+         levels = c("Info.", "Reward", "Mixed"))
+```
+
+## Task 5 - DistractionBanditOneHigh10
+```{r, message=FALSE}
+task_name <- "DistractionBanditOneHigh10"
+task_code <- 5
+
+rank_names <- c(
+  "exp460_sorted.csv",
+  # "exp458_sorted.csv",
+  # "exp459_sorted.csv",
+  "exp493_sorted.csv",
+  "exp461_sorted.csv",
+  "exp492_sorted.csv",
+  "exp495_sorted.csv",
+  "exp494_sorted.csv",
+  "exp533_sorted.csv"
+)
+
+agent_names <- c(
+  "Curiosity (Info.)",
+  # "Random",
+  # "Decay",
+  "Reward",
+  "Reward+Info.",
+  "Reward+Novelty",
+  "Reward+Entropy",
+  "Reward+EB",
+  "Reward+UCB"
+)
+
+class_names <- c("Info.",
+                 # "Random",
+                 # "Raandom",
+                 "Reward",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed",
+                 "Mixed")
+
+tune_task5 <- NULL
+for (i in 1:length(rank_names)) {
+  rank_name <- rank_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (agent_name == "Random") {
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <-
+    read_csv(paste(data_path, rank_name, sep = "/"), show_col_types = FALSE)
+  
+  tmp$exp <- rank_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  
+  tune_task5 <- bind_rows(tune_task5, tmp)
+}
+
+# Order factors for later vis
+tune_task5$agent <-
+  factor(tune_task5$agent, levels = agent_names)
+tune_task5$strategy <-
+  factor(tune_task5$strategy,
+         levels = c("Info.", "Reward", "Mixed"))
+```
+
+## Task 6 - BanditUniform121
 ```{r, message=FALSE}
 task_name <- "BanditUniform121"
 task_code <- 6
@@ -145,7 +362,7 @@ class_names <- c("Info.",
                  "Mixed",
                  "Mixed")
 
-result_ranked121 <- NULL
+tune_task6 <- NULL
 for (i in 1:length(rank_names)) {
   rank_name <- rank_names[i]
   agent_name <- agent_names[i]
@@ -167,127 +384,294 @@ for (i in 1:length(rank_names)) {
   tmp$task_code <- task_code
   tmp$strategy <- class_name
   
-  result_ranked121 <- bind_rows(result_ranked121, tmp)
+  tune_task6 <- bind_rows(tune_task6, tmp)
 }
 
 # Order factors for later vis
-result_ranked121$agent <-
-  factor(result_ranked121$agent, levels = agent_names)
-result_ranked121$strategy <-
-  factor(result_ranked121$strategy,
+tune_task6$agent <-
+  factor(tune_task6$agent, levels = agent_names)
+tune_task6$strategy <-
+  factor(tune_task6$strategy,
          levels = c("Info.", "Reward", "Mixed"))
 ```
 
-# Vis
-## By rank
-```{r, fig.width=6, fig.height=3.0}
-max_R4 <- max(result_ranked4$total_R)
+## Join
+```{r, message=FALSE}
+tune_task <-
+  bind_rows(tune_task2, tune_task3, tune_task4, tune_task5, tune_task6)
+```
 
-result_ranked4 %>%
+# Vis
+## Overall - tasks and parameters
+```{r, fig.width=6, fig.height=3}
+# ---------------------------------------------------------
+# Sum
+tune_task2 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
+  tmp2
+# Norm
+tmp2 %>% 
+  group_by(agent) %>%
+  mutate(total_R = total_R / max(tmp2$total_R)) ->
+  tmp2
+
+# Sum
+tune_task3 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
+  tmp3
+# Norm
+tmp3 %>% 
+  group_by(agent) %>%
+  mutate(total_R = total_R / max(tmp3$total_R)) ->
+  tmp3
+
+# Sum
+tune_task4 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
+  tmp4
+# Norm
+tmp4 %>% 
+  group_by(agent) %>%
+  mutate(total_R = total_R / max(tmp4$total_R)) ->
+  tmp4
+
+# Sum
+tune_task5 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
+  tmp5
+# Norm
+tmp5 %>% 
+  group_by(agent) %>%
+  mutate(total_R = total_R / max(tmp5$total_R)) ->
+  tmp5
+
+# Sum
+tune_task6 %>%
+  group_by(agent, strategy) %>%
+  summarise(total_R = sum(total_R)) ->
+  tmp6
+# Norm
+tmp6 %>% 
+  group_by(agent) %>%
+  mutate(total_R = total_R / max(tmp6$total_R)) ->
+  tmp6
+
+# Join
+bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6) %>%
+  group_by(agent, strategy) %>%
+  summarise(median_R=median(total_R),
+         var_R=mad(total_R)) ->
+  tmp
+
+# Our value
+wsls_R <- filter(tmp, strategy == "Info.")$median_R
+
+# ---------------------------------------------------------
+tmp %>%
+  ggplot(aes(
+    x = agent,
+    y = median_R,
+    color = factor(strategy)
+  )) +
+  geom_point(size=2) +
+  geom_linerange(aes(
+    ymin = (median_R + var_R),
+    ymax = (median_R - var_R)
+  ), alpha = 0.4) +
+  geom_hline(aes(yintercept=wsls_R), 
+             color="chartreuse4",
+             size=0.5) +
+  theme_pubr(base_size = 12, legend = "none") +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  labs(
+    x = "",
+    y = "Normalized reward",
+    # tag = "a.",
+    subtitle = "Overall"
+  ) +
+  scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
+  coord_flip() -> p1
+
+# Disp
+robust1 <- p1
+print(robust1)
+
+# ---------------------------------------------------------
+# Write pdf
+name <- "img/robust1"
+ggsave(paste(name, ".pdf", sep=""), plot=robust1, width = 6, height = 3)
+```
+## Tasks, by rank
+```{r, fig.width=6, fig.height=6.0}
+# -------------------------------------------------
+# 2
+max_tune2 <- max(tune_task2$total_R)
+
+tune_task2 %>%
   ggplot(aes(
     x = index + 1,
-    y = total_R / max_R4,
+    y = total_R / max_tune2,
     group = agent,
     color = strategy
   )) +
   geom_line(size = 1.2, alpha = 0.9) +
   labs(
-    x = "Ranked exploration\nparameters",
-    y = "Relative reward",
+    x = "Ranked parameters",
+    y = "Norm. reward",
     subtitle = "Task 2 - Classic",
-    tag = "a."
+    # tag = "a."
   ) +
-  theme_pubr(base_size = 10, legend = "none") +
+  theme_pubr(base_size = 12) +
+  theme(legend.position = "none") +
   theme(strip.background = element_blank()) +
-  theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
   theme(strip.text.y = element_blank()) +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   scale_x_continuous(breaks = c(0, 500, 1000)) +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p1
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p2
 
-# 121 armed
-max_R121 <- max(result_ranked121$total_R)
+# -------------------------------------------------
+# 3
+max_tune3 <- max(tune_task3$total_R)
 
-result_ranked121 %>%
+tune_task3 %>%
   ggplot(aes(
     x = index + 1,
-    y = total_R / max_R121,
+    y = total_R / max_tune3,
+    group = agent,
+    color = strategy
+  )) +
+  geom_line(size = 1.2, alpha = 0.9) +
+  labs(
+    x = "Ranked parameters",
+    y = "Norm. reward",
+    subtitle = "Task 2 - Sparse",
+    # tag = "a."
+  ) +
+  theme_pubr(base_size = 12) +
+  theme(legend.position = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
+  theme(strip.text.y = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p3
+
+# -------------------------------------------------
+# 4
+max_tune4 <- max(tune_task3$total_R)
+
+tune_task4 %>%
+  ggplot(aes(
+    x = index + 1,
+    y = total_R / max_tune4,
+    group = agent,
+    color = strategy
+  )) +
+  geom_line(size = 1.2, alpha = 0.9) +
+  labs(
+    x = "Ranked parameters",
+    y = "Norm. reward",
+    subtitle = "Task 4 - Distraction",
+    # tag = "a."
+  ) +
+  theme_pubr(base_size = 12) +
+  theme(legend.position = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
+  theme(strip.text.y = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p4
+
+# -------------------------------------------------
+# 5
+max_tune5 <- max(tune_task5$total_R)
+
+tune_task5 %>%
+  ggplot(aes(
+    x = index + 1,
+    y = total_R / max_tune5,
+    group = agent,
+    color = strategy
+  )) +
+  geom_line(size = 1.2, alpha = 0.9) +
+  labs(
+    x = "Ranked parameters",
+    y = "Norm. reward",
+    subtitle = "Task 5 - Deception",
+    # tag = "a."
+  ) +
+  theme_pubr(base_size = 12) +
+  theme(legend.position = "none") +
+  theme(strip.background = element_blank()) +
+  theme(panel.spacing = unit(1, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
+  theme(strip.text.y = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  scale_x_continuous(breaks = c(0, 500, 1000)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p5
+
+
+# -------------------------------------------------
+# 6
+max_tune6 <- max(tune_task6$total_R)
+
+tune_task6 %>%
+  ggplot(aes(
+    x = index + 1,
+    y = total_R / max_tune6,
     group = agent,
     color = factor(strategy)
   )) +
   geom_line(size = 1.2, alpha = 0.9) +
   labs(
-    x = "Ranked exploration\nparameters",
-    y = "",
+    x = "Ranked parameters",
+    y = "Norm. reward",
     subtitle = "Task 6 - High dimensional",
-    tag = "b."
+    # tag = "b."
   ) +
-  theme_pubr(base_size = 10, legend = "right") +
+  theme_pubr(base_size = 12) +
+  theme(legend.position = "none") +
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
-  scale_color_manual("Strategy", 
-                     values = c("chartreuse4", "darkgrey", "black")) +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   scale_x_continuous(breaks = c(0, 500, 1000)) +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p2
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) -> p6
 
-robust1 <- p1 + p2 +
-  plot_annotation(title = "Robustness of exploration strategy")
-print(robust1)
-
-# ---
-# Write pdf
-name <- "img/robust1"
-ggsave(paste(name, ".pdf", sep=""), plot=robust1, width = 6, height = 3)
-```
-## Summed over rank
-```{r, fig.width=6, fig.height=2.5}
-# Classic
-result_ranked4 %>%
-  group_by(agent, strategy) %>%
-  summarise(total_R = sum(total_R)) ->
-  tmp1
-
-tmp1 %>%
-  ggplot(aes(
-    x = agent,
-    y = total_R / max(tmp1$total_R),
-    color = factor(strategy)
-  )) +
-  geom_point(size = 2) +
-  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
-  labs(x = "", y = "Relative reward\n summed over\nparameters", tag = "c.") +
-  theme_pubr(base_size = 10, legend = "none") +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
-  coord_flip() -> p1
-rm(tmp)
-
-# High dimensional
-result_ranked121 %>%
-  group_by(agent, strategy) %>%
-  summarise(total_R = sum(total_R)) ->
-  tmp2
-
-tmp2 %>%
-  ggplot(aes(
-    x = agent,
-    y = total_R / max(tmp2$total_R),
-    color = factor(strategy)
-  )) +
-  geom_point(size = 2) +
-  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
-  labs(x = "", y = "Relative reward\n summed over\nparameters", tag = "d.") +
-  theme_pubr(base_size = 10, legend = "none") +
-  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
-  coord_flip() -> p2
-
-robust2 <- p1 + p2
+robust2 <- (p2 + p3) / (p4 + p5) / (p6 + plot_spacer()) 
 print(robust2)
 
 # ---
 # Write pdf
 name <- "img/robust2"
-ggsave(paste(name, ".pdf", sep=""), plot=robust2, width = 6, height = 2.5)
+ggsave(paste(name, ".pdf", sep=""), plot=robust2, width = 6, height = 3)
+```
+## Join 1-2
+```{r, fig.width=9, fig.height=6.0}
+layout <- "
+AAAAABBBCCC
+AAAAABBBCCC
+AAAAABBBCCC
+AAAAADDDEEE
+AAAAADDDEEE
+AAAAADDDEEE
+#####FFF###
+#####FFF###
+#####FFF###
+"
+
+robust1 + p2 + p3 + p4 + p5 + p6 +
+  plot_layout(design = layout) +
+  plot_annotation(title = "Robustness of exploration strategy",
+                  theme = theme_pubr(base_size = 14),
+                  tag_levels = "a", tag_suffix = ".")
 ```
