@@ -187,10 +187,9 @@ p1 /  p2  +
   plot_annotation(title = "Task 2 - Classic", 
                   theme = theme_pubr(base_size = 12, legend = "none"))
 ```
+
 ## Dist
 ```{r, fig.width=2.5, fig.height=6}
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$total_R)
-
 result_task2 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -198,6 +197,9 @@ result_task2 %>%
             total_E = last(total_E),
             total_regret = last(total_regret)) %>% 
   ungroup() -> tmp
+
+# Medum
+wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$total_R)
 
 tmp %>% 
   mutate(
@@ -216,7 +218,7 @@ tmp %>%
   theme(strip.background = element_blank()) 
 ```
 ## Median/MAD
-```{r, fig.width=4.5, fig.height=3.5}
+```{r, fig.width=4.5, fig.height=2}
 result_task2 %>%  
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
@@ -243,7 +245,7 @@ wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 tmp %>% 
-  filter(strategy == "Dual value (WSLS)") %>% 
+  # filter(strategy == "Dual value (WSLS)") %>% 
   mutate(
     color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
@@ -258,41 +260,15 @@ tmp %>%
   geom_hline(aes(yintercept=random_R/num_episodes), 
              color="grey",
              size=0.5) +
-  labs(x="", y="", title="Dual value (WSLS)") +
+  labs(x="", y="Reward", title = "Performance") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
-tmp %>% 
-  filter(strategy == "Single value") %>% 
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
-  geom_point(size=2, alpha=0.8) +
-  geom_linerange(aes(
-    ymin=(median_R+var_R)/num_episodes, 
-    ymax=(median_R-var_R)/num_episodes), 
-    alpha=0.4) +
-  geom_hline(aes(yintercept=wsls_R/num_episodes), 
-             color="chartreuse4",
-             size=0.5) +
-  geom_hline(aes(yintercept=random_R/num_episodes), 
-             color="grey",
-             size=0.5) +
-  labs(x="", y="Reward", title="Single value") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> p2
 
-# ---
-p1 /  p2  + 
-  plot_layout(heights = c(0.15, 0.85)) +
-  plot_annotation(title = "Task 2 - Classic", 
-                  theme = theme_pubr(base_size = 12, legend = "none"))
+p1 
 ```
 
 ## MAD
@@ -358,11 +334,11 @@ result_task2 %>%
   theme(axis.text.y = element_blank()) +
   theme(axis.ticks.y = element_blank()) +
   theme(strip.text.x = element_text(hjust = 0)) +
-  plot_annotation(subtitle = "Exploration strategies (Task 2)",
+  plot_annotation(subtitle = "Exploration strategies",
                   theme = theme_pubr(base_size = 10, legend = "none")) 
 ```
 # Rewards
-```{r, fig.width=4.2, fig.height=4.2}
+```{r, fig.width=8, fig.height=2}
 result_task2 %>%
   filter(agent != "Random") %>%
   filter(global_step > 10) %>%
@@ -372,11 +348,11 @@ result_task2 %>%
     group = interaction(param, run)
   )) +
   geom_line(size = 0.1, alpha = 0.8) +
-  labs(x = "Time", y = "Relative reward", subtitle = "Reward value timecourse (Task 2)") +
+  labs(x = "Time", y = "Reward", title = "Timecourse (Task 2)") +
   scale_x_continuous(limits = c(0, num_episodes + (num_episodes * .1)),
                      breaks = c(0, num_episodes)) +
   scale_y_continuous(limits = c(-.1, 1.1), breaks = c(0, 1)) +
-  facet_wrap(agent ~ .) +
+  facet_grid(.~agent) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.2, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
