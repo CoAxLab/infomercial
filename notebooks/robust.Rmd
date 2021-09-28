@@ -639,7 +639,7 @@ tune_task6 %>%
     # tag = "b."
   ) +
   theme_pubr(base_size = 12) +
-  theme(legend.position = "none") +
+  theme(legend.position = "right") +
   theme(strip.background = element_blank()) +
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = 1)) +
@@ -664,14 +664,14 @@ AAAAABBBCCC
 AAAAADDDEEE
 AAAAADDDEEE
 AAAAADDDEEE
-#####FFF###
-#####FFF###
-#####FFF###
+#####FFFGGG
+#####FFFGGG
+#####FFFGGG
 "
 
-robust1 + p2 + p3 + p4 + p5 + p6 +
-  plot_layout(design = layout) +
+robust1 + p2 + p3 + p4 + p5 + p6 + guide_area() +
+  plot_layout(design = layout, guides = "collect") +
   plot_annotation(title = "Robustness of exploration strategy",
-                  theme = theme_pubr(base_size = 14),
+                  theme = theme_pubr(base_size = 14, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 ```
