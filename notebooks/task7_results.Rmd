@@ -1,5 +1,5 @@
 ---
-title: "Task 5 - DistractionBanditOneHigh10 - Top10 results"
+title: "Task 7 - BanditChange121 - Top10 results"
 output: html_notebook
 ---
 
@@ -31,30 +31,29 @@ data_path <- "~/Code/infomercial/data"
 ## Vars
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
-task_name <- "DistractionBanditOneHigh10"
-task_code <- 5
-# num_episodes <- 5000
-num_episodes <- 10*50
-
+task_name <- "BanditChange121"
+task_code <- 7
+num_episodes <- 12100
+# num_episodes <- 121*50
 
 # Set axis
 limits <- c(0, 0.8)
 breaks <- c(0.0, 0.4, 0.8)
 
 # The overestimate due to E0
-num_arms <- 10
+num_arms <- 121
 E_bias <- log(num_arms) * num_arms 
 
-exp_names <- c("exp462",
-               # "exp463", 
-               # "exp464", 
-               "exp466", 
-               "exp522",
-               "exp465", 
-               "exp521", 
-               "exp524", 
-               "exp523", 
-               "exp544")
+exp_names <- c("exp585",
+               # "exp586", 
+               # "exp587", 
+               "exp588", 
+               "exp589",
+               "exp590", 
+               "exp591", 
+               "exp592", 
+               "exp593", 
+               "exp594")
 ```
 
 ## Load
@@ -92,7 +91,7 @@ file_names <- c("action",
                 "regret",
                 "total_regret")
 
-result_task5 <- NULL
+result_task7 <- NULL
 for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -117,24 +116,24 @@ for(i in 1:length(exp_names)){
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task5 <- bind_rows(result_task5, tmp)
+  result_task7 <- bind_rows(result_task7, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task5$agent <- factor(result_task5$agent, levels=rev(agent_names))
+result_task7$agent <- factor(result_task7$agent, levels=rev(agent_names))
 
 # Remove E_bias
-result_task5$total_E <- result_task5$total_E - E_bias
-result_task5$total_E[result_task5$total_E < 0] <- 0
+result_task7$total_E <- result_task7$total_E - E_bias
+result_task7$total_E[result_task7$total_E < 0] <- 0
 ```
 
 
 # Summary, by strategy
 ## Boxplot
 ```{r, fig.width=4.5, fig.height=3.5}
-result_task5 %>% 
+result_task7 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -185,12 +184,13 @@ tmp %>%
 # ---
 p1 /  p2  + 
   plot_layout(heights = c(0.2, 0.8)) +
-  plot_annotation(title = "Task 5 - Deception", 
+  plot_annotation(title = "Task 7 - Unexpected change", 
                   theme = theme_pubr(base_size = 12, legend = "none"))
 ```
+
 ## Dist
 ```{r, fig.width=2.5, fig.height=6}
-result_task5 %>% 
+result_task7 %>% 
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -219,7 +219,7 @@ tmp %>%
 ```
 ## Median/MAD
 ```{r, fig.width=4.5, fig.height=2}
-result_task5 %>%  
+result_task7 %>%  
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R),
@@ -267,13 +267,12 @@ tmp %>%
   theme(strip.background = element_blank()) +
   coord_flip() -> p1
 
-
 p1 
 ```
 
 ## MAD
 ```{r, fig.width=4.5, fig.height=2}
-result_task5 %>%  
+result_task7 %>%  
   # filter(agent != "Random") %>%
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R)) %>% 
@@ -309,10 +308,10 @@ tmp %>%
 # Actions
 ```{r, fig.width=8, fig.height=6}
 # Pick an exp to show actions for
-r <- 1
+r <- 10
 
 # Plot actions
-result_task5 %>%
+result_task7 %>%
   filter(agent != "Random") %>%
   filter(run == r) %>%
   ggplot(aes(x = global_step, y = action + 1)) + #, color=factor(policy))) +
@@ -339,7 +338,7 @@ result_task5 %>%
 ```
 # Rewards
 ```{r, fig.width=8, fig.height=2}
-result_task5 %>%
+result_task7 %>%
   filter(agent != "Random") %>%
   filter(global_step > 10) %>%
   ggplot(aes(
@@ -348,7 +347,7 @@ result_task5 %>%
     group = interaction(param, run)
   )) +
   geom_line(size = 0.1, alpha = 0.8) +
-  labs(x = "Time", y = "Reward", title = "Timecourse (Task 5)") +
+  labs(x = "Time", y = "Reward", title = "Timecourse (Task 6)") +
   scale_x_continuous(limits = c(0, num_episodes + (num_episodes * .1)),
                      breaks = c(0, num_episodes)) +
   # scale_y_continuous(limits = c(-.1, 1.1), breaks = c(0, 1)) +
