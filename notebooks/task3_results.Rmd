@@ -220,9 +220,7 @@ tmp %>%
 result_task3 %>% 
   group_by(strategy, agent, param, run) %>% 
   summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-tmp %>% 
+  ungroup() %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.4, size=0.2, alpha=0.4) +
   stat_summary(fun.y = mean, color="goldenrod3") +
