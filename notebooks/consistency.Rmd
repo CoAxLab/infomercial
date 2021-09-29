@@ -112,8 +112,8 @@ bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
 
 # -------------------------------------------------------------
 # Our value
-wsls_R <- filter(tmp, agent == "Curiosity (Info.)")$var_R
-random_R <-  filter(tmp, agent == "Random")$var_R
+wsls_R <- filter(tmp, strategy == "WSLS")$var_R
+random_R <-  filter(tmp, strategy == "Random")$var_R
 
 tmp %>% 
   filter(agent != "Random") %>% 
@@ -127,13 +127,13 @@ tmp %>%
              color="chartreuse4",
              size=0.4) +
   theme_pubr(base_size = 12, legend = "none") +
-  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   labs(
     x = "",
     y = "Normalized reward deviance",
     subtitle = "Overall",
     title="Consistency of reward collection"
   ) +
-  # scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
+  scale_y_continuous(limits = c(0, 4.5), breaks = c(0, 1, 2, 3, 4)) +
   coord_flip()
 ```
