@@ -70,18 +70,19 @@ agent_names <- c(
   "Reward+UCB")
 
 class_names <- c(
-  "Dual value (WSLS)", 
+  "WSLS", 
   # "Random",
   # "Random",
   "Random",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value"
+  "Reward",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed"
 )
+
 
 file_names <- c("action", 
                 "total_R",

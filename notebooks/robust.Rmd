@@ -59,7 +59,7 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info.",
+class_names <- c("WLS",
                  # "Random",
                  # "Raandom",
                  "Reward",
