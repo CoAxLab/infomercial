@@ -59,9 +59,9 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("WLS",
+class_names <- c("WSLS",
                  # "Random",
-                 # "Raandom",
+                 # "Random",
                  "Reward",
                  "Mixed",
                  "Mixed",
@@ -100,10 +100,10 @@ for (i in 1:length(rank_names)) {
 
 # Order factors for later vis
 tune_task2$agent <-
-  factor(tune_task2$agent, levels = agent_names)
+  factor(tune_task2$agent, levels = rev(agent_names))
 tune_task2$strategy <-
   factor(tune_task2$strategy,
-         levels = c("Info.", "Reward", "Mixed"))
+         levels = c("WSLS", "Reward", "Mixed"))
 ```
 
 ## Task 3 - BanditHardAndSparse10
@@ -135,9 +135,9 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info.",
+class_names <- c("WSLS",
                  # "Random",
-                 # "Raandom",
+                 # "Random",
                  "Reward",
                  "Mixed",
                  "Mixed",
@@ -175,9 +175,8 @@ tune_task3$agent <-
   factor(tune_task3$agent, levels = agent_names)
 tune_task3$strategy <-
   factor(tune_task3$strategy,
-         levels = c("Info.", "Reward", "Mixed"))
+         levels = c("WSLS", "Reward", "Mixed"))
 ```
-
 
 ## Task 4 - DeceptiveBanditOneHigh10
 ```{r, message=FALSE}
@@ -208,9 +207,9 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info.",
+class_names <- c("WSLS",
                  # "Random",
-                 # "Raandom",
+                 # "Random",
                  "Reward",
                  "Mixed",
                  "Mixed",
@@ -248,7 +247,7 @@ tune_task4$agent <-
   factor(tune_task4$agent, levels = agent_names)
 tune_task4$strategy <-
   factor(tune_task4$strategy,
-         levels = c("Info.", "Reward", "Mixed"))
+         levels = c("WSLS", "Reward", "Mixed"))
 ```
 
 ## Task 5 - DistractionBanditOneHigh10
@@ -280,9 +279,9 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info.",
+class_names <- c("WSLS",
                  # "Random",
-                 # "Raandom",
+                 # "Random",
                  "Reward",
                  "Mixed",
                  "Mixed",
@@ -320,7 +319,7 @@ tune_task5$agent <-
   factor(tune_task5$agent, levels = agent_names)
 tune_task5$strategy <-
   factor(tune_task5$strategy,
-         levels = c("Info.", "Reward", "Mixed"))
+         levels = c("WSLS", "Reward", "Mixed"))
 ```
 
 ## Task 6 - BanditUniform121
@@ -352,9 +351,9 @@ agent_names <- c(
   "Reward+UCB"
 )
 
-class_names <- c("Info.",
+class_names <- c("WSLS",
                  # "Random",
-                 # "Raandom",
+                 # "Random",
                  "Reward",
                  "Mixed",
                  "Mixed",
@@ -392,7 +391,7 @@ tune_task6$agent <-
   factor(tune_task6$agent, levels = agent_names)
 tune_task6$strategy <-
   factor(tune_task6$strategy,
-         levels = c("Info.", "Reward", "Mixed"))
+         levels = c("WSLS", "Reward", "Mixed"))
 ```
 
 ## Join
@@ -468,7 +467,7 @@ bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6) %>%
   tmp
 
 # Our value
-wsls_R <- filter(tmp, strategy == "Info.")$median_R
+wsls_R <- filter(tmp, strategy == "WSLS")$median_R
 
 # ---------------------------------------------------------
 tmp %>%
