@@ -34,19 +34,80 @@ result_task2 %>%
   summarise(total_R = last(total_R)) %>% 
   ungroup() %>% 
   group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp2 
+  summarise(var_R = mad(total_R)) -> tmp
 # Norm
-tmp2 %>%
+tmp %>%
   group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp2$var_R)) ->
+  mutate(var_R = var_R / min(tmp$var_R)) ->
   tmp2
+
+# Sum
+result_task3 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp
+# Norm
+tmp %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp$var_R)) ->
+  tmp3
+
+result_task4 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp
+# Norm
+tmp %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp$var_R)) ->
+  tmp4
+
+result_task5 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp
+# Norm
+tmp %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp$var_R)) ->
+  tmp5
+
+result_task6 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp
+# Norm
+tmp %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp$var_R)) ->
+  tmp6
+
+result_task7 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(var_R = mad(total_R)) -> tmp
+# Norm
+tmp %>%
+  group_by(agent, strategy) %>%
+  mutate(var_R = var_R / min(tmp$var_R)) ->
+  tmp7
+
 
 # todo = rest of tmps
 # Join
 bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
   group_by(agent, strategy) %>%
-  summarise(var_R = median(var_R),
-            varvar_R = mad(var_R)) ->
+  summarise(var_R = mad(var_R)) ->
   tmp
 
 # -------------------------------------------------------------
@@ -62,24 +123,17 @@ tmp %>%
     color = factor(strategy)
   )) +
   geom_point(size=2) +
-  geom_linerange(aes(
-    ymin = (var_R + varvar_R),
-    ymax = (var_R - varvar_R)
-  ), alpha = 0.4) +
   geom_hline(aes(yintercept=wsls_R), 
              color="chartreuse4",
              size=0.4) +
-  geom_hline(aes(yintercept=random_R), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
   theme_pubr(base_size = 12, legend = "none") +
   scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(
     x = "",
-    y = "Reward deviance",
-    subtitle = "Overall"
+    y = "Normalized reward deviance",
+    subtitle = "Overall",
+    title="Consistency of reward collection"
   ) +
-  scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
+  # scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
   coord_flip()
 ```
