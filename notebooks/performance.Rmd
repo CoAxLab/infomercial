@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Fig. Reward collection performance"
 output: html_notebook
 ---
 
@@ -50,31 +50,29 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=mean_R, color=color)) +
+  ggplot(aes(x=agent, y=median_R, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
-  # geom_linerange(aes(
-  #   ymin=(median_R+var_R), 
-  #   ymax=(median_R-var_R)), 
-  #   alpha=0.4) +
-  # geom_hline(aes(yintercept=wsls_R), 
-  #            color="chartreuse4",
-  #            size=0.4) +
-  # geom_hline(aes(yintercept=random_R), 
-  #            color="black",
-  #            size=0.2,
-  #            linetype="dashed") +
+  geom_linerange(aes(
+    ymin=(median_R+var_R),
+    ymax=(median_R-var_R)),
+    alpha=0.4) +
+  geom_hline(aes(yintercept=wsls_R),
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_R),
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   labs(x="", y="Reward", subtitle = "Task 2 - Classic") +
   # scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
@@ -111,16 +109,14 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
     ymin=(median_R+var_R)/num_episodes, 
@@ -135,7 +131,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 3 - Sparse") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p3
@@ -172,16 +168,14 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
     ymin=(median_R+var_R)/num_episodes, 
@@ -196,7 +190,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 4 - Deception") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p4
@@ -232,16 +226,14 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
     ymin=(median_R+var_R)/num_episodes, 
@@ -256,7 +248,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 5 - Distraction") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p5
@@ -294,16 +286,14 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
     ymin=(median_R+var_R)/num_episodes, 
@@ -318,7 +308,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 6 - High dimensional") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p6
@@ -354,16 +344,14 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
 # Vis
 tmp %>% 
   filter(agent != "Random") %>%
-  mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
     ymin=(median_R+var_R)/num_episodes, 
@@ -378,132 +366,11 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 7 - Unexpected change") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_identity() +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p7
 
 print(p7)
 ```
-## Overall
-```{r}
-# Sum
-result_task2 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp2 
-# Norm
-tmp2 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp2$total_R)) ->
-  tmp2
-
-# Sum
-result_task3 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp3 
-# Norm
-tmp3 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp3$total_R)) ->
-  tmp3
-
-# Sum
-result_task4 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp4
-# Norm
-tmp4 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp4$total_R)) ->
-  tmp4
-
-# Sum
-result_task5 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp5
-# Norm
-tmp5 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp5$total_R)) ->
-  tmp5
-
-# Sum
-result_task6 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp6
-# Norm
-tmp6 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp6$total_R)) ->
-  tmp6
-
-# Sum
-result_task7 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(total_R = median(total_R)) -> tmp7
-# Norm
-tmp7 %>%
-  group_by(agent, strategy) %>%
-  mutate(total_R = total_R / max(tmp7$total_R)) ->
-  tmp7
-
-# Join
-bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
-  group_by(agent, strategy) %>%
-  summarise(median_R = median(total_R),
-            var_R = mad(total_R)) ->
-  tmp
-
-# -------------------------------------------------------------
-# Our value
-wsls_R <- filter(tmp, agent == "Curiosity (Info.)")$median_R
-random_R <-  filter(tmp, agent == "Random")$median_R
-
-tmp %>% 
-  filter(agent != "Random") %>% 
-  ggplot(aes(
-    x = agent,
-    y = median_R,
-    color = factor(strategy)
-  )) +
-  geom_point(size=2) +
-  geom_linerange(aes(
-    ymin = (median_R + var_R),
-    ymax = (median_R - var_R)
-  ), alpha = 0.4) +
-  geom_hline(aes(yintercept=wsls_R), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_R), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  theme_pubr(base_size = 12, legend = "none") +
-  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
-  labs(
-    x = "",
-    y = "Normalized reward",
-    # tag = "a.",
-    subtitle = "Overall"
-  ) +
-  scale_y_continuous(limits = c(0, 1.2), breaks = c(0, 0.5, 1)) +
-  coord_flip()
-```
+sugg
