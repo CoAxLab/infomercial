@@ -35,7 +35,7 @@ test4:
 	-rm -rf $(DATA_PATH)/test4*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1} --output=False' ::: {0.60}
+			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1} --output=False' ::: {0..60}
 
 # epgreedy tester - change as needed
 test5:
