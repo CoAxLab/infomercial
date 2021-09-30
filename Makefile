@@ -14,7 +14,7 @@ test1:
 	-rm -rf $(DATA_PATH)/test1*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..60}
+			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='KL' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..60}
 
 # softbeta tester - change as needed
 test2:
