@@ -6059,7 +6059,7 @@ exp389:
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6073,7 +6073,7 @@ exp390:
 		--exp_name='epsilon_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6088,7 +6088,7 @@ exp391:
 		--exp_name='wsls_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6102,7 +6102,7 @@ exp392:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -6936,7 +6936,7 @@ exp449:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp449.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp449/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --tie_break='next' --tie_threshold={tie_threshold} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp449/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -6948,7 +6948,7 @@ exp450:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp450.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp450/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp450/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -6960,7 +6960,7 @@ exp451:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp451.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp451/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --epsilon={epsilon} --epsilon_decay_tau={epsilon_decay_tau} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp451/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -6972,7 +6972,7 @@ exp452:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp452.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp452/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp452/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -6981,7 +6981,7 @@ exp453:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp453.log' \
 			--nice 19 --delay 0 --bar --colsep ',' \
-			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp453/param0/run{1} --master_seed={1}' ::: {1..100}
+			'random_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200  --lr_R=0.1 --log_dir=$(DATA_PATH)/exp453/param0/run{1} --master_seed={1}' ::: {1..100}
 
 
 # ----------------------------------------------------------------------------
@@ -7619,7 +7619,7 @@ exp488:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7635,7 +7635,7 @@ exp489:
 		--exp_name='softbeta_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -7651,7 +7651,7 @@ exp490:
 		--exp_name='softcount_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=39 \
 		--log_space=True \
@@ -8092,7 +8092,7 @@ exp517:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp517.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp517/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta=0 --bonus={bonus} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp517/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8104,7 +8104,7 @@ exp518:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp518.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp518/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta=0 --bonus=0 --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp518/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8116,7 +8116,7 @@ exp519:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp519.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp519/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp519/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8128,7 +8128,7 @@ exp520:
 	parallel -j 4 \
 			--joblog '$(DATA_PATH)/exp520.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp520/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
@@ -8325,7 +8325,7 @@ exp532:
 		--exp_name='softcount_bandit' \
 		--env_name=DeceptiveBanditOneHigh10-v0 \
 		--num_samples=1000 \
-		--num_episodes=40 \
+		--num_episodes=200 \
 		--num_repeats=50 \
 		--num_processes=4 \
 		--log_space=True \
@@ -8523,7 +8523,7 @@ exp543:
 	parallel -j 40 \
 			--joblog '$(DATA_PATH)/exp543.log' \
 			--nice 19 --delay 0 --bar --colsep ',' --header : \
-			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=40 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp543/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
+			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=200 --beta={beta} --temp={temp} --lr_R={lr_R} --log_dir=$(DATA_PATH)/exp543/param{index}/run{1} --master_seed={1}' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
