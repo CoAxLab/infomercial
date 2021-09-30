@@ -31,15 +31,15 @@ data_path <- "~/Code/infomercial/data/"
 ## Load data 
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
-task_name <- "BanditOneHigh4"
-task_code <- 1
+task_name <- "DeceptiveBanditOneHigh10"
+task_code <- 5
 num_episodes <- 200
 
 # The overestimate due to E0
-num_arms <- 4
+num_arms <- 10
 E_bias <- log(num_arms) * num_arms 
 
-run_codes <- 1:100
+run_codes <- 1:30
 
 exp_names <- c(
   "test1", 
@@ -47,7 +47,7 @@ exp_names <- c(
   "test3", 
   "test4",
   "test5")
-
+  
 agent_names <- c(
   "wsls", 
   "softbeta", 
@@ -56,11 +56,11 @@ agent_names <- c(
   "epsilon") 
 
 class_names <- c(
-  "Curiosity",
-  "Bayes",
-  "Count",
-  "ActionEntropy",
-  "Ep-greedy")
+  "WSLS",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Random")
 
 file_names <- c("action", 
                 "total_R",
@@ -109,7 +109,7 @@ results_test15$total_E[results_test15$total_E < 0] <- 0
 ```
 
 ## Behave
-```{r, fig.width=10, fig.height=3}
+```{r, fig.width=10, fig.height=5}
 results_test15 %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=action+1)) +
@@ -155,7 +155,7 @@ results_test15 %>%
 ```
 
 ### Reward
-```{r, fig.width=10, fig.height=3}
+```{r, fig.width=10, fig.height=5}
 results_test15 %>% 
   filter(run <= 10) %>%
   ggplot(aes(x=global_step, y=value_R, group=run)) +
@@ -243,7 +243,7 @@ tmp %>%
 ```
 
 # Test: 6-8
-## Load data 
+## Load data s
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
 task_name <- "ScentGrid"
