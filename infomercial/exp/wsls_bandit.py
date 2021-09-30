@@ -163,32 +163,32 @@ def run(env_name='BanditOneHot10-v0',
         # and distance.
         if mode == 'KL':
             old = deepcopy(memories[action])
-            memories[action].update((int(state), int(R_t)))
+            memories[action].update((state, R_t))
             new = deepcopy(memories[action])
             E_t = kl(new, old, default_info_value)
         elif mode == 'JS':
             old = deepcopy(memories[action])
-            memories[action].update((int(state), int(R_t)))
+            memories[action].update((state, R_t))
             new = deepcopy(memories[action])
             E_t = js(new, old, default_info_value)
         elif mode == 'L1':
             old = deepcopy(memories[action])
-            memories[action].update((int(state), int(R_t)))
+            memories[action].update((state, R_t))
             new = deepcopy(memories[action])
             E_t = l1(new, old, default_info_value)
         elif mode == 'L2':
             old = deepcopy(memories[action])
-            memories[action].update((int(state), int(R_t)))
+            memories[action].update((state, R_t))
             new = deepcopy(memories[action])
             E_t = l2(new, old, default_info_value)
         elif mode == 'H':
-            h_old = memories[action]((int(state), int(R_t)))
-            memories[action].update((int(state), int(R_t)))
-            h_new = memories[action]((int(state), int(R_t)))
+            h_old = memories[action]((state, R_t))
+            memories[action].update((state, R_t))
+            h_new = memories[action]((state, R_t))
             E_t = np.sqrt((h_new - h_old)**2)  # L2
         elif mode == 'rate':
             old = deepcopy(memories[action])
-            memories[action].update(int(state), int(R_t))
+            memories[action].update((state, R_t))
             new = deepcopy(memories[action])
             E_t = l2(new, old, default_info_value)
         elif mode == 'UCB':
