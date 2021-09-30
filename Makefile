@@ -14,35 +14,35 @@ test1:
 	-rm -rf $(DATA_PATH)/test1*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 # softbeta tester - change as needed
 test2:
 	-rm -rf $(DATA_PATH)/test2*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1} --output=False' ::: {0..100}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1} --output=False' ::: {0..30}
 
 # softcount tester - change as needed
 test3:
 	-rm -rf $(DATA_PATH)/test3*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --log_dir=$(DATA_PATH)/test3/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'softcount_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --mode='UCB' --log_dir=$(DATA_PATH)/test3/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 # softentropy tester - change as needed
 test4:
 	-rm -rf $(DATA_PATH)/test4*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'softentropy_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --lr_R=.1 --log_dir=$(DATA_PATH)/test4/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 # epgreedy tester - change as needed
 test5:
 	-rm -rf $(DATA_PATH)/test5*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'epsilon_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --epsilon=0.1 --epsilon_decay_tau=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test5/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 # forage tester - change as needed
 # wsls
@@ -50,21 +50,21 @@ test6:
 	-rm -rf $(DATA_PATH)/test6*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py wsls --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --boredom=0.001 --log_dir=$(DATA_PATH)/test6/run{1} --master_seed={1} --output=False' ::: {0..90}
 
 # chemo		
 test7:
 	-rm -rf $(DATA_PATH)/test7*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'forage.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1 --min_length=1 --p_neg=1.0 --p_pos=0.0 --log_dir=$(DATA_PATH)/test7/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1 --min_length=1 --p_neg=1.0 --p_pos=0.0 --log_dir=$(DATA_PATH)/test7/run{1} --master_seed={1} --output=False' ::: {0..90}
 
 # softmax (rl)		
 test8:
 	-rm -rf $(DATA_PATH)/test8*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..100}
+			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 
 # ----------------------------------------------------------------------------
