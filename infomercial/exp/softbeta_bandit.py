@@ -101,7 +101,7 @@ def run(env_name='BanditOneHigh2-v0',
 
         # Estimate E
         old = deepcopy(memories[action])
-        memories[action].update((int(state), int(R_t)))
+        memories[action].update((state, R_t))
         new = deepcopy(memories[action])
         E_t = kl(new, old, default_info_value)
 
