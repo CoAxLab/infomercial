@@ -70,17 +70,17 @@ agent_names <- c(
   "Reward+UCB")
 
 class_names <- c(
-  "Dual value (WSLS)", 
+  "WSLS", 
   # "Random",
   # "Random",
   "Random",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value",
-  "Single value"
+  "Reward",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed"
 )
 
 file_names <- c("action", 
@@ -217,6 +217,25 @@ tmp %>%
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) 
 ```
+## Jitter
+```{r, fig.width=4, fig.height=3}
+result_task2 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x=agent, y=total_R)) +
+  geom_jitter(width = 0.4, size=0.2, alpha=0.4) +
+  stat_summary(fun.y = mean, color="goldenrod3") +
+  stat_summary(fun.y = median, color="firebrick3") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip()
+```
+
+
 ## Median/MAD
 ```{r, fig.width=4.5, fig.height=2}
 result_task2 %>%  
