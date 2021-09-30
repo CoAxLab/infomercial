@@ -14,14 +14,14 @@ test1:
 	-rm -rf $(DATA_PATH)/test1*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..20}
+			'wsls_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --tie_break='next' --tie_threshold=1e-2 --mode='rate' --lr_R=.1 --log_dir=$(DATA_PATH)/test1/run{1} --master_seed={1} --output=False' ::: {0..100}
 
 # softbeta tester - change as needed
 test2:
 	-rm -rf $(DATA_PATH)/test2*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1} --output=False' ::: {0..20}
+			'softbeta_bandit.py --env_name=DeceptiveBanditOneHigh10-v0 --num_episodes=60 --temp=0.2 --beta=0.5 --bonus=0 --lr_R=.1 --log_dir=$(DATA_PATH)/test2/run{1}  --master_seed={1} --output=False' ::: {0..100}
 
 # softcount tester - change as needed
 test3:
