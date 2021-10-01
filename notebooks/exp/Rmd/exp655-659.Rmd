@@ -1,0 +1,242 @@
+---
+title: "Analysis of exp655-659: top10 for forage"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+options(scipen=1000000)
+source("../../utils.R")
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data/"
+```
+
+# Load data
+```{r, message=FALSE, warning=FALSE}
+# -------------------------------------------------------------
+task_name <- "ScentGrid"
+task_code <- 8
+num_episodes <- 199
+run_codes <- 1:10
+
+exp_names <- c(
+  "exp655", 
+  "exp656", 
+  "exp657",
+  "exp658")
+
+agent_names <- c(
+  "Curiosity (Info.)", 
+  "Diffusion",
+  "Infotaxis", 
+  "Reward") 
+
+class_names <- c(
+  "WSLS",
+  "Random",
+  "Info.",
+  "Reward")
+
+file_names <- c("total_R",
+                "num_death",
+                "x_pos_1",
+                "y_pos_1",
+                "obs_1",
+                "x_pos_25",
+                "y_pos_25",
+                "obs_25",
+                "x_pos_50",
+                "y_pos_50",
+                "obs_50",
+                "x_pos_99",
+                "y_pos_99",
+                "obs_99")
+
+results_655_659 <- NULL
+for(i in 1:length(exp_names)){
+  # Load
+  exp_name <- exp_names[i]
+  agent_name <- agent_names[i]
+  class_name <- class_names[i]
+  if (class_name == "Random"){
+    param_codes <- c(0)
+    run_codes <- 1:100
+  } else{
+    param_codes <- 0:9
+    run_codes <- 1:10
+  }
+  
+  tmp <- load_result(exp_name, param_codes, run_codes, file_names, 
+                     n_max=num_episodes)
+  
+  # Meta
+  tmp %>% 
+    filter(global_step <= num_episodes) -> tmp
+  tmp$exp <- exp_name
+  tmp$agent <- agent_name
+  tmp$task <- task_name
+  tmp$task_code <- task_code
+  tmp$strategy <- class_name
+  tmp$num_episodes <- num_episodes
+  
+  # Join
+  results_655_659 <- bind_rows(results_655_659, tmp)
+}
+
+# ----------------------------------------------------------------------------
+# post-process
+# Force order
+results_655_659$agent <- factor(results_655_659$agent, levels=agent_names)
+```
+
+# Behave
+```{r, fig.width=8, fig.height=3}
+
+results_655_659 %>% 
+  ggplot(aes(x=x_pos_1, y=y_pos_1, color=agent)) +
+  geom_point(size=0.1, alpha=0.1) +
+  theme_pubr(base_size = 8) +
+  labs(x="x", y="y", subtitle="Episode 1") +
+  lims(x=c(-50, 50), y=c(-50, 50)) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_manual("Strategy",
+                     values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) +
+  facet_wrap(agent~.) -> e1
+
+results_655_659 %>% 
+  ggplot(aes(x=x_pos_50, y=y_pos_50, color=agent)) +
+  geom_point(size=0.1, alpha=0.1) +
+  theme_pubr(base_size = 8) +
+  labs(x="x", y="y", subtitle="Episode 50") +
+  lims(x=c(-50, 50), y=c(-50, 50)) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_manual("Strategy",
+                     values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) +
+  facet_wrap(agent~.) -> e50
+
+results_655_659 %>% 
+  ggplot(aes(x=x_pos_99, y=y_pos_99, color=agent)) +
+  geom_point(size=0.1, alpha=0.1) +
+  theme_pubr(base_size = 8) +
+  labs(x="x", y="y", subtitle="Episode 99") +
+  lims(x=c(-50, 50), y=c(-50, 50)) +
+  theme(strip.background = element_blank()) +
+  theme(legend.position = "nane") +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_color_manual("Strategy",
+                     values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) +
+  facet_wrap(agent~.) -> e99
+
+
+beh1 <- e1 + e50 + e99 + 
+  plot_annotation(subtitle = "Examples of foraging behavior",
+                  theme = theme_pubr(base_size = 12, legend = "right"),
+                  tag_levels = "a", tag_suffix = ".")
+
+print(beh1)
+```
+# R timecourse
+```{r}
+results_655_659 %>% 
+  group_by(strategy, agent, global_step) %>% 
+  summarise(total_R = mean(total_R)) %>% 
+  # filter(global_step > 10) %>% 
+  ggplot(aes(
+    x = global_step,
+    y = total_R,
+    color = strategy,
+  )) +
+  geom_point(size=1) +
+  theme_pubr(base_size = 10, legend="right") +
+  labs(x="Time", y="Avg. reward") +
+  scale_color_manual("Strategy",
+                     values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) -> rew1
+
+rew1 <- rew1 + plot_annotation(subtitle = "Reward collection during foraging",
+                  theme = theme_pubr(base_size = 12, legend = "right"))
+print(rew1)
+```
+# Total R
+## Scatter
+```{r, fig.width=3, fig.height=3}
+results_655_659 %>% 
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            num_death = last(num_death)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_jitter(width = 0.4, size=0.2, alpha=0.4) +
+  stat_summary(fun.y = median) +
+  labs(x="", y="Total reward") +
+  scale_color_manual("Strategy",
+                     values = c("darkslategray4", "darkgrey", "black", "chartreuse4")) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip()
+```
+
+# Death
+## Scatter
+```{r, fig.width=3, fig.height=3}
+results_655_659 %>% 
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            num_death = last(num_death)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=num_death, color=strategy)) +
+  geom_jitter(width = 0.4, size=0.2, alpha=0.4) +
+  stat_summary(fun.y = median) +
+  labs(x="", y="Total deaths") +
+  scale_color_manual("Strategy",
+                     values = c("darkslategray4", "darkgrey", "black", "chartreuse4")) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip()
+```
+
+## Boxplot
+```{r, fig.width=3, fig.height=2}
+results_655_659 %>% 
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R),
+            num_death = last(num_death)) %>% 
+  ungroup() -> tmp
+
+tmp %>% 
+  ggplot(aes(x=agent, y=num_death, color=strategy)) +
+  geom_boxplot(width=0.3) +
+  labs(x="", y="Total deaths") +
+  scale_color_manual("Strategy",
+                     values = c("darkslategray4", "darkgrey", "black", "chartreuse4")) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip()
+```

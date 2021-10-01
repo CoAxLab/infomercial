@@ -1,5 +1,5 @@
 ---
-title: "Analysis of exp650-654: tune runs for alternate memory models on BanditHardAndSparse10"
+title: "Analysis of exp650-654: tune for forage"
 output: html_notebook
 ---
 
@@ -47,7 +47,7 @@ colors <- c("firebrick4",
             "orange3",
             "orange4")
 # ---
-results <- NULL
+results_650_654 <- NULL
 
 for (i in 1:length(exp_names)) {
   # Meta
@@ -62,7 +62,7 @@ for (i in 1:length(exp_names)) {
   result$exp <- exp_name
   result$agent <- agent_name
   
-  # Some results only have on row. Pad to min_row
+  # Some results_650_654 only have on row. Pad to min_row
   # to make vis simple later on.
   i <- 2
   while(nrow(result) < min_row){
@@ -73,17 +73,17 @@ for (i in 1:length(exp_names)) {
   }
   
   # Save
-  results <- bind_rows(results, result)
+  results_650_654 <- bind_rows(results_650_654, result)
 }
 
 # Order
-results$agent <- factor(results$agent, levels = agent_names)
+results_650_654$agent <- factor(results_650_654$agent, levels = agent_names)
 ```
 
 # Vis
 ## Ranked
 ```{r, fig.width=6, fig.height=2}
-results %>%
+results_650_654 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
@@ -97,7 +97,7 @@ results %>%
 ```
 
 ```{r, fig.width=6, fig.height=4}
-results %>%
+results_650_654 %>%
   ggplot(aes(x = index, y = total_R, color = agent)) +
   geom_line(size = 2, alpha = 0.6) +
   labs(x = "Rank", y = "Total reward") +
