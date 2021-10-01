@@ -9,7 +9,7 @@ data/*
 *.Rproj
 *.nb.html 
 *.Rhistory
-*.Rdata
+*.RData
 *.svg
 
 # Byte-compiled / optimized / DLL files
