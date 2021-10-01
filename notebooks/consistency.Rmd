@@ -6,7 +6,7 @@ output: html_notebook
 # Load data
 ## Cached?
 ```{r, eval=FALSE}
-load.image(file="performance.RData")
+load(file="performance.RData")
 ```
 
 ## New
@@ -27,106 +27,97 @@ save.image(file="performance.RData")
 # Vis
 Est. reward deviance on the last episode
 ## Overall
-```{r, fig.width=5, fig.height=5.0}
-# Sum
+### Gather data
+```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=5.0}
+# norm, for each step get MAD
 result_task2 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>%  # drop for num. stability
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>%  # norm 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
-  tmp2
+  group_by(strategy, agent, global_step) %>%
+  summarise(var_R = mad(total_R)) %>%  # dev
+  ungroup() -> tmp2
 
-# Sum
 result_task3 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>% 
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>% 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
+  group_by(strategy, agent, global_step) %>% 
+  summarise(var_R = mad(total_R)) %>% 
+  ungroup() ->
   tmp3
 
 result_task4 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>% 
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>% 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
+  group_by(strategy, agent, global_step) %>% 
+  summarise(var_R = mad(total_R)) %>% 
+  ungroup() -> 
   tmp4
 
 result_task5 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>% 
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>% 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
+  group_by(strategy, agent, global_step) %>% 
+  summarise(var_R = mad(total_R)) %>% 
+  ungroup() -> 
   tmp5
 
 result_task6 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>% 
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>% 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
+  group_by(strategy, agent, global_step) %>% 
+  summarise(var_R = mad(total_R)) %>% 
+  ungroup() -> 
   tmp6
 
 result_task7 %>%  
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
+  filter(global_step > 10) %>% 
+  group_by(strategy, agent, param, run, global_step) %>% 
+  summarise(total_R = total_R/global_step) %>% 
   ungroup() %>% 
-  group_by(strategy, agent) %>% 
-  summarise(var_R = mad(total_R)) -> tmp
-# Norm
-tmp %>%
-  group_by(agent, strategy) %>%
-  mutate(var_R = var_R / min(tmp$var_R)) ->
+  group_by(strategy, agent, global_step) %>% 
+  summarise(var_R = mad(total_R)) %>% 
+  ungroup() ->
   tmp7
 
-
-# todo = rest of tmps
-# Join
-bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) %>%
-  group_by(agent, strategy) %>%
-  summarise(var_R = mad(var_R)) ->
+bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) ->
   tmp
+```
 
-# -------------------------------------------------------------
-# Our value
-wsls_R <- filter(tmp, strategy == "WSLS")$var_R
-random_R <-  filter(tmp, strategy == "Random")$var_R
 
+### Scatter
+```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=5.0}
+# Threshold 
+min_var <- 0.0075
 tmp %>% 
-  filter(agent != "Random") %>% 
-  ggplot(aes(
-    x = agent,
-    y = var_R,
-    color = factor(strategy)
-  )) +
-  geom_point(size=2) +
-  geom_hline(aes(yintercept=wsls_R), 
+  filter(var_R > min_var) %>% 
+  filter(strategy == "WSLS") %>% 
+  select(var_R) -> wsls_s
+wsls_s <- median(wsls_s$var_R)
+# Vis
+tmp %>% 
+  sample_n(nrow(tmp)/10) %>% 
+  filter(var_R > min_var) %>%
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=var_R)) +
+  geom_jitter(size=.4, alpha=0.02) +
+  stat_summary(fun.y = median, aes(color=strategy), size=1) +
+  geom_hline(aes(yintercept=wsls_s), 
              color="chartreuse4",
              size=0.4) +
-  theme_pubr(base_size = 12, legend = "none") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
   labs(
     x = "",
@@ -134,9 +125,55 @@ tmp %>%
     subtitle = "Overall",
     title="Consistency of reward collection"
   ) +
-  scale_y_continuous(limits = c(0, 5), breaks = c(0, 1, 2, 3, 4, 5)) +
+  # scale_y_continuous(limits = c(0, 0.01)) +
   coord_flip() ->
   consistency
+
+print(consistency)
+
+# -------------------------------------------------------------
+# Save
+name <- "img/consistency"
+ggsave(paste(name, ".pdf", sep=""), plot=consistency, width = 5, height = 5)
+```
+
+### Boxplot
+```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=5.0}
+# Thresh 
+min_var <- 0.0075
+tmp %>% 
+  filter(var_R > min_var) %>% 
+  filter(strategy == "WSLS") %>% 
+  select(var_R) -> wsls_s
+wsls_s <- median(wsls_s$var_R)
+# Vis
+tmp %>% 
+  sample_n(nrow(tmp)/10) %>% 
+  filter(var_R > min_var) %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=var_R, color=strategy)) +
+  geom_boxplot() +
+  # geom_jitter(size=.4, alpha=0.1) +
+  # stat_summary(fun.y = median, aes(color=strategy), size=1) +
+  geom_hline(aes(yintercept=wsls_s), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  labs(
+    x = "",
+    y = "Normalized reward deviance",
+    subtitle = "Overall",
+    title="Consistency of reward collection"
+  ) +
+  # scale_y_continuous(limits = c(0, 0.01)) +
+  coord_flip() ->
+  consistency
+
+print(consistency)
 
 # -------------------------------------------------------------
 # Save
