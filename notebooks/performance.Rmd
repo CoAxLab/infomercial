@@ -380,8 +380,8 @@ print(m7)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task2$global_step)
-limits <- c(0, 200)
-breaks <- c(0.0, 100, 200)
+limits <- c(50, 200)
+breaks <- c(50, 100, 150, 200)
 
 # Vis
 result_task2 %>%
@@ -396,7 +396,7 @@ random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_2), 
              color="chartreuse4",
@@ -423,8 +423,8 @@ print(j2)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task3$global_step)
-limits <- c(0, 1100)
-breaks <- c(0, 500, 1000)
+limits <- c(500, 1000)
+breaks <- c(500, 750, 1000)
 
 result_task3 %>%
   group_by(strategy, agent, param, run) %>% 
@@ -438,7 +438,7 @@ random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_3), 
              color="chartreuse4",
@@ -466,8 +466,8 @@ print(j3)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task4$global_step)
-limits <- c(0, 150)
-breaks <- c(0, 75, 150)
+limits <- c(0, 125)
+breaks <- c(0, 25, 50, 75, 100, 125)
 
 result_task4 %>%
   group_by(strategy, agent, param, run) %>% 
@@ -481,7 +481,7 @@ random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_4), 
              color="chartreuse4",
@@ -523,7 +523,7 @@ random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_5), 
              color="chartreuse4",
@@ -551,8 +551,8 @@ print(j5)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task6$global_step)
-limits <- c(0, 60000)
-breaks <- c(0, 30000, 60000)
+limits <- c(20000, 60000)
+breaks <- c(20000, 40000, 60000)
 
 result_task6 %>%
   group_by(strategy, agent, param, run) %>% 
@@ -566,7 +566,7 @@ random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_6), 
              color="chartreuse4",
@@ -593,8 +593,8 @@ print(j6)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task7$global_step)
-limits <- c(0, 12000)
-breaks <- c(0, 6000, 12000)
+limits <- c(4000, 8000)
+breaks <- c(4000, 6000, 8000)
 
 result_task7 %>%
   group_by(strategy, agent, param, run) %>% 
@@ -608,7 +608,7 @@ random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
 tmp %>% 
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
-  geom_jitter(width = 0.3, size=0.1, alpha=0.1) +
+  geom_jitter(width = 0.3, size=0.3, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
   geom_hline(aes(yintercept=wsls_7), 
              color="chartreuse4",
@@ -628,7 +628,258 @@ tmp %>%
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j7
 
-print(j 7)
+print(j7)
+```
+
+## Boxplot
+### Task 2
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task2$global_step)
+limits <- c(0, 200)
+breaks <- c(0.0, 100, 200)
+
+# Vis
+result_task2 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_2 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_2), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_2), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 2 - Classic") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> b2
+
+print(b2)
+```
+
+### Task 3
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task3$global_step)
+limits <- c(0, 1100)
+breaks <- c(0, 500, 1000)
+
+result_task3 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_3 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_3), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_3), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 3 - Sparse") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text.y = element_blank()) +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> b3
+
+print(b3)
+```
+
+### Task 4
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task4$global_step)
+limits <- c(0, 150)
+breaks <- c(0, 75, 150)
+
+result_task4 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_4 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_4), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_4), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 4 - Deception") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> b4
+
+print(b4)
+```
+
+### Task 5
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task5$global_step)
+limits <- c(0, 500) 
+breaks <- c(0, 250, 500)
+
+result_task5 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_5 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_5), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_5), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text.y = element_blank()) +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 5 - Distraction") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> b5
+
+print(b5)
+```
+
+### Task 6
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task6$global_step)
+limits <- c(0, 60000)
+breaks <- c(0, 30000, 60000)
+
+result_task6 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_6 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_6), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_6), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 6 - High dim.") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> b6
+
+print(b6)
+```
+
+### Task 7
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task7$global_step)
+limits <- c(0, 12000)
+breaks <- c(0, 6000, 12000)
+
+result_task7 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_R = last(total_R)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_7 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_R, color=strategy)) +
+  geom_boxplot(width=0.4) +
+  geom_hline(aes(yintercept=wsls_7), 
+             color="chartreuse4",
+             size=0.4) +
+  geom_hline(aes(yintercept=random_7), 
+             color="black",
+             size=0.2,
+             linetype="dashed") +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  labs(x="", y="Total reward", subtitle = "Task 7 - Unexpected") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> b7
+
+print(b7)
 ```
 
 ## Overall
@@ -791,7 +1042,7 @@ print(perf_reg)
 
 # Save
 name <- "img/performance1"
-ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 9, height = 7)
+ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 9, height = 5)
 ```
 # Join - deception and ditraction
 ```{r, fig.width=7, fig.height=3}
