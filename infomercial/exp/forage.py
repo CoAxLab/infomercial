@@ -215,6 +215,12 @@ def _run(agent, agent_name, num_episodes, num_steps, master_seed,
                 writer.add_scalar(f"x_action_{n}", action[0], i)
                 writer.add_scalar(f"y_action_{n}", action[1], i)
 
+        # Save targets/values
+        for i, (t, v) in enumerate(zip(targets, values)):
+            writer.add_scalar("x_target", t[0], i)
+            writer.add_scalar("y_target", t[1], i)
+            writer.add_scalar("value_target", v, i)
+
         # Clean
         writer.close()
 
