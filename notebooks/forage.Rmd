@@ -19,13 +19,14 @@ library(latex2exp)
 library(scales)
 library(patchwork)
 options(scipen=1000000)
-source("../../utils.R")
+source("utils.R")
 
 # --- Main path to all data ---
 data_path <- "~/Code/infomercial/data/"
 ```
 
 # Load data
+## Exp
 ```{r, message=FALSE, warning=FALSE}
 # -------------------------------------------------------------
 task_name <- "ScentGrid"
@@ -103,15 +104,63 @@ for(i in 1:length(exp_names)){
 results_task8$agent <- factor(results_task8$agent, levels=agent_names)
 ```
 
+## Targets
+```{r}
+# Load example targets, values from test6. One of the forage test
+# recipes
+
+targets_x <-
+  read_csv(paste(data_path, "test6/run0/x_target.csv", sep = ""),
+           show_col_types = FALSE)
+targets_y <-
+  read_csv(paste(data_path, "test6/run0/y_target.csv", sep = ""),
+           show_col_types = FALSE)
+
+target_values <-
+  read_csv(paste(data_path, "test6/run0/value_target.csv", sep = ""),
+           show_col_types = FALSE)
+
+full_join(targets_x, targets_y, by="global_step") %>% 
+  select(global_step, x_target, y_target) ->
+  targets
+
+targets$value_target <- target_values$value_target
+```
+
 # Vis
+## Targets
+```{r, fig.width=1.5, fig.height=1.5}
+targets %>%
+  ggplot(aes(x = x_target, y = y_target)) +
+  geom_point(
+    color = "black",
+    shape = 4,
+    size = 2,
+    alpha = 0.8
+  ) +
+  labs(x = "x", y = "y", subtitle = "Task 8 - Random targets") +
+  theme_pubr(base_size = 8) +
+  lims(x = c(-20, 20), y = c(-20, 20)) -> t1
+print(t1)
+```
+
 ## Behave
-```{r, fig.width=8, fig.height=3}
+```{r, fig.width=6, fig.height=6}
 results_task8 %>% 
+  filter(run == 1, param == 0) %>% 
   ggplot(aes(x=x_pos_1, y=y_pos_1, color=agent)) +
-  geom_point(size=0.1, alpha=0.1) +
+  geom_point(size=0.1, alpha=1) +
+  geom_point(
+    data = targets,
+    mapping = aes(x = x_target, y = y_target),
+    color = "black",
+    shape = 4,
+    size = 0.2,
+    alpha = 0.4,
+  ) +
   theme_pubr(base_size = 8) +
   labs(x="x", y="y", subtitle="Episode 1") +
-  lims(x=c(-50, 50), y=c(-50, 50)) +
+  lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
@@ -120,11 +169,20 @@ results_task8 %>%
   facet_wrap(agent~.) -> e1
 
 results_task8 %>% 
+  filter(run == 1, param == 0) %>% 
   ggplot(aes(x=x_pos_50, y=y_pos_50, color=agent)) +
-  geom_point(size=0.1, alpha=0.1) +
+  geom_point(size=0.1, alpha=1) +
+  geom_point(
+    data = targets,
+    mapping = aes(x = x_target, y = y_target),
+    color = "black",
+    shape = 4,
+    size = 0.2,
+    alpha = 0.4,
+  ) +
   theme_pubr(base_size = 8) +
   labs(x="x", y="y", subtitle="Episode 50") +
-  lims(x=c(-50, 50), y=c(-50, 50)) +
+  lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
@@ -133,68 +191,62 @@ results_task8 %>%
   facet_wrap(agent~.) -> e50
 
 results_task8 %>% 
+  filter(run == 1, param == 0) %>% 
   ggplot(aes(x=x_pos_99, y=y_pos_99, color=agent)) +
-  geom_point(size=0.1, alpha=0.1) +
+  geom_point(size=0.1, alpha=1) +
+  geom_point(
+    data = targets,
+    mapping = aes(x = x_target, y = y_target),
+    color = "black",
+    shape = 4,
+    size = 0.2,
+    alpha = 0.4,
+  ) +
   theme_pubr(base_size = 8) +
   labs(x="x", y="y", subtitle="Episode 99") +
-  lims(x=c(-50, 50), y=c(-50, 50)) +
+  lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
-  scale_color_manual("Strategy",
+  scale_color_manual("Agent",
                      values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) +
   facet_wrap(agent~.) -> e99
 
 
-beh1 <- e1 + e50 + e99 + 
-  plot_annotation(subtitle = "Examples of foraging behavior",
+beh1 <- (t1 + e1) / (e50 + e99) +
+  # plot_layout(ncol = 2) +
+  plot_annotation(subtitle = "Foraging - Task and examples of behavior",
                   theme = theme_pubr(base_size = 12, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 
 print(beh1)
+
+# ---------------------------------------------------------
+# Write pdf
+name <- "img/forage1"
+ggsave(paste(name, ".pdf", sep=""), plot=beh1, width = 6, height = 6)
 ```
 
 ## R timecourse
-```{r}
-results_task8 %>% 
-  group_by(strategy, agent, global_step) %>% 
-  summarise(total_R = mean(total_R)) %>% 
-  # filter(global_step > 10) %>% 
-  ggplot(aes(
-    x = global_step,
-    y = total_R,
-    color = strategy,
-  )) +
-  geom_point(size=1) +
-  theme_pubr(base_size = 10, legend="right") +
-  labs(x="Time", y="Avg. reward") +
-  scale_color_manual("Strategy",
+```{r, fig.width=6, fig.height=3}
+results_task8 %>%
+  group_by(strategy, agent, global_step) %>%
+  summarise(total_R = mean(total_R)) %>%
+  ggplot(aes(x = global_step,
+             y = total_R,
+             color = agent)) +
+  geom_point(size = 1) +
+  theme_pubr(base_size = 10, legend = "right") +
+  labs(x = "Time", y = "Avg. reward") +
+  scale_color_manual("Agent",
                      values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) -> rew1
 
-rew1 <- rew1 + plot_annotation(subtitle = "Reward collection during foraging",
-                  theme = theme_pubr(base_size = 12, legend = "right"))
+rew1 <-
+  rew1 + plot_annotation(subtitle = "Reward collection timecourse during foraging",
+                         theme = theme_pubr(base_size = 12, legend = "right"))
 print(rew1)
+# ---------------------------------------------------------
+# Write pdf
+name <- "img/forage2"
+ggsave(paste(name, ".pdf", sep=""), plot=rew1, width = 6, height = 3)
 ```
-
-## Total R
-```{r, fig.width=3, fig.height=3}
-results_task8 %>% 
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R),
-            num_death = last(num_death)) %>% 
-  ungroup() -> tmp
-
-tmp %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_jitter(width = 0.4, size=0.2, alpha=0.4) +
-  stat_summary(fun.y = median) +
-  labs(x="", y="Total reward") +
-  scale_color_manual("Strategy",
-                     values = c("darkslategray4", "darkgrey", "black", "chartreuse4")) +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  coord_flip()
-```
-
