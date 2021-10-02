@@ -110,14 +110,14 @@ results_task8$agent <- factor(results_task8$agent, levels=agent_names)
 # recipes
 
 targets_x <-
-  read_csv(paste(data_path, "test6/run0/x_target.csv", sep = ""),
+  read_csv(paste(data_path, "test6/run1/x_target.csv", sep = ""),
            show_col_types = FALSE)
 targets_y <-
-  read_csv(paste(data_path, "test6/run0/y_target.csv", sep = ""),
+  read_csv(paste(data_path, "test6/run1/y_target.csv", sep = ""),
            show_col_types = FALSE)
 
 target_values <-
-  read_csv(paste(data_path, "test6/run0/value_target.csv", sep = ""),
+  read_csv(paste(data_path, "test6/run1/value_target.csv", sep = ""),
            show_col_types = FALSE)
 
 full_join(targets_x, targets_y, by="global_step") %>% 
