@@ -24,7 +24,7 @@ options(scipen=1000000)
 source("utils.R")
 
 # --- Main path to all data ---
-data_path <- "/Volumes/Data/infomercial/data"
+data_path <- "~/Code/infomercial/data"
 ```
 
 
@@ -72,7 +72,7 @@ result500 <- load_result(exp_name, param_codes, run_codes, file_names)
 ```
 
 # Fig. Example boredom
-```{r, fig.width=1.8, fig.height=2.4}
+```{r, fig.width=3.2, fig.height=4.8}
 example <- 42
 
 
@@ -213,17 +213,17 @@ c2 <- (p6 / p7 / p8 / p9 / p10) +
 # -----------------------------------------------------------------------------------
 boredom1 <- c2 | c1 | plot_annotation(
       tag_levels="a", tag_suffix=".", 
-      title="Optimizing boredom for reward collection (task 1)", 
+      title="Optimizing boredom for reward collection (Task 1)", 
       subtitle = "Single example experiment",
       theme = theme_pubr(base_size = 8, legend = "none"))
 print(boredom1)
 
-name <- "img/boredom1"
+name <- "img/opt_boredom1"
 ggsave(paste(name, ".pdf", sep=""), plot=boredom1, width = 1.8*2, height = 2.4*2)
 ```
 
 # Fig. All boredom
-```{r, fig.width=3.6, fig.height=1.8}
+```{r, fig.width=7.2, fig.height=3,6}
 # ---------------------------------------------------------------------------------------
 # Actions
 result500 %>% 
@@ -290,7 +290,7 @@ result499 %>%
   theme(panel.spacing = unit(1, "lines")) +
   theme(strip.background = element_blank()) -> r2
 
-# ---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # Build
 boredom2 <- a1 + a2 + (r1 / r2 + plot_spacer()) + 
   plot_layout(widths = c(0.4, 0.4, 0.2)) +
@@ -301,6 +301,6 @@ boredom2 <- a1 + a2 + (r1 / r2 + plot_spacer()) +
       theme = theme_pubr(base_size = 8, legend = "none"))
 print(boredom2)
 
-name <- "img/boredom2"
+name <- "img/opt_boredom2"
 ggsave(paste(name, ".pdf", sep=""), plot=boredom2, width = 3.6*2, height = 1.8*2)
 ```
