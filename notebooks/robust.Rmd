@@ -656,19 +656,19 @@ name <- "img/robust2"
 ggsave(paste(name, ".pdf", sep=""), plot=robust2, width = 6, height = 3)
 ```
 ## Join 1-2
-```{r, fig.width=9, fig.height=6.0}
+```{r, fig.width=11, fig.height=8.0}
 layout <- "
-AAAAABBBCCC
-AAAAABBBCCC
-AAAAABBBCCC
-AAAAADDDEEE
-AAAAADDDEEE
-AAAAADDDEEE
-#####FFFGGG
-#####FFFGGG
-#####FFFGGG
+AAAAABBBBCCCC
+AAAAABBBBCCCC
+AAAAABBBBCCCC
+AAAAADDDDEEEE
+AAAAADDDDEEEE
+AAAAADDDDEEEE
+#####FFFFGGGG
+#####FFFFGGGG
+#####FFFFGGGG
 "
-
+s
 robust <- robust1 + p2 + p3 + p4 + p5 + p6 + guide_area() +
   plot_layout(design = layout, guides = "collect") +
   plot_annotation(title = "Robustness of exploration strategy",
@@ -678,5 +678,5 @@ print(robust)
 
 # Save
 name <- "img/robust"
-ggsave(paste(name, ".pdf", sep=""), plot=robust, width = 9, height = 6)
+ggsave(paste(name, ".pdf", sep=""), plot=robust, width = 11, height = 8)
 ```

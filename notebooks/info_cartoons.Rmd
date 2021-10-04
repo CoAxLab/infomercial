@@ -1,0 +1,137 @@
+---
+title: "Cartoons"
+output: html_notebook
+---
+
+# Library
+```{r, message=FALSE}
+library(ggplot2)
+library(ggstance)
+library(ggthemes)
+library(ggformula)
+library(ggpubr)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(readr)
+library(latex2exp)
+library(MASS) 
+library(scales)
+library(network)
+library(ggnetwork)
+library(sna)
+options(scipen=1000000)
+```
+
+# Learning in memory space
+```{r, fig.width=2.5, fig.height=2.5}
+x <- 10
+y <- 10
+shift <- 0.25
+
+points <- data.frame(x = c(4, 7), y = c(2, 5))
+points %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(color = "dark gray") +
+  scale_x_continuous(limits = c(0, x), breaks = x) +
+  scale_y_continuous(limits = c(0, y), breaks = y) +
+  labs(
+    x = TeX("$\\m_i$"),
+    y = TeX("$\\m_j$"),
+    title = "Memory distance"
+  ) +
+  geom_segment(
+    x = points$x[1],
+    y = points$y[1],
+    xend = points$x[2],
+    yend = points$y[2],
+    arrow = arrow(length = unit(0.2, 'line'), type = "closed"),
+    size = 0.3
+  ) +
+  annotate(
+    "text",
+    x = 6.2,
+    y = 3,
+    size = 3,
+    label = TeX("$E$")
+  ) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line = element_line(arrow = arrow(length = unit(0.25, 'line')))) -> cartoon1
+
+print(cartoon1)
+
+name <- "img/info_cartoon1"
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon1, width = 1.2*2, height = 1.2*2)
+```
+
+# Consistent and not - dynamics
+```{r, fig.width=2, fig.height=2.5}
+
+alpha <- function(x, g, t_peak) {
+  g * (x/t_peak) * exp(1 - x/t_peak)
+}
+
+t_max <- 20
+times <- 1:t_max
+t_stop <- 15
+
+
+# -- Consistent
+c1 <- c(0, 2.4, 3.8, 2, 1.2, 0.4, 0.8, 1.2, 1.6, 1.4, 0.8, 0.4, 0.2, 0.2, 0.1, 0, 0, 0, 0, 0)
+c2 <- 8*exp(-times)
+c3 <- 2*alpha(times, 1, 4)
+  
+c_curves <- data.frame(times=c(times, times, times),
+                     name=c(rep(1,t_max),rep(2,t_max),rep(3,t_max)),
+                     ys=c(c1, c2, c3))
+
+c_curves %>% 
+  ggplot(aes(x=times, y=ys, group=name)) +
+  geom_smooth(method = "loess", color="black", size=0.5, span=.35, degree=4, se=FALSE) +
+  geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
+  lims(x=c(1, t_max)) + 
+  labs(x="Time", y=TeX("$$E$$"), title="Learning equilibrium", subtitle="Consistent") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p1
+
+# --- Inconsistent
+c1 <- c(0, 1.4, 2.2, 4, 3.8, 1.6, 1.5, 0.4, 0.35, 0.25, 0.12, 1.0, 1.8, 3.2, 6.4, 12.8, 24, 48, 92, 180)
+i_curves <- data.frame(times=times, name=rep(4, t_max), ys=c1)
+
+i_curves %>% 
+ggplot(aes(x=times, y=ys, group=name)) +
+  geom_smooth(method = "loess", size=0.5, span=.35, degree=4, se=FALSE, color="black") +
+  geom_vline(xintercept = t_stop, color="black", linetype="dashed", alpha=0.9, size=0.2) +
+  lims(x=c(1, t_max), y=c(0,14)) + 
+  labs(x="Time", y=TeX("$$E$$"), subtitle="Inconsistent") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.line=element_line(arrow = arrow(length = unit(0.25, 'line')))) -> p2
+
+cartoon2 <- (p1 / p2) + 
+  plot_annotation(theme = theme_pubr(base_size = 10, legend = "none"))
+print(cartoon2)
+
+name <- "img/info_cartoon2"
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon2, width = 1*2, height = 1.2*2)
+```
+# Join 1-2
+```{r, fig.width=5, fig.height=3.25}
+cartoon <- cartoon1 + cartoon2 +
+  plot_annotation(
+    title = "Information value, E",
+                  theme = theme_pubr(base_size = 12, legend = "right"),
+                  tag_levels = "a", tag_suffix = ".")
+print(cartoon)
+
+# ---
+name <- "img/info_cartoon"
+ggsave(paste(name, ".pdf", sep=""), plot=cartoon, width = 5, height = 3.25)
+```
