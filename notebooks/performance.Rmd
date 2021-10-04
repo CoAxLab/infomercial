@@ -397,7 +397,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_2), 
              color="chartreuse4",
              size=0.4) +
@@ -439,7 +439,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_3), 
              color="chartreuse4",
              size=0.4) +
@@ -482,7 +482,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_4), 
              color="chartreuse4",
              size=0.4) +
@@ -524,7 +524,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_5), 
              color="chartreuse4",
              size=0.4) +
@@ -567,7 +567,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_6), 
              color="chartreuse4",
              size=0.4) +
@@ -609,7 +609,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.3, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
   geom_hline(aes(yintercept=wsls_7), 
              color="chartreuse4",
              size=0.4) +
@@ -1011,19 +1011,6 @@ print(perf2)
 
 # Join regular bandits
 ```{r, fig.width=9, fig.height=5.0}
-# layout <- "
-# AAAAABBBCCC
-# AAAAABBBCCC
-# AAAAABBBCCC
-# AAAAADDDEEE
-# AAAAADDDEEE
-# AAAAADDDEEE
-# #####FFFGGG
-# #####FFFGGG
-# #####FFFGGG
-# "
-# perf <- perf2 + p2 + p3 + p4 + p5 + p6 + p7 +
-
 layout <- "
 AAAAABBBCCC
 AAAAABBBCCC
