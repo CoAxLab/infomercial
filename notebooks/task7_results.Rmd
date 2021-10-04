@@ -119,7 +119,7 @@ for(i in 1:length(exp_names)){
   result_task7 <- bind_rows(result_task7, tmp)
 }
 
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # post-process
 # Force order
 result_task7$agent <- factor(result_task7$agent, levels=rev(agent_names))
@@ -128,7 +128,6 @@ result_task7$agent <- factor(result_task7$agent, levels=rev(agent_names))
 result_task7$total_E <- result_task7$total_E - E_bias
 result_task7$total_E[result_task7$total_E < 0] <- 0
 ```
-
 
 # Summary, by strategy
 ## Boxplot
@@ -141,7 +140,6 @@ result_task7 %>%
             total_regret = last(total_regret)) %>% 
   ungroup() -> tmp
 
-
 # Med R for curiosity
 wsls_R <- median((filter(tmp, strategy == "WSLS"))$total_R)
 random_R <- median((filter(tmp, strategy == "Random"))$total_R)
@@ -150,13 +148,14 @@ tmp %>%
   filter(strategy == "WSLS") %>% 
   mutate(
     color = ifelse(strategy == "WSLS", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
-  geom_hline(aes(yintercept=random_R/num_episodes), 
+  geom_hline(aes(yintercept=random_R), 
              color="darkgrey",
              size=0.5) +
   labs(x="", y="", title="WSLS") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
+  # scale_y_continuous(limits = limits, breaks = breaks) +
+  scale_y_continuous(limits = c(0, 7000), breaks = c(0, 7000)) +
   scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -166,23 +165,24 @@ tmp %>%
   filter(strategy == "Mixed") %>% 
   mutate(
     color = ifelse(strategy == "WSLS", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
-  geom_hline(aes(yintercept=wsls_R/num_episodes), 
+  geom_hline(aes(yintercept=wsls_R), 
              color="chartreuse4",
              size=0.5) +
-  geom_hline(aes(yintercept=random_R/num_episodes), 
+  geom_hline(aes(yintercept=random_R), 
              color="darkgrey",
              size=0.5) +
   labs(x="", y="Reward", title="Mixed") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
+  # scale_y_continuous(limits = limits, breaks = breaks) +
+  scale_y_continuous(limits = c(0, 7000), breaks = c(0, 7000)) +
   scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> p2
 
 # ---
-p1 /  p2  + 
+p1 / p2  + 
   plot_layout(heights = c(0.2, 0.8)) +
   plot_annotation(title = "Task 7 - Unexpected change", 
                   theme = theme_pubr(base_size = 12, legend = "none"))
@@ -217,6 +217,7 @@ tmp %>%
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) 
 ```
+
 ## Jitter
 ```{r, fig.width=4, fig.height=3}
 result_task7 %>% 
@@ -365,10 +366,9 @@ result_task7 %>%
     group = interaction(param, run)
   )) +
   geom_line(size = 0.1, alpha = 0.8) +
-  labs(x = "Time", y = "Reward", title = "Timecourse (Task 6)") +
+  labs(x = "Time", y = "Reward", title = "Timecourse (Task 7)") +
   scale_x_continuous(limits = c(0, num_episodes + (num_episodes * .1)),
                      breaks = c(0, num_episodes)) +
-  # scale_y_continuous(limits = c(-.1, 1.1), breaks = c(0, 1)) +
   facet_grid(.~agent) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.2, "lines")) +

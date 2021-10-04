@@ -152,13 +152,13 @@ tmp %>%
   filter(strategy == "WSLS") %>% 
   mutate(
     color = ifelse(strategy == "WSLS", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
-  geom_hline(aes(yintercept=random_R/num_episodes), 
+  geom_hline(aes(yintercept=random_R), 
              color="darkgrey",
              size=0.5) +
   labs(x="", y="", title="WSLS") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
+  # scale_y_continuous(limits = limits, breaks = breaks) +
   scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -168,16 +168,16 @@ tmp %>%
   filter(strategy == "Mixed") %>% 
   mutate(
     color = ifelse(strategy == "WSLS", "chartreuse4", "black")) %>%
-  ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
+  ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
-  geom_hline(aes(yintercept=wsls_R/num_episodes), 
+  geom_hline(aes(yintercept=wsls_R), 
              color="chartreuse4",
              size=0.5) +
-  geom_hline(aes(yintercept=random_R/num_episodes), 
+  geom_hline(aes(yintercept=random_R), 
              color="darkgrey",
              size=0.5) +
   labs(x="", y="Reward", title="Mixed") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
+  # scale_y_continuous(limits = limits, breaks = breaks) +
   scale_color_identity() +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
