@@ -370,7 +370,7 @@ tmp %>%
 
 ### Histogram
 ```{r, fig.width=4, fig.height=2}
-results_test %>% 
+results_test68 %>% 
   group_by(strategy, agent, run) %>% 
   summarise(total_R = last(total_R),
             total_E = last(total_E)) %>% 
@@ -386,7 +386,7 @@ tmp %>%
 ## Value
 ### First ep
 ```{r, fig.width=3, fig.height=1}
-results_test %>% 
+results_test68 %>% 
   filter(agent != "chemotaxis") %>% 
   filter(run == 5) %>% 
   ggplot(aes(x=global_step, y=value_R_1, color=agent)) +
@@ -397,7 +397,7 @@ results_test %>%
 
 ### Last ep
 ```{r, fig.width=3, fig.height=1}
-results_test %>% 
+results_test68 %>% 
   filter(agent != "chemotaxis") %>% 
   filter(run == 5) %>% 
   ggplot(aes(x=global_step, y=value_R_20, color=agent)) +
