@@ -272,7 +272,7 @@ print(b2)
 ```
 
 # Join - Behave
-```{r, fig.width=7, fig.height=9}
+```{r, fig.width=7, fig.height=10}
 # Build
 exploration1 <- b1 / b2 +
   plot_annotation(
@@ -289,8 +289,8 @@ name <- "img/exploration1"
 ggsave(
   paste(name, ".pdf", sep = ""),
   plot = exploration1,
-  width = 6.5,
-  height = 7
+  width = 7,
+  height = 10
 )
 ```
 
