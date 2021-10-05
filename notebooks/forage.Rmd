@@ -9,8 +9,6 @@ library(zoo)
 library(ggplot2)
 library(ggpubr)
 library(patchwork)
-library(tidyr)
-library(dplyr)
 library(gridExtra)
 library(grid)
 library(readr)
@@ -18,6 +16,9 @@ library(latex2exp)
 # library(MASS) 
 library(scales)
 library(patchwork)
+library(tidyr)
+library(dplyr)
+
 options(scipen=1000000)
 source("utils.R")
 
@@ -41,7 +42,7 @@ exp_names <- c(
   "exp658")
 
 agent_names <- c(
-  "Curiosity (Info.)", 
+  "WSLS (Info.)", 
   "Diffusion",
   "Infotaxis", 
   "Reward") 
@@ -139,7 +140,7 @@ targets %>%
     alpha = 0.8
   ) +
   labs(x = "x", y = "y", subtitle = "Task 8 - Random targets") +
-  theme_pubr(base_size = 8) +
+  theme_pubr(base_size = 10) +
   lims(x = c(-20, 20), y = c(-20, 20)) -> t1
 print(t1)
 ```
@@ -158,7 +159,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 8) +
+  theme_pubr(base_size = 10) +
   labs(x="x", y="y", subtitle="Episode 1") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -180,7 +181,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 8) +
+  theme_pubr(base_size = 10) +
   labs(x="x", y="y", subtitle="Episode 50") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -202,7 +203,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 8) +
+  theme_pubr(base_size = 10) +
   labs(x="x", y="y", subtitle="Episode 99") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -215,8 +216,8 @@ results_task8 %>%
 
 beh1 <- (t1 + e1) / (e50 + e99) +
   # plot_layout(ncol = 2) +
-  plot_annotation(subtitle = "Foraging - Task and examples of behavior",
-                  theme = theme_pubr(base_size = 12, legend = "right"),
+  plot_annotation(subtitle = "Foraging - Task, examples of behavior, and reward collection",
+                  theme = theme_pubr(base_size = 14, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 
 print(beh1)
@@ -237,16 +238,25 @@ results_task8 %>%
              color = agent)) +
   geom_point(size = 1) +
   theme_pubr(base_size = 10, legend = "right") +
-  labs(x = "Time", y = "Avg. reward") +
+  labs(x = "Time", y = "Total reward", subtitle = "Reward collection timecourse during foraging") +
   scale_color_manual("Agent",
                      values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) -> rew1
 
-rew1 <-
-  rew1 + plot_annotation(subtitle = "Reward collection timecourse during foraging",
-                         theme = theme_pubr(base_size = 12, legend = "right"))
 print(rew1)
+
 # ---------------------------------------------------------
 # Write pdf
 name <- "img/forage2"
 ggsave(paste(name, ".pdf", sep=""), plot=rew1, width = 6, height = 3)
+```
+
+# Join 1-2
+```{r, fig.width=6, fig.height=8}
+forage <- beh1 / rew1
+print(forage)
+
+# ---------------------------------------------------------
+# Write pdf
+name <- "img/forage"
+ggsave(paste(name, ".pdf", sep=""), plot=forage, width = 6, height = 8)
 ```
