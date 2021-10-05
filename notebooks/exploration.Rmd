@@ -49,28 +49,30 @@ exp_names <- c("exp457",
                "exp503",
                "exp539")
 
-agent_names <- c("Curiosity (Info.)",
-                 # "Random/Greedy",
-                 # "Decay/Greedy",
-                 # "Random",
-                 "Reward",
-                 "Reward+Info.",
-                 "Reward+Novelty",
-                 "Reward+Entropy",
-                 "Reward+EB",
-                 "Reward+UCB")
+agent_names <- c(
+  "Curiosity\n(Info.)", 
+  # "Random/Greedy", 
+  # "Decay/Greedy", 
+  # "Random",
+  "Reward", 
+  "Reward+\nInfo.", 
+  "Reward+\nNovelty", 
+  "Reward+\nEntropy", 
+  "Reward+\nEB",
+  "Reward+\nUCB")
 
 class_names <- c(
-  "Curiosity",
+  "WSLS", 
   # "Random",
   # "Random",
   # "Random",
-  "Extrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic"
+  "Reward",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed"
 )
 
 file_names <- c("action",
@@ -78,7 +80,7 @@ file_names <- c("action",
                 "policy",
                 "regret")
 
-result_task2 <- NULL
+explore_task2 <- NULL
 for (i in 1:length(exp_names)) {
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -103,13 +105,13 @@ for (i in 1:length(exp_names)) {
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task2 <- bind_rows(result_task2, tmp)
+  explore_task2 <- bind_rows(explore_task2, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task2$agent <- factor(result_task2$agent, levels = agent_names)
+explore_task2$agent <- factor(explore_task2$agent, levels = agent_names)
 
 # Set 'policy' in agents without separate ones.
 #
@@ -117,11 +119,11 @@ result_task2$agent <- factor(result_task2$agent, levels = agent_names)
 # it was filled with zero, which is misleading when I go to color by
 # policy. All strategies not curiosity should have a policy of 1
 # to mean exploitation
-result_task2$policy[result_task2$strategy != "Curiosity"] <- 1
+explore_task2$policy[explore_task2$strategy != "Curiosity"] <- 1
 
 # 2. To estimate exploration we use regret. Regret driven exploration we
 # denote as -1
-result_task2$policy[result_task2$regret > 0] <- -1 
+explore_task2$policy[explore_task2$regret > 0] <- -1 
 ```
 
 ## BanditUniform121
@@ -142,28 +144,30 @@ exp_names <- c("exp548",
                "exp559",
                "exp561")
 
-agent_names <- c("Curiosity (Info.)",
-                 # "Random/Greedy",
-                 # "Decay/Greedy",
-                 # "Random",
-                 "Reward",
-                 "Reward+Info.",
-                 "Reward+Novelty",
-                 "Reward+Entropy",
-                 "Reward+EB",
-                 "Reward+UCB")
+agent_names <- c(
+  "Curiosity\n(Info.)", 
+  # "Random/Greedy", 
+  # "Decay/Greedy", 
+  # "Random",
+  "Reward", 
+  "Reward+\nInfo.", 
+  "Reward+\nNovelty", 
+  "Reward+\nEntropy", 
+  "Reward+\nEB",
+  "Reward+\nUCB")
 
 class_names <- c(
-  "Curiosity",
+  "WSLS", 
   # "Random",
   # "Random",
   # "Random",
-  "Extrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic",
-  "Intrinsic"
+  "Reward",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed",
+  "Mixed"
 )
 
 file_names <- c("action",
@@ -171,7 +175,7 @@ file_names <- c("action",
                 "policy",
                 "regret")
 
-result_task6 <- NULL
+explore_task6 <- NULL
 for (i in 1:length(exp_names)) {
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
@@ -196,13 +200,13 @@ for (i in 1:length(exp_names)) {
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
   
-  result_task6 <- bind_rows(result_task6, tmp)
+  explore_task6 <- bind_rows(explore_task6, tmp)
 }
 
 # ----------------------------------------------------------------------------
 # post-process
 # Force order
-result_task6$agent <- factor(result_task6$agent, levels = agent_names)
+explore_task6$agent <- factor(explore_task6$agent, levels = agent_names)
 
 # Set 'policy' in agents without separate ones.
 #
@@ -210,23 +214,23 @@ result_task6$agent <- factor(result_task6$agent, levels = agent_names)
 # it was filled with zero, which is misleading when I go to color by
 # policy. All strategies not curiosity should have a policy of 1
 # to mean exploitation
-result_task6$policy[result_task6$strategy != "Curiosity"] <- 1
+explore_task6$policy[explore_task6$strategy != "Curiosity"] <- 1
 
 # 2. To estimate exploration we use regret. Regret driven exploration we
 # denote as -1
-result_task6$policy[result_task6$regret > 0] <- -1 
+explore_task6$policy[explore_task6$regret > 0] <- -1 
 ```
 
-# Fig - Behave
+# Task 2 - Behave
 ```{r, fig.width=9, fig.height=7}
-result_task2 %>%
-  filter(run <= 5) %>%
+explore_task2 %>%
+  filter(run <= 8) %>%
   filter(param == 1) %>%
   ggplot(aes(x = global_step, y = action + 1)) + #, color=factor(policy))) +
   geom_point(size = 0.3, alpha = 1) +
   geom_line(size = 0.1) +
   labs(x = "Time",
-       y = "Arm",
+       y = "Choice",
        subtitle = "Task 2 - Classic") +
   scale_x_continuous(limits = c(0, 4 * 25),
                      breaks = c(0, 4 * 25)) +
@@ -234,18 +238,23 @@ result_task2 %>%
   facet_grid(run ~ agent) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(.75, "lines")) +
+  theme(panel.spacing.x = unit(0.75, "lines")) +
+  theme(panel.spacing.y = unit(0.5, "lines")) +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -.1)) -> p1
+  theme(strip.text.x = element_text(hjust = -.05)) -> b1
 
-result_task6 %>%
-  filter(run <= 5) %>%
+print(b1)
+```
+# Task 6 - Behave
+```{r, fig.width=9, fig.height=7}
+explore_task6 %>%
+  filter(run <= 8) %>%
   filter(param == 1) %>%
-  ggplot(aes(x = global_step, y = action + 1)) + #, color=factor(policy))) +
-  geom_point(size = 0.3, alpha = 1) +
+  ggplot(aes(x = global_step, y = action + 1)) + 
+  geom_point(size = 0.1, alpha = 1) +
   geom_line(size = 0.1) +
-  labs(x = "Time", y = "Arm",
+  labs(x = "Time", y = "Choice", 
        subtitle = "Task 6 - High dimensional") +
   scale_x_continuous(limits = c(0, 121 * 25),
                      breaks = c(0, 121 * 25)) +
@@ -253,15 +262,22 @@ result_task6 %>%
   facet_grid(run ~ agent) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
-  theme(panel.spacing = unit(0.75, "lines")) +
+  theme(panel.spacing.x = unit(0.75, "lines")) +
+  theme(panel.spacing.y = unit(0.5, "lines")) +
   theme(strip.background = element_blank()) +
   theme(strip.text.y = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -.1)) -> p2
+  theme(strip.text.x = element_text(hjust = -.05)) -> b2
 
+print(b2)
+```
+
+# Join - Behave
+```{r, fig.width=7, fig.height=9}
 # Build
-exploration1 <- p1 / p2 +
+exploration1 <- b1 / b2 +
   plot_annotation(
-    title = "Examples of exploration strategies",
+    title = "Examples of exploration strategy",
+    subtitle = "8 experiments, best parameters",
     tag_levels = 'a',
     tag_suffix = ".",
     theme = theme_pubr(base_size = 10, legend = "none")
@@ -275,5 +291,73 @@ ggsave(
   plot = exploration1,
   width = 6.5,
   height = 7
+)
+```
+
+# Task 2 - Reward timecourse
+```{r, fig.width=9, fig.height=2}
+explore_task2 %>%
+  filter(param == 0) %>%
+  filter(global_step > 10) %>%
+  ggplot(aes(x = global_step, y = total_R / global_step)) +
+  geom_point(size = 0.2, alpha = 1) +
+  labs(x = "Time",
+       y = "Avg. reward",
+       subtitle = "Task 2 - Classic") +
+  scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
+  scale_x_continuous(limits = c(0, 4 * 25),
+                     breaks = c(0, 4 * 25)) +
+  facet_grid(. ~ agent) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_text(hjust = -0.1)) -> r1
+
+print(r1)
+```
+
+# Task 6 - Reward timecourse
+```{r, fig.width=9, fig.height=2}
+explore_task6 %>%
+  filter(param == 0) %>%
+  filter(global_step > 10) %>%
+  ggplot(aes(x = global_step, y = total_R / global_step)) +
+  geom_point(size = 0.1, alpha = .2) +
+  labs(x = "Time",
+       y = "Avg. reward",
+       subtitle = "Task 6 - High dimensional") +
+  scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
+  scale_x_continuous(limits = c(0, 121 * 25),
+                     breaks = c(0, 121 * 25)) +
+  facet_grid(. ~ agent) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.75, "lines")) +
+  theme(strip.background = element_blank()) +
+  theme(strip.text.x = element_text(hjust = -0.1)) -> 
+  r2
+
+print(r2)
+```
+
+# Join - Reward
+```{r, fig.width=7, fig.height=5}
+# Build
+exploration2 <- r1 / r2 +
+  plot_annotation(
+    title = "Examples of reward collection",
+    subtitle = "10 experiments, Top 10 parameters",
+    tag_levels = 'a',
+    tag_suffix = ".",
+    theme = theme_pubr(base_size = 10, legend = "none")
+  )
+print(exploration2)
+
+# -
+name <- "img/exploration2"
+ggsave(
+  paste(name, ".pdf", sep = ""),
+  plot = exploration2,
+  width = 7,
+  height = 5
 )
 ```
