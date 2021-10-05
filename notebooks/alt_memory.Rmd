@@ -51,12 +51,13 @@ agent_names <- c(
 )
 
 class_names <- c(
-  "Curiosity",
-  "Curiosity",
-  "Curiosity",
-  "Curiosity",
-  "Curiosity"
+  "Alt.",
+  "Alt.",
+  "Alt.",
+  "Alt.",
+  "Ref."
 )
+
 
 file_names <- c("action", 
                 "total_R",
@@ -125,11 +126,11 @@ agent_names <- c(
 )
 
 class_names <- c(
-  "Curiosity",
-  "Curiosity",
-  "Curiosity",
-  "Curiosity",
-  "Curiosity"
+  "Alt.",
+  "Alt.",
+  "Alt.",
+  "Alt.",
+  "Ref."
 )
 
 file_names <- c("action", 
@@ -142,7 +143,6 @@ for(i in 1:length(exp_names)){
   exp_name <- exp_names[i]
   agent_name <- agent_names[i]
   class_name <- class_names[i]
-  tie_threshold <- boredoms[i]
   
   if (agent_name == "Random"){
     param_codes <- c(0)
@@ -163,8 +163,7 @@ for(i in 1:length(exp_names)){
   tmp$task_code <- task_code
   tmp$strategy <- class_name
   tmp$num_episodes <- num_episodes
-  tmp$tie_threshold <- tie_threshold
-  
+
   result694_698 <- bind_rows(result694_698, tmp)
 }
 
@@ -185,6 +184,7 @@ result694_698$action <- result694_698$action + 1
 
 # Vis
 ## Fig. - Total reward
+### Boxplot
 ```{r, fig.width=3.5, fig.height=4.5}
 # Create
 max_R1 <- max(result689_693$total_R)
@@ -242,6 +242,90 @@ tmp %>%
 
 alt1 <-
   (p3 / p4) + plot_annotation(title = "WSLS with alternate memory models")
+print(alt1)
+
+# Save
+name <- "img/alt_memory1"
+ggsave(
+  paste(name, ".pdf", sep = ""),
+  plot = alt1,
+  width = 3.5,
+  height = 4.5
+)
+```
+
+### Scatter
+```{r, fig.width=3., fig.height=4.5}
+# Create
+limits <- c(100, 200)
+breaks <- c(100, 150, 200)
+
+result689_693 %>%
+  group_by(strategy, agent, param, run) %>%
+  summarise(total_R = last(total_R),
+            total_regret = last(total_regret)) %>%
+  ungroup() ->
+  tmp
+
+wsls_1 <- median((filter(tmp, strategy == "Ref."))$total_R)
+
+tmp %>%
+  ggplot(aes(
+    x = agent,
+    y = total_R,
+    color = strategy
+  )) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  geom_hline(aes(yintercept=wsls_1), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x = "",
+       y = "Total reward",
+       subtitle = "Task 2 - Classic",
+       tag = "a.") +
+  scale_color_manual("", values = c("black", "chartreuse4")) +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p3
+
+# ---
+limits <- c(2000, 6000)
+breaks <- c(2000, 4000, 6000)
+
+result694_698 %>%
+  group_by(strategy, agent, param, run) %>%
+  summarise(total_R = last(total_R),
+            total_regret = last(total_regret)) %>%
+  ungroup() ->
+  tmp
+
+wsls_2 <- median((filter(tmp, strategy == "Ref."))$total_R)
+
+tmp %>%
+  ggplot(aes(
+    x = agent,
+    y = total_R,
+    color = strategy
+  )) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  geom_hline(aes(yintercept=wsls_2), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x = "",
+       y = "Total reward",
+       subtitle = "Task 6 - High dimensional",
+       tag = "b.") +
+  scale_color_manual("", values = c("black", "chartreuse4")) +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> p4
+
+alt1 <-
+  (p3 / p4) + plot_annotation(title = "Alternate memory/distance")
 print(alt1)
 
 # Save
