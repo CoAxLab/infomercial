@@ -140,7 +140,7 @@ targets %>%
     alpha = 0.8
   ) +
   labs(x = "x", y = "y", subtitle = "Task 8 - Random targets") +
-  theme_pubr(base_size = 10) +
+  theme_pubr(base_size = 9) +
   lims(x = c(-20, 20), y = c(-20, 20)) -> t1
 print(t1)
 ```
@@ -159,7 +159,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 10) +
+  theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 1") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -181,7 +181,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 10) +
+  theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 50") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -203,7 +203,7 @@ results_task8 %>%
     size = 0.2,
     alpha = 0.4,
   ) +
-  theme_pubr(base_size = 10) +
+  theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 99") +
   lims(x=c(-20, 20), y=c(-20, 20)) +
   theme(strip.background = element_blank()) +
@@ -237,9 +237,9 @@ results_task8 %>%
              y = total_R,
              color = agent)) +
   geom_point(size = 1) +
-  theme_pubr(base_size = 10, legend = "right") +
+  theme_pubr(base_size = 9, legend = "right") +
   labs(x = "Time", y = "Total reward", subtitle = "Reward collection timecourse during foraging") +
-  scale_color_manual("Agent",
+  scale_color_manual("Agent", 
                      values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) -> rew1
 
 print(rew1)
