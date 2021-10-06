@@ -90,7 +90,7 @@ result563 %>%
   filter(global_step <= n) %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
-  # geom_line(size=0.1) +
+  geom_line(size=0.1) +
   labs(x="Time", y="Action", title="Action" , tag="b.") +
   # facet_wrap(policy~., ncol=1) +
   scale_y_continuous(limits=c(0.8, 4.2), breaks = c(1, 2, 3, 4)) +
@@ -137,6 +137,7 @@ independent1 <- (c1a / c1b / (c1c / c1d)) +
   plot_layout(heights = c(0.2, 0.2, 0.6)) +
   plot_annotation(
       title="Explore-exploit with WSLS",
+      subtitle = "Task 2",
       theme = theme_pubr(base_size = 10, legend = "none"))
 print(independent1)
 
@@ -347,8 +348,8 @@ tmp %>%
 independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) + 
   plot_layout(widths = c(0.26, 0.26, 0.26, 0.22)) +
     plot_annotation(
-      title="WSLS - deterministic versus stochastic",
-      subtitle = "Reward collection",
+      title="WSLS - deterministic versus stochastic reward collection",
+      subtitle = "Task 2",
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(independent2)
 
@@ -550,8 +551,8 @@ sub2 <- c2a / c2c
 curiosity1 <- (sub1 | sub2) + 
   plot_layout(widths = c(0.7, 0.3)) +
     plot_annotation(
-      title="WSLS - deterministic versus stochastic",
-      subtitle = "Information collection (Task 1)",
+      title="Info. value collection - deterministic versus stochastic",
+      subtitle = "Task 1",
       theme = theme_pubr(base_size=8, legend="none"))
 print(curiosity1)
 
