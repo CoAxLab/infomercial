@@ -462,8 +462,8 @@ result348 %>%
   filter(run == r) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
   lims(x=c(0, 320)) +
-  geom_point(size=0.2, alpha=1, color="black") +
-  geom_line(size=0.1, color="black") +
+  geom_point(size=0.2, alpha=1, color="chartreuse4") +
+  geom_line(size=0.1, color="chartreuse4") +
   labs(x="", y="Choice", title="Deterministic", tag="a.") +
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
@@ -505,8 +505,9 @@ result348 %>%
   filter(run == r) %>% 
   filter(global_step > 5) %>%
   ggplot(aes(x=global_step, y=value_E, color=actor)) +
-  geom_line(size=0.8, alpha=1, color="black") +
+  geom_line(size=0.8, alpha=1) +
   lims(x=c(0, 320)) +
+  scale_color_manual("", values = c("chartreuse4", "black")) +
   scale_y_log10() +
   annotation_logticks(size=0.1, sides = "l") +
   facet_wrap(.~actor) +
@@ -522,17 +523,22 @@ sub1 <- (c1a + c1b) / c1c #+
 # ------------------------------------------------------------------
 final348 %>% 
   ggplot(aes(x=actor, y=total_E)) +
-  geom_boxplot(outlier.size = 0, width=0.5) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  stat_summary(fun.y = median, aes(color=actor), size=0.3, shape=1) +
   labs(x="", y="Info. value", tag="c.") +
-  scale_y_continuous(limits=c(0.0015, 0.0032), breaks = c(0.0015, 0.0015*2, 0.003)) +
+  scale_color_manual("", values = c("black", "chartreuse4")) +
+  scale_y_continuous(
+    limits=c(0.0015, 0.0032), breaks = c(0.0015, 0.0015*2, 0.003)) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> c2a
 
 final348 %>% 
   ggplot(aes(x=actor, y=num_explore)) +
-  geom_boxplot(outlier.size = 0, width=0.5, color="black") +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  stat_summary(fun.y = median, aes(color=actor), size=0.3, shape=1) +
   labs(x="", y="Num. explore", tag="d.") +
+  scale_color_manual("", values = c("black", "chartreuse4")) +
   scale_y_continuous(limits=c(80, 160), breaks = c(80, 120, 160)) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -545,7 +551,7 @@ curiosity1 <- (sub1 | sub2) +
   plot_layout(widths = c(0.7, 0.3)) +
     plot_annotation(
       title="WSLS - deterministic versus stochastic",
-      subtitle = "Information collection",
+      subtitle = "Information collection (Task 1)",
       theme = theme_pubr(base_size=8, legend="none"))
 print(curiosity1)
 
