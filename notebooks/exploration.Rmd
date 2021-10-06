@@ -226,12 +226,14 @@ explore_task6$policy[explore_task6$regret > 0] <- -1
 explore_task2 %>%
   filter(run <= 8) %>%
   filter(param == 1) %>%
-  ggplot(aes(x = global_step, y = action + 1)) + #, color=factor(policy))) +
+  ggplot(aes(x = global_step, y = action + 1, color=strategy)) + #, color=factor(policy))) +
   geom_point(size = 0.3, alpha = 1) +
   geom_line(size = 0.1) +
   labs(x = "Time",
        y = "Choice",
        subtitle = "Task 2 - Classic") +
+  scale_color_manual("Agent", 
+                     values = c("black", "darkgrey", "chartreuse4")) + 
   scale_x_continuous(limits = c(0, 4 * 25),
                      breaks = c(0, 4 * 25)) +
   scale_y_continuous(limits = c(0.9, num_arms + .1), breaks = c(1, 4)) +
@@ -251,11 +253,13 @@ print(b1)
 explore_task6 %>%
   filter(run <= 8) %>%
   filter(param == 1) %>%
-  ggplot(aes(x = global_step, y = action + 1)) + 
+  ggplot(aes(x = global_step, y = action + 1, color=strategy)) + 
   geom_point(size = 0.1, alpha = 1) +
   geom_line(size = 0.1) +
   labs(x = "Time", y = "Choice", 
        subtitle = "Task 6 - High dimensional") +
+  scale_color_manual("Agent", 
+                     values = c("black", "darkgrey", "chartreuse4")) + 
   scale_x_continuous(limits = c(0, 121 * 25),
                      breaks = c(0, 121 * 25)) +
   scale_y_continuous(limits = c(0.9, 121 + .1), breaks = c(1, 121)) +
@@ -299,11 +303,13 @@ ggsave(
 explore_task2 %>%
   filter(param == 0) %>%
   filter(global_step > 10) %>%
-  ggplot(aes(x = global_step, y = total_R / global_step)) +
+  ggplot(aes(x = global_step, y = total_R / global_step, color=strategy)) +
   geom_point(size = 0.2, alpha = 1) +
   labs(x = "Time",
        y = "Avg. reward",
        subtitle = "Task 2 - Classic") +
+  scale_color_manual("Agent", 
+                     values = c("black", "darkgrey", "chartreuse4")) + 
   scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
   scale_x_continuous(limits = c(0, 4 * 25),
                      breaks = c(0, 4 * 25)) +
@@ -321,11 +327,13 @@ print(r1)
 explore_task6 %>%
   filter(param == 0) %>%
   filter(global_step > 10) %>%
-  ggplot(aes(x = global_step, y = total_R / global_step)) +
+  ggplot(aes(x = global_step, y = total_R / global_step, color=strategy)) +
   geom_point(size = 0.1, alpha = .2) +
   labs(x = "Time",
        y = "Avg. reward",
        subtitle = "Task 6 - High dimensional") +
+  scale_color_manual("Agent", 
+                     values = c("black", "darkgrey", "chartreuse4")) + 
   scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
   scale_x_continuous(limits = c(0, 121 * 25),
                      breaks = c(0, 121 * 25)) +
