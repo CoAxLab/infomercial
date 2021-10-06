@@ -104,7 +104,7 @@ result354 %>%
   ggplot(aes(x=global_step, y=action, color=actor)) +
   lims(x=c(0, 320)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="", y="Choice", title="Deterministic") +
+  labs(x="", y="Action", title="Deterministic") +
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -368,7 +368,7 @@ result354 %>%
   # filter(run <= 12) %>% 
   ggplot(aes(x=global_step, y=action, color=actor)) +
   geom_line(size=0.5, alpha=1) +
-  labs(x="Time", y="Choice", title="Deterministic") +
+  labs(x="Time", y="Action", title="Deterministic") +
   facet_wrap(.~run, ncol=10) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -399,7 +399,7 @@ result354 %>%
   # lims(x=c(0, 320)) +
   geom_line(size=0.7, alpha=0.8) +
   # geom_point(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice", title="Deterministic + Stochastic") +
+  labs(x="Time", y="Action", title="Deterministic + Stochastic") +
   facet_wrap(.~actor, ncol=5) +
   # scale_color_grey() +
   theme_pubr(base_size = 8, legend = "none") +

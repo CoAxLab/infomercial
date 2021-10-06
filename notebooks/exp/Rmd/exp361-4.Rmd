@@ -141,7 +141,7 @@ result361 %>%
   ggplot(aes(x=global_step, y=action, color=factor(param))) +
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -237,7 +237,7 @@ result362 %>%
   ggplot(aes(x=global_step, y=action, color=factor(param))) +
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -336,7 +336,7 @@ result363 %>%
   ggplot(aes(x=global_step, y=action, color=factor(param))) +
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -450,7 +450,7 @@ result364 %>%
   ggplot(aes(x=global_step, y=action, color=factor(param))) +
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +

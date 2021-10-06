@@ -204,7 +204,7 @@ result393 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -303,7 +303,7 @@ result394 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -405,7 +405,7 @@ result395 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -522,7 +522,7 @@ result396 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -646,7 +646,7 @@ result393_4 %>%
   ggplot(aes(x=global_step, y=action, color=agent)) +
   geom_line(size=0.3, alpha=1) +
   # geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   scale_color_manual("", 
                      values=c("darkorchid4", "dodgerblue4", "goldenrod4")) +
   facet_grid(param~agent) +
@@ -673,7 +673,7 @@ filter(agent == "dual value") %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.3, alpha=1, color="darkorchid4") +
   scale_x_continuous(breaks=c(0, 100, 200)) +
-  labs(x="", y="Choice", title="Deterministic\n(Dual value)") +
+  labs(x="", y="Action", title="Deterministic\n(Dual value)") +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +

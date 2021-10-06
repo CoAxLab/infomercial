@@ -104,7 +104,7 @@ Intrinsic
 - novelty: exp521 (exp492)
 - entropy: exp524 (exp495)
 - EB: exp523 (exp494)
-- UCB:  exp544 (exp533)
+  - UCB:  exp544 (exp533)
 
 
 # Alt. memory

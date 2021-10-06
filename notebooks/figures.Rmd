@@ -52,7 +52,7 @@ filter(agent == "Deterministic") %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.5, alpha=1, color="chartreuse4") +
   scale_x_continuous(breaks=c(0, 100, 200)) +
-  labs(x="Time", y="Choice", title="Deterministic") +
+  labs(x="Time", y="Action", title="Deterministic") +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -239,7 +239,7 @@ bandit_results %>%
   filter(run <= 10, param == 0) %>% 
   ggplot(aes(x=global_step, y=action, color=agent)) +
   geom_line(size=0.6, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~agent) +
   scale_colour_manual("", values=ordered_colors) +
   theme_pubr(base_size = 6, legend = "none") +

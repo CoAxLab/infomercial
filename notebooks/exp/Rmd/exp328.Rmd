@@ -55,7 +55,7 @@ result328 %>%
   filter(global_step < 40) %>% 
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.3, color="black") + 
-  labs(x="Trials", y="Arm", title="Deterministic curiosity\nin a random world") +
+  labs(x="Trials", y="Action", title="Deterministic curiosity\nin a random world") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -73,7 +73,7 @@ result328 %>%
   filter(global_step < 40) %>% 
   ggplot(aes(x=action+1)) +
   geom_bar(width=0.9) + 
-  labs(x="Arm", y="Relative count", title="40 episodes") +
+  labs(x="Action", y="Relative count", title="40 episodes") +
   theme_pubr(base_size=8, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -88,7 +88,7 @@ result328 %>%
 result328 %>% 
   ggplot(aes(x=action+1)) +
   geom_bar(width=0.9) + 
-  labs(x="Arm", y="", title="4000 episodes") +
+  labs(x="Action", y="", title="4000 episodes") +
   theme_pubr(base_size=8, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +

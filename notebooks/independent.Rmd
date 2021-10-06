@@ -91,7 +91,7 @@ result563 %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
   # geom_line(size=0.1) +
-  labs(x="Time", y="Arm", title="Choice" , tag="b.") +
+  labs(x="Time", y="Action", title="Action" , tag="b.") +
   # facet_wrap(policy~., ncol=1) +
   scale_y_continuous(limits=c(0.8, 4.2), breaks = c(1, 2, 3, 4)) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -227,7 +227,7 @@ filter(global_step <= num_episodes) %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Deterministic", tag="a.") +
+  labs(x="Time", y="Action", title="Deterministic", tag="a.") +
   lims(x=c(0, num_episodes)) +
   facet_grid(run~param) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -245,7 +245,7 @@ filter(global_step <= num_episodes) %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Stochastic (temp=0.1)") +
+  labs(x="Time", y="Action", title="Stochastic (temp=0.1)") +
   lims(x=c(0, num_episodes)) +
   facet_grid(run~param) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -263,7 +263,7 @@ filter(global_step <= num_episodes) %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Stochastic (temp=0.05)") +
+  labs(x="Time", y="Action", title="Stochastic (temp=0.05)") +
   lims(x=c(0, num_episodes)) +
   facet_grid(run~param) +
   scale_color_manual("", values=c("chartreuse4", "black")) +
@@ -464,7 +464,7 @@ result348 %>%
   lims(x=c(0, 320)) +
   geom_point(size=0.2, alpha=1, color="chartreuse4") +
   geom_line(size=0.1, color="chartreuse4") +
-  labs(x="", y="Choice", title="Deterministic", tag="a.") +
+  labs(x="", y="Action", title="Deterministic", tag="a.") +
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +

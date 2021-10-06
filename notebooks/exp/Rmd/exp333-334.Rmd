@@ -114,13 +114,13 @@ p1 | p2
 result333 %>% 
   ggplot(aes(x=action+1)) +
   geom_bar(stat="count", fill="mediumorchid4") + 
-  labs(x="Arm", title="Det.") +
+  labs(x="Action", title="Det.") +
   theme_classic() -> p1
 
 result334 %>% 
   ggplot(aes(x=action+1)) +
   geom_bar(stat="count", fill="plum4") + 
-  labs(x="Arm", title="Sto.") +
+  labs(x="Action", title="Sto.") +
   theme_classic() -> p2
 
 p1 | p2
@@ -133,7 +133,7 @@ result333 %>%
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.6, color="mediumorchid4") + 
   geom_line(size=0.1, color="mediumorchid4") +
-  labs(x="Trial", y="Arm", title = "Det.") +
+  labs(x="Trial", y="Action", title = "Det.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
   theme_classic() + 
@@ -149,7 +149,7 @@ result334 %>%
   ggplot(aes(x=global_step, y=action+1)) +
   geom_point(size=0.6, color="plum4") + 
   geom_line(size=0.1, color="plum4") +
-  labs(x="Trial", y="Arm", title = "Sto.") +
+  labs(x="Trial", y="Action", title = "Sto.") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_wrap(.~run, ncol = 3) +
   theme_classic() + 

@@ -605,7 +605,7 @@ result467_471 %>%
   filter(run <= 10, param == 0) %>% 
   ggplot(aes(x=global_step, y=action, color=agent)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~agent) +
   scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +

@@ -198,7 +198,7 @@ result408 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -295,7 +295,7 @@ result409 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -395,7 +395,7 @@ result410 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -510,7 +510,7 @@ result411 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -607,7 +607,7 @@ result412 %>%
   lims(x=c(0, 50)) +
   geom_line(size=0.3, alpha=1) +
   geom_hline(yintercept = 7, color="grey") +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_wrap(.~run, nrow=5) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -738,7 +738,7 @@ result408_412 %>%
   filter(run <= 10, param == 0) %>% 
   ggplot(aes(x=global_step, y=action, color=agent)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="Time", y="Choice") +
+  labs(x="Time", y="Action") +
   facet_grid(run~agent) +
   scale_colour_manual("", values=c("goldenrod4", "dodgerblue4", "mediumorchid4", "goldenrod3", "darkgrey")) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -766,7 +766,7 @@ filter(agent == "dual value") %>%
   ggplot(aes(x=global_step, y=action)) +
   geom_line(size=0.3, alpha=1, color="darkorchid4") +
   scale_x_continuous(breaks=c(0, 100, 200, 300)) +
-  labs(x="", y="Choice", title="Deterministic\n(Dual value)") +
+  labs(x="", y="Action", title="Deterministic\n(Dual value)") +
   facet_wrap(.~param, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +

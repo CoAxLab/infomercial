@@ -57,7 +57,7 @@ rm(runtmp, tmp)
 result328 %>% 
   ggplot(aes(x=global_step, y=action+1, color=run)) +
   geom_point(size=0.1) + 
-  labs(x="Trial", y="Arm", title="Behave") +
+  labs(x="Trial", y="Action", title="Behave") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -69,7 +69,7 @@ print(p1)
 result328 %>% 
   ggplot(aes(x=action, fill=run)) +
   geom_histogram() + 
-  labs(x="Arm") +
+  labs(x="Action") +
   theme_pubr(base_size=8, legend = "none")  +
   theme(text = element_text(color = "black")) +
   theme(strip.text.y = element_text(angle = 0)) +

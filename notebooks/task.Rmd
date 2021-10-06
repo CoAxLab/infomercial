@@ -41,7 +41,7 @@ info %>%
   geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="Choice", y="", title="Info. payout") +
+  labs(x="Action", y="", title="Info. payout") +
   facet_wrap(choice~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -88,7 +88,7 @@ classic %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward payout") +
+  labs(x="Action", y="", title="Reward payout") +
   facet_wrap(choice~., nrow=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -136,7 +136,7 @@ sparse %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_color_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward\npayout") +
+  labs(x="Action", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -222,7 +222,7 @@ deception_prob %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward\nprob.") +
+  labs(x="Action", y="", title="Reward\nprob.") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -262,7 +262,7 @@ deception_payout %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward\npayout") +
+  labs(x="Action", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -311,7 +311,7 @@ distraction_stim %>%
   geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="Choice", y="", title="Info.\npayout") +
+  labs(x="Action", y="", title="Info.\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -331,7 +331,7 @@ distraction_payout %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward\npayout") +
+  labs(x="Action", y="", title="Reward\npayout") +
   facet_wrap(choice~., ncol=1) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -378,7 +378,7 @@ large %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward payout") +
+  labs(x="Action", y="", title="Reward payout") +
   facet_wrap(choice~., ncol=11) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -434,7 +434,7 @@ changed %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Choice", y="", title="Reward payout") +
+  labs(x="Action", y="", title="Reward payout") +
   facet_wrap(choice~., ncol=11) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +

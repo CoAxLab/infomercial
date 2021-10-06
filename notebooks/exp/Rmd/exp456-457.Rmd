@@ -299,7 +299,7 @@ result456_457 %>%
   geom_line(size=0.3, alpha=1) +
   scale_colour_manual("", 
                       values=c("darkorchid4")) +
-  labs(x="Time", y="Choice", title="Deterministic") +
+  labs(x="Time", y="Action", title="Deterministic") +
   lims(x=c(0, 80)) +
   facet_grid(run~param) +
   theme_pubr(base_size = 8, legend = "none") +
@@ -322,7 +322,7 @@ result456_457 %>%
   geom_line(size=0.3, alpha=1) +
   scale_colour_manual("", 
                       values=c("mediumpurple3")) +
-  labs(x="Time", y="Choice", title="Stochastic") +
+  labs(x="Time", y="Action", title="Stochastic") +
   facet_grid(run~param) +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +

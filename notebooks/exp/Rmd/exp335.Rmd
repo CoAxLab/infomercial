@@ -61,7 +61,7 @@ result335 %>%
   ggplot(aes(x=global_step, y=action+1, color=exp)) +
   geom_point(size=0.6) + 
   geom_line(size=0.1) +
-  labs(x="Trial", y="Arm") +
+  labs(x="Trial", y="Action") +
   scale_y_continuous(breaks=c(1, 4), labels=c(1,4)) +
   facet_grid(exp~.) +
   theme_classic() + 

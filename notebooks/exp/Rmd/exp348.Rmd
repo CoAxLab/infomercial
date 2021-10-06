@@ -104,7 +104,7 @@ result348 %>%
   ggplot(aes(x=global_step, y=action, color=actor)) +
   lims(x=c(0, 320)) +
   geom_line(size=0.3, alpha=1) +
-  labs(x="", y="Choice", title="Deterministic") +
+  labs(x="", y="Action", title="Deterministic") +
   facet_wrap(.~run, ncol=1) +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +

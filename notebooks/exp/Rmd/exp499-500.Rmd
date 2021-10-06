@@ -80,7 +80,7 @@ result500 %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Optimized") +
+  labs(x="Time", y="Action", title="Optimized") +
   lims(x=c(0, num_episodes)) +
   facet_wrap(run~.) +
   scale_color_manual("", values=c("mediumpurple4", "black")) +
@@ -96,7 +96,7 @@ result499 %>%
   ggplot(aes(x=global_step, y=action, color=factor(policy))) +
   geom_point(size=0.1, alpha=0.9, shape=".") +
   geom_line(size=0.1, alpha=1) +
-  labs(x="Time", y="Choice", title="Non-optimal") +
+  labs(x="Time", y="Action", title="Non-optimal") +
   lims(x=c(0, num_episodes)) +
   facet_wrap(run~.) +
   scale_color_manual("", values=c("mediumpurple4", "black")) +
@@ -203,7 +203,7 @@ result500 %>%
   ggplot(aes(x=global_step, y=action+1, color=factor(policy))) +
   geom_point(size=0.6, alpha=0.9) +
   geom_line(size=0.1) +
-  labs(x="", y="Choice") +
+  labs(x="", y="Action") +
   facet_wrap(policy~., ncol=1) +
   scale_color_manual("", values=c("darkorchid4", "black")) +
   theme_pubr(base_size = 6, legend = "none") +

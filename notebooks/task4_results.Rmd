@@ -342,7 +342,7 @@ tmp %>%
   ggplot(aes(x = global_step, y = action + 1, color=best)) + #, color=factor(policy))) +
   geom_point(size = 0.1, alpha = 0.9) +
   geom_line(size = 0.1) +
-  labs(x = "Time", y = "Arm") +
+  labs(x = "Time", y = "Action") +
   scale_x_continuous(limits = c(0, num_episodes + (num_episodes * .1)),
                      breaks = c(0, num_episodes)) +
   scale_color_manual("", values = c("black", "darkorange4")) +
