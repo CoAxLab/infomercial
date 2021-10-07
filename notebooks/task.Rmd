@@ -28,7 +28,7 @@ data_path <- "~/Code/infomercial/data"
 ```
 
 # Task - info 
-```{r, fig.width=2.4, fig.height=1.2}
+```{r, fig.width=2.4, fig.height=1.4}
 info <- data.frame(
   choice=c(1,2,3,4,1,2,3,4),
   color=c(1,1,1,1,2,2,2,2),
@@ -42,7 +42,8 @@ info %>%
   geom_bar(width=0.5, stat="identity") +
   scale_y_continuous(limits=c(0,1.05), breaks = c(0, 1)) +
   scale_fill_manual(values=c("yellow", "blue")) +
-  labs(x="Action", y="", title="Task 1 - Information", tag="a.") +
+  labs(x="Action", y="", 
+       title="Task 1 - Information", subtitle="Info. payout", tag="a.") +
   facet_wrap(choice~., nrow=1, strip.position="bottom") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -60,11 +61,11 @@ print(task1)
 
 # save
 name <- "img/task1"
-ggsave(paste(name, ".pdf", sep=""), plot=task1, width = 2.4, height = 1.2)
+ggsave(paste(name, ".pdf", sep=""), plot=task1, width = 2.4, height = 1.4)
 ```
 
 # Task - classic
-```{r, fig.width=2.4, fig.height=1.2}
+```{r, fig.width=2.4, fig.height=1.4}
 best <- 2
 best_choice = rep(0, 4)
 best_choice[best] <- 1
@@ -81,7 +82,8 @@ classic %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Action", y="", title="Task 2 - Classic", tag="b.") +
+  labs(x="Action", y="", title="Task 2 - Classic", 
+       subtitle="Reward payout", tag="b.") +
   facet_wrap(choice~., nrow=1, strip.position="bottom") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -99,13 +101,13 @@ print(task2)
 
 # save
 name <- "img/task2"
-ggsave(paste(name, ".pdf", sep=""), plot=task2, width = 2.4, height = 1.2)
+ggsave(paste(name, ".pdf", sep=""), plot=task2, width = 2.4, height = 1.4)
 
 rm(p1)
 ```
 
 # Task - sparse forced choice
-```{r, fig.width=5, fig.height=1.2}
+```{r, fig.width=5, fig.height=1.35}
 best <- 8
 best_choice = rep(0, 10)
 best_choice[best] <- 1
@@ -125,7 +127,8 @@ sparse %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_color_manual(values=c("darkgrey", "black")) +
-  labs(x="Action", y="", title="Task 3 - Sparse", tag="c.") +
+  labs(x="Action", y="", title="Task 3 - Sparse", 
+       subtitle="Reward payout", tag="c.") +
   facet_wrap(.~choice, ncol=10, strip.position="bottom") +
   theme_pubr(base_size = 8, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -143,7 +146,7 @@ print(task3)
 
 # save
 name <- "img/task3"
-ggsave(paste(name, ".pdf", sep=""), plot=task3, width = 5, height = 1.2)
+ggsave(paste(name, ".pdf", sep=""), plot=task3, width = 5, height = 1.35)
 ```
 
 # Task - deception
@@ -364,7 +367,8 @@ large %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Action", y="", title="Task 6 - High dimensional", tag="f.") +
+  labs(x="Action", y="", title="Task 6 - High dimensional", 
+       subtitle="Reward payout", tag="f.") +
   facet_wrap(choice~., ncol=11, strip.position = "bottom") +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
@@ -420,7 +424,8 @@ changed %>%
   lims(x=c(0, 2)) +
   scale_y_continuous(limits=c(0,1.1), breaks = c(0, 1)) +
   scale_fill_manual(values=c("darkgrey", "black")) +
-  labs(x="Action", y="", title="Task 7 - Unexpected change", tag="g.") +
+  labs(x="Action", y="", title="Task 7 - Unexpected change", 
+       subtitle="Reward payout", tag="g.") +
   facet_wrap(choice~., ncol=11, strip.position = "bottom") +
   theme_pubr(base_size = 6, legend = "none") +
   theme(strip.background = element_blank()) +
