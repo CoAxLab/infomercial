@@ -202,6 +202,7 @@ ggplot(aes(x = choice, y = prob, fill = factor(best))) +
     y = "Avg. value",
     title = "Task 5 - Deception",
     subtitle = "Reward payout",
+    tag="d."
   ) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
