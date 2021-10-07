@@ -399,6 +399,6 @@ task <- (task1 | task2 | task3 | plot_spacer()) /
 print(task)
 
 # ---------------------------------------------------
-name <- "img/task"
+name <- "img/bandit_task"
 ggsave(paste(name, ".pdf", sep=""), plot=task, width = 10, height = 9)
 ```
