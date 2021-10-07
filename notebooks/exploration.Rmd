@@ -280,7 +280,7 @@ print(b2)
 # Build
 exploration1 <- b1 / b2 +
   plot_annotation(
-    title = "Examples of exploration strategy",
+    title = "Examples of bandit exploration",
     subtitle = "8 experiments, best parameters",
     tag_levels = 'a',
     tag_suffix = ".",
@@ -352,7 +352,7 @@ print(r2)
 # Build
 exploration2 <- r1 / r2 +
   plot_annotation(
-    title = "Examples of reward collection",
+    title = "Examples of bandit reward collection",
     subtitle = "10 experiments, Top 10 parameters",
     tag_levels = 'a',
     tag_suffix = ".",

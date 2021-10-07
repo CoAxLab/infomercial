@@ -6,7 +6,7 @@ output: html_notebook
 
 # Load data
 ## Cached?
-```{r, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
 load.image(file="performance.RData")
 ```
 
@@ -20,8 +20,10 @@ source(knitr::purl("task4_results.Rmd", quiet=TRUE))
 source(knitr::purl("task5_results.Rmd", quiet=TRUE))
 source(knitr::purl("task6_results.Rmd", quiet=TRUE))
 source(knitr::purl("task7_results.Rmd", quiet=TRUE))
+```
 
-# Save
+## Save cache?
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
 save.image(file="performance.RData")
 ```
 
@@ -1035,7 +1037,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 9, height = 5)
 ```{r, fig.width=7, fig.height=3}
 perf_dd <- j4 + j5 +
   plot_annotation(
-    title = "Performance with deception or distraction",
+    title = "Performance with deception or distraction bandits",
                   theme = theme_pubr(base_size = 14, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 print(perf_dd)
