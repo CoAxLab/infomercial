@@ -45,13 +45,13 @@ agent_names <- c(
   "WSLS (Info.)", 
   "Diffusion",
   "Infotaxis", 
-  "Reward") 
+  "Reward+Info.") 
 
 class_names <- c(
-  "WSLS",
+  "Info.",
   "Random",
   "Info.",
-  "Reward")
+  "Mixed")
 
 file_names <- c("total_R",
                 "num_death",
@@ -132,7 +132,7 @@ targets$value_target <- target_values$value_target
 ## Targets
 ```{r, fig.width=1.5, fig.height=1.5}
 targets %>%
-  ggplot(aes(x = x_target, y = y_target)) +
+  ggplot(aes(x = as.integer(x_target), y = as.integer(y_target))) +
   geom_point(
     color = "black",
     shape = 4,
@@ -141,7 +141,7 @@ targets %>%
   ) +
   labs(x = "x", y = "y", subtitle = "Task 8 - Random targets") +
   theme_pubr(base_size = 9) +
-  lims(x = c(-20, 20), y = c(-20, 20)) -> t1
+  lims(x = c(-10, 10), y = c(-10, 10)) -> t1
 print(t1)
 ```
 
@@ -153,7 +153,7 @@ results_task8 %>%
   geom_point(size=0.1, alpha=1) +
   geom_point(
     data = targets,
-    mapping = aes(x = x_target, y = y_target),
+    mapping = aes(x = as.integer(x_target), y = as.integer(y_target)),
     color = "black",
     shape = 4,
     size = 0.2,
@@ -161,7 +161,7 @@ results_task8 %>%
   ) +
   theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 1") +
-  lims(x=c(-20, 20), y=c(-20, 20)) +
+  lims(x=c(-10, 10), y=c(-10, 10)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
@@ -175,7 +175,7 @@ results_task8 %>%
   geom_point(size=0.1, alpha=1) +
   geom_point(
     data = targets,
-    mapping = aes(x = x_target, y = y_target),
+    mapping = aes(x = as.integer(x_target), y = as.integer(y_target)),
     color = "black",
     shape = 4,
     size = 0.2,
@@ -183,7 +183,7 @@ results_task8 %>%
   ) +
   theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 50") +
-  lims(x=c(-20, 20), y=c(-20, 20)) +
+  lims(x=c(-10, 10), y=c(-10, 10)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
@@ -197,7 +197,7 @@ results_task8 %>%
   geom_point(size=0.1, alpha=1) +
   geom_point(
     data = targets,
-    mapping = aes(x = x_target, y = y_target),
+    mapping = aes(x = as.integer(x_target), y = as.integer(y_target)),
     color = "black",
     shape = 4,
     size = 0.2,
@@ -205,7 +205,7 @@ results_task8 %>%
   ) +
   theme_pubr(base_size = 9) +
   labs(x="x", y="y", subtitle="Episode 99") +
-  lims(x=c(-20, 20), y=c(-20, 20)) +
+  lims(x=c(-10, 20), y=c(-10, 20)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
