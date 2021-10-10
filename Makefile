@@ -64,7 +64,7 @@ test8:
 	-rm -rf $(DATA_PATH)/test8*
 	parallel -j 39 \
 			--nice 19 --delay 2 --colsep ',' --bar \
-			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..30}
+			'forage.py rl --num_episodes=200 --num_steps=200 --lr=.1 --gamma=0.1 --temp=4 --log_dir=$(DATA_PATH)/test8/run{1} --master_seed={1} --output=False' ::: {0..30}
 
 
 # ----------------------------------------------------------------------------
@@ -10319,19 +10319,15 @@ exp656:
 			--nice 19 --delay 0 --colsep ',' --header : \
 			'forage.py diffusion --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} 
 
-# entropy - exp653
+# chemmo (no tune)
 exp657:
-	# Get top 10
-	head -n 11 $(DATA_PATH)/exp653_sorted.csv > tmp 
-	# Run them 10 times
+	# Run them 100 times
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp657.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py entropy --num_episodes=200 --num_steps=200 --accumulate_sigma={accumulate_sigma} --log_dir=$(DATA_PATH)/exp657/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
-	# Clean up
-	rm tmp
+			'forage.py chemo --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} 
 
-# softmax - exp654
+# rl - exp654
 exp658:
 	# Get top 10
 	head -n 11 $(DATA_PATH)/exp654_sorted.csv > tmp 
@@ -10339,7 +10335,7 @@ exp658:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp658.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py softmax --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
+			'forage.py rl --num_episodes=200 --num_steps=200 --lr=0.1 --gamma=0.1 --temp={temp} --log_dir=$(DATA_PATH)/exp658/param{index}/run{1} --master_seed={1} --output=False' ::: {0..10} :::: tmp
 	# Clean up
 	rm tmp
 
