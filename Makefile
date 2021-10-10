@@ -10325,7 +10325,7 @@ exp657:
 	parallel -j 39 \
 			--joblog '$(DATA_PATH)/exp657.log' \
 			--nice 19 --delay 0 --colsep ',' --header : \
-			'forage.py chemo --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} 
+			'forage.py chemotaxis --num_episodes=200 --num_steps=200 --scale=1.0 --log_dir=$(DATA_PATH)/exp656/param0/run{1} --master_seed={1} --output=False' ::: {0..100} 
 
 # rl - exp654
 exp658:
