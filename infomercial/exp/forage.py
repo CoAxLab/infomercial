@@ -109,18 +109,18 @@ def entropy(num_episodes=10,
                 write_to_disk, log_dir, output)
 
 
-def softmax(num_episodes=10,
-            num_steps=200,
-            lr=0.1,
-            temp=6,
-            gamma=0.1,
-            master_seed=None,
-            write_to_disk=True,
-            log_dir=None,
-            output=True):
+def rl(num_episodes=10,
+       num_steps=200,
+       lr=0.1,
+       temp=6,
+       gamma=0.1,
+       master_seed=None,
+       write_to_disk=True,
+       log_dir=None,
+       output=True):
 
     # Init
-    agent_name = "softmax"
+    agent_name = "rl"
     possible_actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     critic = CriticGrid(default_value=0.5)
     actor = SoftmaxActor(num_actions=len(possible_actions),
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     import fire
     fire.Fire({
         "wsls": wsls,
-        "softmax": softmax,
+        "rl": rl,
         "diffusion": diffusion,
         "chemotaxis": chemotaxis,
         "entropy": entropy
