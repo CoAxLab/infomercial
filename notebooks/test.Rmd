@@ -56,7 +56,7 @@ agent_names <- c(
   "epsilon") 
 
 class_names <- c(
-  "E-explore",
+  "E-explore (IG)",
   "Mixed",
   "Mixed",
   "Mixed",

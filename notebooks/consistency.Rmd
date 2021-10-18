@@ -100,7 +100,7 @@ bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) ->
 min_var <- 0.0075
 tmp %>% 
   filter(var_R > min_var) %>% 
-  filter(strategy == "E-explore") %>% 
+  filter(strategy == "E-explore (IG)") %>% 
   select(var_R) -> wsls_s
 wsls_s <- median(wsls_s$var_R)
 # Vis
@@ -143,7 +143,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=consistency, width = 5, height = 5)
 min_var <- 0.0075
 tmp %>% 
   filter(var_R > min_var) %>% 
-  filter(strategy == "E-explore") %>% 
+  filter(strategy == "E-explore (IG)") %>% 
   select(var_R) -> wsls_s
 wsls_s <- median(wsls_s$var_R)
 # Vis
