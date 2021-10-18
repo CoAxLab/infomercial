@@ -58,7 +58,7 @@ exp_names <- c("exp449",
 ## Load
 ```{r, message=FALSE, warning=FALSE}
 agent_names <- c(
-  "Curiosity (Info.)", 
+  "E-explore", 
   # "Random/Greedy", 
   # "Decay/Greedy", 
   "Random",

@@ -48,7 +48,7 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity (Info.)",
+  "E-explore",
   # "Random",
   # "Decay",
   "Reward",
@@ -124,7 +124,7 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity (Info.)",
+  "E-explore",
   # "Random",
   # "Decay",
   "Reward",
@@ -196,7 +196,7 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity (Info.)",
+  "E-explore",
   # "Random",
   # "Decay",
   "Reward",
@@ -268,7 +268,7 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity (Info.)",
+  "E-explore",
   # "Random",
   # "Decay",
   "Reward",
@@ -340,7 +340,7 @@ rank_names <- c(
 )
 
 agent_names <- c(
-  "Curiosity (Info.)",
+  "E-explore",
   # "Random",
   # "Decay",
   "Reward",

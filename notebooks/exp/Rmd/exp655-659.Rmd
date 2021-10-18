@@ -40,7 +40,7 @@ exp_names <- c(
   "exp658")
 
 agent_names <- c(
-  "Curiosity (Info.)", 
+  "E-explore", 
   "Diffusion",
   "Infotaxis", 
   "Reward") 

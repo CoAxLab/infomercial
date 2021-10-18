@@ -50,12 +50,12 @@ exp_names <- c("exp457",
                "exp539")
 
 agent_names <- c(
-  "Curiosity\n(Info.)", 
+  "Curiosity\n(IG)", 
   # "Random/Greedy", 
   # "Decay/Greedy", 
   # "Random",
   "Reward", 
-  "Reward+\nInfo.", 
+  "Reward+\nIG", 
   "Reward+\nNovelty", 
   "Reward+\nEntropy", 
   "Reward+\nEB",
@@ -145,12 +145,12 @@ exp_names <- c("exp548",
                "exp561")
 
 agent_names <- c(
-  "Curiosity\n(Info.)", 
+  "Curiosity\n(IG)", 
   # "Random/Greedy", 
   # "Decay/Greedy", 
   # "Random",
   "Reward", 
-  "Reward+\nInfo.", 
+  "Reward+\nIG", 
   "Reward+\nNovelty", 
   "Reward+\nEntropy", 
   "Reward+\nEB",
