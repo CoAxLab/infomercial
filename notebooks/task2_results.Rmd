@@ -143,13 +143,13 @@ result_task2 %>%
 
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$total_R)
+wsls_R <- median((filter(tmp, "Curiosity"))$total_R)
 random_R <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
-  filter(strategy == "Dual value (WSLS)") %>% 
+  filter("Curiosity") %>% 
   mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
+    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
   geom_hline(aes(yintercept=random_R/num_episodes), 
@@ -165,7 +165,7 @@ tmp %>%
 tmp %>% 
   filter(strategy == "Mixed") %>% 
   mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
+    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
   geom_hline(aes(yintercept=wsls_R/num_episodes), 
@@ -199,11 +199,11 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Medum
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$total_R)
+wsls_R <- median((filter(tmp, "Curiosity"))$total_R)
 
 tmp %>% 
   mutate(
-    fill = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>% 
+    fill = ifelse("Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=total_R/num_episodes, fill=fill)) +
   geom_density(alpha=1, color=NA) +
   geom_vline(aes(xintercept=wsls_R/num_episodes), 
@@ -260,13 +260,13 @@ tmp %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$median_R)
+wsls_R <- median((filter(tmp, "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 tmp %>% 
-  # filter(strategy == "Dual value (WSLS)") %>% 
+  # filter("Curiosity") %>% 
   mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
+    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
@@ -302,13 +302,13 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "Dual value (WSLS)"))$var_R)
+wsls_R <- median((filter(tmp, "Curiosity"))$var_R)
 random_R <- median((filter(tmp, strategy == "Random"))$var_R)
 
 tmp %>% 
-  # filter(strategy == "Dual value (WSLS)") %>% 
+  # filter("Curiosity") %>% 
   mutate(
-    color = ifelse(strategy == "Dual value (WSLS)", "chartreuse4", "black")) %>%
+    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=var_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_hline(aes(yintercept=wsls_R/num_episodes), 
