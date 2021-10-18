@@ -1,0 +1,378 @@
+---
+title: "Fig. Reward collection regret"
+output: html_notebook
+---
+
+
+# Load data
+## Cached?
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+load.image(file="performance.RData")
+```
+
+## New
+From indivdual notebooks, for all bandit tasks.
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+library(knitr)
+source(knitr::purl("task2_results.Rmd", quiet=TRUE))
+source(knitr::purl("task3_results.Rmd", quiet=TRUE))
+source(knitr::purl("task4_results.Rmd", quiet=TRUE))
+source(knitr::purl("task5_results.Rmd", quiet=TRUE))
+source(knitr::purl("task6_results.Rmd", quiet=TRUE))
+source(knitr::purl("task7_results.Rmd", quiet=TRUE))
+```
+
+## Save cache?
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+save.image(file="performance.RData")
+```
+
+
+# Vis
+## Median/MAD - By Task
+### Task 2
+```{r, fig.width=4.5, fig.height=2}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task2$global_step)
+limits <- c(0, 0.85)
+breaks <- c(0.0, 0.4, 0.8)
+
+# -------------------------------------------------------
+# Tabulate
+result_task2 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = sum(total_regret)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_regret), 
+            var_R = mad(total_regret),
+            sum_R = sum(total_regret),
+            mean_R = mean(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
+
+# -------------------------------------------------------
+# Vis
+tmp %>% 
+  filter(agent != "Random") %>%
+  ggplot(aes(x=agent, y=median_R, color=strategy)) +
+  geom_point(size=2.5, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R),
+    ymax=(median_R-var_R)),
+    alpha=0.4) +
+  geom_hline(aes(yintercept=wsls_R),
+             color="chartreuse4",
+             size=0.4) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  labs(x="", y="Total regret", subtitle = "Task 2 - Classic") +
+  # scale_y_continuous(limits = limits, breaks = breaks) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> m2
+
+print(m2)
+```
+
+### Task 3
+```{r, fig.width=4.5, fig.height=2}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task3$global_step)
+limits <- c(0, 0.025)
+breaks <- c(0.0, 0.01, 0.02)
+
+# -------------------------------------------------------
+# Tabulate
+result_task3 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = sum(total_regret)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_regret), 
+            var_R = mad(total_regret),
+            sum_R = sum(total_regret),
+            mean_R = mean(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
+
+# -------------------------------------------------------
+# Vis
+tmp %>% 
+  filter(agent != "Random") %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
+  geom_point(size=2.5, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=wsls_R/num_episodes),
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total regret", subtitle = "Task 3 - Sparse") +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> m3
+
+print(m3)
+```
+
+### Task 6
+```{r, fig.width=4.5, fig.height=2}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task6$global_step)
+limits <- c(0, 0.85)
+breaks <- c(0.0, 0.4, 0.8)
+
+# -------------------------------------------------------
+# Tabulate
+result_task6 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = sum(total_regret)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_regret), 
+            var_R = mad(total_regret),
+            sum_R = sum(total_regret),
+            mean_R = mean(total_regret)) %>% 
+  ungroup() -> tmp
+
+
+# Reference 
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
+
+# -------------------------------------------------------
+# Vis
+tmp %>% 
+  filter(agent != "Random") %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
+  geom_point(size=2.5, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=wsls_R/num_episodes),
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total regret", subtitle = "Task 6 - High dimensional") +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> m6
+
+print(m6)
+```
+### Task 7
+```{r, fig.width=4.5, fig.height=2}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task7$global_step)
+
+# -------------------------------------------------------
+# Tabulate
+result_task7 %>%  
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = sum(total_regret)) %>% 
+  ungroup() %>% 
+  group_by(strategy, agent) %>% 
+  summarise(median_R = median(total_regret), 
+            var_R = mad(total_regret),
+            sum_R = sum(total_regret),
+            mean_R = mean(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
+
+# -------------------------------------------------------
+# Vis
+tmp %>% 
+  filter(agent != "Random") %>%
+  ggplot(aes(x=agent, y=median_R/num_episodes, color=strategy)) +
+  geom_point(size=2.5, alpha=0.8) +
+  geom_linerange(aes(
+    ymin=(median_R+var_R)/num_episodes, 
+    ymax=(median_R-var_R)/num_episodes), 
+    alpha=0.4) +
+  geom_hline(aes(yintercept=wsls_R/num_episodes), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total regret", subtitle = "Task 7 - Unexpected change") +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  theme_pubr(base_size =  10, legend = "none") +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> m7
+
+print(m7)
+```
+
+## Jitter
+### Task 2
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task2$global_step)
+
+# Vis
+result_task2 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = last(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_2 <- median((filter(tmp, strategy == "Curiosity"))$total_regret)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.6) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.6, shape=1) +
+  geom_hline(aes(yintercept=wsls_2), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total regret") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  labs(x="", y="Total reward", subtitle = "Task 2 - Classic") +
+  scale_y_continuous(limits = limits, breaks = breaks) +
+  coord_flip() -> j2
+
+print(j2)
+```
+
+### Task 3
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task3$global_step)
+
+result_task3 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = last(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_3 <- median((filter(tmp, strategy == "Curiosity"))$total_regret)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.4) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.6, shape=1) +
+  geom_hline(aes(yintercept=wsls_3), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total reward") +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  labs(x="", y="Total reward", subtitle = "Task 3 - Sparse") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(axis.text.y = element_blank()) +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  coord_flip() -> j3
+
+print(j3)
+```
+
+### Task 6
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task6$global_step)
+
+result_task6 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = last(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_6 <- median((filter(tmp, strategy == "Curiosity"))$total_regret)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(width = 0.3, size=0.2, alpha=0.6) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.6, shape=1) +
+  geom_hline(aes(yintercept=wsls_6), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  labs(x="", y="Total regret", subtitle = "Task 6 - High dim.") +
+  coord_flip() -> j6
+
+print(j6)
+```
+
+### Task 7
+```{r, fig.width=5, fig.height=3}
+# -------------------------------------------------------
+# Vars
+num_episodes <- max(result_task7$global_step)
+
+result_task7 %>%
+  group_by(strategy, agent, param, run) %>% 
+  summarise(total_regret = last(total_regret)) %>% 
+  ungroup() -> tmp
+
+# Reference 
+wsls_7 <- median((filter(tmp, strategy == "Curiosity"))$total_regret)
+
+tmp %>% 
+  filter(strategy != "Random") %>% 
+  ggplot(aes(x=agent, y=total_regret)) +
+  geom_jitter(width = 0.3, size=0.3, alpha=0.6) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.6, shape=1) +
+  geom_hline(aes(yintercept=wsls_7), 
+             color="chartreuse4",
+             size=0.4) +
+  labs(x="", y="Total reward") +
+  theme_pubr(base_size = 10, legend = "none") +
+  theme(panel.spacing = unit(.5, "lines")) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.background = element_blank()) +
+  theme(axis.text.y = element_blank()) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
+  labs(x="", y="Total regret", subtitle = "Task 7 - Unexpected") +
+  coord_flip() -> j7
+
+print(j7)
+```
+
+# Join regular bandits
+```{r, fig.width=6, fig.height=5.0}
+layout <- "
+BBBCCC
+BBBCCC
+BBBCCC
+DDDEEE
+DDDEEE
+DDDEEE
+"
+perf_reg <- j2 + j3 + j6 + j7 +
+  plot_layout(design = layout, guides = "collect") +
+  plot_annotation(
+    title = "Value lost due to regret, with standard bandits",
+                  theme = theme_pubr(base_size = 14, legend = "right"),
+                  tag_levels = "a", tag_suffix = ".")
+print(perf_reg)
+
+# Save
+name <- "img/regret1"
+ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 9, height = 5)
+```
