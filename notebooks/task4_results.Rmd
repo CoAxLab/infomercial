@@ -63,7 +63,7 @@ agent_names <- c(
   # "Decay/Greedy", 
   "Random",
   "Reward", 
-  "Reward+Info.", 
+  "Reward+IG", 
   "Reward+Novelty", 
   "Reward+Entropy", 
   "Reward+EB",

@@ -45,7 +45,7 @@ agent_names <- c(
   "E-explore (Info.)", 
   "Diffusion",
   "Chemotaxis", 
-  "Reward+Info.") 
+  "Reward+IG") 
 
 class_names <- c(
   "Info.",
