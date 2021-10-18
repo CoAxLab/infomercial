@@ -52,7 +52,7 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -111,7 +111,7 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -170,7 +170,7 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -228,7 +228,7 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -288,7 +288,7 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -346,7 +346,7 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "WSLS"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "E-explore"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -392,7 +392,7 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_2 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_2 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -434,7 +434,7 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_3 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_3 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -477,7 +477,7 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_4 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_4 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -519,7 +519,7 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_5 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_5 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -562,7 +562,7 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_6 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_6 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -604,7 +604,7 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_7 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_7 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -649,7 +649,7 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_2 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_2 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -690,7 +690,7 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_3 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_3 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -732,7 +732,7 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_4 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_4 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -773,7 +773,7 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_5 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_5 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -815,7 +815,7 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_6 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_6 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -856,7 +856,7 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_7 <- median((filter(tmp, strategy == "WSLS"))$total_R)
+wsls_7 <- median((filter(tmp, strategy == "E-explore"))$total_R)
 random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -975,7 +975,7 @@ bind_rows(tmp2, tmp3, tmp6, tmp7) %>%
 
 # -------------------------------------------------------------
 # Our value
-wsls_s <- filter(tmp, strategy == "WSLS")$median_R
+wsls_s <- filter(tmp, strategy == "E-explore")$median_R
 random_s <-  filter(tmp, strategy == "Random")$median_R
 
 tmp %>% 

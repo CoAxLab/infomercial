@@ -100,7 +100,7 @@ result563 %>%
   theme(strip.text = element_blank()) +
   theme(panel.spacing = unit(0.15, "lines")) -> c1b
 
-# Shift scores by one, to show how WSLS works
+# Shift scores by one, to show how E-explore works
 n <- nrow(result563)
 result563 %>% 
   select(global_step, score_R, score_E, policy) %>% 
@@ -113,7 +113,7 @@ tmp %>%
   geom_point(size=0.6) +
   geom_hline(
     yintercept = eta, color="chartreuse4", alpha=1, size=0.2) +
-  labs(x="", y="Info. value", title="WSLS", tag="c.") +
+  labs(x="", y="Info. value", title="E-explore", tag="c.") +
   scale_color_manual("", values=c("chartreuse4", "black")) +
   scale_y_log10(limits=c(0.00001, 4)) +
   annotation_logticks(side="l", size=.1) + 
@@ -136,7 +136,7 @@ tmp %>%
 independent1 <- (c1a / c1b / (c1c / c1d)) +
   plot_layout(heights = c(0.2, 0.2, 0.6)) +
   plot_annotation(
-      title="Explore-exploit with WSLS",
+      title="Explore-exploit with E-explore",
       subtitle = "Task 2",
       theme = theme_pubr(base_size = 10, legend = "none"))
 print(independent1)
@@ -348,7 +348,7 @@ tmp %>%
 independent2 <- (a1 + a2 + a3) + (s1 / plot_spacer() / plot_spacer()) + 
   plot_layout(widths = c(0.26, 0.26, 0.26, 0.22)) +
     plot_annotation(
-      title="WSLS - deterministic versus stochastic reward collection",
+      title="E-explore - deterministic versus stochastic reward collection",
       subtitle = "Task 2",
                   theme = theme_pubr(base_size = 8, legend = "none"))
 print(independent2)

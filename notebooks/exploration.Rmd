@@ -62,7 +62,7 @@ agent_names <- c(
   "Reward+\nUCB")
 
 class_names <- c(
-  "WSLS", 
+  "E-explore", 
   # "Random",
   # "Random",
   # "Random",
@@ -157,7 +157,7 @@ agent_names <- c(
   "Reward+\nUCB")
 
 class_names <- c(
-  "WSLS", 
+  "E-explore", 
   # "Random",
   # "Random",
   # "Random",

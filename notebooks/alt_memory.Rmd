@@ -1,5 +1,5 @@
 ---
-title: "Fig. Alt. memory for WSLS"
+title: "Fig. Alt. memory for E-explore"
 output: html_notebook
 ---
 
@@ -241,7 +241,7 @@ tmp %>%
   coord_flip() -> p4
 
 alt1 <-
-  (p3 / p4) + plot_annotation(title = "WSLS with alternate memory models")
+  (p3 / p4) + plot_annotation(title = "E-explore with alternate memory models")
 print(alt1)
 
 # Save
