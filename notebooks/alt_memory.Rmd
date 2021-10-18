@@ -47,7 +47,7 @@ agent_names <- c(
   "Entropy/L2", 
   "Rate/L2", 
   "Count/UCB",
-  "Prob/KL"
+  "Prob/KL (IG)"
 )
 
 class_names <- c(
@@ -122,7 +122,7 @@ agent_names <- c(
   "Entropy/L2", 
   "Rate/L2", 
   "Count/UCB",
-  "Prob/KL"
+  "Prob/KL (IG)"
 )
 
 class_names <- c(
@@ -241,7 +241,7 @@ tmp %>%
   coord_flip() -> p4
 
 alt1 <-
-  (p3 / p4) + plot_annotation(title = "E-explore with alternate memory models")
+  (p3 / p4) + plot_annotation(title = "E-explore with alternate memory")
 print(alt1)
 
 # Save
@@ -325,7 +325,7 @@ tmp %>%
   coord_flip() -> p4
 
 alt1 <-
-  (p3 / p4) + plot_annotation(title = "Alternate memory/distance")
+  (p3 / p4) + plot_annotation(title = "E-explore with alternate memory")
 print(alt1)
 
 # Save

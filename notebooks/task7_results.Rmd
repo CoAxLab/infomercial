@@ -71,7 +71,7 @@ agent_names <- c(
   "Reward+UCB")
 
 class_names <- c(
-  "E-explore (IG)", 
+  "Curiosity", 
   # "Random",
   # "Random",
   "Random",
@@ -141,19 +141,19 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_R <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
-  filter(strategy == "E-explore (IG)") %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
-    color = ifelse(strategy == "E-explore (IG)", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
   geom_hline(aes(yintercept=random_R), 
              color="darkgrey",
              size=0.5) +
-  labs(x="", y="", title="E-explore (IG)") +
+  labs(x="", y="", title="Curiosity") +
   # scale_y_continuous(limits = limits, breaks = breaks) +
   scale_y_continuous(limits = c(0, 7000), breaks = c(0, 7000)) +
   scale_color_identity() +
@@ -164,7 +164,7 @@ tmp %>%
 tmp %>% 
   filter(strategy == "Mixed") %>% 
   mutate(
-    color = ifelse(strategy == "E-explore (IG)", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R, color=color)) +
   geom_boxplot(outlier.size = 0.2, width=0.5) +
   geom_hline(aes(yintercept=wsls_R), 
@@ -199,11 +199,11 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Medum
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 
 tmp %>% 
   mutate(
-    fill = ifelse(strategy == "E-explore (IG)", "chartreuse4", "black")) %>% 
+    fill = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=total_R/num_episodes, fill=fill)) +
   geom_density(alpha=1, color=NA) +
   geom_vline(aes(xintercept=wsls_R/num_episodes), 
@@ -260,13 +260,13 @@ tmp %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 tmp %>% 
   # filter(strategy == "E-explore (IG)") %>% 
   mutate(
-    color = ifelse(strategy == "E-explore (IG)", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
@@ -301,13 +301,13 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$var_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$var_R)
 random_R <- median((filter(tmp, strategy == "Random"))$var_R)
 
 tmp %>% 
   # filter(strategy == "E-explore (IG)") %>% 
   mutate(
-    color = ifelse(strategy == "E-explore (IG)", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=var_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_hline(aes(yintercept=wsls_R/num_episodes), 
@@ -356,7 +356,7 @@ result_task7 %>%
                   theme = theme_pubr(base_size = 10, legend = "none")) 
 ```
 # Rewards
-```{r, fig.width=8, fig.height=2}
+```{r, fig.width=8, fig.height=2, eval=FALSE}
 result_task7 %>%
   filter(agent != "Random") %>%
   filter(global_step > 10) %>%

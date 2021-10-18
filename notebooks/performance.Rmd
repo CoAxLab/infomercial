@@ -52,7 +52,7 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -72,7 +72,7 @@ tmp %>%
              color="black",
              size=0.2,
              linetype="dashed") +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Reward", subtitle = "Task 2 - Classic") +
   # scale_y_continuous(limits = limits, breaks = breaks) +
   theme_pubr(base_size = 10, legend = "none") +
@@ -111,7 +111,7 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -133,7 +133,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 3 - Sparse") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> m3
@@ -146,8 +146,8 @@ print(m3)
 # -------------------------------------------------------
 # Vars
 num_episodes <- max(result_task4$global_step)
-limits <- c(0, 0.45)
-breaks <- c(0.0, 0.2, 0.4)
+limits <- c(0, 0.65)
+breaks <- c(0.0, 0.3, 0.6)
 
 # -------------------------------------------------------
 # Tabulate
@@ -170,7 +170,7 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -192,7 +192,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 4 - Deception") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> m4
@@ -228,7 +228,7 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -250,7 +250,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 5 - Distraction") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> m5
@@ -288,7 +288,7 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -310,7 +310,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 6 - High dimensional") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> m6
@@ -346,7 +346,7 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_R <- median((filter(tmp, strategy == "E-explore (IG)"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 # -------------------------------------------------------
@@ -368,7 +368,7 @@ tmp %>%
              linetype="dashed") +
   labs(x="", y="Average reward", subtitle = "Task 7 - Unexpected change") +
   scale_y_continuous(limits = limits, breaks = breaks) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   theme_pubr(base_size =  10, legend = "none") +
   theme(strip.background = element_blank()) +
   coord_flip() -> m7
@@ -392,7 +392,7 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_2 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_2 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -412,7 +412,7 @@ tmp %>%
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 2 - Classic") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j2
@@ -434,7 +434,7 @@ result_task3 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_3 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_3 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -450,7 +450,7 @@ tmp %>%
              size=0.2,
              linetype="dashed") +
   labs(x="", y="Total reward") +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 3 - Sparse") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   theme_pubr(base_size = 10, legend = "none") +
@@ -477,7 +477,7 @@ result_task4 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_4 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_4 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -497,7 +497,7 @@ tmp %>%
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 4 - Deception") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j4
@@ -519,7 +519,7 @@ result_task5 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_5 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_5 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -540,7 +540,7 @@ tmp %>%
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 5 - Distraction") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j5
@@ -562,7 +562,7 @@ result_task6 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_6 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_6 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -582,7 +582,7 @@ tmp %>%
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 6 - High dim.") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j6
@@ -604,7 +604,7 @@ result_task7 %>%
   ungroup() -> tmp
 
 # Reference 
-wsls_7 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
+wsls_7 <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
@@ -625,7 +625,7 @@ tmp %>%
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
   theme(axis.text.y = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 7 - Unexpected") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j7
@@ -633,256 +633,6 @@ tmp %>%
 print(j7)
 ```
 
-## Boxplot
-### Task 2
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task2$global_step)
-limits <- c(0, 200)
-breaks <- c(0.0, 100, 200)
-
-# Vis
-result_task2 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_2 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_2 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_2), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_2), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 2 - Classic") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  coord_flip() -> b2
-
-print(b2)
-```
-
-### Task 3
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task3$global_step)
-limits <- c(0, 1100)
-breaks <- c(0, 500, 1000)
-
-result_task3 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_3 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_3 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_3), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_3), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 3 - Sparse") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(axis.text.y = element_blank()) +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  coord_flip() -> b3
-
-print(b3)
-```
-
-### Task 4
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task4$global_step)
-limits <- c(0, 150)
-breaks <- c(0, 75, 150)
-
-result_task4 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_4 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_4 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_4), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_4), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 4 - Deception") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  coord_flip() -> b4
-
-print(b4)
-```
-
-### Task 5
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task5$global_step)
-limits <- c(0, 500) 
-breaks <- c(0, 250, 500)
-
-result_task5 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_5 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_5 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_5), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_5), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(axis.text.y = element_blank()) +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 5 - Distraction") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  coord_flip() -> b5
-
-print(b5)
-```
-
-### Task 6
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task6$global_step)
-limits <- c(0, 60000)
-breaks <- c(0, 30000, 60000)
-
-result_task6 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_6 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_6 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_6), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_6), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 6 - High dim.") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  coord_flip() -> b6
-
-print(b6)
-```
-
-### Task 7
-```{r, fig.width=5, fig.height=3}
-# -------------------------------------------------------
-# Vars
-num_episodes <- max(result_task7$global_step)
-limits <- c(0, 12000)
-breaks <- c(0, 6000, 12000)
-
-result_task7 %>%
-  group_by(strategy, agent, param, run) %>% 
-  summarise(total_R = last(total_R)) %>% 
-  ungroup() -> tmp
-
-# Reference 
-wsls_7 <- median((filter(tmp, strategy == "E-explore (IG)"))$total_R)
-random_7 <- median((filter(tmp, strategy == "Random"))$total_R)
-
-tmp %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=total_R, color=strategy)) +
-  geom_boxplot(width=0.4) +
-  geom_hline(aes(yintercept=wsls_7), 
-             color="chartreuse4",
-             size=0.4) +
-  geom_hline(aes(yintercept=random_7), 
-             color="black",
-             size=0.2,
-             linetype="dashed") +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  theme(strip.background = element_blank()) +
-  theme(axis.text.y = element_blank()) +
-  scale_color_manual("", values = c("black", "gray45", "chartreuse4")) +
-  labs(x="", y="Total reward", subtitle = "Task 7 - Unexpected") +
-  scale_y_continuous(limits = limits, breaks = breaks) +
-  coord_flip() -> b7
-
-print(b7)
-```
 
 ## Overall
 ```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=5.0}
@@ -975,7 +725,7 @@ bind_rows(tmp2, tmp3, tmp6, tmp7) %>%
 
 # -------------------------------------------------------------
 # Our value
-wsls_s <- filter(tmp, strategy == "E-explore (IG)")$median_R
+wsls_s <- filter(tmp, strategy == "Curiosity")$median_R
 random_s <-  filter(tmp, strategy == "Random")$median_R
 
 tmp %>% 
@@ -998,7 +748,7 @@ tmp %>%
              size=0.2,
              linetype="dashed") +
   theme_pubr(base_size = 12, legend = "none") +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(
     x = "",
     y = "Normalized reward",

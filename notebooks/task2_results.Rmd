@@ -63,14 +63,14 @@ agent_names <- c(
   # "Decay/Greedy", 
   "Random",
   "Reward", 
-  "Reward+Info.", 
+  "Reward+IG", 
   "Reward+Novelty", 
   "Reward+Entropy", 
   "Reward+EB",
   "Reward+UCB")
 
 class_names <- c(
-   "E-explore (IG)",  
+   "Curiosity",  
   # "Random",
   # "Random",
   "Random",
@@ -128,8 +128,6 @@ result_task2$total_E <- result_task2$total_E - E_bias
 result_task2$total_E[result_task2$total_E < 0] <- 0
 ```
 
-
-
 # Summary, by strategy
 ## Boxplot
 ```{r, fig.width=4.5, fig.height=3.5}
@@ -143,11 +141,11 @@ result_task2 %>%
 
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, "Curiosity"))$total_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 random_R <- median((filter(tmp, strategy == "Random"))$total_R)
 
 tmp %>% 
-  filter("Curiosity") %>% 
+  filter(strategy == "Curiosity") %>% 
   mutate(
     color = ifelse("Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=total_R/num_episodes, color=color)) +
@@ -199,11 +197,11 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Medum
-wsls_R <- median((filter(tmp, "Curiosity"))$total_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$total_R)
 
 tmp %>% 
   mutate(
-    fill = ifelse("Curiosity", "chartreuse4", "black")) %>% 
+    fill = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>% 
   ggplot(aes(x=total_R/num_episodes, fill=fill)) +
   geom_density(alpha=1, color=NA) +
   geom_vline(aes(xintercept=wsls_R/num_episodes), 
@@ -260,13 +258,13 @@ tmp %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, "Curiosity"))$median_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$median_R)
 random_R <- median((filter(tmp, strategy == "Random"))$median_R)
 
 tmp %>% 
   # filter("Curiosity") %>% 
   mutate(
-    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=median_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_linerange(aes(
@@ -302,13 +300,13 @@ result_task2 %>%
   ungroup() -> tmp
 
 # Med R for curiosity
-wsls_R <- median((filter(tmp, "Curiosity"))$var_R)
+wsls_R <- median((filter(tmp, strategy == "Curiosity"))$var_R)
 random_R <- median((filter(tmp, strategy == "Random"))$var_R)
 
 tmp %>% 
   # filter("Curiosity") %>% 
   mutate(
-    color = ifelse("Curiosity", "chartreuse4", "black")) %>%
+    color = ifelse(strategy == "Curiosity", "chartreuse4", "black")) %>%
   ggplot(aes(x=agent, y=var_R/num_episodes, color=color)) +
   geom_point(size=2.5, alpha=0.8) +
   geom_hline(aes(yintercept=wsls_R/num_episodes), 
@@ -324,7 +322,6 @@ tmp %>%
   theme(strip.background = element_blank()) +
   coord_flip() 
 ```
-
 # Actions
 ```{r, fig.width=8, fig.height=6}
 # Pick an exp to show actions for
@@ -357,7 +354,7 @@ result_task2 %>%
                   theme = theme_pubr(base_size = 10, legend = "none")) 
 ```
 # Rewards
-```{r, fig.width=8, fig.height=2}
+```{r, fig.width=8, fig.height=2, eval=FALSE}
 result_task2 %>%
   filter(agent != "Random") %>%
   filter(global_step > 10) %>%

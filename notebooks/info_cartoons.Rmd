@@ -38,8 +38,8 @@ points %>%
   scale_x_continuous(limits = c(0, x), breaks = x) +
   scale_y_continuous(limits = c(0, y), breaks = y) +
   labs(
-    x = TeX("$\\m_i$"),
-    y = TeX("$\\m_j$"),
+    x = TeX("$\\M_i$"),
+    y = TeX("$\\M_j$"),
     title = "Memory distance"
   ) +
   geom_segment(

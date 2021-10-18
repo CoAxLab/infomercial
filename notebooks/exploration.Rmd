@@ -50,7 +50,7 @@ exp_names <- c("exp457",
                "exp539")
 
 agent_names <- c(
-  "Curiosity\n(IG)", 
+  "E-explore\n(IG)", 
   # "Random/Greedy", 
   # "Decay/Greedy", 
   # "Random",
@@ -62,7 +62,7 @@ agent_names <- c(
   "Reward+\nUCB")
 
 class_names <- c(
-  "E-explore (IG)", 
+  "Curiosity", 
   # "Random",
   # "Random",
   # "Random",
@@ -145,7 +145,7 @@ exp_names <- c("exp548",
                "exp561")
 
 agent_names <- c(
-  "Curiosity\n(IG)", 
+  "E-explore\n(IG)", 
   # "Random/Greedy", 
   # "Decay/Greedy", 
   # "Random",
@@ -157,7 +157,7 @@ agent_names <- c(
   "Reward+\nUCB")
 
 class_names <- c(
-  "E-explore (IG)", 
+  "Curiosity", 
   # "Random",
   # "Random",
   # "Random",
@@ -317,7 +317,7 @@ explore_task2 %>%
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.75, "lines")) +
   theme(strip.background = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -0.1)) -> r1
+  theme(strip.text.x = element_text(hjust = -0.05)) -> r1
 
 print(r1)
 ```
@@ -341,7 +341,7 @@ explore_task6 %>%
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.75, "lines")) +
   theme(strip.background = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -0.1)) -> 
+  theme(strip.text.x = element_text(hjust = -0.05)) -> 
   r2
 
 print(r2)

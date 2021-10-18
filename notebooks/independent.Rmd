@@ -551,7 +551,7 @@ sub2 <- c2a / c2c
 curiosity1 <- (sub1 | sub2) + 
   plot_layout(widths = c(0.7, 0.3)) +
     plot_annotation(
-      title="Info. value bandits - deterministic versus stochastic",
+      title="E-explore: deterministic versus stochastic in information collection",
       subtitle = "Task 1",
       theme = theme_pubr(base_size=8, legend="none"))
 print(curiosity1)
