@@ -476,7 +476,7 @@ tmp %>%
     y = median_R,
     color = factor(strategy)
   )) +
-  geom_point(size=2) +
+  geom_point(size=4) +
   geom_linerange(aes(
     ymin = (median_R + var_R),
     ymax = (median_R - var_R)
