@@ -399,7 +399,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_2), 
              color="chartreuse4",
              size=0.4) +
@@ -441,7 +441,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_3), 
              color="chartreuse4",
              size=0.4) +
@@ -484,7 +484,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_4), 
              color="chartreuse4",
              size=0.4) +
@@ -526,7 +526,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_5), 
              color="chartreuse4",
              size=0.4) +
@@ -569,7 +569,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_6), 
              color="chartreuse4",
              size=0.4) +
@@ -611,7 +611,7 @@ tmp %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=total_R)) +
   geom_jitter(width = 0.3, size=0.3, alpha=0.1) +
-  stat_summary(fun.y = median, aes(color=strategy), size=0.3, shape=1) +
+  stat_summary(fun.y = median, aes(color=strategy), size=0.4, shape=1) +
   geom_hline(aes(yintercept=wsls_7), 
              color="chartreuse4",
              size=0.4) +
@@ -735,7 +735,7 @@ tmp %>%
     y = median_R,
     color = factor(strategy)
   )) +
-  geom_point(size=2) +
+  geom_point(size=3) +
   geom_linerange(aes(
     ymin = (median_R + var_R),
     ymax = (median_R - var_R)
