@@ -220,6 +220,7 @@ print(boredom1)
 
 name <- "img/opt_boredom1"
 ggsave(paste(name, ".pdf", sep=""), plot=boredom1, width = 1.8*2, height = 2.4*2)
+ggsave(paste(name, ".png", sep=""), plot=boredom1, width = 1.8*2, height = 2.4*2)
 ```
 
 # Fig. All boredom
@@ -303,4 +304,5 @@ print(boredom2)
 
 name <- "img/opt_boredom2"
 ggsave(paste(name, ".pdf", sep=""), plot=boredom2, width = 3.6*2, height = 1.8*2)
+ggsave(paste(name, ".png", sep=""), plot=boredom2, width = 3.6*2, height = 1.8*2)
 ```

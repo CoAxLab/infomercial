@@ -296,6 +296,12 @@ ggsave(
   width = 7,
   height = 10
 )
+ggsave(
+  paste(name, ".png", sep = ""),
+  plot = exploration1,
+  width = 7,
+  height = 10
+)
 ```
 
 # Task 2 - Reward timecourse
@@ -364,6 +370,12 @@ print(exploration2)
 name <- "img/exploration2"
 ggsave(
   paste(name, ".pdf", sep = ""),
+  plot = exploration2,
+  width = 7,
+  height = 5
+)
+ggsave(
+  paste(name, ".png", sep = ""),
   plot = exploration2,
   width = 7,
   height = 5

@@ -134,4 +134,5 @@ print(cartoon)
 # ---
 name <- "img/info_cartoon"
 ggsave(paste(name, ".pdf", sep=""), plot=cartoon, width = 5, height = 3.25)
+ggsave(paste(name, ".png", sep=""), plot=cartoon, width = 5, height = 3.25)
 ```

@@ -144,6 +144,8 @@ print(independent1)
 name <- "img/independent1"
 ggsave(paste(name, ".pdf", sep=""), 
        plot=independent1, width = 1.2*2, height = 2.8*2)
+ggsave(paste(name, ".png", sep=""), 
+       plot=independent1, width = 1.2*2, height = 2.8*2)
 ```
 
 # Fig. Rew - Sto v. det
@@ -357,6 +359,8 @@ print(independent2)
 name <- "img/independent2"
 ggsave(paste(name, ".pdf", sep=""), 
        plot=independent2, width = 3.3*2, height = 1.4*2)
+ggsave(paste(name, ".png", sep=""), 
+       plot=independent2, width = 3.3*2, height = 1.4*2)
 ```
 
 # Fig. Info - Sto v. det
@@ -558,5 +562,7 @@ print(curiosity1)
 
 name <- "img/independent3"
 ggsave(paste(name, ".pdf", sep=""), 
+       plot=curiosity1, width = 4.8, height = 2.2)
+ggsave(paste(name, ".png", sep=""), 
        plot=curiosity1, width = 4.8, height = 2.2)
 ```

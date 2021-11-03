@@ -100,8 +100,7 @@ bind_rows(tmp2, tmp3, tmp4, tmp5, tmp6, tmp7) ->
 min_var <- 0.0075
 tmp %>% 
   filter(var_R > min_var) %>% 
-  filter(strategy == "E-explore (IG)") %>% 
-  select(var_R) -> wsls_s
+  filter(strategy == "Curiosity") -> wsls_s
 wsls_s <- median(wsls_s$var_R)
 # Vis
 tmp %>% 
@@ -109,8 +108,8 @@ tmp %>%
   filter(var_R > min_var) %>%
   filter(strategy != "Random") %>% 
   ggplot(aes(x=agent, y=var_R)) +
-  geom_jitter(size=.4, alpha=0.02) +
-  stat_summary(fun.y = median, aes(color=strategy), size=1) +
+  geom_jitter(size=.2, alpha=0.01) +
+  stat_summary(fun.y = median, aes(color=strategy), size=1.25, shape=1) +
   geom_hline(aes(yintercept=wsls_s), 
              color="chartreuse4",
              size=0.4) +
@@ -118,7 +117,7 @@ tmp %>%
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
+  scale_color_manual("", values = c("chartreuse4", "darkgrey", "black")) +
   labs(
     x = "",
     y = "Normalized reward deviance",
@@ -135,48 +134,6 @@ print(consistency)
 # Save
 name <- "img/consistency"
 ggsave(paste(name, ".pdf", sep=""), plot=consistency, width = 5, height = 5)
+ggsave(paste(name, ".png", sep=""), plot=consistency, width = 5, height = 5)
 ```
 
-### Boxplot
-```{r, message=FALSE, warning=FALSE, fig.width=5, fig.height=5.0}
-# Thresh 
-min_var <- 0.0075
-tmp %>% 
-  filter(var_R > min_var) %>% 
-  filter(strategy == "E-explore (IG)") %>% 
-  select(var_R) -> wsls_s
-wsls_s <- median(wsls_s$var_R)
-# Vis
-tmp %>% 
-  sample_n(nrow(tmp)/10) %>% 
-  filter(var_R > min_var) %>% 
-  filter(strategy != "Random") %>% 
-  ggplot(aes(x=agent, y=var_R, color=strategy)) +
-  geom_boxplot() +
-  # geom_jitter(size=.4, alpha=0.1) +
-  # stat_summary(fun.y = median, aes(color=strategy), size=1) +
-  geom_hline(aes(yintercept=wsls_s), 
-             color="chartreuse4",
-             size=0.4) +
-  labs(x="", y="Total reward") +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
-  scale_color_manual("", values = c("black", "darkgrey", "chartreuse4")) +
-  labs(
-    x = "",
-    y = "Normalized reward deviance",
-    subtitle = "Overall",
-    title="Consistency of reward collection"
-  ) +
-  # scale_y_continuous(limits = c(0, 0.01)) +
-  coord_flip() ->
-  consistency
-
-print(consistency)
-
-# -------------------------------------------------------------
-# Save
-name <- "img/consistency"
-ggsave(paste(name, ".pdf", sep=""), plot=consistency, width = 5, height = 5)
-```

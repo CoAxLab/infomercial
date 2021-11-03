@@ -244,14 +244,20 @@ alt1 <-
   (p3 / p4) + plot_annotation(title = "E-explore with alternate memory")
 print(alt1)
 
-# Save
-name <- "img/alt_memory1"
-ggsave(
-  paste(name, ".pdf", sep = ""),
-  plot = alt1,
-  width = 3.5,
-  height = 4.5
-)
+# # Save
+# name <- "img/alt_memory1"
+# ggsave(
+#   paste(name, ".pdf", sep = ""),
+#   plot = alt1,
+#   width = 3.5,
+#   height = 4.5
+# )
+# ggsave(
+#   paste(name, ".png", sep = ""),
+#   plot = alt1,
+#   width = 3.5,
+#   height = 4.5
+# )
 ```
 
 ### Scatter
@@ -332,6 +338,12 @@ print(alt1)
 name <- "img/alt_memory1"
 ggsave(
   paste(name, ".pdf", sep = ""),
+  plot = alt1,
+  width = 3.5,
+  height = 4.5
+)
+ggsave(
+  paste(name, ".png", sep = ""),
   plot = alt1,
   width = 3.5,
   height = 4.5

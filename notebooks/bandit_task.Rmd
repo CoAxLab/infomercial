@@ -402,4 +402,5 @@ print(task)
 # ---------------------------------------------------
 name <- "img/bandit_task"
 ggsave(paste(name, ".pdf", sep=""), plot=task, width = 10, height = 9)
+ggsave(paste(name, ".png", sep=""), plot=task, width = 10, height = 9)
 ```

@@ -263,4 +263,5 @@ print(forage)
 # Write pdf
 name <- "img/forage"
 ggsave(paste(name, ".pdf", sep=""), plot=forage, width = 6, height = 8)
+ggsave(paste(name, ".png", sep=""), plot=forage, width = 6, height = 8)
 ```
