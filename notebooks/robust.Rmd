@@ -549,7 +549,7 @@ tune_task3 %>%
   labs(
     x = "Ranked parameters",
     y = "Norm. reward",
-    subtitle = "Task 2 - Sparse",
+    subtitle = "Task 3 - Sparse",
     # tag = "a."
   ) +
   theme_pubr(base_size = 12) +
@@ -605,7 +605,7 @@ tune_task5 %>%
   labs(
     x = "Ranked parameters",
     y = "Norm. reward",
-    subtitle = "Task 5 - Deception",
+    subtitle = "Task 4 - Deception",
     # tag = "a."
   ) +
   theme_pubr(base_size = 12) +
@@ -634,7 +634,7 @@ tune_task6 %>%
   labs(
     x = "Ranked parameters",
     y = "Norm. reward",
-    subtitle = "Task 6 - High dimensional",
+    subtitle = "Task 5 - High dimensional",
     # tag = "b."
   ) +
   theme_pubr(base_size = 12) +
@@ -656,22 +656,19 @@ name <- "img/robust2"
 ggsave(paste(name, ".pdf", sep=""), plot=robust2, width = 6, height = 3)
 ```
 ## Join 1-2
-```{r, fig.width=11, fig.height=8.0}
+```{r, fig.width=11, fig.height=5}
 layout <- "
-AAAAABBBBCCCC
-AAAAABBBBCCCC
-AAAAABBBBCCCC
-AAAAADDDDEEEE
-AAAAADDDDEEEE
-AAAAADDDDEEEE
-#####FFFFGGGG
-#####FFFFGGGG
-#####FFFFGGGG
+AAAAABBBBCCCCFFF
+AAAAABBBBCCCCFFF
+AAAAABBBBCCCCFFF
+AAAAADDDDEEEE###
+AAAAADDDDEEEE###
+AAAAADDDDEEEE###
 "
 
-robust <- robust1 + p2 + p3 + p4 + p5 + p6 + guide_area() +
+robust <- robust1 + p2 + p3 + p4 + p6 + guide_area() +
   plot_layout(design = layout, guides = "collect") +
-  plot_annotation(title = "Robustness of bandit exploration strategy",
+  plot_annotation(title = "Robustness of exploration strategies on bandits",
                   theme = theme_pubr(base_size = 14, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 print(robust)
@@ -679,4 +676,5 @@ print(robust)
 # Save
 name <- "img/robust"
 ggsave(paste(name, ".pdf", sep=""), plot=robust, width = 11, height = 8)
+ggsave(paste(name, ".png", sep=""), plot=robust, width = 11, height = 8)
 ```

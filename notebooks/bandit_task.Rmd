@@ -200,7 +200,7 @@ ggplot(aes(x = choice, y = prob, fill = factor(best))) +
   labs(
     x = "Action",
     y = "Avg. value",
-    title = "Task 5 - Deception",
+    title = "Task 4 - Deception",
     subtitle = "Reward payout",
     tag="d."
   ) +
@@ -328,7 +328,7 @@ large %>%
   labs(
     x = "Action",
     y = "Reward prob.",
-    title = "Task 7 - High dimensional",
+    title = "Task 5 - High dimensional",
     subtitle = "Reward payout",
     tag = "f."
   ) +
@@ -371,7 +371,7 @@ changed %>%
   labs(
     x = "Action",
     y = "Reward prob.",
-    title = "Task 7 - Unexpected change",
+    title = "Task 6 - Unexpected change",
     subtitle = "Reward payout",
     tag = "g."
   ) +
@@ -394,7 +394,7 @@ ggsave(paste(name, ".pdf", sep=""), plot=task7, width = 4.2, height = 6)
 # Join
 ```{r, fig.width=10, fig.height=9}
 task <- (task1 | task2 | task3 | plot_spacer()) /
-  (task4 | task5) / (task6) / (task7) +
+  (task4 | plot_spacer()) / (task6) / (task7) +
   plot_annotation(title = "Exploration-exploitation with bandits, information and reward collection",
                   theme = theme_pubr(base_size = 14, legend = "right"))
 print(task)

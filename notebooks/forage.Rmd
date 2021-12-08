@@ -143,7 +143,7 @@ targets %>%
     size = 2,
     alpha = 0.8
   ) +
-  labs(x = "x", y = "y", subtitle = "Task 8 - Random targets") +
+  labs(x = "x", y = "y", subtitle = "Task 7 - Random targets") +
   theme_pubr(base_size = 9) +
   lims(x = c(-10, 10), y = c(-10, 10)) -> t1
 print(t1)

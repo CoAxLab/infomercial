@@ -3,11 +3,35 @@ title: "Fig. Reward collection performance"
 output: html_notebook
 ---
 
+# Library
+```{r, message=FALSE}
+library(zoo)
+library(ggplot2)
+library(patchwork)
+library(gridExtra)
+library(grid)
+library(readr)
+library(ggpubr)
+# library(latex2exp)
+# library(MASS) 
+library(scales)
+library(patchwork)
+library(tidyr)
+library(dplyr)
+options(scipen=1000000)
+
+# Load load_result and other helpful functions
+source("utils.R")
+
+# --- Main path to all data ---
+data_path <- "~/Code/infomercial/data"
+```
+
 
 # Load data
 ## Cached?
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
-load.image(file="performance.RData")
+load(file="performance.RData")
 ```
 
 ## New
@@ -454,7 +478,8 @@ tmp %>%
   labs(x="", y="Total reward", subtitle = "Task 3 - Sparse") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   theme_pubr(base_size = 10, legend = "none") +
-  theme(axis.text.y = element_blank()) +
+  # theme(axis.text.y = element_blank()) +
+  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(panel.spacing = unit(.5, "lines")) +
   theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
   theme(strip.background = element_blank()) +
@@ -495,7 +520,8 @@ tmp %>%
   labs(x="", y="Total reward") +
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  # theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(axis.text.y = element_blank()) +
   theme(strip.background = element_blank()) +
   scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
   labs(x="", y="Total reward", subtitle = "Task 4 - Deception") +
@@ -580,10 +606,12 @@ tmp %>%
   labs(x="", y="Total reward") +
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.5, "lines")) +
-  theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  # theme(strip.text.y = element_text(angle = 0, hjust = -.1)) +
+  theme(strip.text.y = element_blank()) +
+  theme(axis.text.y = element_blank()) +
   theme(strip.background = element_blank()) +
   scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
-  labs(x="", y="Total reward", subtitle = "Task 6 - High dim.") +
+  labs(x="", y="Total reward", subtitle = "Task 5 - High dim.") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j6
 
@@ -626,7 +654,7 @@ tmp %>%
   theme(strip.background = element_blank()) +
   theme(axis.text.y = element_blank()) +
   scale_color_manual("", values = c("chartreuse4", "black", "darkgrey")) +
-  labs(x="", y="Total reward", subtitle = "Task 7 - Unexpected") +
+  labs(x="", y="Total reward", subtitle = "Task 6 - Unexpected") +
   scale_y_continuous(limits = limits, breaks = breaks) +
   coord_flip() -> j7
 
@@ -761,20 +789,20 @@ tmp %>%
 print(perf2)
 ```
 
-# Join regular bandits
-```{r, fig.width=9, fig.height=5.0}
+# Join bandits
+```{r, fig.width=11, fig.height=5.0}
 layout <- "
-AAAAABBBCCC
-AAAAABBBCCC
-AAAAABBBCCC
-AAAAADDDEEE
-AAAAADDDEEE
-AAAAADDDEEE
+AAAAABBBDDDFFF
+AAAAABBBDDDFFF
+AAAAABBBDDDFFF
+AAAAACCCEEE###
+AAAAACCCEEE###
+AAAAACCCEEE###
 "
-perf_reg <- perf2 + j2 + j3 + j6 + j7 +
+perf_reg <- perf2 + j2 + j3 + j4 + j6 + j7 +
   plot_layout(design = layout, guides = "collect") +
   plot_annotation(
-    title = "Reward collection performance with standard bandits",
+    title = "Reward collection performance on bandits",
                   theme = theme_pubr(base_size = 14, legend = "right"),
                   tag_levels = "a", tag_suffix = ".")
 print(perf_reg)

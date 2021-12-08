@@ -458,7 +458,7 @@ final348 %>%
 ```
 
 ## Vis
-```{r, fig.width=4.8, fig.height=2.2}
+```{r, fig.width=4.8, fig.height=2.5}
 r <- 1
 
 # -------------------------------------------------------------------
@@ -528,7 +528,7 @@ sub1 <- (c1a + c1b) / c1c #+
 # ------------------------------------------------------------------
 final348 %>% 
   ggplot(aes(x=actor, y=total_E)) +
-  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  geom_jitter(width = 0.2, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=actor), size=0.3, shape=1) +
   labs(x="", y="Info. value", tag="c.") +
   scale_color_manual("", values = c("black", "chartreuse4")) +
@@ -540,7 +540,7 @@ final348 %>%
 
 final348 %>% 
   ggplot(aes(x=actor, y=num_explore)) +
-  geom_jitter(width = 0.3, size=0.2, alpha=0.1) +
+  geom_jitter(width = 0.2, size=0.2, alpha=0.1) +
   stat_summary(fun.y = median, aes(color=actor), size=0.3, shape=1) +
   labs(x="", y="Num. explore", tag="d.") +
   scale_color_manual("", values = c("black", "chartreuse4")) +
@@ -555,7 +555,7 @@ sub2 <- c2a / c2c
 curiosity1 <- (sub1 | sub2) + 
   plot_layout(widths = c(0.7, 0.3)) +
     plot_annotation(
-      title="E-explore: deterministic versus stochastic in information collection",
+      title="Deterministic versus stochastic in information collection",
       subtitle = "Task 1",
       theme = theme_pubr(base_size=8, legend="none"))
 print(curiosity1)

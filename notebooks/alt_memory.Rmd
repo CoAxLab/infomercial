@@ -322,7 +322,7 @@ tmp %>%
              size=0.4) +
   labs(x = "",
        y = "Total reward",
-       subtitle = "Task 6 - High dimensional",
+       subtitle = "Task 5 - High dimensional",
        tag = "b.") +
   scale_color_manual("", values = c("black", "chartreuse4")) +
   scale_y_continuous(limits = limits, breaks = breaks) +
