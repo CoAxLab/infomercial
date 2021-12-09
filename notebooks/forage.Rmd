@@ -208,21 +208,24 @@ results_task8 %>%
     alpha = 0.4,
   ) +
   theme_pubr(base_size = 9) +
-  labs(x="x", y="y", subtitle="Episode 99") +
-  lims(x=c(-10, 20), y=c(-10, 20)) +
+  labs(x = "x", y = "y", subtitle = "Episode 99") +
+  lims(x = c(-10, 20), y = c(-10, 20)) +
   theme(strip.background = element_blank()) +
   theme(legend.position = "nane") +
   theme(panel.spacing = unit(1, "lines")) +
   scale_color_manual("Agent",
                      values = c("chartreuse4", "darkgrey", "darkslategray4", "black")) +
-  facet_wrap(agent~.) -> e99
+  facet_wrap(agent ~ .) -> e99
 
 
 beh1 <- (t1 + e1) / (e50 + e99) +
   # plot_layout(ncol = 2) +
-  plot_annotation(subtitle = "Foraging - Task, examples of behavior, and reward collection",
-                  theme = theme_pubr(base_size = 14, legend = "right"),
-                  tag_levels = "a", tag_suffix = ".")
+  plot_annotation(
+    subtitle = "Foraging - Task, examples of behavior, and reward collection",
+    theme = theme_pubr(base_size = 12, legend = "right"),
+    tag_levels = "a",
+    tag_suffix = "."
+  )
 
 print(beh1)
 
