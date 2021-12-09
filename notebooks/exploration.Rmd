@@ -221,33 +221,6 @@ explore_task6$policy[explore_task6$strategy != "Curiosity"] <- 1
 explore_task6$policy[explore_task6$regret > 0] <- -1 
 ```
 
-# Task 2 - Behave
-```{r, fig.width=9, fig.height=7}
-explore_task2 %>%
-  filter(run <= 1) %>%
-  filter(param == 1) %>%
-  ggplot(aes(x = global_step, y = action + 1, color=strategy)) + #, color=factor(policy))) +
-  geom_point(size = 0.3, alpha = 1) +
-  geom_line(size = 0.1) +
-  labs(x = "Time",
-       y = "Action",
-       subtitle = "Task 2 - Classic") +
-  scale_color_manual("Agent", 
-                     values = c("black", "darkgrey", "chartreuse4")) + 
-  scale_x_continuous(limits = c(0, 4 * 25),
-                     breaks = c(0, 4 * 25)) +
-  scale_y_continuous(limits = c(0.9, num_arms + .1), breaks = c(1, 4)) +
-  facet_grid(run ~ agent) +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(strip.background = element_blank()) +
-  theme(panel.spacing.x = unit(0.75, "lines")) +
-  theme(panel.spacing.y = unit(0.5, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.y = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -.05)) -> b1
-
-print(b1)
-```
 # Task 5 - Behave
 ```{r, fig.width=9, fig.height=2}
 explore_task6 %>%
@@ -261,8 +234,9 @@ explore_task6 %>%
        subtitle = "Exploration") +
   scale_color_manual("Agent", 
                      values = c("chartreuse4", "darkgrey", "black")) + 
-  scale_x_continuous(limits = c(0, 121 * 25),
-                     breaks = c(0, 121 * 25)) +
+  scale_x_continuous(limits = c(0, 121 * 10),
+                     breaks = c(0, 121 * 10
+                                )) +
   scale_y_continuous(limits = c(0.9, 121 + .1), breaks = c(1, 121)) +
   facet_grid(run ~ agent) +
   theme_pubr(base_size = 10, legend = "none") +
@@ -274,30 +248,6 @@ explore_task6 %>%
   theme(strip.text.x = element_text(hjust = -.05)) -> b2
 
 print(b2)
-```
-
-# Task 2 - Reward timecourse
-```{r, fig.width=9, fig.height=2}
-explore_task2 %>%
-  filter(param == 0) %>%
-  filter(global_step > 10) %>%
-  ggplot(aes(x = global_step, y = total_R / global_step, color=strategy)) +
-  geom_point(size = 0.2, alpha = 1) +
-  labs(x = "Time",
-       y = "Avg. reward",
-       subtitle = "Task 2 - Classic") +
-  scale_color_manual("Agent", 
-                     values = c("black", "darkgrey", "chartreuse4")) + 
-  scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
-  scale_x_continuous(limits = c(0, 4 * 25),
-                     breaks = c(0, 4 * 25)) +
-  facet_grid(. ~ agent) +
-  theme_pubr(base_size = 10, legend = "none") +
-  theme(panel.spacing = unit(.75, "lines")) +
-  theme(strip.background = element_blank()) +
-  theme(strip.text.x = element_text(hjust = -0.05)) -> r1
-
-print(r1)
 ```
 
 # Task 5 - Reward timecourse
@@ -313,8 +263,8 @@ explore_task6 %>%
   scale_color_manual("Agent", 
                      values = c("black", "darkgrey", "chartreuse4")) + 
   scale_y_continuous(limits = c(0, 1.1), breaks = c(0, 0.5, 1)) +
-  scale_x_continuous(limits = c(0, 121 * 25),
-                     breaks = c(0, 121 * 25)) +
+  scale_x_continuous(limits = c(0, 121 * 10),
+                     breaks = c(0, 121 * 10)) +
   facet_grid(. ~ agent) +
   theme_pubr(base_size = 10, legend = "none") +
   theme(panel.spacing = unit(.75, "lines")) +
@@ -326,7 +276,7 @@ print(r2)
 ```
 
 # Join 
-```{r, fig.width=9, fig.height=5.5}
+```{r, fig.width=9, fig.height=5}
 exploration2 <- b2 / r2 +
   plot_annotation(
     title = "Bandits - Examples of behavoir",
@@ -343,12 +293,12 @@ ggsave(
   paste(name, ".pdf", sep = ""),
   plot = exploration2,
   width = 9,
-  height = 5.5
+  height = 5
 )
 ggsave(
   paste(name, ".png", sep = ""),
   plot = exploration2,
   width = 9,
-  height = 5.5
+  height = 5
 )
 ```

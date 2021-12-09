@@ -675,6 +675,6 @@ print(robust)
 
 # Save
 name <- "img/robust"
-ggsave(paste(name, ".pdf", sep=""), plot=robust, width = 11, height = 8)
-ggsave(paste(name, ".png", sep=""), plot=robust, width = 11, height = 8)
+ggsave(paste(name, ".pdf", sep=""), plot=robust, width = 11, height = 5)
+ggsave(paste(name, ".png", sep=""), plot=robust, width = 11, height = 5)
 ```
