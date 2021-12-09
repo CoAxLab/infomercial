@@ -809,8 +809,8 @@ print(perf_reg)
 
 # Save
 name <- "img/performance1"
-ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 9, height = 5)
-ggsave(paste(name, ".png", sep=""), plot=perf_reg, width = 9, height = 5)
+ggsave(paste(name, ".pdf", sep=""), plot=perf_reg, width = 11, height = 5)
+ggsave(paste(name, ".png", sep=""), plot=perf_reg, width = 11, height = 5)
 ```
 # Join - deception and ditraction
 ```{r, fig.width=7, fig.height=3}
